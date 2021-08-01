@@ -9,7 +9,7 @@
 
 # 1. 什么是 JavaScript
 
-本章内容
+本章内容:
 
 - JavaScript 历史回顾
 - JavaScript 是什么
