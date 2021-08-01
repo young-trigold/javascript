@@ -1,5 +1,7 @@
 # javascript-learning
 
+学习 JavaScript
+
 # 参考
 
 - 《JavaScript 高级程序设计》第4版
