@@ -106,7 +106,7 @@ ECMA-262 阐述了什么是 ECMAScript 符合性。要成为 ECMAScript 实现�
 
 1996 年，Netscape Navigator 3 发布时包含了 JavaScript 1.1。JavaScript 1.1 规范随后被提交给 Ecma， 作为对新的 ECMA-262 标准的建议。随着 JavaScript 迅速走红，网景非常愿意开发 1.2 版。可是有个问题：Ecma 尚未接受网景的建议。
 
-Netscape Navigator 3 发布后不久，微软推出了 IE3。IE 的这个版本包含了 JScript 1.0，本意是提供与 JavaScript 1.1 相同的功能。不过，由于缺少很多文档，而且还有不少重复性功能，JScript 1.0 远远没有JavaScript 1.1 那么强大。
+Netscape Navigator 3 发布后不久，微软推出了 IE3。IE 的这个版本包含了 JScript 1.0，本意是提供与 JavaScript 1.1 相同的功能。不过，由于缺少很多文档，而且还有不少重复性功能，JScript 1.0 远远没有 JavaScript 1.1 那么强大。
 
 JScript 的再次更新出现在 IE4 中的 JScript 3.0（2.0 版是在 Microsoft Internet Information Server 3.0 中发布的，但从未包含在浏览器中）。微软发新闻稿称 JScript 3.0 是世界上第一门真正兼容 Ecma 标准的脚本语言。当时 ECMA-262 还没制定完成，因此 JScript 3.0 遭受了与 JavaScript 1.2 同样的命运，它同样没有遵守最终的 ECMAScript 标准。
 
@@ -151,3 +151,120 @@ JScript 的再次更新出现在 IE4 中的 JScript 3.0（2.0 版是在 Microsof
 | Firefox 3.0.x~20              | 第 5 版（部分）   |
 | Firefox 21~44                 | 第 5 版           |
 | Firefox 45+                   | 第 6 版           |
+
+### 1.2.2. DOM
+
+文档对象模型（DOM，Document Object Model）是一个应用编程接口（API），用于在 HTML 中使用扩展的 XML。DOM 将整个页面抽象为一组分层节点。HTML 或 XML 页面的每个组成部分都是一种节点，包含不同的数据。比如下面的 HTML 页面：
+
+```html
+<html>
+  <head>
+    <title>Sample Page</title>
+  </head>
+  <body>
+    <p>Hello World!</p>
+  </body>
+</html>
+```
+
+这些代码通过 DOM 可以表示为一组分层节点，如下图所示：
+
+![1-2-DOM](illustrations/1-2-DOM.png)
+
+DOM 通过创建表示文档的树，让开发者可以随心所欲地控制网页的内容和结构。使用 DOM API， 可以轻松地删除、添加、替换、修改节点。
+
+1. **为什么 DOM 是必需的**
+
+在 IE4 和 Netscape Navigator 4 支持不同形式的动态 HTML（DHTML）的情况下，开发者首先可以做到不刷新页面而修改页面外观和内容。这代表了 Web 技术的一个巨大进步，但也暴露了很大的问题。由于网景和微软采用不同思路开发 DHTML，开发者写一个 HTML 页面就可以在任何浏览器中运行的好日子就此终结。
+
+为了保持 Web 跨平台的本性，必须要做点什么。人们担心如果无法控制网景和微软各行其是，那么 Web 就会发生分裂，导致人们面向浏览器开发网页。就在这时，万维网联盟（W3C，World Wide Web Consortium）开始了制定 DOM 标准的进程。
+
+2. **DOM 级别**
+
+1998 年 10 月，DOM Level 1 成为 W3C 的推荐标准。这个规范由两个模块组成：DOM Core 和 DOM HTML。前者提供了一种映射 XML 文档，从而方便访问和操作文档任意部分的方式；后者扩展了前者，并增加了特定于 HTML 的对象和方法。
+
+DOM Level 1 的目标是映射文档结构，而 DOM Level 2 的目标则宽泛得多。这个对最初 DOM 的扩展增加了对（DHTML 早就支持的）鼠标和用户界面事件、范围、遍历（迭代 DOM 节点的方法）的支持，而且通过对象接口支持了层叠样式表（CSS）。另外，DOM Level 1 中的 DOM Core 也被扩展以包含对 XML 命名空间的支持。
+
+DOM Level 2 新增了以下模块，以支持新的接口：
+
+- DOM 视图：描述追踪文档不同视图（如应用 CSS 样式前后的文档）的接口。
+- DOM 事件：描述事件及事件处理的接口。
+- DOM 样式：描述处理元素 CSS 样式的接口。
+- DOM 遍历和范围：描述遍历和操作 DOM 树的接口。
+
+DOM Level 3 进一步扩展了 DOM，增加了以统一的方式加载和保存文档的方法（包含在一个叫 DOM Load and Save 的新模块中），还有验证文档的方法（DOM Validation）。在 Level 3 中，DOM Core 经过扩展支持了所有 XML 1.0 的特性，包括 XML Infoset、XPath 和 XML Base。
+
+目前，W3C 不再按照 Level 来维护 DOM 了，而是作为 DOM Living Standard 来维护，其快照称为 DOM4。DOM4 新增的内容包括替代 Mutation Events 的 Mutation Observers。
+
+3. **其他 DOM**
+
+除了 DOM Core 和 DOM HTML 接口，有些其他语言也发布了自己的 DOM 标准。下面列出的语言是基于 XML 的，每一种都增加了该语言独有的 DOM 方法和接口：
+
+- 可伸缩矢量图（SVG，Scalable Vector Graphics）
+- 数学标记语言（MathML，Mathematical Markup Language）
+- 同步多媒体集成语言（SMIL，Synchronized Multimedia Integration Language）
+
+此外，还有一些语言开发了自己的 DOM 实现，比如 Mozilla 的 XML 用户界面语言（XUL，XML User Interface Language）。不过，只有前面列表中的语言是 W3C 推荐标准。
+
+4. **Web 浏览器对 DOM 的支持情况**
+
+DOM 标准在 Web 浏览器实现它之前就已经作为标准发布了。IE 在第 5 版中尝试支持 DOM，但直到 5.5 版才开始真正支持，该版本实现了 DOM Level 1 的大部分。IE 在第 6 版和第 7 版中都没有实现新特性，第 8 版中修复了一些问题。
+
+网景在 Netscape 6（Mozilla 0.6.0）之前都不支持 DOM。Netscape 7 之后，Mozilla 把开发资源转移到开发 Firefox 浏览器上。Firefox 3+支持全部的 Level 1、几乎全部的 Level 2，以及 Level 3 的某些部分。（Mozilla 开发团队的目标是打造百分之百兼容标准的浏览器，他们的工作也得到了应有的回报。）
+
+| 浏览器                        | DOM 兼容                                      |
+| ----------------------------- | --------------------------------------------- |
+| Netscape Navigator 1~4.x      | -                                             |
+| Netscape 6+（Mozilla 0.6.0+） | Level 1、Level 2（几乎全部）、Level 3（部分） |
+| IE2~4.x                       | -                                             |
+| IE5                           | Level 1（很少）                               |
+| IE5.5~8                       | Level 1（几乎全部）                           |
+| IE9+                          | Level 1、Level 2、Level 3                     |
+| Edge                          | Level 1、Level 2、Level 3                     |
+| Opera 1~6                     | -                                             |
+| Opera 7~8.x                   | Level 1（几乎全部）、Level 2（部分）          |
+| Opera 9~9.9                   | Level 1、Level 2（几乎全部）、Level 3（部分） |
+| Opera 10+                     | Level 1、Level 2、Level 3（部分）             |
+| Safari 1.0.x                  | Level 1                                       |
+| Safari 2+                     | Level 1、Level 2（部分）、Level 3（部分）     |
+| iOS Safari 3.2+               | Level 1、Level 2（部分）、Level 3（部分）     |
+| Chrome 1+                     | Level 1、Level 2（部分）、Level 3（部分）     |
+| Firefox 1+                    | Level 1、Level 2（部分）、Level 3（部分）     |
+
+### 1.2.3. BOM
+
+IE3 和 Netscape Navigator 3 提供了浏览器对象模型（BOM） API，用于支持访问和操作浏览器的窗口。使用 BOM，开发者可以操控浏览器显示页面之外的部分。而 BOM 真正独一无二的地方，当然也是问题最多的地方，就是它是唯一一个没有相关标准的 JavaScript 实现。HTML5 改变了这个局面，这个版本的 HTML 以正式规范的形式涵盖了尽可能多的 BOM 特性。由于 HTML5 的出现，之前很多与 BOM 有关的问题都迎刃而解了。
+
+总体来说，BOM 主要针对浏览器窗口和子窗口（frame），不过人们通常会把任何特定于浏览器的扩展都归在 BOM 的范畴内。比如，下面就是这样一些扩展：
+
+- 弹出新浏览器窗口的能力；
+- 移动、缩放和关闭浏览器窗口的能力；
+- navigator 对象，提供关于浏览器的详尽信息；
+- location 对象，提供浏览器加载页面的详尽信息；
+- screen 对象，提供关于用户屏幕分辨率的详尽信息；
+- performance 对象，提供浏览器内存占用、导航行为和时间统计的详尽信息；
+- 对 cookie 的支持；
+- 其他自定义对象，如 XMLHttpRequest 和 IE 的 ActiveXObject。
+
+因为在很长时间内都没有标准，所以每个浏览器实现的都是自己的 BOM。有一些所谓的事实标准， 比如对于 window 对象和 navigator 对象，每个浏览器都会给它们定义自己的属性和方法。现在有了 HTML5，BOM 的实现细节应该会日趋一致。关于 BOM，本书会在第 12 章再专门详细介绍。
+
+## 1.3. JavaScript 版本
+
+作为网景的继承者，Mozilla 是唯一仍在延续最初 JavaScript 版本编号的浏览器厂商。当初网景在将其源代码开源时（项目名为 Mozilla Project），JavaScript 在其浏览器中最后的版本是 1.3。（前面提到过，1.4 版是专门为服务器实现的。）因为 Mozilla Foundation 在持续开发 JavaScript，为它增加新特性、关键字和语法，所以 JavaScript 的版本号也在不断递增。下表展示了 Netscape/Mozilla 浏览器发布的历代 JavaScript 版本。
+
+| 浏览器                        | JavaScript 版本 |
+| ----------------------------- | --------------- |
+| Netscape Navigator 2          | 1.0             |
+| Netscape Navigator 3          | 1.1             |
+| Netscape Navigator 4          | 1.2             |
+| Netscape Navigator 4.06       | 1.3             |
+| Netscape 6+（Mozilla 0.6.0+） | 1.5             |
+| Firefox 1                     | 1.5             |
+| Firefox 1.5                   | 1.6             |
+| Firefox 2                     | 1.7             |
+| Firefox 3                     | 1.8             |
+| Firefox 3.5                   | 1.8.1           |
+| Firefox 3.6                   | 1.8.2           |
+| Firefox 4                     | 1.8.5           |
+
+这种版本编号方式是根据 Firefox 4 要发布 JavaScript 2.0 决定的，在此之前版本号的每次递增，反映的是 JavaScript 实现逐渐接近 2.0 建议。虽然这是最初的计划，但 JavaScript 的发展让这个计划变得不可能。JavaScript 2.0 作为一个目标已经不存在了，而这种版本号编排方式在 Firefox 4 发布后就终止了。
