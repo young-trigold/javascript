@@ -5,6 +5,16 @@ span : 1 months
 plan : 7 chapter / week
 ```
 
+**目录：**
+
+- [1. 什么是 JavaScript](#1-什么是-javascript)
+  - [1.1. 简短的历史回顾](#11-简短的历史回顾)
+  - [1.2. JavaScript 实现](#12-javascript-实现)
+    - [1.2.1. ECMAScript](#121-ecmascript)
+    - [1.2.2. DOM](#122-dom)
+    - [1.2.3. BOM](#123-bom)
+  - [1.3. JavaScript 版本](#13-javascript-版本)
+
 # 1. 什么是 JavaScript
 
 本章内容
