@@ -44,6 +44,9 @@ plan : 7 chapter / week
     - [3.4.5. Number 类型](#345-number-类型)
     - [3.4.6. String 类型](#346-string-类型)
     - [3.4.7. Symbol 类型](#347-symbol-类型)
+  - [3.5. 操作符](#35-操作符)
+    - [3.5.1. 一元操作符](#351-一元操作符)
+    - [3.5.2. 位操作符](#352-位操作符)
 
 # 1. 什么是 JavaScript
 
@@ -1119,6 +1122,8 @@ console.log(typeof 95); // "number"
 
 注意 typeof 在某些情况下返回的结果可能会让人费解，但技术上讲还是正确的。比如，调用 typeof null 返回的是"object"。这是因为特殊值 null 被认为是一个对空对象的引用。
 
+注意 严格来讲，函数在ECMAScript 中被认为是对象，并不代表一种数据类型。可是，函数也有自己特殊的属性。为此，就有必要通过typeof 操作符来区分函数和其他对象。
+
 ### 3.4.2. Undefined 类型
 
 Undefined 类型只有一个值，就是特殊值 undefined。当使用 var 或 let 声明了变量但没有初始化时，就相当于给变量赋予了 undefined 值：
@@ -1306,7 +1311,7 @@ let hexNum2 = 0x1f; // 十六进制31
 ```js
 let floatNum1 = 1.1;
 let floatNum2 = 0.1;
-let floatNum3 = 0.1; // 有效，但不推荐
+let floatNum3 = .1; // 有效，但不推荐
 ```
 
 因为存储浮点值使用的内存空间是存储整数值的两倍，所以 ECMAScript 总是想方设法把值转换为整数。在小数点后面没有数字的情况下，数值就会变成整数。类似地，如果数值本身就是整数，只是小数点后面跟着 0（如 1.0），那它也会被转换为整数，如下例所示：
@@ -1337,7 +1342,7 @@ if (a + b == 0.3) {
 
 这里检测两个数值之和是否等于 0.3。如果两个数值分别是 0.05 和 0.25，或者 0.15 和 0.15，那没问题。但如果是 0.1 和 0.2，如前所述，测试将失败。因此永远不要测试某个特定的浮点值。
 
-2. **值得范围**
+2. **值的范围**
 
 由于内存的限制，ECMAScript 并不支持表示这个世界上的所有数值。ECMAScript 可以表示的最小数值保存在 Number.MIN_VALUE 中，这个值在多数浏览器中是 5e-324；可以表示的最大数值保存在 Number.MAX_VALUE 中，这个值在多数浏览器中是 1.797 693 134 862 315 7e+308。如果某个计算得到的数值结果超出了 JavaScript 可以表示的范围，那么这个数值会被自动转换为一个特殊的 Infinity（无穷）值。任何无法表示的负数以-Infinity（负无穷大）表示，任何无法表示的正数以 Infinity（正无穷大）表示。
 
@@ -1502,9 +1507,9 @@ let firstName = 'Nicholas"; // 语法错误：开头和结尾的引号必须是�
 | \r     | 回车                                                                                             |
 | \f     | 换页                                                                                             |
 | \\\    | 反斜杠（\）                                                                                      |
-| \\'    | 单引号（'），在字符串以单引号标示时使用，例如'He said, \\'hey.\\''                                 |
-| \\"     | 双引号（"），在字符串以双引号标示时使用，例如"He said, \\"hey.\\""                                 |
-| \ \`   | 反引号（\ \`），在字符串以反引号标示时使用，例如\`He said, \ \`hey.\\ ``                                 |
+| \\'    | 单引号（'），在字符串以单引号标示时使用，例如'He said, \\'hey.\\''                               |
+| \\"    | 双引号（"），在字符串以双引号标示时使用，例如"He said, \\"hey.\\""                               |
+| \ \`   | 反引号（\ \`），在字符串以反引号标示时使用，例如\`He said, \ \`hey.\\ ``                         |
 | \xnn   | 以十六进制编码 nn 表示的字符（其中 n 是十六进制数字 0~F），例如\x41 等于"A"                      |
 | \unnnn | 以十六进制编码 nnnn 表示的 Unicode 字符（其中 n 是十六进制数字 0~F），例如\u03a3 等于希腊字符"Σ" |
 
@@ -1514,15 +1519,15 @@ let firstName = 'Nicholas"; // 语法错误：开头和结尾的引号必须是�
 let text = "This is the letter sigma: \u03a3.";
 ```
 
-在这个例子中，即使包含6 个字符长的转义序列，变量text 仍然是28 个字符长。因为转义序列表示一个字符，所以只算一个字符。
+在这个例子中，即使包含 6 个字符长的转义序列，变量 text 仍然是 28 个字符长。因为转义序列表示一个字符，所以只算一个字符。
 
-字符串的长度可以通过其length 属性获取：
+字符串的长度可以通过其 length 属性获取：
 
 ```js
 console.log(text.length); // 28
 ```
 
-这个属性返回字符串中16 位字符的个数。
+这个属性返回字符串中 16 位字符的个数。
 
 2. **字符串的特点**
 
@@ -1533,12 +1538,12 @@ let lang = "Java";
 lang = lang + "Script";
 ```
 
-这里，变量lang 一开始包含字符串"Java"。紧接着，lang 被重新定义为包含"Java"和"Script"的组合，也就是"JavaScript"。整个过程首先会分配一个足够容纳10 个字符的空间，然后填充上"Java"和"Script"。最后销毁原始的字符串"Java"和字符串"Script"，因为这两个字符串都没有用
-了。所有处理都是在后台发生的，而这也是一些早期的浏览器（如Firefox 1.0 之前的版本和IE6.0）在拼接字符串时非常慢的原因。这些浏览器在后来的版本中都有针对性地解决了这个问题。
+这里，变量 lang 一开始包含字符串"Java"。紧接着，lang 被重新定义为包含"Java"和"Script"的组合，也就是"JavaScript"。整个过程首先会分配一个足够容纳 10 个字符的空间，然后填充上"Java"和"Script"。最后销毁原始的字符串"Java"和字符串"Script"，因为这两个字符串都没有用
+了。所有处理都是在后台发生的，而这也是一些早期的浏览器（如 Firefox 1.0 之前的版本和 IE6.0）在拼接字符串时非常慢的原因。这些浏览器在后来的版本中都有针对性地解决了这个问题。
 
 3. **转换为字符串**
 
-有两种方式把一个值转换为字符串。首先是使用几乎所有值都有的toString()方法。这个方法唯一的用途就是返回当前值的字符串等价物。比如：
+有两种方式把一个值转换为字符串。首先是使用几乎所有值都有的 toString()方法。这个方法唯一的用途就是返回当前值的字符串等价物。比如：
 
 ```js
 let age = 11;
@@ -1547,7 +1552,7 @@ let found = true;
 let foundAsString = found.toString(); // 字符串"true"
 ```
 
-toString()方法可见于数值、布尔值、对象和字符串值。（没错，字符串值也有toString()方法，该方法只是简单地返回自身的一个副本。）null 和undefined 值没有toString()方法。
+toString()方法可见于数值、布尔值、对象和字符串值。（没错，字符串值也有 toString()方法，该方法只是简单地返回自身的一个副本。）null 和 undefined 值没有 toString()方法。
 
 多数情况下，toString()不接收任何参数。不过，在对数值调用这个方法时，toString()可以接收一个底数参数，即以什么底数来输出数值的字符串表示。默认情况下，toString()返回数值的十进制字符串表示。而通过传入参数，可以得到数值的二进制、八进制、十六进制，或者其他任何有效基
 数的字符串表示，比如：
@@ -1561,13 +1566,13 @@ console.log(num.toString(10)); // "10"
 console.log(num.toString(16)); // "a"
 ```
 
-这个例子展示了传入底数参数时，toString()输出的字符串值也会随之改变。数值10 可以输出为任意数值格式。注意，默认情况下（不传参数）的输出与传入参数10 得到的结果相同。
+这个例子展示了传入底数参数时，toString()输出的字符串值也会随之改变。数值 10 可以输出为任意数值格式。注意，默认情况下（不传参数）的输出与传入参数 10 得到的结果相同。
 
-如果你不确定一个值是不是null 或undefined，可以使用String()转型函数，它始终会返回表示相应类型值的字符串。String()函数遵循如下规则。
+如果你不确定一个值是不是 null 或 undefined，可以使用 String()转型函数，它始终会返回表示相应类型值的字符串。String()函数遵循如下规则。
 
-- 如果值有toString()方法，则调用该方法（不传参数）并返回结果。
-- 如果值是null，返回"null"。
-- 如果值是undefined，返回"undefined"。
+- 如果值有 toString()方法，则调用该方法（不传参数）并返回结果。
+- 如果值是 null，返回"null"。
+- 如果值是 undefined，返回"undefined"。
 
 下面看几个例子：
 
@@ -1583,14 +1588,14 @@ console.log(String(value3)); // "null"
 console.log(String(value4)); // "undefined"
 ```
 
-这里展示了将4 个值转换为字符串的情况：一个数值、一个布尔值、一个null 和一个undefined。数值和布尔值的转换结果与调用toString()相同。因为null 和undefined 没有toString()方法，所以String()方法就直接返回了这两个值的字面量文本。
+这里展示了将 4 个值转换为字符串的情况：一个数值、一个布尔值、一个 null 和一个 undefined。数值和布尔值的转换结果与调用 toString()相同。因为 null 和 undefined 没有 toString()方法，所以 String()方法就直接返回了这两个值的字面量文本。
 
 4. **模板字面量**
 
 ECMAScript 6 新增了使用模板字面量定义字符串的能力。与使用单引号或双引号不同，模板字面量保留换行字符，可以跨行定义字符串：
 
 ```js
-let myMultiLineString = 'first line\nsecond line';
+let myMultiLineString = "first line\nsecond line";
 let myMultiLineTemplateLiteral = `first line
 second line`;
 
@@ -1603,7 +1608,7 @@ console.log(myMultiLineTemplateLiteral);
 console.log(myMultiLineString === myMultiLinetemplateLiteral); // true
 ```
 
-顾名思义，模板字面量在定义模板时特别有用，比如下面这个HTML 模板：
+顾名思义，模板字面量在定义模板时特别有用，比如下面这个 HTML 模板：
 
 ```js
 let pageHTML = `
@@ -1626,7 +1631,7 @@ console.log(myTemplateLiteral.length); // 47
 let secondTemplateLiteral = `
 first line
 second line`;
-console.log(secondTemplateLiteral[0] === '\n'); // true
+console.log(secondTemplateLiteral[0] === "\n"); // true
 
 // 这个模板字面量没有意料之外的字符
 let thirdTemplateLiteral = `first line
@@ -1638,51 +1643,52 @@ console.log(thirdTemplateLiteral);
 
 5. **字符串插值**
 
-模板字面量最常用的一个特性是支持字符串插值，也就是可以在一个连续定义中插入一个或多个值。技术上讲，模板字面量不是字符串，而是一种特殊的JavaScript 句法表达式，只不过求值后得到的是字符串。模板字面量在定义时立即求值并转换为字符串实例，任何插入的变量也会从它们最接近的作用域中取值。
+模板字面量最常用的一个特性是支持字符串插值，也就是可以在一个连续定义中插入一个或多个值。技术上讲，模板字面量不是字符串，而是一种特殊的 JavaScript 句法表达式，只不过求值后得到的是字符串。模板字面量在定义时立即求值并转换为字符串实例，任何插入的变量也会从它们最接近的作用域中取值。
 
-字符串插值通过在${}中使用一个JavaScript 表达式实现：
+字符串插值通过在${}中使用一个 JavaScript 表达式实现：
 
 ```js
 let value = 5;
-let exponent = 'second';
+let exponent = "second";
 // 以前，字符串插值是这样实现的：
 let interpolatedString =
-value + ' to the ' + exponent + ' power is ' + (value * value);
+  value + " to the " + exponent + " power is " + value * value;
 // 现在，可以用模板字面量这样实现：
-let interpolatedTemplateLiteral =
-`${ value } to the ${ exponent } power is ${ value * value }`;
+let interpolatedTemplateLiteral = `${value} to the ${exponent} power is ${
+  value * value
+}`;
 console.log(interpolatedString); // 5 to the second power is 25
 console.log(interpolatedTemplateLiteral); // 5 to the second power is 25
 ```
 
-所有插入的值都会使用toString()强制转型为字符串，而且任何JavaScript 表达式都可以用于插值。嵌套的模板字符串无须转义：
+所有插入的值都会使用 toString()强制转型为字符串，而且任何 JavaScript 表达式都可以用于插值。嵌套的模板字符串无须转义：
 
 ```js
-console.log(`Hello, ${ `World` }!`); // Hello, World!
+console.log(`Hello, ${`World`}!`); // Hello, World!
 ```
 
-将表达式转换为字符串时会调用toString()：
+将表达式转换为字符串时会调用 toString()：
 
 ```js
-let foo = { toString: () => 'World' };
-console.log(`Hello, ${ foo }!`); // Hello, World!
+let foo = { toString: () => "World" };
+console.log(`Hello, ${foo}!`); // Hello, World!
 ```
 
 在插值表达式中可以调用函数和方法：
 
 ```js
 function capitalize(word) {
-  return `${ word[0].toUpperCase() }${ word.slice(1) }`;
+  return `${word[0].toUpperCase()}${word.slice(1)}`;
 }
-console.log(`${ capitalize('hello') }, ${ capitalize('world') }!`); // Hello, World!
+console.log(`${capitalize("hello")}, ${capitalize("world")}!`); // Hello, World!
 ```
 
 此外，模板也可以插入自己之前的值：
 
 ```js
-let value = '';
+let value = "";
 function append() {
-  value = `${value}abc`
+  value = `${value}abc`;
   console.log(value);
 }
 append(); // abc
@@ -1706,10 +1712,10 @@ function simpleTag(strings, aValExpression, bValExpression, sumExpression) {
   console.log(aValExpression);
   console.log(bValExpression);
   console.log(sumExpression);
-  return 'foobar';
+  return "foobar";
 }
-let untaggedResult = `${ a } + ${ b } = ${ a + b }`;
-let taggedResult = simpleTag`${ a } + ${ b } = ${ a + b }`;
+let untaggedResult = `${a} + ${b} = ${a + b}`;
+let taggedResult = simpleTag`${a} + ${b} = ${a + b}`;
 // ["", " + ", " = ", ""]
 // 6
 // 9
@@ -1725,12 +1731,12 @@ let a = 6;
 let b = 9;
 function simpleTag(strings, ...expressions) {
   console.log(strings);
-  for(const expression of expressions) {
+  for (const expression of expressions) {
     console.log(expression);
   }
-  return 'foobar';
+  return "foobar";
 }
-let taggedResult = simpleTag`${ a } + ${ b } = ${ a + b }`;
+let taggedResult = simpleTag`${a} + ${b} = ${a + b}`;
 // ["", " + ", " = ", ""]
 // 6
 // 9
@@ -1738,24 +1744,25 @@ let taggedResult = simpleTag`${ a } + ${ b } = ${ a + b }`;
 console.log(taggedResult); // "foobar"
 ```
 
-对于有n 个插值的模板字面量，传给标签函数的表达式参数的个数始终是n，而传给标签函数的第一个参数所包含的字符串个数则始终是n+1。因此，如果你想把这些字符串和对表达式求值的结果拼接起来作为默认返回的字符串，可以这样做：
+对于有 n 个插值的模板字面量，传给标签函数的表达式参数的个数始终是 n，而传给标签函数的第一个参数所包含的字符串个数则始终是 n+1。因此，如果你想把这些字符串和对表达式求值的结果拼接起来作为默认返回的字符串，可以这样做：
 
 ```js
 let a = 6;
 let b = 9;
 function zipTag(strings, ...expressions) {
-  return strings[0] +
-  expressions.map((e, i) => `${e}${strings[i + 1]}`).join('');
+  return (
+    strings[0] + expressions.map((e, i) => `${e}${strings[i + 1]}`).join("")
+  );
 }
-let untaggedResult = `${ a } + ${ b } = ${ a + b }`;
-let taggedResult = zipTag`${ a } + ${ b } = ${ a + b }`;
+let untaggedResult = `${a} + ${b} = ${a + b}`;
+let taggedResult = zipTag`${a} + ${b} = ${a + b}`;
 console.log(untaggedResult); // "6 + 9 = 15"
 console.log(taggedResult); // "6 + 9 = 15"
 ```
 
 7. **原始字符串**
 
-使用模板字面量也可以直接获取原始的模板字面量内容（如换行符或Unicode 字符），而不是被转换后的字符表示。为此，可以使用默认的String.raw 标签函数：
+使用模板字面量也可以直接获取原始的模板字面量内容（如换行符或 Unicode 字符），而不是被转换后的字符表示。为此，可以使用默认的 String.raw 标签函数：
 
 ```js
 // Unicode 示例
@@ -1783,16 +1790,16 @@ second line`);
 
 ```js
 function printRaw(strings) {
-console.log('Actual characters:');
-for (const string of strings) {
-console.log(string);
+  console.log("Actual characters:");
+  for (const string of strings) {
+    console.log(string);
+  }
+  console.log("Escaped characters;");
+  for (const rawString of strings.raw) {
+    console.log(rawString);
+  }
 }
-console.log('Escaped characters;');
-for (const rawString of strings.raw) {
-console.log(rawString);
-}
-}
-printRaw`\u00A9${ 'and' }\n`;
+printRaw`\u00A9${"and"}\n`;
 // Actual characters:
 // ©
 //（换行符）
@@ -1803,43 +1810,43 @@ printRaw`\u00A9${ 'and' }\n`;
 
 ### 3.4.7. Symbol 类型
 
-Symbol（符号）是ECMAScript 6 新增的数据类型。符号是原始值，且符号实例是唯一、不可变的。符号的用途是确保对象属性使用唯一标识符，不会发生属性冲突的危险。
+Symbol（符号）是 ECMAScript 6 新增的数据类型。符号是原始值，且符号实例是唯一、不可变的。符号的用途是确保对象属性使用唯一标识符，不会发生属性冲突的危险。
 
-尽管听起来跟私有属性有点类似，但符号并不是为了提供私有属性的行为才增加的（尤其是因为Object API 提供了方法，可以更方便地发现符号属性）。相反，符号就是用来创建唯一记号，进而用作非字符串形式的对象属性。
+尽管听起来跟私有属性有点类似，但符号并不是为了提供私有属性的行为才增加的（尤其是因为 Object API 提供了方法，可以更方便地发现符号属性）。相反，符号就是用来创建唯一记号，进而用作非字符串形式的对象属性。
 
 1. **符号的基本用法**
 
-符号需要使用Symbol()函数初始化。因为符号本身是原始类型，所以typeof 操作符对符号返回symbol。
+符号需要使用 Symbol()函数初始化。因为符号本身是原始类型，所以 typeof 操作符对符号返回 symbol。
 
 ```js
 let sym = Symbol();
 console.log(typeof sym); // symbol
 ```
 
-调用Symbol()函数时，也可以传入一个字符串参数作为对符号的描述（description），将来可以通过这个字符串来调试代码。但是，这个字符串参数与符号定义或标识完全无关：
+调用 Symbol()函数时，也可以传入一个字符串参数作为对符号的描述（description），将来可以通过这个字符串来调试代码。但是，这个字符串参数与符号定义或标识完全无关：
 
 ```js
 let genericSymbol = Symbol();
 let otherGenericSymbol = Symbol();
 
-let fooSymbol = Symbol('foo');
-let otherFooSymbol = Symbol('foo');
+let fooSymbol = Symbol("foo");
+let otherFooSymbol = Symbol("foo");
 
 console.log(genericSymbol == otherGenericSymbol); // false
 console.log(fooSymbol == otherFooSymbol); // false
 ```
 
-符号没有字面量语法，这也是它们发挥作用的关键。按照规范，你只要创建Symbol()实例并将其用作对象的新属性，就可以保证它不会覆盖已有的对象属性，无论是符号属性还是字符串属性。
+符号没有字面量语法，这也是它们发挥作用的关键。按照规范，你只要创建 Symbol()实例并将其用作对象的新属性，就可以保证它不会覆盖已有的对象属性，无论是符号属性还是字符串属性。
 
 ```js
 let genericSymbol = Symbol();
 console.log(genericSymbol); // Symbol()
 
-let fooSymbol = Symbol('foo');
+let fooSymbol = Symbol("foo");
 console.log(fooSymbol); // Symbol(foo);
 ```
 
-最重要的是，Symbol()函数不能与new 关键字一起作为构造函数使用。这样做是为了避免创建符号包装对象，像使用Boolean、String 或Number 那样，它们都支持构造函数且可用于初始化包含原始值的包装对象：
+最重要的是，Symbol()函数不能与 new 关键字一起作为构造函数使用。这样做是为了避免创建符号包装对象，像使用 Boolean、String 或 Number 那样，它们都支持构造函数且可用于初始化包含原始值的包装对象：
 
 ```js
 let myBoolean = new Boolean();
@@ -1854,7 +1861,7 @@ console.log(typeof myNumber); // "object"
 let mySymbol = new Symbol(); // TypeError: Symbol is not a constructor
 ```
 
-如果你确实想使用符号包装对象，可以借用Object()函数：
+如果你确实想使用符号包装对象，可以借用 Object()函数：
 
 ```js
 let mySymbol = Symbol();
@@ -1866,51 +1873,51 @@ console.log(typeof myWrappedSymbol); // "object"
 
 如果运行时的不同部分需要共享和重用符号实例，那么可以用一个字符串作为键，在全局符号注册表中创建并重用符号。
 
-为此，需要使用Symbol.for()方法：
+为此，需要使用 Symbol.for()方法：
 
 ```js
-let fooGlobalSymbol = Symbol.for('foo');
+let fooGlobalSymbol = Symbol.for("foo");
 console.log(typeof fooGlobalSymbol); // symbol
 ```
 
 Symbol.for()对每个字符串键都执行幂等操作。第一次使用某个字符串调用时，它会检查全局运行时注册表，发现不存在对应的符号，于是就会生成一个新符号实例并添加到注册表中。后续使用相同字符串的调用同样会检查注册表，发现存在与该字符串对应的符号，然后就会返回该符号实例。
 
 ```js
-let fooGlobalSymbol = Symbol.for('foo'); // 创建新符号
-let otherFooGlobalSymbol = Symbol.for('foo'); // 重用已有符号
+let fooGlobalSymbol = Symbol.for("foo"); // 创建新符号
+let otherFooGlobalSymbol = Symbol.for("foo"); // 重用已有符号
 
 console.log(fooGlobalSymbol === otherFooGlobalSymbol); // true
 ```
 
-即使采用相同的符号描述，在全局注册表中定义的符号跟使用Symbol()定义的符号也并不等同：
+即使采用相同的符号描述，在全局注册表中定义的符号跟使用 Symbol()定义的符号也并不等同：
 
 ```js
-let localSymbol = Symbol('foo');
-let globalSymbol = Symbol.for('foo');
+let localSymbol = Symbol("foo");
+let globalSymbol = Symbol.for("foo");
 
 console.log(localSymbol === globalSymbol); // false
 ```
 
-全局注册表中的符号必须使用字符串键来创建，因此作为参数传给Symbol.for()的任何值都会被转换为字符串。此外，注册表中使用的键同时也会被用作符号描述。
+全局注册表中的符号必须使用字符串键来创建，因此作为参数传给 Symbol.for()的任何值都会被转换为字符串。此外，注册表中使用的键同时也会被用作符号描述。
 
 ```js
 let emptyGlobalSymbol = Symbol.for();
 console.log(emptyGlobalSymbol); // Symbol(undefined)
 ```
 
-还可以使用Symbol.keyFor()来查询全局注册表，这个方法接收符号，返回该全局符号对应的字符串键。如果查询的不是全局符号，则返回undefined。
+还可以使用 Symbol.keyFor()来查询全局注册表，这个方法接收符号，返回该全局符号对应的字符串键。如果查询的不是全局符号，则返回 undefined。
 
 ```js
 // 创建全局符号
-let s = Symbol.for('foo');
+let s = Symbol.for("foo");
 console.log(Symbol.keyFor(s)); // foo
 
 // 创建普通符号
-let s2 = Symbol('bar');
+let s2 = Symbol("bar");
 console.log(Symbol.keyFor(s2)); // undefined
 ```
 
-如果传给Symbol.keyFor()的不是符号，则该方法抛出TypeError：
+如果传给 Symbol.keyFor()的不是符号，则该方法抛出 TypeError：
 
 ```js
 Symbol.keyFor(123); // TypeError: 123 is not a symbol
@@ -1918,28 +1925,28 @@ Symbol.keyFor(123); // TypeError: 123 is not a symbol
 
 3. **使用符号作为属性**
 
-凡是可以使用字符串或数值作为属性的地方，都可以使用符号。这就包括了对象字面量属性和Object.defineProperty()/Object.defineProperties()定义的属性。对象字面量只能在计算属性语法中使用符号作为属性。
+凡是可以使用字符串或数值作为属性的地方，都可以使用符号。这就包括了对象字面量属性和 Object.defineProperty()/Object.defineProperties()定义的属性。对象字面量只能在计算属性语法中使用符号作为属性。
 
 ```js
-let s1 = Symbol('foo'),
-  s2 = Symbol('bar'),
-  s3 = Symbol('baz'),
-  s4 = Symbol('qux');
+let s1 = Symbol("foo"),
+  s2 = Symbol("bar"),
+  s3 = Symbol("baz"),
+  s4 = Symbol("qux");
 let o = {
-[s1]: 'foo val'
+  [s1]: "foo val",
 };
 // 这样也可以：o[s1] = 'foo val';
 console.log(o);
 // {Symbol(foo): foo val}
 
-Object.defineProperty(o, s2, {value: 'bar val'});
+Object.defineProperty(o, s2, { value: "bar val" });
 
 console.log(o);
 // {Symbol(foo): foo val, Symbol(bar): bar val}
 
 Object.defineProperties(o, {
-[s3]: {value: 'baz val'},
-[s4]: {value: 'qux val'}
+  [s3]: { value: "baz val" },
+  [s4]: { value: "qux val" },
 });
 
 console.log(o);
@@ -1947,5 +1954,609 @@ console.log(o);
 // Symbol(baz): baz val, Symbol(qux): qux val}
 ```
 
-类似于Object.getOwnPropertyNames()返回对象实例的常规属性数组，Object.getOwnProperty-Symbols()返回对象实例的符号属性数组。这两个方法的返回值彼此互斥。Object.getOwnProperty-Descriptors()会返回同时包含常规和符号属性描述符的对象。Reflect.ownKeys()会返回两种类型的键：
+类似于 Object.getOwnPropertyNames()返回对象实例的常规属性数组，Object.getOwnProperty-Symbols()返回对象实例的符号属性数组。这两个方法的返回值彼此互斥。Object.getOwnProperty-Descriptors()会返回同时包含常规和符号属性描述符的对象。Reflect.ownKeys()会返回两种类型的键：
+
+```js
+let s1 = Symbol("foo"),
+  s2 = Symbol("bar");
+let o = {
+  [s1]: "foo val",
+  [s2]: "bar val",
+  baz: "baz val",
+  qux: "qux val",
+};
+console.log(Object.getOwnPropertySymbols(o));
+// [Symbol(foo), Symbol(bar)]
+
+console.log(Object.getOwnPropertyNames(o));
+// ["baz", "qux"]
+
+console.log(Object.getOwnPropertyDescriptors(o));
+// {baz: {...}, qux: {...}, Symbol(foo): {...}, Symbol(bar): {...}}
+
+console.log(Reflect.ownKeys(o));
+// ["baz", "qux", Symbol(foo), Symbol(bar)]
+```
+
+因为符号属性是对内存中符号的一个引用，所以直接创建并用作属性的符号不会丢失。但是，如果没有显式地保存对这些属性的引用，那么必须遍历对象的所有符号属性才能找到相应的属性键：
+
+```js
+let o = {
+  [Symbol("foo")]: "foo val",
+  [Symbol("bar")]: "bar val",
+};
+console.log(o);
+// {Symbol(foo): "foo val", Symbol(bar): "bar val"}
+
+let barSymbol = Object.getOwnPropertySymbols(o).find((symbol) =>
+  symbol.toString().match(/bar/)
+);
+console.log(barSymbol);
+// Symbol(bar)
+```
+
+4. **常用内置符号**
+
+ECMAScript 6 也引入了一批 **常用内置符号(well-known symbol)**，用于暴露语言内部行为，开发者可以直接访问、重写或模拟这些行为。这些内置符号都以 Symbol 工厂函数字符串属性的形式存在。
+
+这些内置符号最重要的用途之一是重新定义它们，从而改变原生结构的行为。比如，我们知道 for-of 循环会在相关对象上使用 Symbol.iterator 属性，那么就可以通过在自定义对象上重新定义 Symbol.iterator 的值，来改变 for-of 在迭代该对象时的行为。
+
+这些内置符号也没有什么特别之处，它们就是全局函数 Symbol 的普通字符串属性，指向一个符号的实例。所有内置符号属性都是不可写、不可枚举、不可配置的。
+
+注意：在提到 ECMAScript 规范时，经常会引用符号在规范中的名称，前缀为@@。比如，@@iterator 指的就是 Symbol.iterator。
+
+5. **Symbol.asyncIterator**
+
+根据 ECMAScript 规范，这个符号作为一个属性表示“一个方法，该方法返回对象默认的 AsyncIterator。由 for-await-of 语句使用”。换句话说，这个符号表示实现异步迭代器 API 的函数。
+
+for-await-of 循环会利用这个函数执行异步迭代操作。循环时，它们会调用以 Symbol.asyncIterator 为键的函数，并期望这个函数会返回一个实现迭代器 API 的对象。很多时候，返回的对象是实现该 API 的 AsyncGenerator：
+
+```js
+class Foo {
+  async *[Symbol.asyncIterator]() {}
+}
+let f = new Foo();
+console.log(f[Symbol.asyncIterator]());
+// AsyncGenerator {<suspended>}
+```
+
+技术上，这个由 Symbol.asyncIterator 函数生成的对象应该通过其 next()方法陆续返回 Promise 实例。可以通过显式地调用 next()方法返回，也可以隐式地通过异步生成器函数返回：
+
+```js
+class Emitter {
+  constructor(max) {
+    this.max = max;
+    this.asyncIdx = 0;
+  }
+  async *[Symbol.asyncIterator]() {
+    while (this.asyncIdx < this.max) {
+      yield new Promise((resolve) => resolve(this.asyncIdx++));
+    }
+  }
+}
+async function asyncCount() {
+  let emitter = new Emitter(5);
+  for await (const x of emitter) {
+    console.log(x);
+  }
+}
+asyncCount();
+// 0
+// 1
+// 2
+// 3
+// 4
+```
+
+注意:Symbol.asyncIterator 是 ES2018 规范定义的，因此只有版本非常新的浏览器支持它。
+
+6. **Symbol.hasInstance**
+
+根据 ECMAScript 规范，这个符号作为一个属性表示“一个方法，该方法决定一个构造器对象是否认可一个对象是它的实例。由 instanceof 操作符使用”。instanceof 操作符可以用来确定一个对象实例的原型链上是否有原型。instanceof 的典型使用场景如下：
+
+```js
+function Foo() {}
+let f = new Foo();
+console.log(f instanceof Foo); // true
+class Bar {}
+let b = new Bar();
+console.log(b instanceof Bar); // true
+```
+
+在 ES6 中，instanceof 操作符会使用 Symbol.hasInstance 函数来确定关系。以 Symbol.hasInstance 为键的函数会执行同样的操作，只是操作数对调了一下：
+
+```js
+function Foo() {}
+let f = new Foo();
+console.log(Foo[Symbol.hasInstance](f)); // true
+class Bar {}
+let b = new Bar();
+console.log(Bar[Symbol.hasInstance](b)); // true
+```
+
+这个属性定义在 Function 的原型上，因此默认在所有函数和类上都可以调用。由于 instanceof 操作符会在原型链上寻找这个属性定义，就跟在原型链上寻找其他属性一样，因此可以在继承的类上通过静态方法重新定义这个函数：
+
+```js
+class Bar {}
+class Baz extends Bar {
+  static [Symbol.hasInstance]() {
+    return false;
+  }
+}
+let b = new Baz();
+console.log(Bar[Symbol.hasInstance](b)); // true
+console.log(b instanceof Bar); // true
+console.log(Baz[Symbol.hasInstance](b)); // false
+console.log(b instanceof Baz); // false
+```
+
+7. **Symbol.isConcatSpreadable**
+
+根据 ECMAScript 规范，这个符号作为一个属性表示“一个布尔值，如果是 true，则意味着对象应该用 Array.prototype.concat()打平其数组元素”。ES6 中的 Array.prototype.concat()方法会根据接收到的对象类型选择如何将一个类数组对象拼接成数组实例。覆盖 Symbol.isConcatSpreadable 的值可以修改这个行为。
+
+数组对象默认情况下会被打平到已有的数组，false 或假值会导致整个对象被追加到数组末尾。类数组对象默认情况下会被追加到数组末尾，true 或真值会导致这个类数组对象被打平到数组实例。其他不是类数组对象的对象在 Symbol.isConcatSpreadable 被设置为 true 的情况下将被忽略。
+
+```js
+let initial = ["foo"];
+let array = ["bar"];
+console.log(array[Symbol.isConcatSpreadable]); // undefined
+console.log(initial.concat(array)); // ['foo', 'bar']
+array[Symbol.isConcatSpreadable] = false;
+console.log(initial.concat(array)); // ['foo', Array(1)]
+let arrayLikeObject = { length: 1, 0: "baz" };
+console.log(arrayLikeObject[Symbol.isConcatSpreadable]); // undefined
+console.log(initial.concat(arrayLikeObject)); // ['foo', {...}]
+arrayLikeObject[Symbol.isConcatSpreadable] = true;
+console.log(initial.concat(arrayLikeObject)); // ['foo', 'baz']
+let otherObject = new Set().add("qux");
+console.log(otherObject[Symbol.isConcatSpreadable]); // undefined
+console.log(initial.concat(otherObject)); // ['foo', Set(1)]
+otherObject[Symbol.isConcatSpreadable] = true;
+console.log(initial.concat(otherObject)); // ['foo']
+```
+
+8. **Symbol.iterator**
+
+根据 ECMAScript 规范，这个符号作为一个属性表示“一个方法，该方法返回对象默认的迭代器。由 for-of 语句使用”。换句话说，这个符号表示实现迭代器 API 的函数。
+
+for-of 循环这样的语言结构会利用这个函数执行迭代操作。循环时，它们会调用以 Symbol.iterator 为键的函数，并默认这个函数会返回一个实现迭代器 API 的对象。很多时候，返回的对象是实现该 API 的 Generator：
+
+```js
+class Foo {
+  *[Symbol.iterator]() {}
+}
+let f = new Foo();
+console.log(f[Symbol.iterator]());
+// Generator {<suspended>}
+```
+
+技术上，这个由 Symbol.iterator 函数生成的对象应该通过其 next()方法陆续返回值。可以通过显式地调用 next()方法返回，也可以隐式地通过生成器函数返回：
+
+```js
+class Emitter {
+  constructor(max) {
+    this.max = max;
+    this.idx = 0;
+  }
+  *[Symbol.iterator]() {
+    while (this.idx < this.max) {
+      yield this.idx++;
+    }
+  }
+}
+function count() {
+  let emitter = new Emitter(5);
+  for (const x of emitter) {
+    console.log(x);
+  }
+}
+count();
+// 0
+// 1
+// 2
+// 3
+// 4
+```
+
+9. **Symbol.match**
+
+根据 ECMAScript 规范，这个符号作为一个属性表示“一个正则表达式方法，该方法用正则表达式去匹配字符串。由 String.prototype.match()方法使用”。String.prototype.match()方法会使用以 Symbol.match 为键的函数来对正则表达式求值。正则表达式的原型上默认有这个函数的定义，因此所有正则表达式实例默认是这个 String 方法的有效参数：
+
+```js
+console.log(RegExp.prototype[Symbol.match]);
+// ƒ [Symbol.match]() { [native code] }
+
+console.log("foobar".match(/bar/));
+// ["bar", index: 3, input: "foobar", groups: undefined]
+```
+
+给这个方法传入非正则表达式值会导致该值被转换为 RegExp 对象。如果想改变这种行为，让方法直接使用参数，则可以重新定义 Symbol.match 函数以取代默认对正则表达式求值的行为，从而让 match()方法使用非正则表达式实例。Symbol.match 函数接收一个参数，就是调用 match()方法的字符串实例。返回的值没有限制：
+
+```js
+class FooMatcher {
+  static [Symbol.match](target) {
+    return target.includes("foo");
+  }
+}
+console.log("foobar".match(FooMatcher)); // true
+console.log("barbaz".match(FooMatcher)); // false
+class StringMatcher {
+  constructor(str) {
+    this.str = str;
+  }
+  [Symbol.match](target) {
+    return target.includes(this.str);
+  }
+}
+console.log("foobar".match(new StringMatcher("foo"))); // true
+console.log("barbaz".match(new StringMatcher("qux"))); // false
+```
+
+10. **Symbol.replace**
+
+根据 ECMAScript 规范，这个符号作为一个属性表示“一个正则表达式方法，该方法替换一个字符串中匹配的子串。由 String.prototype.replace()方法使用”。String.prototype.replace()方法会使用以 Symbol.replace 为键的函数来对正则表达式求值。正则表达式的原型上默认有这个函数的定义，因此所有正则表达式实例默认是这个 String 方法的有效参数：
+
+```js
+console.log(RegExp.prototype[Symbol.replace]);
+// ƒ [Symbol.replace]() { [native code] }
+
+console.log("foobarbaz".replace(/bar/, "qux"));
+// 'fooquxbaz'
+```
+
+给这个方法传入非正则表达式值会导致该值被转换为 RegExp 对象。如果想改变这种行为，让方法直接使用参数，可以重新定义 Symbol.replace 函数以取代默认对正则表达式求值的行为，从而让 replace()方法使用非正则表达式实例。Symbol.replace 函数接收两个参数，即调用 replace()方法的字符串实例和替换字符串。返回的值没有限制：
+
+```js
+class FooReplacer {
+  static [Symbol.replace](target, replacement) {
+    return target.split("foo").join(replacement);
+  }
+}
+console.log("barfoobaz".replace(FooReplacer, "qux"));
+// "barquxbaz"
+class StringReplacer {
+  constructor(str) {
+    this.str = str;
+  }
+  [Symbol.replace](target, replacement) {
+    return target.split(this.str).join(replacement);
+  }
+}
+console.log("barfoobaz".replace(new StringReplacer("foo"), "qux"));
+// "barquxbaz"
+```
+
+11. **Symbol.search**
+
+根据 ECMAScript 规范，这个符号作为一个属性表示“一个正则表达式方法，该方法返回字符串中匹配正则表达式的索引。由 String.prototype.search()方法使用”。String.prototype.search()方法会使用以 Symbol.search 为键的函数来对正则表达式求值。正则表达式的原型上默认有这个函数的定义，因此所有正则表达式实例默认是这个 String 方法的有效参数：
+
+```js
+console.log(RegExp.prototype[Symbol.search]);
+// ƒ [Symbol.search]() { [native code] }
+
+console.log("foobar".search(/bar/));
+// 3
+```
+
+给这个方法传入非正则表达式值会导致该值被转换为 RegExp 对象。如果想改变这种行为，让方法直接使用参数，可以重新定义 Symbol.search 函数以取代默认对正则表达式求值的行为，从而让 search()方法使用非正则表达式实例。Symbol.search 函数接收一个参数，就是调用 match()方法的字符串实例。返回的值没有限制：
+
+```js
+class FooSearcher {
+  static [Symbol.search](target) {
+    return target.indexOf("foo");
+  }
+}
+console.log("foobar".search(FooSearcher)); // 0
+console.log("barfoo".search(FooSearcher)); // 3
+console.log("barbaz".search(FooSearcher)); // -1
+class StringSearcher {
+  constructor(str) {
+    this.str = str;
+  }
+  [Symbol.search](target) {
+    return target.indexOf(this.str);
+  }
+}
+console.log("foobar".search(new StringSearcher("foo"))); // 0
+console.log("barfoo".search(new StringSearcher("foo"))); // 3
+console.log("barbaz".search(new StringSearcher("qux"))); // -1
+```
+
+12. **Symbol.species**
+
+根据 ECMAScript 规范，这个符号作为一个属性表示“一个函数值，该函数作为创建派生对象的构造函数”。这个属性在内置类型中最常用，用于对内置类型实例方法的返回值暴露实例化派生对象的方法。用 Symbol.species 定义静态的获取器（getter）方法，可以覆盖新创建实例的原型定义：
+
+```js
+class Bar extends Array {}
+class Baz extends Array {
+  static get [Symbol.species]() {
+    return Array;
+  }
+}
+let bar = new Bar();
+console.log(bar instanceof Array); // true
+console.log(bar instanceof Bar); // true
+bar = bar.concat("bar");
+console.log(bar instanceof Array); // true
+console.log(bar instanceof Bar); // true
+let baz = new Baz();
+console.log(baz instanceof Array); // true
+console.log(baz instanceof Baz); // true
+baz = baz.concat("baz");
+console.log(baz instanceof Array); // true
+console.log(baz instanceof Baz); // false
+```
+
+13. **Symbol.split**
+
+根据 ECMAScript 规范，这个符号作为一个属性表示“一个正则表达式方法，该方法在匹配正则表达式的索引位置拆分字符串。由 String.prototype.split()方法使用”。String.prototype.split()方法会使用以 Symbol.split 为键的函数来对正则表达式求值。正则表达式的原型上默认有这个函数的定义，因此所有正则表达式实例默认是这个 String 方法的有效参数：
+
+```js
+console.log(RegExp.prototype[Symbol.split]);
+// ƒ [Symbol.split]() { [native code] }
+
+console.log("foobarbaz".split(/bar/));
+// ['foo', 'baz']
+```
+
+给这个方法传入非正则表达式值会导致该值被转换为 RegExp 对象。如果想改变这种行为，让方法直接使用参数，可以重新定义 Symbol.split 函数以取代默认对正则表达式求值的行为，从而让 split()方法使用非正则表达式实例。Symbol.split 函数接收一个参数，就是调用 match()方法的字符串实例。返回的值没有限制：
+
+```js
+class FooSplitter {
+  static [Symbol.split](target) {
+    return target.split("foo");
+  }
+}
+console.log("barfoobaz".split(FooSplitter));
+// ["bar", "baz"]
+class StringSplitter {
+  constructor(str) {
+    this.str = str;
+  }
+  [Symbol.split](target) {
+    return target.split(this.str);
+  }
+}
+console.log("barfoobaz".split(new StringSplitter("foo")));
+// ["bar", "baz"]
+```
+
+14. **Symbol.toPrimitive**
+
+根据 ECMAScript 规范，这个符号作为一个属性表示“一个方法，该方法将对象转换为相应的原始值。由 ToPrimitive 抽象操作使用”。很多内置操作都会尝试强制将对象转换为原始值，包括字符串、数值和未指定的原始类型。对于一个自定义对象实例，通过在这个实例的 Symbol.toPrimitive 属性上定义一个函数可以改变默认行为。
+
+根据提供给这个函数的参数（string、number 或 default），可以控制返回的原始值：
+
+```js
+class Foo {}
+let foo = new Foo();
+console.log(3 + foo); // "3[object Object]"
+console.log(3 - foo); // NaN
+console.log(String(foo)); // "[object Object]"
+class Bar {
+  constructor() {
+    this[Symbol.toPrimitive] = function (hint) {
+      switch (hint) {
+        case "number":
+          return 3;
+        case "string":
+          return "string bar";
+        case "default":
+        default:
+          return "default bar";
+      }
+    };
+  }
+}
+let bar = new Bar();
+console.log(3 + bar); // "3default bar"
+console.log(3 - bar); // 0
+console.log(String(bar)); // "string bar"
+```
+
+15. **Symbol.toStringTag**
+
+根据 ECMAScript 规范，这个符号作为一个属性表示“一个字符串，该字符串用于创建对象的默认字符串描述。由内置方法 Object.prototype.toString()使用”。
+
+通过 toString()方法获取对象标识时，会检索由 Symbol.toStringTag 指定的实例标识符，默认为"Object"。内置类型已经指定了这个值，但自定义类实例还需要明确定义：
+
+```js
+let s = new Set();
+console.log(s); // Set(0) {}
+console.log(s.toString()); // [object Set]
+console.log(s[Symbol.toStringTag]); // Set
+class Foo {}
+let foo = new Foo();
+console.log(foo); // Foo {}
+console.log(foo.toString()); // [object Object]
+console.log(foo[Symbol.toStringTag]); // undefined
+class Bar {
+  constructor() {
+    this[Symbol.toStringTag] = "Bar";
+  }
+}
+let bar = new Bar();
+console.log(bar); // Bar {}
+console.log(bar.toString()); // [object Bar]
+console.log(bar[Symbol.toStringTag]); // Bar
+```
+
+## 3.5. 操作符
+
+ECMA-262 描述了一组可用于操作数据值的操作符，包括数学操作符（如加、减）、位操作符、关系操作符和相等操作符等。ECMAScript 中的操作符是独特的，因为它们可用于各种值，包括字符串、数值、布尔值，甚至还有对象。在应用给对象时，操作符通常会调用valueOf()和/或toString()方法来取得可以计算的值。
+
+### 3.5.1. 一元操作符
+
+只操作一个值的操作符叫 **一元操作符(unary operator)**。一元操作符是ECMAScript 中最简单的操作符。
+
+1. **递增/递减操作符**
+
+递增和递减操作符直接照搬自C 语言，但有两个版本：前缀版和后缀版。顾名思义，前缀版就是位于要操作的变量前头，后缀版就是位于要操作的变量后头。前缀递增操作符会给数值加1，把两个加号（++）放到变量前头即可：
+
+```js
+let age = 29;
+++age;
+```
+
+在这个例子中，前缀递增操作符把age 的值变成了30（给之前的值29 加1）。因此，它实际上等于如下表达式：
+
+```js
+let age = 29;
+age = age + 1;
+```
+
+前缀递减操作符也类似，只不过是从一个数值减1。使用前缀递减操作符，只要把两个减号（--）放到变量前头即可：
+
+```js
+let age = 29;
+--age;
+```
+
+执行操作后，变量age 的值变成了28（从29 减1）。
+
+后缀版递增/递减操作符和前缀版在语句上的功能是相同的。
+
+```js
+let age = 29;
+age++;
+console.log(age); // 30
+age--;
+console.log(age); // 29
+```
+
+注意 涉及递增/递减操作符的语句也是表达式。有时会带来意想不到的结果。请看下面的例子：
+
+```js
+let age = 29;
+++age;
+console.log(++age); // 31
+console.log(age); // 31
+age--;
+console.log(age--); // 30
+console.log(age); // 29
+```
+
+要理解上面的例子，我们需要理解 `++age` 不仅是一条语句，也是一个表达式。`++age` 在作为语句时的效果是将 age 的值增加1，作为表达式时，`++age` 的值是 `age + 1`。
+
+我们重新观察上面的例子，一开始声明了一个变量 age，并初始化为 29。之后，`++age`作为语句将age的值加1，所以age变为30。之后输出 `++age` 的值，也就是 31，但是同时这也是一条语句，它将 age 的值增加 1，因此后面的 age 为31。
+
+后缀版的递增/递减操作符则和前缀版的不同，具体来说，在作为语句时后缀版的和前缀版的效果相同。但作为表达式时，它的值为原先的值。
+
+因此我们看到，之后，`age--` 将 age 的值减1，age 的值变为 31-1=30。后面输出 `age--` 的值，它是原先的值 30，这和前缀版的不同，同时作为语句它将 age 的值减 1，age 变为 29，所以后面输出 age 为 29。
+
+递增/递减操作符不仅限于操作数值类型的值。它在操作其他类型的值时，有以下规则：
+
+- 对于字符串，如果是有效的数值形式，则转换为数值再应用改变。变量类型从字符串变成数值。
+- 对于字符串，如果不是有效的数值形式，则将变量的值设置为NaN 。变量类型从字符串变成数值。
+- 对于布尔值，如果是false，则转换为0 再应用改变。变量类型从布尔值变成数值。
+- 对于布尔值，如果是true，则转换为1 再应用改变。变量类型从布尔值变成数值。
+- 对于浮点值，加1 或减1。
+- 如果是对象，则调用其（第5 章会详细介绍的）valueOf()方法取得可以操作的值。对得到的值应用上述规则。如果是NaN，则调用toString()并再次应用其他规则。变量类型从对象变成数值。
+
+请看示例：
+
+```js
+let s1 = "2";
+let s2 = "z";
+let b = false;
+let o = {
+    valueOf() {
+        return -1;
+    }
+};
+
+console.log(++s1); // 3
+console.log(s1); // 3
+console.log(typeof s1); // number
+
+console.log(++s2); // NaN
+console.log(s2); // NaN
+console.log(typeof s2); // number
+
+console.log(b++); // 0
+console.log(b); // 1
+console.log(typeof b); // number
+
+console.log(o--); // -1
+console.log(o); // -2
+console.log(typeof o); // number
+```
+
+2. **正/负操作符**
+
+正/负操作符对大多数开发者来说并不陌生，它们在ECMAScript 中跟在数学中的用途一样。正号由（+）表示，放在变量前头，对数值没有任何影响：
+
+```js
+let num = 25;
+num = +num;
+console.log(num); // 25
+```
+
+如果将正号应用到非数值，则会执行与使用Number()转型函数一样的类型转换：布尔值false和true 转换为0 和1，字符串根据特殊规则进行解析，对象会调用它们的valueOf()和/或toString()方法以得到可以转换的值。
+
+下面的例子演示了正号在应用到不同数据类型时的行为：
+
+```js
+let s1 = "01";
+let s2 = "1.1";
+let s3 = "z";
+let b = false;
+let f = 1.1;
+let o = {
+  valueOf() {
+    return -1;
+  }
+};
+s1 = +s1; // 值变成数值1
+s2 = +s2; // 值变成数值1.1
+s3 = +s3; // 值变成NaN
+b = +b; // 值变成数值0
+f = +f; // 不变，还是1.1
+o = +o; // 值变成数值-1
+```
+
+负号由一个（-）表示，放在变量前头，主要用于把数值变成负值，如把1 转换为-1。示例如下：
+
+```js
+let num = 25;
+num = -num;
+console.log(num); // -25
+```
+
+对数值使用负号会将其变成相应的负值（如上面的例子所示）。在应用到非数值时，负号会遵循与一元加同样的规则，先对它们进行转换，然后再取负值：
+
+```js
+let s1 = "01";
+let s2 = "1.1";
+let s3 = "z";
+let b = false;
+let f = 1.1;
+let o = {
+  valueOf() {
+    return -1;
+  }
+};
+s1 = -s1; // 值变成数值-1
+s2 = -s2; // 值变成数值-1.1
+s3 = -s3; // 值变成NaN
+b = -b; // 值变成数值0
+f = -f; // 变成-1.1
+o = -o; // 值变成数值1
+```
+
+正号和负号操作符主要用于基本的算术，但也可以像上面的例子那样，用于数据类型转换。
+
+### 3.5.2. 位操作符
+
+接下来要介绍的操作符用于数值的底层操作，也就是操作内存中表示数据的比特（位）。ECMAScript中的所有数值都以IEEE 754 64 位格式存储，但位操作并不直接应用到64 位表示，而是先把值转换为32 位整数，再进行位操作，之后再把结果转换为64 位。对开发者而言，就好像只有32 位整数一样，因为64 位整数存储格式是不可见的。既然知道了这些，就只需要考虑32 位整数即可。
+
+有符号整数使用32 位的前31 位表示整数值。第32 位表示数值的符号，如0 表示正，1 表示负。这一位称为符号位(sign bit)，它的值决定了数值其余部分的格式。正值以真正的二进制格式存储，即31位中的每一位都代表2 的幂。第一位（称为第0 位）表示2^0，第二位表示2^1，依此类推。如果一个位是空的，则以0 填充，相当于忽略不计。比如，数值18 的二进制格式为00000000000000000000000000010010，或更精简的10010。后者是用到的5 个有效位，决定了实际的值（如下图所示）。
+
+![3-1-二进制表示](illustrations/3-1-二进制表示.png)
+
+负值以一种称为二补数（或补码）的二进制编码存储。一个数值的二补数通过如下3 个步骤计算得到：
+
+1. 确定绝对值的二进制表示（如，对于-18，先确定18 的二进制表示）；
+2. 找到数值的一补数（或反码），换句话说，就是每个0 都变成1，每个1 都变成0；
+3. 给结果加1。
 
