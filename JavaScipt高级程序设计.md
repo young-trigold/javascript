@@ -1140,7 +1140,7 @@ ECMAScript 有 6 种简单数据类型（也称为 **原始类型**）：Undefin
 ```js
 let message = "some string";
 console.log(typeof message); // "string"
-console.log(typeof message); // "string"
+console.log(typeof (message)); // "string"
 console.log(typeof 95); // "number"
 ```
 
@@ -3856,12 +3856,12 @@ ECMAScript 中所有函数的参数都是按值传递的。这意味着函数外
 
 ```js
 function addTen(num) {
-num += 10;
-return num;
+  num += 10;
+  return num;
 }
 let count = 20;
 let result = addTen(count);
 console.log(count); // 20，没有变化
 console.log(result); // 30
 ```
-
+ 
