@@ -73,6 +73,8 @@ plan : 7 chapter / week
     - [4.1.1. 动态属性](#411-动态属性)
     - [4.1.2. 复制值](#412-复制值)
     - [4.1.3. 传递参数](#413-传递参数)
+    - [4.1.4. 确定类型](#414-确定类型)
+  - [4.2. 执行上下文和作用域](#42-执行上下文和作用域)
 
 # 1. 什么是 JavaScript
 
@@ -3865,3 +3867,91 @@ console.log(count); // 20，没有变化
 console.log(result); // 30
 ```
  
+这里，函数addTen()有一个参数num，它其实是一个局部变量。在调用时，变量count 作为参数传入。count 的值是20，这个值被复制到参数num 以便在addTen()内部使用。在函数内部，参数num的值被加上了10，但这不会影响函数外部的原始变量count。参数num 和变量count 互不干扰，它们只不过碰巧保存了一样的值。如果num 是按引用传递的，那么count 的值也会被修改为30。这个事实在使用数值这样的原始值时是非常明显的。但是，如果变量中传递的是对象，就没那么清楚了。比如，再看这个例子：
+
+```js
+function setName(obj) {
+  obj.name = "Nicholas";
+}
+let person = new Object();
+setName(person);
+console.log(person.name); // "Nicholas"
+```
+
+这一次，我们创建了一个对象并把它保存在变量person 中。然后，这个对象被传给setName()方法，并被复制到参数obj 中。在函数内部，obj 和person 都指向同一个对象。结果就是，即使对象是按值传进函数的，obj 也会通过引用访问对象。当函数内部给obj 设置了name 属性时，函数外部的对象也会反映这个变化，因为obj 指向的对象保存在全局作用域的堆内存上。很多开发者错误地认为，当在局部作用域中修改对象而变化反映到全局时，就意味着参数是按引用传递的。为证明对象是按值传递的，我们再来看看下面这个修改后的例子：
+
+```js
+function setName(obj) {
+  obj.name = "Nicholas";
+  obj = new Object();
+  obj.name = "Greg";
+}
+let person = new Object();
+setName(person);
+console.log(person.name); // "Nicholas"
+```
+
+这个例子前后唯一的变化就是setName()中多了两行代码，将obj 重新定义为一个有着不同name的新对象。当person 传入setName()时，其name 属性被设置为"Nicholas"。然后变量obj 被设置为一个新对象且name 属性被设置为"Greg"。如果person 是按引用传递的，那么person 应该自动将指针改为指向name 为"Greg"的对象。可是，当我们再次访问person.name 时，它的值是"Nicholas"，这表明函数中参数的值改变之后，原始的引用仍然没变。当obj 在函数内部被重写时，它变成了一个指向本地对象的指针。而那个本地对象在函数执行结束时就被销毁了。
+
+### 4.1.4. 确定类型
+
+前一章提到的typeof 操作符最适合用来判断一个变量是否为原始类型。更确切地说，它是判断一个变量是否为字符串、数值、布尔值或undefined 的最好方式。如果值是对象或null，那么typeof返回"object"，如下面的例子所示：
+
+```js
+let s = "Nicholas";
+let b = true;
+let i = 22;
+let u;
+let n = null;
+let o = new Object();
+console.log(typeof s); // string
+console.log(typeof i); // number
+console.log(typeof b); // boolean
+console.log(typeof u); // undefined
+console.log(typeof n); // object
+console.log(typeof o); // object
+```
+
+typeof 虽然对原始值很有用，但它对引用值的用处不大。我们通常不关心一个值是不是对象，而是想知道它是什么类型的对象。为了解决这个问题，ECMAScript 提供了instanceof 操作符，语法如下：
+
+```js
+result = variable instanceof constructor
+```
+
+如果变量是给定引用类型（由其原型链决定，将在第8 章详细介绍）的实例，则instanceof 操作符返回true。来看下面的例子：
+
+```js
+console.log(person instanceof Object); // 变量person 是Object 吗？
+console.log(colors instanceof Array); // 变量colors 是Array 吗？
+console.log(pattern instanceof RegExp); // 变量pattern 是RegExp 吗？
+```
+
+按照定义，所有引用值都是Object 的实例，因此通过instanceof 操作符检测任何引用值和Object 构造函数都会返回true。类似地，如果用instanceof 检测原始值，则始终会返回false，因为原始值不是对象。
+
+注意 typeof 操作符在用于检测函数时也会返回"function"。当在Safari（直到Safari 5）和Chrome（直到Chrome 7）中用于检测正则表达式时，由于实现细节的原因，typeof 也会返回"function"。ECMA-262 规定，任何实现内部[[Call]]方法的对象都应该在typeof 检测时返回"function"。因为上述浏览器中的正则表达式实现了这个方法，所以typeof 对正则表达式也返回"function"。在IE 和Firefox 中，typeof 对正则表达式返回"object"。
+
+## 4.2. 执行上下文和作用域
+
+执行上下文（以下简称“上下文”）的概念在JavaScript 中是颇为重要的。变量或函数的上下文决定了它们可以访问哪些数据，以及它们的行为。每个上下文都有一个关联的变量对象(variable object)，而这个上下文中定义的所有变量和函数都存在于这个对象上。虽然无法通过代码访问变量对象，但后台处理数据会用到它。
+
+全局上下文是最外层的上下文。根据ECMAScript 实现的宿主环境，表示全局上下文的对象可能不一样。在浏览器中，全局上下文就是我们常说的window 对象（第12 章会详细介绍），因此所有通过var 定义的全局变量和函数都会成为window 对象的属性和方法。使用let 和const 的顶级声明不会定义在全局上下文中，但在作用域链解析上效果是一样的。上下文在其所有代码都执行完毕后会被销毁，包括定义在它上面的所有变量和函数（全局上下文在应用程序退出前才会被销毁，比如关闭网页或退出浏览器）。
+
+每个函数调用都有自己的上下文。当代码执行流进入函数时，函数的上下文被推到一个上下文栈上。在函数执行完之后，上下文栈会弹出该函数上下文，将控制权返还给之前的执行上下文。ECMAScript程序的执行流就是通过这个上下文栈进行控制的。
+
+上下文中的代码在执行的时候，会创建变量对象的一个 **作用域链(scope chain)**。这个作用域链决定了各级上下文中的代码在访问变量和函数时的顺序。代码正在执行的上下文的变量对象始终位于作用域链的最前端。如果上下文是函数，则其**活动对象(activation object)** 用作变量对象。活动对象最初只有一个定义变量：arguments。（全局上下文中没有这个变量。）作用域链中的下一个变量对象来自包含上下文，再下一个对象来自再下一个包含上下文。以此类推直至全局上下文；全局上下文的变量对象始终是作用域链的最后一个变量对象。
+
+代码执行时的标识符解析是通过沿作用域链逐级搜索标识符名称完成的。搜索过程始终从作用域链的最前端开始，然后逐级往后，直到找到标识符。（如果没有找到标识符，那么通常会报错。）
+
+看一看下面这个例子：
+
+```js
+var color = "blue";
+function changeColor() {
+  if (color === "blue") {
+    color = "red";
+  } else {
+    color = "blue";
+  }
+}
+changeColor();
+```
