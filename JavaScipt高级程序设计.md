@@ -140,6 +140,11 @@ plan : 7 chapter / week
     - [6.7.3. 不可迭代值](#673-不可迭代值)
     - [6.7.4. 使用弱集合](#674-使用弱集合)
   - [6.8. 迭代与扩展操作](#68-迭代与扩展操作)
+- [7. 迭代器与生成器](#7-迭代器与生成器)
+  - [7.1. 理解迭代](#71-理解迭代)
+  - [7.2. 迭代器模式](#72-迭代器模式)
+    - [7.2.1. 可迭代协议](#721-可迭代协议)
+    - [7.2.2. 迭代器协议](#722-迭代器协议)
 
 # 1. 什么是 JavaScript
 
@@ -1661,8 +1666,7 @@ let foundAsString = found.toString(); // 字符串"true"
 
 toString()方法可见于数值、布尔值、对象和字符串值。（没错，字符串值也有 toString()方法，该方法只是简单地返回自身的一个副本。）null 和 undefined 值没有 toString()方法。
 
-多数情况下，toString()不接收任何参数。不过，在对数值调用这个方法时，toString()可以接收一个底数参数，即以什么底数来输出数值的字符串表示。默认情况下，toString()返回数值的十进制字符串表示。而通过传入参数，可以得到数值的二进制、八进制、十六进制，或者其他任何有效基
-数的字符串表示，比如：
+多数情况下，toString()不接收任何参数。不过，在对数值调用这个方法时，toString()可以接收一个底数参数，即以什么底数来输出数值的字符串表示。默认情况下，toString()返回数值的十进制字符串表示。而通过传入参数，可以得到数值的二进制、八进制、十六进制，或者其他任何有效基数的字符串表示，比如：
 
 ```js
 let num = 10;
@@ -1690,8 +1694,8 @@ let value3 = null;
 let value4;
 
 console.log(String(value1)); // "10"
-console.log(String(value2)); // "ntrue"
-console.log(String(value3)); // "ull"
+console.log(String(value2)); // "true"
+console.log(String(value3)); // "null"
 console.log(String(value4)); // "undefined"
 ```
 
@@ -3095,6 +3099,7 @@ let result1 = 5 + 5; // 两个数值
 console.log(result1); // 10
 let result2 = 5 + "5"; // 一个数值和一个字符串
 console.log(result2); // "55"
+
 ```
 
 以上代码展示了加法操作符的两种运算模式。正常情况下，5 + 5 等于 10（数值），如前两行代码所示。但是，如果将一个操作数改为字符串，比如"5"，则相加的结果就变成了"55"（原始字符串值），因为第一个操作数也会被转换为字符串。
@@ -5231,7 +5236,14 @@ console.log(Number.isInteger(1.0)); // true
 console.log(Number.isInteger(1.01)); // false
 ```
 
-IEEE 754 数值格式有一个特殊的数值范围，在这个范围内二进制值可以表示一个整数值。这个数值范围从 Number.MIN_SAFE_INTEGER（-2^53 + 1）到 Number.MAX_SAFE_INTEGER（2^53 - 1）。对超出这个范围的数值，即使尝试保存为整数，IEEE 754 编码格式也意味着二进制值可能会表示一个完全不同的数值。为了鉴别整数是否在这个范围内，可以使用 Number.isSafeInteger()方法：
+IEEE 754 数值格式有一个特殊的数值范围，在这个范围内二进制值可以表示一个整数值。这个数值范围从 Number.MIN_SAFE_INTEGER（-2^53 + 1）到 Number.MAX_SAFE_INTEGER（2^53 - 1）。对超出这个范围的数值，即使尝试保存为整数，IEEE 754 编码格式也意味着二进制值可能会表示一个完全不同的数值。例如：
+
+```js
+let test = 2 ** 53 === 2 ** 53 + 1;
+console.log(test); // true
+```
+
+为了鉴别整数是否在这个范围内，可以使用 Number.isSafeInteger()方法：
 
 ```js
 console.log(Number.isSafeInteger(-1 * 2 ** 53)); // false
@@ -8359,3 +8371,193 @@ console.log(set); // Set {1, 2, 3}
 let arr2 = [...set];
 console.log(arr2); // [1, 2, 3]
 ```
+
+# 7. 迭代器与生成器
+
+本章内容
+- 理解迭代
+- 迭代器模式
+- 生成器
+
+迭代的英文“iteration”源自拉丁文itero，意思是“重复”或“再来”。在软件开发领域，“迭代”的意思是按照顺序反复多次执行一段程序，通常会有明确的终止条件。ECMAScript 6 规范新增了两个高级特性：迭代器和生成器。使用这两个特性，能够更清晰、高效、方便地实现迭代。
+
+## 7.1. 理解迭代
+
+在 JavaScript 中，计数循环就是一种最简单的迭代：
+
+```js
+for (let i = 0; i <= 10; i++){
+  console.log(i);
+}
+```
+
+循环是迭代机制的基础，这是因为它可以指定迭代的次数，以及每次迭代要执行什么操作。每次循环都会在下一次迭代开始之前完成，而每次迭代的顺序都是事先定义好的。
+
+迭代会在一个有序集合上进行。（“有序”可以理解为集合中所有项都可以按照既定的顺序被遍历到，特别是开始和结束项有明确的定义。）数组是JavaScript 中有序集合的最典型例子。
+
+```js
+let collection = ['foo', 'bar', 'baz'];
+for (let index = 0; index < collection.length; index++) {
+  console.log(collection[index]);
+}
+```
+
+因为数组有已知的长度，且数组每一项都可以通过索引获取，所以整个数组可以通过递增索引来遍历。
+
+由于如下原因，通过这种循环来执行例程并不理想。
+
+- 迭代之前需要事先知道如何使用数据结构。数组中的每一项都只能先通过引用取得数组对象，然后再通过[]操作符取得特定索引位置上的项。这种情况并不适用于所有数据结构。
+- 遍历顺序并不是数据结构固有的。通过递增索引来访问数据是特定于数组类型的方式，并不适用于其他具有隐式顺序的数据结构。
+
+ES5 新增了Array.prototype.forEach()方法，向通用迭代需求迈进了一步（但仍然不够理想）：
+
+```js
+let collection = ['foo', 'bar', 'baz'];
+collection.forEach((item) => console.log(item));
+// foo
+// bar
+// baz
+```
+
+这个方法解决了单独记录索引和通过数组对象取得值的问题。不过，没有办法标识迭代何时终止。因此这个方法只适用于数组，而且回调结构也比较笨拙。
+
+在ECMAScript 较早的版本中，执行迭代必须使用循环或其他辅助结构。随着代码量增加，代码会变得越发混乱。很多语言都通过原生语言结构解决了这个问题，开发者无须事先知道如何迭代就能实现迭代操作。这个解决方案就是迭代器模式。Python、Java、C++，还有其他很多语言都对这个模式提供了完备的支持。JavaScript 在ECMAScript 6 以后也支持了迭代器模式。
+
+## 7.2. 迭代器模式
+
+迭代器模式（特别是在ECMAScript 这个语境下）描述了一个方案，即可以把有些结构称为“可迭代对象”（iterable），因为它们实现了正式的Iterable 接口，而且可以通过迭代器Iterator 消费。
+
+可迭代对象是一种抽象的说法。基本上，可以把可迭代对象理解成数组或集合这样的集合类型的对象。它们包含的元素都是有限的，而且都具有无歧义的遍历顺序：
+
+```js
+// 数组的元素是有限的
+// 递增索引可以按序访问每个元素
+let arr = [3, 1, 4];
+
+// 集合的元素是有限的
+// 可以按插入顺序访问每个元素
+let set = new Set().add(3).add(1).add(4);
+```
+
+不过，可迭代对象不一定是集合对象，也可以是仅仅具有类似数组行为的其他数据结构，比如本章开头提到的计数循环。该循环中生成的值是暂时性的，但循环本身是在执行迭代。计数循环和数组都具有可迭代对象的行为。
+
+注意 临时性可迭代对象可以实现为生成器，本章后面会讨论。
+
+任何实现Iterable 接口的数据结构都可以被实现Iterator 接口的结构“消费”（consume）。迭代器（iterator）是按需创建的一次性对象。每个迭代器都会关联一个可迭代对象，而迭代器会暴露迭代其关联可迭代对象的API。迭代器无须了解与其关联的可迭代对象的结构，只需要知道如何取得连续的值。这种概念上的分离正是Iterable 和Iterator 的强大之处。
+
+### 7.2.1. 可迭代协议
+
+实现Iterable 接口（可迭代协议）要求同时具备两种能力：支持迭代的自我识别能力和创建实现Iterator 接口的对象的能力。在ECMAScript 中，这意味着必须暴露一个属性作为“默认迭代器”，而且这个属性必须使用特殊的Symbol.iterator 作为键。这个默认迭代器属性必须引用一个迭代器工厂函数，调用这个工厂函数必须返回一个新迭代器。
+
+很多内置类型都实现了Iterable 接口：
+- 字符串
+- 数组
+- 映射
+- 集合
+- arguments 对象
+- NodeList 等DOM 集合类型
+
+检查是否存在默认迭代器属性可以暴露这个工厂函数：
+
+```js
+let num = 1;
+let obj = {};
+// 这两种类型没有实现迭代器工厂函数
+console.log(num[Symbol.iterator]); // undefined
+console.log(obj[Symbol.iterator]); // undefined
+
+let str = 'abc';
+let arr = ['a', 'b', 'c'];
+let map = new Map().set('a', 1).set('b', 2).set('c', 3);
+let set = new Set().add('a').add('b').add('c');
+let els = document.querySelectorAll('div');
+// 这些类型都实现了迭代器工厂函数
+console.log(str[Symbol.iterator]); // f values() { [native code] }
+console.log(arr[Symbol.iterator]); // f values() { [native code] }
+console.log(map[Symbol.iterator]); // f values() { [native code] }
+console.log(set[Symbol.iterator]); // f values() { [native code] }
+console.log(els[Symbol.iterator]); // f values() { [native code] }
+
+// 调用这个工厂函数会生成一个迭代器
+console.log(str[Symbol.iterator]()); // StringIterator {}
+console.log(arr[Symbol.iterator]()); // ArrayIterator {}
+console.log(map[Symbol.iterator]()); // MapIterator {}
+console.log(set[Symbol.iterator]()); // SetIterator {}
+console.log(els[Symbol.iterator]()); // ArrayIterator {}
+```
+
+实际写代码过程中，不需要显式调用这个工厂函数来生成迭代器。实现可迭代协议的所有类型都会自动兼容接收可迭代对象的任何语言特性。接收可迭代对象的原生语言特性包括：
+
+- for-of 循环
+- 数组解构
+- 扩展操作符
+- Array.from()
+- 创建集合
+- 创建映射
+- Promise.all()接收由期约组成的可迭代对象
+- Promise.race()接收由期约组成的可迭代对象
+- yield*操作符，在生成器中使用
+
+这些原生语言结构会在后台调用提供的可迭代对象的这个工厂函数，从而创建一个迭代器：
+
+```js
+let arr = ['foo', 'bar', 'baz'];
+// for-of 循环
+for (let el of arr) {
+  console.log(el);
+}
+// foo
+// bar
+// baz
+// 数组解构
+let [a, b, c] = arr;
+console.log(a, b, c); // foo, bar, baz
+// 扩展操作符
+let arr2 = [...arr];
+console.log(arr2); // ['foo', 'bar', 'baz']
+// Array.from()
+let arr3 = Array.from(arr);
+console.log(arr3); // ['foo', 'bar', 'baz']
+// Set 构造函数
+let set = new Set(arr);
+console.log(set); // Set(3) {'foo', 'bar', 'baz'}
+// Map 构造函数
+let pairs = arr.map((x, i) => [x, i]);
+console.log(pairs); // [['foo', 0], ['bar', 1], ['baz', 2]]
+let map = new Map(pairs);
+console.log(map); // Map(3) { 'foo'=>0, 'bar'=>1, 'baz'=>2 }
+```
+
+如果对象原型链上的父类实现了Iterable 接口，那这个对象也就实现了这个接口：
+
+```js
+class FooArray extends Array {}
+let fooArr = new FooArray('foo', 'bar', 'baz');
+for (let el of fooArr) {
+  console.log(el);
+}
+// foo
+// bar
+// baz
+```
+
+### 7.2.2. 迭代器协议
+
+迭代器是一种一次性使用的对象，用于迭代与其关联的可迭代对象。迭代器API 使用next()方法在可迭代对象中遍历数据。每次成功调用next()，都会返回一个IteratorResult 对象，其中包含迭代器返回的下一个值。若不调用next()，则无法知道迭代器的当前位置。
+
+next()方法返回的迭代器对象IteratorResult 包含两个属性：done 和value。done 是一个布尔值，表示是否还可以再次调用next()取得下一个值；value 包含可迭代对象的下一个值（done 为false），或者undefined（done 为true）。done: true 状态称为“耗尽”。可以通过以下简单的数组来演示：
+
+```js
+// 可迭代对象
+let arr = ['foo', 'bar'];
+// 迭代器工厂函数
+console.log(arr[Symbol.iterator]); // f values() { [native code] }
+// 迭代器
+let iter = arr[Symbol.iterator]();
+console.log(iter); // ArrayIterator {}
+// 执行迭代
+console.log(iter.next()); // { done: false, value: 'foo' }
+console.log(iter.next()); // { done: false, value: 'bar' }
+console.log(iter.next()); // { done: true, value: undefined }
+```
+
