@@ -111,7 +111,22 @@ plan : 7 chapter / week
     - [6.2.7. 转换方法](#627-转换方法)
     - [6.2.8. 栈方法](#628-栈方法)
     - [6.2.9. 队列方法](#629-队列方法)
-    - [排序方法](#排序方法)
+    - [6.2.10. 排序方法](#6210-排序方法)
+    - [6.2.11. 操作方法](#6211-操作方法)
+    - [6.2.12. 搜索和位置方法](#6212-搜索和位置方法)
+    - [6.2.13. 迭代方法](#6213-迭代方法)
+    - [6.2.14. 归并方法](#6214-归并方法)
+  - [6.3. 定型数组](#63-定型数组)
+    - [6.3.1. 历史](#631-历史)
+    - [6.3.2. ArrayBuffer](#632-arraybuffer)
+    - [6.3.3. DataView](#633-dataview)
+    - [6.3.4. 定型数组](#634-定型数组)
+  - [6.4. Map](#64-map)
+    - [6.4.1. 基本API](#641-基本api)
+    - [6.4.2. 顺序与迭代](#642-顺序与迭代)
+    - [6.4.3. 选择Object 还是Map](#643-选择object-还是map)
+  - [6.5. WeakMap](#65-weakmap)
+    - [6.5.1. 基本API](#651-基本api)
 
 # 1. 什么是 JavaScript
 
@@ -2665,7 +2680,7 @@ let num = -18;
 console.log(num.toString(2)); // "-10010"
 ```
 
-在将-18 转换为二进制字符串时，结果得到 10010。转换过程会求得二补数，然后再以更符合逻辑的形式表示出来。
+在将-18 转换为二进制字符串时，结果得到 -10010。转换过程会求得二补数，然后再以更符合逻辑的形式表示出来。
 
 在对 ECMAScript 中的数值应用位操作符时，后台会发生转换：64 位数值会转换为 32 位数值，然后执行位操作，最后再把结果从 32 位转换为 64 位存储起来。整个过程就像处理 32 位数值一样，这让二进制操作变得与其他语言中类似。但这个转换也导致了一个奇特的副作用，即特殊值 NaN 和 Infinity 在位操作中都会被当成 0 处理。
 
@@ -2681,7 +2696,7 @@ let num2 = ~num1; // 二进制11111111111111111111111111100110
 console.log(num2); // -26
 ```
 
-这里，按位非操作符作用到了数值 25，得到的结果是 26。由此可以看出，按位非的最终效果是对数值取负并减 1，就像执行如下操作的结果一样：
+这里，按位非操作符作用到了数值 25，得到的结果是 -26。由此可以看出，按位非的最终效果是对数值取负并减 1，就像执行如下操作的结果一样：
 
 ```js
 let num1 = 25;
@@ -2791,7 +2806,7 @@ let newValue = oldValue << 5; // 等于二进制1000000，即十进制64
 
 ![3-2-位左移](illustrations/3-2-位左移.png)
 
-注意，左移会保留它所操作数值的符号。比如，如果 2 左移 5 位，将得到-64，而不是正 64。
+注意，左移会保留它所操作数值的符号。比如，如果 -2 左移 5 位，将得到-64，而不是正 64。
 
 6. **有符号右移**
 
@@ -5454,7 +5469,7 @@ console.log(stringValue.substr(3, -4)); // "" (empty string)
 
 有两个方法用于在字符串中定位子字符串：indexOf()和 lastIndexOf()。这两个方法从字符串中搜索传入的字符串，并返回位置（如果没找到，则返回-1）。两者的区别在于，indexOf()方法从字符串开头开始查找子字符串，而 lastIndexOf()方法从字符串末尾开始查找子字符串。来看下面的例子：
 
-```
+```js
 let stringValue = "hello world";
 console.log(stringValue.indexOf("o")); // 4
 console.log(stringValue.lastIndexOf("o")); // 7
@@ -6657,7 +6672,7 @@ console.log(colors.length); // 2
 
 这里，先创建一个数组，再通过 unshift()填充数组。首先，给数组添加"red"和"green"，再添加"black"，得到["black","red","green"]。调用 pop()时，删除最后一项"green"并返回它。
 
-### 排序方法
+### 6.2.10. 排序方法
 
 数组有两个方法可以用来对元素重新排序：reverse()和 sort()。顾名思义，reverse()方法就是将数组元素反向排列。比如：
 
@@ -6739,3 +6754,987 @@ function compare(value1, value2) {
 ```
 
 比较函数就是要返回小于 0、0 和大于 0 的数值，因此减法操作完全可以满足要求。
+
+### 6.2.11. 操作方法
+
+对于数组中的元素，我们有很多操作方法。比如，concat()方法可以在现有数组全部元素基础上创建一个新数组。它首先会创建一个当前数组的副本，然后再把它的参数添加到副本末尾，最后返回这个新构建的数组。如果传入一个或多个数组，则 concat()会把这些数组的每一项都添加到结果数组。如果参数不是数组，则直接把它们添加到结果数组末尾。来看下面的例子：
+
+```js
+let colors = ["red", "green", "blue"];
+let colors2 = colors.concat("yellow", ["black", "brown"]);
+console.log(colors); // ["red", "green","blue"]
+console.log(colors2); // ["red", "green", "blue", "yellow", "black", "brown"]
+```
+
+这里先创建一个包含 3 个值的数组 colors。然后 colors 调用 concat()方法，传入字符串"yellow"和一个包含"black"和"brown"的数组。保存在 colors2 中的结果就是["red", "green", "blue","yellow", "black", "brown"]。原始数组 colors 保持不变。
+
+打平数组参数的行为可以重写，方法是在参数数组上指定一个特殊的符号：Symbol.isConcat-Spreadable。这个符号能够阻止 concat()打平参数数组。相反，把这个值设置为 true 可以强制打平类数组对象：
+
+```js
+let colors = ["red", "green", "blue"];
+let newColors = ["black", "brown"];
+let moreNewColors = {
+  [Symbol.isConcatSpreadable]: true,
+  length: 2,
+  0: "pink",
+  1: "cyan",
+};
+newColors[Symbol.isConcatSpreadable] = false;
+// 强制不打平数组
+let colors2 = colors.concat("yellow", newColors);
+// 强制打平类数组对象
+let colors3 = colors.concat(moreNewColors);
+console.log(colors); // ["red", "green", "blue"]
+console.log(colors2); // ["red", "green", "blue", "yellow", ["black", "brown"]]
+console.log(colors3); // ["red", "green", "blue", "pink", "cyan"]
+```
+
+接下来，方法 slice()用于创建一个包含原有数组中一个或多个元素的新数组。slice()方法可以接收一个或两个参数：返回元素的开始索引和结束索引。如果只有一个参数，则 slice()会返回该索引到数组末尾的所有元素。如果有两个参数，则 slice()返回从开始索引到结束索引对应的所有元素，其中不包含结束索引对应的元素。记住，这个操作不影响原始数组。来看下面的例子：
+
+```js
+let colors = ["red", "green", "blue", "yellow", "purple"];
+let colors2 = colors.slice(1);
+let colors3 = colors.slice(1, 4);
+console.log(colors2); // green,blue,yellow,purple
+console.log(colors3); // green,blue,yellow
+```
+
+这里，colors 数组一开始有 5 个元素。调用 slice()传入 1 会得到包含 4 个元素的新数组。其中不包括"red"，这是因为拆分操作要从位置 1 开始，即从"green"开始。得到的 colors2 数组包含"green"、"blue"、"yellow"和"purple"。colors3 数组是通过调用 slice()并传入 1 和 4 得到的，即从位置 1 开始复制到位置 3。因此 colors3 包含"green"、"blue"和"yellow"。
+
+或许最强大的数组方法就属 splice()了，使用它的方式可以有很多种。splice()的主要目的是在数组中间插入元素，但有 3 种不同的方式使用这个方法。
+
+- 删除。需要给 splice()传 2 个参数：要删除的第一个元素的位置和要删除的元素数量。可以从数组中删除任意多个元素，比如 splice(0, 2)会删除前两个元素。
+- 插入。需要给 splice()传 3 个参数：开始位置、0（要删除的元素数量）和要插入的元素，可以在数组中指定的位置插入元素。第三个参数之后还可以传第四个、第五个参数，乃至任意多个要插入的元素。比如，splice(2, 0, "red", "green")会从数组位置 2 开始插入字符串"red"和"green"。
+- 替换。splice()在删除元素的同时可以在指定位置插入新元素，同样要传入 3 个参数：开始位置、要删除元素的数量和要插入的任意多个元素。要插入的元素数量不一定跟删除的元素数量一致。比如，splice(2, 1, "red", "green")会在位置 2 删除一个元素，然后从该位置开始向数组中插入"red"和"green"。
+
+splice()方法始终返回这样一个数组，它包含从数组中被删除的元素（如果没有删除元素，则返回空数组）。以下示例展示了上述 3 种使用方式。
+
+```js
+let colors = ["red", "green", "blue"];
+let removed = colors.splice(0, 1); // 删除第一项
+console.log(colors); // green,blue
+console.log(removed); // red，只有一个元素的数组
+removed = colors.splice(1, 0, "yellow", "orange"); // 在位置1 插入两个元素
+console.log(colors); // green,yellow,orange,blue
+console.log(removed); // 空数组
+removed = colors.splice(1, 1, "red", "purple"); // 插入两个值，删除一个元素
+console.log(colors); // green,red,purple,orange,blue
+console.log(removed); // yellow，只有一个元素的数组
+```
+
+这个例子中，colors 数组一开始包含 3 个元素。第一次调用 splice()时，只删除了第一项，colors 中还有"green"和"blue"。第二次调用 slice()时，在位置 1 插入两项，然后 colors 包含"green"、"yellow"、"orange"和"blue"。这次没删除任何项，因此返回空数组。最后一次调用 splice()时删除了位置 1 上的一项，同时又插入了"red"和"purple"。最后，colors 数组包含"green"、"red"、"purple"、"orange"和"blue"。
+
+### 6.2.12. 搜索和位置方法
+
+ECMAScript 提供两类搜索数组的方法：按严格相等搜索和按断言函数搜索。
+
+1. **严格相等**
+
+ECMAScript 提供了 3 个严格相等的搜索方法：indexOf()、lastIndexOf()和 includes()。其中，前两个方法在所有版本中都可用，而第三个方法是 ECMAScript 7 新增的。这些方法都接收两个参数：要查找的元素和一个可选的起始搜索位置。indexOf()和 includes()方法从数组前头（第一项）开始向后搜索，而 lastIndexOf()从数组末尾（最后一项）开始向前搜索。
+
+indexOf()和 lastIndexOf()都返回要查找的元素在数组中的位置，如果没找到则返回-1。includes()返回布尔值，表示是否至少找到一个与指定元素匹配的项。在比较第一个参数跟数组每一项时，会使用全等（===）比较，也就是说两项必须严格相等。下面来看一些例子：
+
+```js
+let numbers = [1, 2, 3, 4, 5, 4, 3, 2, 1];
+console.log(numbers.indexOf(4)); // 3
+console.log(numbers.lastIndexOf(4)); // 5
+console.log(numbers.includes(4)); // true
+console.log(numbers.indexOf(4, 4)); // 5
+console.log(numbers.lastIndexOf(4, 4)); // 3
+console.log(numbers.includes(4, 7)); // false
+let person = { name: "Nicholas" };
+let people = [{ name: "Nicholas" }];
+let morePeople = [person];
+console.log(people.indexOf(person)); // -1
+console.log(morePeople.indexOf(person)); // 0
+console.log(people.includes(person)); // false
+console.log(morePeople.includes(person)); // true
+```
+
+2. **断言函数**
+
+ECMAScript 也允许按照定义的断言函数搜索数组，每个索引都会调用这个函数。断言函数的返回值决定了相应索引的元素是否被认为匹配。
+
+断言函数接收 3 个参数：元素、索引和数组本身。其中元素是数组中当前搜索的元素，索引是当前元素的索引，而数组就是正在搜索的数组。断言函数返回真值，表示是否匹配。
+
+find()和 findIndex()方法使用了断言函数。这两个方法都从数组的最小索引开始。find()返回第一个匹配的元素，findIndex()返回第一个匹配元素的索引。这两个方法也都接收第二个可选的参数，用于指定断言函数内部 this 的值。
+
+```js
+const people = [
+  {
+    name: "Matt",
+    age: 27,
+  },
+  {
+    name: "Nicholas",
+    age: 29,
+  },
+];
+console.log(people.find((element, index, array) => element.age < 28));
+// {name: "Matt", age: 27}
+console.log(people.findIndex((element, index, array) => element.age < 28));
+// 0
+```
+
+找到匹配项后，这两个方法都不再继续搜索。
+
+```js
+const evens = [2, 4, 6];
+// 找到匹配后，永远不会检查数组的最后一个元素
+evens.find((element, index, array) => {
+  console.log(element);
+  console.log(index);
+  console.log(array);
+  return element === 4;
+});
+// 2
+// 0
+// [2, 4, 6]
+// 4
+// 1
+// [2, 4, 6]
+```
+
+### 6.2.13. 迭代方法
+
+ECMAScript 为数组定义了 5 个迭代方法。每个方法接收两个参数：以每一项为参数运行的函数，以及可选的作为函数运行上下文的作用域对象（影响函数中 this 的值）。传给每个方法的函数接收 3 个参数：数组元素、元素索引和数组本身。因具体方法而异，这个函数的执行结果可能会也可能不会影响方法的返回值。数组的 5 个迭代方法如下。
+
+- every()：对数组每一项都运行传入的函数，如果对每一项函数都返回 true，则这个方法返回 true。
+- filter()：对数组每一项都运行传入的函数，函数返回 true 的项会组成数组之后返回。
+- forEach()：对数组每一项都运行传入的函数，没有返回值。
+- map()：对数组每一项都运行传入的函数，返回由每次函数调用的结果构成的数组。
+- some()：对数组每一项都运行传入的函数，如果有一项函数返回 true，则这个方法返回 true。
+
+这些方法都不改变调用它们的数组。
+
+在这些方法中，every()和 some()是最相似的，都是从数组中搜索符合某个条件的元素。对 every()来说，传入的函数必须对每一项都返回 true，它才会返回 true；否则，它就返回 false。而对 some()来说，只要有一项让传入的函数返回 true，它就会返回 true。下面是一个例子：
+
+```js
+let numbers = [1, 2, 3, 4, 5, 4, 3, 2, 1];
+let everyResult = numbers.every((item, index, array) => item > 2);
+console.log(everyResult); // false
+let someResult = numbers.some((item, index, array) => item > 2);
+console.log(someResult); // true
+```
+
+以上代码调用了 every()和 some()，传入的函数都是在给定项大于 2 时返回 true。every()返回 false 是因为并不是每一项都能达到要求。而 some()返回 true 是因为至少有一项满足条件。
+
+下面再看一看 filter()方法。这个方法基于给定的函数来决定某一项是否应该包含在它返回的数组中。比如，要返回一个所有数值都大于 2 的数组，可以使用如下代码：
+
+```js
+let numbers = [1, 2, 3, 4, 5, 4, 3, 2, 1];
+let filterResult = numbers.filter((item, index, array) => item > 2);
+console.log(filterResult); // 3,4,5,4,3
+```
+
+这里，调用 filter()返回的数组包含 3、4、5、4、3，因为只有对这些项传入的函数才返回 true。这个方法非常适合从数组中筛选满足给定条件的元素。
+
+接下来 map()方法也会返回一个数组。这个数组的每一项都是对原始数组中同样位置的元素运行传入函数而返回的结果。例如，可以将一个数组中的每一项都乘以 2，并返回包含所有结果的数组，如下所示：
+
+```js
+let numbers = [1, 2, 3, 4, 5, 4, 3, 2, 1];
+let mapResult = numbers.map((item, index, array) => item * 2);
+console.log(mapResult); // 2,4,6,8,10,8,6,4,2
+```
+
+以上代码返回了一个数组，包含原始数组中每个值乘以 2 的结果。这个方法非常适合创建一个与原始数组元素一一对应的新数组。
+
+最后，再来看一看 forEach()方法。这个方法只会对每一项运行传入的函数，没有返回值。本质上，forEach()方法相当于使用 for 循环遍历数组。比如：
+
+```js
+let numbers = [1, 2, 3, 4, 5, 4, 3, 2, 1];
+numbers.forEach((item, index, array) => {
+  // 执行某些操作
+});
+```
+
+数组的这些迭代方法通过执行不同操作方便了对数组的处理。
+
+### 6.2.14. 归并方法
+
+ECMAScript 为数组提供了两个归并方法：reduce()和 reduceRight()。这两个方法都会迭代数组的所有项，并在此基础上构建一个最终返回值。reduce()方法从数组第一项开始遍历到最后一项。而 reduceRight()从最后一项开始遍历至第一项。
+
+这两个方法都接收两个参数：对每一项都会运行的归并函数，以及可选的以之为归并起点的初始值。传给 reduce()和 reduceRight()的函数接收 4 个参数：上一个归并值、当前项、当前项的索引和数组本身。这个函数返回的任何值都会作为下一次调用同一个函数的第一个参数。如果没有给这两个方法传入可选的第二个参数（作为归并起点值），则第一次迭代将从数组的第二项开始，因此传给归并函数的第一个参数是数组的第一项，第二个参数是数组的第二项。
+
+可以使用 reduce()函数执行累加数组中所有数值的操作，比如：
+
+```js
+let values = [1, 2, 3, 4, 5];
+let sum = values.reduce((prev, cur, index, array) => prev + cur);
+console.log(sum); // 15
+```
+
+第一次执行归并函数时，prev 是 1，cur 是 2。第二次执行时，prev 是 3（1 + 2），cur 是 3（数组第三项）。如此递进，直到把所有项都遍历一次，最后返回归并结果。
+
+reduceRight()方法与之类似，只是方向相反。来看下面的例子：
+
+```js
+let values = [1, 2, 3, 4, 5];
+let sum = values.reduceRight(function (prev, cur, index, array) {
+  return prev + cur;
+});
+console.log(sum); // 15
+```
+
+在这里，第一次调用归并函数时 prev 是 5，而 cur 是 4。当然，最终结果相同，因为归并操作都是简单的加法。
+
+究竟是使用 reduce()还是 reduceRight()，只取决于遍历数组元素的方向。除此之外，这两个方法没什么区别。
+
+## 6.3. 定型数组
+
+定型数组（typed array）是 ECMAScript 新增的结构，目的是提升向原生库传输数据的效率。实际上，JavaScript 并没有“TypedArray”类型，它所指的其实是一种特殊的包含数值类型的数组。为理解如何使用定型数组，有必要先了解一下它的用途。
+
+### 6.3.1. 历史
+
+随着浏览器的流行，不难想象人们会满怀期待地通过它来运行复杂的 3D 应用程序。早在 2006 年，Mozilla、Opera 等浏览器提供商就实验性地在浏览器中增加了用于渲染复杂图形应用程序的编程平台，无须安装任何插件。其目标是开发一套 JavaScript API，从而充分利用 3D 图形 API 和 GPU 加速，以便在`<canvas>`元素上渲染复杂的图形。
+
+1. **WebGL**
+
+最后的 JavaScript API 是基于 OpenGL ES（OpenGL for Embedded Systems）2.0 规范的。OpenGL ES 是 OpenGL 专注于 2D 和 3D 计算机图形的子集。这个新 API 被命名为 WebGL（Web Graphics Library），于 2011 年发布 1.0 版。有了它，开发者就能够编写涉及复杂图形的应用程序，它会被兼容 WebGL 的浏览器原生解释执行。
+
+在 WebGL 的早期版本中，因为 JavaScript 数组与原生数组之间不匹配，所以出现了性能问题。图形驱动程序 API 通常不需要以 JavaScript 默认双精度浮点格式传递给它们的数值，而这恰恰是 JavaScript 数组在内存中的格式。因此，每次 WebGL 与 JavaScript 运行时之间传递数组时，WebGL 绑定都需要在目标环境分配新数组，以其当前格式迭代数组，然后将数值转型为新数组中的适当格式，而这些要花费很多时间。
+
+2. **定型数组**
+
+这当然是难以接受的，Mozilla 为解决这个问题而实现了 CanvasFloatArray。这是一个提供 JavaScript 接口的、C 语言风格的浮点值数组。JavaScript 运行时使用这个类型可以分配、读取和写入数组。这个数组可以直接传给底层图形驱动程序 API，也可以直接从底层获取到。最终，CanvasFloatArray 变成了 Float32Array，也就是今天定型数组中可用的第一个“类型”。
+
+### 6.3.2. ArrayBuffer
+
+Float32Array 实际上是一种“视图”，可以允许 JavaScript 运行时访问一块名为 ArrayBuffer 的预分配内存。ArrayBuffer 是所有定型数组及视图引用的基本单位。
+
+注意 SharedArrayBuffer 是 ArrayBuffer 的一个变体，可以无须复制就在执行上下文间传递它。关于这种类型，请参考第 27 章。
+
+ArrayBuffer()是一个普通的 JavaScript 构造函数，可用于在内存中分配特定数量的字节空间。
+
+```js
+const buf = new ArrayBuffer(16); // 在内存中分配16 字节
+console.log(buf.byteLength); // 16
+```
+
+ArrayBuffer 一经创建就不能再调整大小。不过，可以使用 slice()复制其全部或部分到一个新实例中：
+
+```js
+const buf1 = new ArrayBuffer(16);
+const buf2 = buf1.slice(4, 12);
+console.log(buf2.byteLength); // 8
+```
+
+ArrayBuffer 某种程度上类似于 C++的 malloc()，但也有几个明显的区别。
+
+- malloc()在分配失败时会返回一个 null 指针。ArrayBuffer 在分配失败时会抛出错误。
+- malloc()可以利用虚拟内存，因此最大可分配尺寸只受可寻址系统内存限制。ArrayBuffer 分配的内存不能超过 Number.MAX_SAFE_INTEGER（2^53 - 1）字节。
+- malloc()调用成功不会初始化实际的地址。声明 ArrayBuffer 则会将所有二进制位初始化为 0。
+- 通过 malloc()分配的堆内存除非调用 free()或程序退出，否则系统不能再使用。而通过声明 ArrayBuffer 分配的堆内存可以被当成垃圾回收，不用手动释放。
+
+不能仅通过对 ArrayBuffer 的引用就读取或写入其内容。要读取或写入 ArrayBuffer，就必须通过视图。视图有不同的类型，但引用的都是 ArrayBuffer 中存储的二进制数据。
+
+### 6.3.3. DataView
+
+第一种允许你读写 ArrayBuffer 的视图是 DataView。这个视图专为文件 I/O 和网络 I/O 设计，其 API 支持对缓冲数据的高度控制，但相比于其他类型的视图性能也差一些。DataView 对缓冲内容没有任何预设，也不能迭代。
+
+必须在对已有的 ArrayBuffer 读取或写入时才能创建 DataView 实例。这个实例可以使用全部或部分 ArrayBuffer，且维护着对该缓冲实例的引用，以及视图在缓冲中开始的位置。
+
+```js
+const buf = new ArrayBuffer(16);
+// DataView 默认使用整个ArrayBuffer
+const fullDataView = new DataView(buf);
+console.log(fullDataView.byteOffset); // 0
+console.log(fullDataView.byteLength); // 16
+console.log(fullDataView.buffer === buf); // true
+// 构造函数接收一个可选的字节偏移量和字节长度
+// byteOffset=0 表示视图从缓冲起点开始
+// byteLength=8 限制视图为前8 个字节
+const firstHalfDataView = new DataView(buf, 0, 8);
+console.log(firstHalfDataView.byteOffset); // 0
+console.log(firstHalfDataView.byteLength); // 8
+console.log(firstHalfDataView.buffer === buf); // true
+// 如果不指定，则DataView 会使用剩余的缓冲
+// byteOffset=8 表示视图从缓冲的第9 个字节开始
+// byteLength 未指定，默认为剩余缓冲
+const secondHalfDataView = new DataView(buf, 8);
+console.log(secondHalfDataView.byteOffset); // 8
+console.log(secondHalfDataView.byteLength); // 8
+console.log(secondHalfDataView.buffer === buf); // true
+```
+
+要通过 DataView 读取缓冲，还需要几个组件。
+
+- 首先是要读或写的字节偏移量。可以看成 DataView 中的某种“地址”。
+- DataView 应该使用 ElementType 来实现 JavaScript 的 Number 类型到缓冲内二进制格式的转换。
+- 最后是内存中值的字节序。默认为大端字节序。
+
+1. **ElementType**
+
+DataView 对存储在缓冲内的数据类型没有预设。它暴露的 API 强制开发者在读、写时指定一个 ElementType，然后 DataView 就会忠实地为读、写而完成相应的转换。
+
+| ElementType | 字 节 | 说 明           | 等价的 C 类型  | 值的范围                     |
+| ----------- | ----- | --------------- | -------------- | ---------------------------- |
+| Int8        | 1     | 8 位有符号整数  | signed char    | -128~127                     |
+| Uint8       | 1     | 8 位无符号整数  | unsigned char  | 0~255                        |
+| Int16       | 2     | 16 位有符号整数 | short          | -32 768~32 767               |
+| Uint16      | 2     | 16 位无符号整数 | unsigned short | 0~65 535                     |
+| Int32       | 4     | 32 位有符号整数 | int            | -2 147 483 648~2 147 483 647 |
+| Uint32      | 4     | 32 位无符号整数 | unsigned int   | 0~4 294 967 295              |
+| Float32     | 4     | 32 位 IEEE-754  | 浮点数 float   | -3.4e+38~+3.4e+38            |
+| Float64     | 8     | 64 位 IEEE-754  | 浮点数 double  | -1.7e+308~+1.7e+308          |
+
+DataView 为上表中的每种类型都暴露了get 和set 方法，这些方法使用byteOffset（字节偏移量）定位要读取或写入值的位置。类型是可以互换使用的，如下例所示：
+
+```js
+// 在内存中分配两个字节并声明一个DataView
+const buf = new ArrayBuffer(2);
+const view = new DataView(buf);
+// 说明整个缓冲确实所有二进制位都是0
+// 检查第一个和第二个字符
+console.log(view.getInt8(0)); // 0
+console.log(view.getInt8(1)); // 0
+// 检查整个缓冲
+console.log(view.getInt16(0)); // 0
+// 将整个缓冲都设置为1
+// 255 的二进制表示是11111111（2^8 - 1）
+view.setUint8(0, 255);
+// DataView 会自动将数据转换为特定的ElementType
+// 255 的十六进制表示是0xFF
+view.setUint8(1, 0xFF);
+// 现在，缓冲里都是1 了
+// 如果把它当成二补数的有符号整数，则应该是-1
+console.log(view.getInt16(0)); // -1
+```
+
+2. **字节序**
+
+前面例子中的缓冲有意回避了字节序的问题。“字节序”指的是计算系统维护的一种字节顺序的约定。DataView 只支持两种约定：大端字节序和小端字节序。大端字节序也称为“网络字节序”，意思是最高有效位保存在第一个字节，而最低有效位保存在最后一个字节。小端字节序正好相反，即最低有效位保存在第一个字节，最高有效位保存在最后一个字节。
+
+JavaScript 运行时所在系统的原生字节序决定了如何读取或写入字节，但DataView 并不遵守这个约定。对一段内存而言，DataView 是一个中立接口，它会遵循你指定的字节序。DataView 的所有API 方法都以大端字节序作为默认值，但接收一个可选的布尔值参数，设置为true 即可启用小端字节序。
+
+```js
+// 在内存中分配两个字节并声明一个DataView
+const buf = new ArrayBuffer(2);
+const view = new DataView(buf);
+// 填充缓冲，让第一位和最后一位都是1
+view.setUint8(0, 0x80); // 设置最左边的位等于1
+view.setUint8(1, 0x01); // 设置最右边的位等于1
+// 缓冲内容（为方便阅读，人为加了空格）
+// 0x8 0x0 0x0 0x1
+// 1000 0000 0000 0001
+// 按大端字节序读取Uint16
+// 0x80 是高字节，0x01 是低字节
+// 0x8001 = 2^15 + 2^0 = 32768 + 1 = 32769
+console.log(view.getUint16(0)); // 32769
+// 按小端字节序读取Uint16
+// 0x01 是高字节，0x80 是低字节
+// 0x0180 = 2^8 + 2^7 = 256 + 128 = 384
+console.log(view.getUint16(0, true)); // 384
+// 按大端字节序写入Uint16
+view.setUint16(0, 0x0004);
+// 缓冲内容（为方便阅读，人为加了空格）
+// 0x0 0x0 0x0 0x4
+// 0000 0000 0000 0100
+console.log(view.getUint8(0)); // 0
+console.log(view.getUint8(1)); // 4
+// 按小端字节序写入Uint16
+view.setUint16(0, 0x0002, true);
+// 缓冲内容（为方便阅读，人为加了空格）
+// 0x0 0x2 0x0 0x0
+// 0000 0010 0000 0000
+console.log(view.getUint8(0)); // 2
+console.log(view.getUint8(1)); // 0
+```
+
+3. **边界情形**
+
+DataView 完成读、写操作的前提是必须有充足的缓冲区，否则就会抛出RangeError：
+
+```js
+const buf = new ArrayBuffer(6);
+const view = new DataView(buf);
+// 尝试读取部分超出缓冲范围的值
+view.getInt32(4);
+// RangeError
+// 尝试读取超出缓冲范围的值
+view.getInt32(8);
+// RangeError
+// 尝试读取超出缓冲范围的值
+view.getInt32(-1);
+// RangeError
+// 尝试写入超出缓冲范围的值
+view.setInt32(4, 123);
+// RangeError
+```
+
+DataView 在写入缓冲里会尽最大努力把一个值转换为适当的类型，后备为0。如果无法转换，则抛出错误：
+
+```js
+const buf = new ArrayBuffer(1);
+const view = new DataView(buf);
+view.setInt8(0, 1.5);
+console.log(view.getInt8(0)); // 1
+view.setInt8(0, [4]);
+console.log(view.getInt8(0)); // 4
+view.setInt8(0, 'f');
+console.log(view.getInt8(0)); // 0
+view.setInt8(0, Symbol());
+// TypeError
+```
+
+### 6.3.4. 定型数组
+
+定型数组是另一种形式的ArrayBuffer 视图。虽然概念上与DataView 接近，但定型数组的区别在于，它特定于一种ElementType 且遵循系统原生的字节序。相应地，定型数组提供了适用面更广的API 和更高的性能。设计定型数组的目的就是提高与WebGL 等原生库交换二进制数据的效率。由于定型数组的二进制表示对操作系统而言是一种容易使用的格式，JavaScript 引擎可以重度优化算术运算、按位运算和其他对定型数组的常见操作，因此使用它们速度极快。
+
+创建定型数组的方式包括读取已有的缓冲、使用自有缓冲、填充可迭代结构，以及填充基于任意类型的定型数组。另外，通过`<ElementType>.from()`和`<ElementType>.of()`也可以创建定型数组：
+
+```js
+// 创建一个12 字节的缓冲
+const buf = new ArrayBuffer(12);
+// 创建一个引用该缓冲的Int32Array
+const ints = new Int32Array(buf);
+// 这个定型数组知道自己的每个元素需要4 字节
+// 因此长度为3
+console.log(ints.length); // 3
+// 创建一个长度为6 的Int32Array
+const ints2 = new Int32Array(6);
+// 每个数值使用4 字节，因此ArrayBuffer 是24 字节
+console.log(ints2.length); // 6
+// 类似DataView，定型数组也有一个指向关联缓冲的引用
+console.log(ints2.buffer.byteLength); // 24
+// 创建一个包含[2, 4, 6, 8]的Int32Array
+const ints3 = new Int32Array([2, 4, 6, 8]);
+console.log(ints3.length); // 4
+console.log(ints3.buffer.byteLength); // 16
+console.log(ints3[2]); // 6
+// 通过复制ints3 的值创建一个Int16Array
+const ints4 = new Int16Array(ints3);
+// 这个新类型数组会分配自己的缓冲
+// 对应索引的每个值会相应地转换为新格式
+console.log(ints4.length); // 4
+console.log(ints4.buffer.byteLength); // 8
+console.log(ints4[2]); // 6
+// 基于普通数组来创建一个Int16Array
+const ints5 = Int16Array.from([3, 5, 7, 9]);
+console.log(ints5.length); // 4
+console.log(ints5.buffer.byteLength); // 8
+console.log(ints5[2]); // 7
+// 基于传入的参数创建一个Float32Array
+const floats = Float32Array.of(3.14, 2.718, 1.618);
+console.log(floats.length); // 3
+console.log(floats.buffer.byteLength); // 12
+console.log(floats[2]); // 1.6180000305175781
+```
+
+定型数组的构造函数和实例都有一个BYTES_PER_ELEMENT 属性，返回该类型数组中每个元素的大小：
+
+```js
+console.log(Int16Array.BYTES_PER_ELEMENT); // 2
+console.log(Int32Array.BYTES_PER_ELEMENT); // 4
+const ints = new Int32Array(1),
+floats = new Float64Array(1);
+console.log(ints.BYTES_PER_ELEMENT); // 4
+console.log(floats.BYTES_PER_ELEMENT); // 8
+```
+
+如果定型数组没有用任何值初始化，则其关联的缓冲会以0 填充：
+
+```js
+const ints = new Int32Array(4);
+console.log(ints[0]); // 0
+console.log(ints[1]); // 0
+console.log(ints[2]); // 0
+console.log(ints[3]); // 0
+```
+
+1. **定型数组行为**
+
+从很多方面看，定型数组与普通数组都很相似。定型数组支持如下操作符、方法和属性：
+
+- []
+- copyWithin()
+- entries()
+- every()
+- fill()
+- filter()
+- find()
+- findIndex()
+- forEach()
+- indexOf()
+- join()
+- keys()
+- lastIndexOf()
+- length
+- map()
+- reduce()
+- reduceRight()
+- reverse()
+- slice()
+- some()
+- sort()
+- toLocaleString()
+- toString()
+- values()
+
+其中，返回新数组的方法也会返回包含同样元素类型（element type）的新定型数组：
+
+```js
+const ints = new Int16Array([1, 2, 3]);
+const doubleints = ints.map(x => 2*x);
+console.log(doubleints instanceof Int16Array); // true
+```
+
+定型数组有一个Symbol.iterator 符号属性，因此可以通过for..of 循环和扩展操作符来操作：
+
+```js
+const ints = new Int16Array([1, 2, 3]);
+for (const int of ints) {
+console.log(int);
+}
+// 1
+// 2
+// 3
+console.log(Math.max(...ints)); // 3
+```
+
+2. **合并、复制和修改定型数组**
+
+定型数组同样使用数组缓冲来存储数据，而数组缓冲无法调整大小。因此，下列方法不适用于定型数组：
+
+- concat()
+- pop()
+- push()
+- shift()
+- splice()
+- unshift()
+
+不过，定型数组也提供了两个新方法，可以快速向外或向内复制数据：set()和subarray()。
+
+set()从提供的数组或定型数组中把值复制到当前定型数组中指定的索引位置：
+
+```js
+// 创建长度为8 的int16 数组
+const container = new Int16Array(8);
+// 把定型数组复制为前4 个值
+// 偏移量默认为索引0
+container.set(Int8Array.of(1, 2, 3, 4));
+console.log(container); // [1,2,3,4,0,0,0,0]
+// 把普通数组复制为后4 个值
+// 偏移量4 表示从索引4 开始插入
+container.set([5,6,7,8], 4);
+console.log(container); // [1,2,3,4,5,6,7,8]
+// 溢出会抛出错误
+container.set([5,6,7,8], 7);
+// RangeError
+```
+
+subarray()执行与set()相反的操作，它会基于从原始定型数组中复制的值返回一个新定型数组。复制值时的开始索引和结束索引是可选的：
+
+```js
+const source = Int16Array.of(2, 4, 6, 8);
+// 把整个数组复制为一个同类型的新数组
+const fullCopy = source.subarray();
+console.log(fullCopy); // [2, 4, 6, 8]
+// 从索引2 开始复制数组
+const halfCopy = source.subarray(2);
+console.log(halfCopy); // [6, 8]
+// 从索引1 开始复制到索引3
+const partialCopy = source.subarray(1, 3);
+console.log(partialCopy); // [4, 6]
+```
+
+定型数组没有原生的拼接能力，但使用定型数组API 提供的很多工具可以手动构建：
+
+```js
+// 第一个参数是应该返回的数组类型
+// 其余参数是应该拼接在一起的定型数组
+function typedArrayConcat(typedArrayConstructor, ...typedArrays) {
+// 计算所有数组中包含的元素总数
+const numElements = typedArrays.reduce((x,y) => (x.length || x) + y.length);
+// 按照提供的类型创建一个数组，为所有元素留出空间
+const resultArray = new typedArrayConstructor(numElements);
+// 依次转移数组
+let currentOffset = 0;
+typedArrays.map(x => {
+resultArray.set(x, currentOffset);
+currentOffset += x.length;
+});
+return resultArray;
+}
+const concatArray = typedArrayConcat(Int32Array,
+Int8Array.of(1, 2, 3),
+Int16Array.of(4, 5, 6),
+Float32Array.of(7, 8, 9));
+console.log(concatArray); // [1, 2, 3, 4, 5, 6, 7, 8, 9]
+console.log(concatArray instanceof Int32Array); // true
+```
+
+3. **上溢和下溢**
+
+定型数组中值的下溢和上溢不会影响到其他索引，但仍然需要考虑数组的元素应该是什么类型。定型数组对于可以存储的每个索引只接受一个相关位，而不考虑它们对实际数值的影响。以下代码演示了如何处理下溢和上溢：
+
+```js
+// 长度为2 的有符号整数数组
+// 每个索引保存一个二补数形式的有符号整数
+// 范围是-128（-1 * 2^7）~127（2^7 - 1）
+const ints = new Int8Array(2);
+// 长度为2 的无符号整数数组
+// 每个索引保存一个无符号整数
+// 范围是0~255（2^7 - 1）
+const unsignedInts = new Uint8Array(2);
+// 上溢的位不会影响相邻索引
+// 索引只取最低有效位上的8 位
+unsignedInts[1] = 256; // 0x100
+console.log(unsignedInts); // [0, 0]
+unsignedInts[1] = 511; // 0x1FF
+console.log(unsignedInts); // [0, 255]
+// 下溢的位会被转换为其无符号的等价值
+// 0xFF 是以二补数形式表示的-1（截取到8 位）,
+// 但255 是一个无符号整数
+unsignedInts[1] = -1 // 0xFF (truncated to 8 bits)
+console.log(unsignedInts); // [0, 255]
+// 上溢自动变成二补数形式
+// 0x80 是无符号整数的128，是二补数形式的-128
+ints[1] = 128; // 0x80
+console.log(ints); // [0, -128]
+// 下溢自动变成二补数形式
+// 0xFF 是无符号整数的255，是二补数形式的-1
+ints[1] = 255; // 0xFF
+console.log(ints); // [0, -1]
+```
+
+除了8 种元素类型，还有一种“夹板”数组类型：Uint8ClampedArray，不允许任何方向溢出。超出最大值255 的值会被向下舍入为255，而小于最小值0 的值会被向上舍入为0。
+
+```js
+const clampedInts = new Uint8ClampedArray([-1, 0, 255, 256]);
+console.log(clampedInts); // [0, 0, 255, 255]
+```
+
+按照JavaScript 之父Brendan Eich 的说法：“Uint8ClampedArray 完全是HTML5canvas 元素的历史留存。除非真的做跟canvas 相关的开发，否则不要使用它。”
+
+## 6.4. Map
+
+ECMAScript 6 以前，在JavaScript 中实现“键/值”式存储可以使用Object 来方便高效地完成，也就是使用对象属性作为键，再使用属性来引用值。但这种实现并非没有问题，为此TC39 委员会专门为“键/值”存储定义了一个规范。
+
+作为ECMAScript 6 的新增特性，Map 是一种新的集合类型，为这门语言带来了真正的键/值存储机制。Map 的大多数特性都可以通过Object 类型实现，但二者之间还是存在一些细微的差异。具体实践中使用哪一个，还是值得细细甄别。
+
+### 6.4.1. 基本API
+
+使用new 关键字和Map 构造函数可以创建一个空映射：
+
+```js
+const m = new Map();
+```
+
+如果想在创建的同时初始化实例，可以给Map 构造函数传入一个可迭代对象，需要包含键/值对数组。可迭代对象中的每个键/值对都会按照迭代顺序插入到新映射实例中：
+
+```js
+// 使用嵌套数组初始化映射
+const m1 = new Map([
+["key1", "val1"],
+["key2", "val2"],
+["key3", "val3"]
+]);
+console.log(m1.size); // 3
+
+// 使用自定义迭代器初始化映射
+const m2 = new Map({
+[Symbol.iterator]: function*() {
+  yield ["key1", "val1"];
+  yield ["key2", "val2"];
+  yield ["key3", "val3"];
+}
+});
+console.log(m2.size); // 3
+
+// 映射期待的键/值对，无论是否提供
+const m3 = new Map([[]]);
+console.log(m3.has(undefined)); // true
+console.log(m3.get(undefined)); // undefined
+```
+
+初始化之后，可以使用set()方法再添加键/值对。另外，可以使用get()和has()进行查询，可以通过size 属性获取映射中的键/值对的数量，还可以使用delete()和clear()删除值。
+
+```js
+const m = new Map();
+console.log(m.has("firstName")); // false
+console.log(m.get("firstName")); // undefined
+console.log(m.size); // 0
+
+m.set("firstName", "Matt")
+  .set("lastName", "Frisbie");
+console.log(m.has("firstName")); // true
+console.log(m.get("firstName")); // Matt
+console.log(m.size); // 2
+
+m.delete("firstName"); // 只删除这一个键/值对
+console.log(m.has("firstName")); // false
+console.log(m.has("lastName")); // true
+console.log(m.size); // 1
+
+m.clear(); // 清除这个映射实例中的所有键/值对
+console.log(m.has("firstName")); // false
+console.log(m.has("lastName")); // false
+console.log(m.size); // 0
+```
+
+set()方法返回映射实例，因此可以把多个操作连缀起来，包括初始化声明：
+
+```js
+const m = new Map().set("key1", "val1")
+                    .set("key2", "val2")
+                    .set("key3", "val3");
+
+console.log(m.size); // 3
+```
+
+与Object 只能使用数值、字符串或符号作为键不同，Map 可以使用任何JavaScript 数据类型作为键。Map 内部使用SameValueZero 比较操作（ECMAScript 规范内部定义，语言中不能使用），基本上相当于使用严格对象相等的标准来检查键的匹配性。与Object 类似，映射的值是没有限制的。
+
+```js
+const m = new Map();
+
+const functionKey = function() {};
+const symbolKey = Symbol();
+const objectKey = new Object();
+
+m.set(functionKey, "functionValue");
+m.set(symbolKey, "symbolValue");
+m.set(objectKey, "objectValue");
+
+console.log(m.get(functionKey)); // functionValue
+console.log(m.get(symbolKey)); // symbolValue
+console.log(m.get(objectKey)); // objectValue
+
+// SameValueZero 比较意味着独立实例不冲突
+console.log(m.get(function() {})); // undefined
+```
+
+与严格相等一样，在映射中用作键和值的对象及其他“集合”类型，在自己的内容或属性被修改时仍然保持不变：
+
+```js
+const m = new Map();
+
+const objKey = {},
+objVal = {},
+arrKey = [],
+arrVal = [];
+
+m.set(objKey, objVal);
+m.set(arrKey, arrVal);
+
+objKey.foo = "foo";
+objVal.bar = "bar";
+arrKey.push("foo");
+arrVal.push("bar");
+
+console.log(m.get(objKey)); // {bar: "bar"}
+console.log(m.get(arrKey)); // ["bar"]
+```
+
+SameValueZero 比较也可能导致意想不到的冲突：
+
+```js
+const m = new Map();
+const a = 0/"", // NaN
+b = 0/"", // NaN
+pz = +0,
+nz = -0;
+console.log(a === b); // false
+console.log(pz === nz); // true
+m.set(a, "foo");
+m.set(pz, "bar");
+console.log(m.get(b)); // foo
+console.log(m.get(nz)); // bar
+```
+
+注意 SameValueZero 是ECMAScript 规范新增的相等性比较算法。关于ECMAScript 的相等性比较，可以参考MDN 文档中的文章“Equality Comparisons and Sameness”
+
+### 6.4.2. 顺序与迭代
+
+与Object 类型的一个主要差异是，Map 实例会维护键值对的插入顺序，因此可以根据插入顺序执行迭代操作。
+
+映射实例可以提供一个迭代器（Iterator），能以插入顺序生成[key, value]形式的数组。可以通过entries()方法（或者Symbol.iterator 属性，它引用entries()）取得这个迭代器：
+
+```js
+const m = new Map([
+  ["key1", "val1"],
+  ["key2", "val2"],
+  ["key3", "val3"]
+]);
+console.log(m.entries === m[Symbol.iterator]); // true
+for (let pair of m.entries()) {
+  console.log(pair);
+}
+// [key1,val1]
+// [key2,val2]
+// [key3,val3]
+for (let pair of m[Symbol.iterator]()) {
+  console.log(pair);
+}
+// [key1,val1]
+// [key2,val2]
+// [key3,val3]
+```
+
+因为entries()是默认迭代器，所以可以直接对映射实例使用扩展操作，把映射转换为数组：
+
+```js
+const m = new Map([
+  ["key1", "val1"],
+  ["key2", "val2"],
+  ["key3", "val3"]
+]);
+console.log([...m]); // [[key1,val1],[key2,val2],[key3,val3]]
+```
+
+如果不使用迭代器，而是使用回调方式，则可以调用映射的forEach(callback, opt_thisArg)方法并传入回调，依次迭代每个键/值对。传入的回调接收可选的第二个参数，这个参数用于重写回调内部this 的值：
+
+```js
+const m = new Map([
+["key1", "val1"],
+["key2", "val2"],
+["key3", "val3"]
+]);
+m.forEach((val, key) => console.log(`${key} => ${val}`));
+// key1 -> val1
+// key2 -> val2
+// key3 -> val3
+```
+
+keys()和values()分别返回以插入顺序生成键和值的迭代器：
+
+```js
+const m = new Map([
+["key1", "val1"],
+["key2", "val2"],
+["key3", "val3"]
+]);
+for (let key of m.keys()) {
+console.log(key);
+}
+// key1
+// key2
+// key3
+for (let key of m.values()) {
+console.log(key);
+}
+// value1
+// value2
+// value3
+```
+
+键和值在迭代器遍历时是可以修改的，但映射内部的引用则无法修改。当然，这并不妨碍修改作为键或值的对象内部的属性，因为这样并不影响它们在映射实例中的身份：
+
+```js
+const m1 = new Map([
+  ["key1", "val1"]
+]);
+
+// 作为键的字符串原始值是不能修改的
+for (let key of m1.keys()) {
+  key = "newKey";
+  console.log(key); // newKey
+  console.log(m1.get("key1")); // val1
+}
+const keyObj = {id: 1};
+const m = new Map([
+  [keyObj, "val1"]
+]);
+
+// 修改了作为键的对象的属性，但对象在映射内部仍然引用相同的值
+for (let key of m.keys()) {
+  key.id = "newKey";
+  console.log(key); // {id: "newKey"}
+  console.log(m.get(keyObj)); // val1
+}
+console.log(keyObj); // {id: "newKey"}
+```
+
+### 6.4.3. 选择Object 还是Map
+
+对于多数Web 开发任务来说，选择Object 还是Map 只是个人偏好问题，影响不大。不过，对于在乎内存和性能的开发者来说，对象和映射之间确实存在显著的差别。
+
+1. 内存占用
+Object 和Map 的工程级实现在不同浏览器间存在明显差异，但存储单个键/值对所占用的内存数量都会随键的数量线性增加。批量添加或删除键/值对则取决于各浏览器对该类型内存分配的工程实现。不同浏览器的情况不同，但给定固定大小的内存，Map 大约可以比Object 多存储50%的键/值对。
+2. 插入性能
+向Object 和Map 中插入新键/值对的消耗大致相当，不过插入Map 在所有浏览器中一般会稍微快一点儿。对这两个类型来说，插入速度并不会随着键/值对数量而线性增加。如果代码涉及大量插入操作，那么显然Map 的性能更佳。
+3. 查找速度
+与插入不同，从大型Object 和Map 中查找键/值对的性能差异极小，但如果只包含少量键/值对，则Object 有时候速度更快。在把Object 当成数组使用的情况下（比如使用连续整数作为属性），浏览器引擎可以进行优化，在内存中使用更高效的布局。这对Map 来说是不可能的。对这两个类型而言，查找速度不会随着键/值对数量增加而线性增加。如果代码涉及大量查找操作，那么某些情况下可能选择Object 更好一些。
+4. 删除性能
+使用delete 删除Object 属性的性能一直以来饱受诟病，目前在很多浏览器中仍然如此。为此，出现了一些伪删除对象属性的操作，包括把属性值设置为undefined 或null。但很多时候，这都是一种讨厌的或不适宜的折中。而对大多数浏览器引擎来说，Map 的delete()操作都比插入和查找更快。如果代码涉及大量删除操作，那么毫无疑问应该选择Map。
+
+## 6.5. WeakMap
+
+ECMAScript 6 新增的“弱映射”（WeakMap）是一种新的集合类型，为这门语言带来了增强的键/值对存储机制。WeakMap 是Map 的“兄弟”类型，其API 也是Map 的子集。WeakMap 中的“weak”（弱），描述的是JavaScript 垃圾回收程序对待“弱映射”中键的方式。
+
+### 6.5.1. 基本API
+
+可以使用new 关键字实例化一个空的WeakMap：
+
+```js
+const wm = new WeakMap();
+```
+
+弱映射中的键只能是Object 或者继承自Object 的类型，尝试使用非对象设置键会抛出TypeError。值的类型没有限制。
+
+如果想在初始化时填充弱映射，则构造函数可以接收一个可迭代对象，其中需要包含键/值对数组。可迭代对象中的每个键/值都会按照迭代顺序插入新实例中：
+
+```js
+const key1 = {id: 1},
+      key2 = {id: 2},
+      key3 = {id: 3};
+
+// 使用嵌套数组初始化弱映射
+const wm1 = new WeakMap([
+[key1, "val1"],
+[key2, "val2"],
+[key3, "val3"]
+]);
+console.log(wm1.get(key1)); // val1
+console.log(wm1.get(key2)); // val2
+console.log(wm1.get(key3)); // val3
+// 初始化是全有或全无的操作
+// 只要有一个键无效就会抛出错误，导致整个初始化失败
+const wm2 = new WeakMap([
+  [key1, "val1"],
+  ["BADKEY", "val2"],
+  [key3, "val3"]
+]);
+// TypeError: Invalid value used as WeakMap key
+typeof wm2;
+// ReferenceError: wm2 is not defined
+// 原始值可以先包装成对象再用作键
+const stringKey = new String("key1");
+const wm3 = new WeakMap([
+stringKey, "val1"
+]);
+console.log(wm3.get(stringKey)); // "val1"
+```
+
+初始化之后可以使用set()再添加键/值对，可以使用get()和has()查询，还可以使用delete()删除：
+
+```js
+const wm = new WeakMap();
+const key1 = {id: 1},
+key2 = {id: 2};
+console.log(wm.has(key1)); // false
+console.log(wm.get(key1)); // undefined
+wm.set(key1, "Matt")
+.set(key2, "Frisbie");
+console.log(wm.has(key1)); // true
+console.log(wm.get(key1)); // Matt
+wm.delete(key1); // 只删除这一个键/值对
+console.log(wm.has(key1)); // false
+console.log(wm.has(key2)); // true
+```
+
+set()方法返回弱映射实例，因此可以把多个操作连缀起来，包括初始化声明：
+
+```js
+const key1 = {id: 1},
+      key2 = {id: 2},
+      key3 = {id: 3};
+const wm = new WeakMap().set(key1, "val1")
+                        .set(key2, "val2")
+                        .set(key3, "val3");
+                        
+console.log(wm.get(key1)); // val1
+console.log(wm.get(key2)); // val2
+console.log(wm.get(key3)); // val3
+```
+
