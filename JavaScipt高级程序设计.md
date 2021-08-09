@@ -2051,7 +2051,6 @@ console.log(o);
 // {Symbol(foo): foo val}
 
 Object.defineProperty(o, s2, { value: "bar val" });
-
 console.log(o);
 // {Symbol(foo): foo val, Symbol(bar): bar val}
 
@@ -2059,13 +2058,12 @@ Object.defineProperties(o, {
   [s3]: { value: "baz val" },
   [s4]: { value: "qux val" },
 });
-
 console.log(o);
 // {Symbol(foo): foo val, Symbol(bar): bar val,
 // Symbol(baz): baz val, Symbol(qux): qux val}
 ```
 
-类似于 Object.getOwnPropertyNames()返回对象实例的常规属性数组，Object.getOwnProperty-Symbols()返回对象实例的符号属性数组。这两个方法的返回值彼此互斥。Object.getOwnProperty-Descriptors()会返回同时包含常规和符号属性描述符的对象。Reflect.ownKeys()会返回两种类型的键：
+类似于 Object.getOwnPropertyNames()返回对象实例的常规属性数组，Object.getOwnPropertySymbols()返回对象实例的符号属性数组。这两个方法的返回值彼此互斥。Object.getOwnPropertyDescriptors()会返回同时包含常规和符号属性描述符的对象。Reflect.ownKeys()会返回两种类型的键：
 
 ```js
 let s1 = Symbol("foo"),
@@ -2082,11 +2080,11 @@ console.log(Object.getOwnPropertySymbols(o));
 console.log(Object.getOwnPropertyNames(o));
 // ["baz", "qux"]
 
-console.log(Object.getOwnPropertyDescriptors(o));
-// {baz: {...}, qux: {...}, Symbol(foo): {...}, Symbol(bar): {...}}
-
 console.log(Reflect.ownKeys(o));
 // ["baz", "qux", Symbol(foo), Symbol(bar)]
+
+console.log(Object.getOwnPropertyDescriptors(o));
+// {baz: {...}, qux: {...}, Symbol(foo): {...}, Symbol(bar): {...}}
 ```
 
 因为符号属性是对内存中符号的一个引用，所以直接创建并用作属性的符号不会丢失。但是，如果没有显式地保存对这些属性的引用，那么必须遍历对象的所有符号属性才能找到相应的属性键：
@@ -3099,7 +3097,6 @@ let result1 = 5 + 5; // 两个数值
 console.log(result1); // 10
 let result2 = 5 + "5"; // 一个数值和一个字符串
 console.log(result2); // "55"
-
 ```
 
 以上代码展示了加法操作符的两种运算模式。正常情况下，5 + 5 等于 10（数值），如前两行代码所示。但是，如果将一个操作数改为字符串，比如"5"，则相加的结果就变成了"55"（原始字符串值），因为第一个操作数也会被转换为字符串。
@@ -5656,6 +5653,7 @@ String 类型专门为在字符串中实现模式匹配设计了几个方法。�
 ```js
 let text = "cat, bat, sat, fat";
 let pattern = /.at/;
+
 // 等价于pattern.exec(text)
 let matches = text.match(pattern);
 console.log(matches.index); // 0
@@ -6053,6 +6051,16 @@ console.log(num); // 2~10 范围内的值，其中包含2 和10
 ```js
 let colors = ["red", "green", "blue", "yellow", "black", "purple", "brown"];
 let color = colors[selectFrom(0, colors.length - 1)];
+```
+
+例如，生成一个随机的颜色码，即一个 6 位的 16 进制数，可以这样做：
+
+```js
+let maxValue = (0xffffff).toString(10);
+console.log(maxValue); // 16777215
+
+let colorCode = "#" + Math.floor(Math.random() * 16777216).toString(16);
+console.log(colorCode); // #3684b4
 ```
 
 注意 Math.random()方法在这里出于演示目的是没有问题的。如果是为了加密而需要生成随机数（传给生成器的输入需要较高的不确定性），那么建议使用 window.crypto.getRandomValues()。
@@ -6880,7 +6888,7 @@ console.log(morePeople.includes(person)); // true
 
 ECMAScript 也允许按照定义的断言函数搜索数组，每个索引都会调用这个函数。断言函数的返回值决定了相应索引的元素是否被认为匹配。
 
-断言函数接收 3 个参数：元素、索引和数组本身。其中元素是数组中当前搜索的元素，索引是当前元素的索引，而数组就是正在搜索的数组。断言函数返回真值，表示是否匹配。
+断言函数接收 3 个参数：元素、索引和数组本身。其中元素是数组中当前搜索的元素，索引是当前元素的索引，而数组就是正在搜索的数组。断言函数返回布尔值，表示是否匹配。
 
 find()和 findIndex()方法使用了断言函数。这两个方法都从数组的最小索引开始。find()返回第一个匹配的元素，findIndex()返回第一个匹配元素的索引。这两个方法也都接收第二个可选的参数，用于指定断言函数内部 this 的值。
 
@@ -8375,28 +8383,29 @@ console.log(arr2); // [1, 2, 3]
 # 7. 迭代器与生成器
 
 本章内容
+
 - 理解迭代
 - 迭代器模式
 - 生成器
 
-迭代的英文“iteration”源自拉丁文itero，意思是“重复”或“再来”。在软件开发领域，“迭代”的意思是按照顺序反复多次执行一段程序，通常会有明确的终止条件。ECMAScript 6 规范新增了两个高级特性：迭代器和生成器。使用这两个特性，能够更清晰、高效、方便地实现迭代。
+迭代的英文“iteration”源自拉丁文 itero，意思是“重复”或“再来”。在软件开发领域，“迭代”的意思是按照顺序反复多次执行一段程序，通常会有明确的终止条件。ECMAScript 6 规范新增了两个高级特性：迭代器和生成器。使用这两个特性，能够更清晰、高效、方便地实现迭代。
 
 ## 7.1. 理解迭代
 
 在 JavaScript 中，计数循环就是一种最简单的迭代：
 
 ```js
-for (let i = 0; i <= 10; i++){
+for (let i = 0; i <= 10; i++) {
   console.log(i);
 }
 ```
 
 循环是迭代机制的基础，这是因为它可以指定迭代的次数，以及每次迭代要执行什么操作。每次循环都会在下一次迭代开始之前完成，而每次迭代的顺序都是事先定义好的。
 
-迭代会在一个有序集合上进行。（“有序”可以理解为集合中所有项都可以按照既定的顺序被遍历到，特别是开始和结束项有明确的定义。）数组是JavaScript 中有序集合的最典型例子。
+迭代会在一个有序集合上进行。（“有序”可以理解为集合中所有项都可以按照既定的顺序被遍历到，特别是开始和结束项有明确的定义。）数组是 JavaScript 中有序集合的最典型例子。
 
 ```js
-let collection = ['foo', 'bar', 'baz'];
+let collection = ["foo", "bar", "baz"];
 for (let index = 0; index < collection.length; index++) {
   console.log(collection[index]);
 }
@@ -8409,10 +8418,10 @@ for (let index = 0; index < collection.length; index++) {
 - 迭代之前需要事先知道如何使用数据结构。数组中的每一项都只能先通过引用取得数组对象，然后再通过[]操作符取得特定索引位置上的项。这种情况并不适用于所有数据结构。
 - 遍历顺序并不是数据结构固有的。通过递增索引来访问数据是特定于数组类型的方式，并不适用于其他具有隐式顺序的数据结构。
 
-ES5 新增了Array.prototype.forEach()方法，向通用迭代需求迈进了一步（但仍然不够理想）：
+ES5 新增了 Array.prototype.forEach()方法，向通用迭代需求迈进了一步（但仍然不够理想）：
 
 ```js
-let collection = ['foo', 'bar', 'baz'];
+let collection = ["foo", "bar", "baz"];
 collection.forEach((item) => console.log(item));
 // foo
 // bar
@@ -8421,11 +8430,11 @@ collection.forEach((item) => console.log(item));
 
 这个方法解决了单独记录索引和通过数组对象取得值的问题。不过，没有办法标识迭代何时终止。因此这个方法只适用于数组，而且回调结构也比较笨拙。
 
-在ECMAScript 较早的版本中，执行迭代必须使用循环或其他辅助结构。随着代码量增加，代码会变得越发混乱。很多语言都通过原生语言结构解决了这个问题，开发者无须事先知道如何迭代就能实现迭代操作。这个解决方案就是迭代器模式。Python、Java、C++，还有其他很多语言都对这个模式提供了完备的支持。JavaScript 在ECMAScript 6 以后也支持了迭代器模式。
+在 ECMAScript 较早的版本中，执行迭代必须使用循环或其他辅助结构。随着代码量增加，代码会变得越发混乱。很多语言都通过原生语言结构解决了这个问题，开发者无须事先知道如何迭代就能实现迭代操作。这个解决方案就是迭代器模式。Python、Java、C++，还有其他很多语言都对这个模式提供了完备的支持。JavaScript 在 ECMAScript 6 以后也支持了迭代器模式。
 
 ## 7.2. 迭代器模式
 
-迭代器模式（特别是在ECMAScript 这个语境下）描述了一个方案，即可以把有些结构称为“可迭代对象”（iterable），因为它们实现了正式的Iterable 接口，而且可以通过迭代器Iterator 消费。
+迭代器模式（特别是在 ECMAScript 这个语境下）描述了一个方案，即可以把有些结构称为“可迭代对象”（iterable），因为它们实现了正式的 Iterable 接口，而且可以通过迭代器 Iterator 消费。
 
 可迭代对象是一种抽象的说法。基本上，可以把可迭代对象理解成数组或集合这样的集合类型的对象。它们包含的元素都是有限的，而且都具有无歧义的遍历顺序：
 
@@ -8443,19 +8452,20 @@ let set = new Set().add(3).add(1).add(4);
 
 注意 临时性可迭代对象可以实现为生成器，本章后面会讨论。
 
-任何实现Iterable 接口的数据结构都可以被实现Iterator 接口的结构“消费”（consume）。迭代器（iterator）是按需创建的一次性对象。每个迭代器都会关联一个可迭代对象，而迭代器会暴露迭代其关联可迭代对象的API。迭代器无须了解与其关联的可迭代对象的结构，只需要知道如何取得连续的值。这种概念上的分离正是Iterable 和Iterator 的强大之处。
+任何实现 Iterable 接口的数据结构都可以被实现 Iterator 接口的结构“消费”（consume）。迭代器（iterator）是按需创建的一次性对象。每个迭代器都会关联一个可迭代对象，而迭代器会暴露迭代其关联可迭代对象的 API。迭代器无须了解与其关联的可迭代对象的结构，只需要知道如何取得连续的值。这种概念上的分离正是 Iterable 和 Iterator 的强大之处。
 
 ### 7.2.1. 可迭代协议
 
-实现Iterable 接口（可迭代协议）要求同时具备两种能力：支持迭代的自我识别能力和创建实现Iterator 接口的对象的能力。在ECMAScript 中，这意味着必须暴露一个属性作为“默认迭代器”，而且这个属性必须使用特殊的Symbol.iterator 作为键。这个默认迭代器属性必须引用一个迭代器工厂函数，调用这个工厂函数必须返回一个新迭代器。
+实现 Iterable 接口（可迭代协议）要求同时具备两种能力：支持迭代的自我识别能力和创建实现 Iterator 接口的对象的能力。在 ECMAScript 中，这意味着必须暴露一个属性作为“默认迭代器”，而且这个属性必须使用特殊的 Symbol.iterator 作为键。这个默认迭代器属性必须引用一个迭代器工厂函数，调用这个工厂函数必须返回一个新迭代器。
 
-很多内置类型都实现了Iterable 接口：
+很多内置类型都实现了 Iterable 接口：
+
 - 字符串
 - 数组
 - 映射
 - 集合
 - arguments 对象
-- NodeList 等DOM 集合类型
+- NodeList 等 DOM 集合类型
 
 检查是否存在默认迭代器属性可以暴露这个工厂函数：
 
@@ -8466,11 +8476,11 @@ let obj = {};
 console.log(num[Symbol.iterator]); // undefined
 console.log(obj[Symbol.iterator]); // undefined
 
-let str = 'abc';
-let arr = ['a', 'b', 'c'];
-let map = new Map().set('a', 1).set('b', 2).set('c', 3);
-let set = new Set().add('a').add('b').add('c');
-let els = document.querySelectorAll('div');
+let str = "abc";
+let arr = ["a", "b", "c"];
+let map = new Map().set("a", 1).set("b", 2).set("c", 3);
+let set = new Set().add("a").add("b").add("c");
+let els = document.querySelectorAll("div");
 // 这些类型都实现了迭代器工厂函数
 console.log(str[Symbol.iterator]); // f values() { [native code] }
 console.log(arr[Symbol.iterator]); // f values() { [native code] }
@@ -8496,12 +8506,12 @@ console.log(els[Symbol.iterator]()); // ArrayIterator {}
 - 创建映射
 - Promise.all()接收由期约组成的可迭代对象
 - Promise.race()接收由期约组成的可迭代对象
-- yield*操作符，在生成器中使用
+- yield\*操作符，在生成器中使用
 
 这些原生语言结构会在后台调用提供的可迭代对象的这个工厂函数，从而创建一个迭代器：
 
 ```js
-let arr = ['foo', 'bar', 'baz'];
+let arr = ["foo", "bar", "baz"];
 // for-of 循环
 for (let el of arr) {
   console.log(el);
@@ -8528,11 +8538,11 @@ let map = new Map(pairs);
 console.log(map); // Map(3) { 'foo'=>0, 'bar'=>1, 'baz'=>2 }
 ```
 
-如果对象原型链上的父类实现了Iterable 接口，那这个对象也就实现了这个接口：
+如果对象原型链上的父类实现了 Iterable 接口，那这个对象也就实现了这个接口：
 
 ```js
 class FooArray extends Array {}
-let fooArr = new FooArray('foo', 'bar', 'baz');
+let fooArr = new FooArray("foo", "bar", "baz");
 for (let el of fooArr) {
   console.log(el);
 }
@@ -8543,13 +8553,13 @@ for (let el of fooArr) {
 
 ### 7.2.2. 迭代器协议
 
-迭代器是一种一次性使用的对象，用于迭代与其关联的可迭代对象。迭代器API 使用next()方法在可迭代对象中遍历数据。每次成功调用next()，都会返回一个IteratorResult 对象，其中包含迭代器返回的下一个值。若不调用next()，则无法知道迭代器的当前位置。
+迭代器是一种一次性使用的对象，用于迭代与其关联的可迭代对象。迭代器 API 使用 next()方法在可迭代对象中遍历数据。每次成功调用 next()，都会返回一个 IteratorResult 对象，其中包含迭代器返回的下一个值。若不调用 next()，则无法知道迭代器的当前位置。
 
-next()方法返回的迭代器对象IteratorResult 包含两个属性：done 和value。done 是一个布尔值，表示是否还可以再次调用next()取得下一个值；value 包含可迭代对象的下一个值（done 为false），或者undefined（done 为true）。done: true 状态称为“耗尽”。可以通过以下简单的数组来演示：
+next()方法返回的迭代器对象 IteratorResult 包含两个属性：done 和 value。done 是一个布尔值，表示是否还可以再次调用 next()取得下一个值；value 包含可迭代对象的下一个值（done 为 false），或者 undefined（done 为 true）。done: true 状态称为“耗尽”。可以通过以下简单的数组来演示：
 
 ```js
 // 可迭代对象
-let arr = ['foo', 'bar'];
+let arr = ["foo", "bar"];
 // 迭代器工厂函数
 console.log(arr[Symbol.iterator]); // f values() { [native code] }
 // 迭代器
@@ -8560,4 +8570,3 @@ console.log(iter.next()); // { done: false, value: 'foo' }
 console.log(iter.next()); // { done: false, value: 'bar' }
 console.log(iter.next()); // { done: true, value: undefined }
 ```
-
