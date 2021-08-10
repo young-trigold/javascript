@@ -1022,7 +1022,21 @@ console.log(age); // ReferenceError：age 没有定义
 let age = 26;
 ```
 
-在解析代码时，JavaScript 引擎也会注意出现在块后面的 let 声明，只不过在此之前不能以任何方式来引用未声明的变量。在 let 声明之前的执行瞬间被称为“暂时性死区”（temporal dead zone），在此阶段引用任何后面才声明的变量都会抛出 ReferenceError。
+在解析代码时，JavaScript 引擎也会注意出现在块后面的 let 声明，只不过在此之前不能以任何方式来引用未声明的变量。在 let 声明之前的执行瞬间被称为“暂时性死区”（temporal dead zone），在此阶段引用任何后面才声明的变量都会抛出 ReferenceError。例如：
+
+```js
+console.log(name); // ReferenceError
+
+let age = 26;
+console.log(age); // 不会输出
+
+console.log(gender); // 不会报错
+let gender = "male";
+
+let name = "Matt";
+```
+
+上面的例子中，从 `console.log(name)` 到 `let name = "Matt"` 之间形成了一个“暂时性死区”。死区内的任何代码都不会得到执行。
 
 2. **全局声明**
 
@@ -5965,8 +5979,7 @@ let global = (function () {
 })();
 ```
 
-这段代码创建一个立即调用的函数表达式，返回了 this 的值。如前所述，当一个函数在没有明确（通过成为某个对象的方法，或者通过 call()/apply()）指定 this 值的情况下执行时，this 值等于 Global 对象。因此，调用一个简单返回 this 的函数是在任何执行上下文中获取 Global 对象的通用
-方式。
+这段代码创建一个立即调用的函数表达式，返回了 this 的值。如前所述，当一个函数在没有明确（通过成为某个对象的方法，或者通过 call()/apply()）指定 this 值的情况下执行时，this 值等于 Global 对象。因此，调用一个简单返回 this 的函数是在任何执行上下文中获取 Global 对象的通用方式。
 
 ### 5.4.2. Math
 
