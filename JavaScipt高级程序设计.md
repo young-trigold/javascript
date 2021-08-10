@@ -1438,7 +1438,7 @@ let hexNum2 = 0x1f; // 十六进制31
 ```js
 let floatNum1 = 1.1;
 let floatNum2 = 0.1;
-let floatNum3 = .1; // 有效，但不推荐
+let floatNum3 = 0.1; // 有效，但不推荐
 ```
 
 因为存储浮点值使用的内存空间是存储整数值的两倍，所以 ECMAScript 总是想方设法把值转换为整数。在小数点后面没有数字的情况下，数值就会变成整数。类似地，如果数值本身就是整数，只是小数点后面跟着 0（如 1.0），那它也会被转换为整数，如下例所示：
@@ -1506,7 +1506,7 @@ NaN 有几个独特的属性。首先，任何涉及 NaN 的操作始终返回 N
 console.log(NaN == NaN); // false
 ```
 
-利用NaN这个特性可以方便的判断一个值是不是NaN，例如：
+利用 NaN 这个特性可以方便的判断一个值是不是 NaN，例如：
 
 ```js
 let test = NaN;
@@ -1525,7 +1525,17 @@ console.log(isNaN(true)); // false，可以转换为数值1
 
 上述的例子测试了 5 个不同的值。首先测试的是 NaN 本身，显然会返回 true。接着测试了数值 10 和字符串"10"，都返回 false，因为它们的数值都是 10。字符串"blue"不能转换为数值，因此函数返回 true。布尔值 true 可以转换为数值 1，因此返回 false。
 
-4. **数值转换**
+与 isNaN 不同，Number.isNaN() 不会强制转换参数的类型，因此也可以使用 Number.isNaN() 来检测一个值是否是 NaN：
+
+```js
+console.log(Number.isNaN(NaN)); // true
+console.log(Number.isNaN(10)); // false
+console.log(Number.isNaN("10")); // false
+console.log(Number.isNaN("blue")); // false
+console.log(Number.isNaN(true)); // false
+```
+
+1. **数值转换**
 
 有 3 个函数可以将非数值转换为数值：Number()、parseInt()和 parseFloat()。Number()是转型函数，可用于任何数据类型。后两个函数主要用于将字符串转换为数值。对于同样的参数，这 3 个函数执行的操作也不同。
 
@@ -2751,7 +2761,7 @@ console.log(test(1.05)); // true
 console.log(test(-1.05)); // true
 ```
 
-但不同的是，Math.trunc(NaN) 返回 NaN，Math.trunc(Infinity) 返回 Infinity，而`~~`对于这2个数值返回0。例如：
+但不同的是，Math.trunc(NaN) 返回 NaN，Math.trunc(Infinity) 返回 Infinity，而`~~`对于这 2 个数值返回 0。例如：
 
 ```js
 console.log(Math.trunc(NaN)); // NaN
@@ -8611,10 +8621,10 @@ console.log(iter.next()); // { value: 'bar', done: false }
 console.log(iter.next()); // { value: undefined, done: true }
 ```
 
-这里通过创建迭代器并调用next()方法按顺序迭代了数组，直至不再产生新值。迭代器并不知道怎么从可迭代对象中取得下一个值，也不知道可迭代对象有多大。只要迭代器到达done: true 状态，后续调用next()就一直返回同样的值了：
+这里通过创建迭代器并调用 next()方法按顺序迭代了数组，直至不再产生新值。迭代器并不知道怎么从可迭代对象中取得下一个值，也不知道可迭代对象有多大。只要迭代器到达 done: true 状态，后续调用 next()就一直返回同样的值了：
 
 ```js
-let arr = ['foo'];
+let arr = ["foo"];
 let iter = arr[Symbol.iterator]();
 console.log(iter.next()); // { value: undefined, done: true }
 console.log(iter.next()); // { value: undefined, done: true }
@@ -8642,7 +8652,7 @@ while (!done) {
 每个迭代器都表示对可迭代对象的一次性有序遍历。不同迭代器的实例相互之间没有联系，只会独立地遍历可迭代对象：
 
 ```js
-let arr = ['foo', 'bar'];
+let arr = ["foo", "bar"];
 let iter1 = arr[Symbol.iterator]();
 let iter2 = arr[Symbol.iterator]();
 
@@ -8660,12 +8670,12 @@ console.log(arr[Symbol.iterator]().next()); // { value: 'foo', done: false }
 迭代器并不与可迭代对象某个时刻的快照绑定，而仅仅是使用游标来记录遍历可迭代对象的历程。如果可迭代对象在迭代期间被修改了，那么迭代器也会反映相应的变化：
 
 ```js
-let arr = ['foo', 'baz'];
+let arr = ["foo", "baz"];
 let iter = arr[Symbol.iterator]();
 console.log(iter.next()); // { value: 'foo', done: false }
 
 // 在数组中间插入值
-arr.splice(1, 0, 'bar');
+arr.splice(1, 0, "bar");
 console.log(iter.next()); // { value: 'bar', done: false }
 console.log(iter.next()); // { value: 'baz', done: false }
 console.log(iter.next()); // { value: undefined, done: true }
@@ -8683,9 +8693,9 @@ class Foo {
   [Symbol.iterator]() {
     return {
       next() {
-        return { value: 'foo', done: false };
-      }
-    }
+        return { value: "foo", done: false };
+      },
+    };
   }
 }
 let f = new Foo();
@@ -8702,7 +8712,7 @@ console.log(a[Symbol.iterator]()); // Array Iterator {}
 
 ### 7.2.3. 自定义迭代器
 
-与Iterable 接口类似，任何实现Iterator 接口的对象都可以作为迭代器使用。下面这个例子中的Counter 类只能被迭代一定的次数：
+与 Iterable 接口类似，任何实现 Iterator 接口的对象都可以作为迭代器使用。下面这个例子中的 Counter 类只能被迭代一定的次数：
 
 ```js
 class Counter {
@@ -8725,7 +8735,7 @@ class Counter {
 let counter = new Counter(3);
 for (let i of counter) {
   console.log(i);
-} 
+}
 // 1
 // 2
 // 3
