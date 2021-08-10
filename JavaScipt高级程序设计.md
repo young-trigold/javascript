@@ -2722,6 +2722,25 @@ console.log(num2); // "-26"
 
 实际上，尽管两者返回的结果一样，但位操作的速度快得多。这是因为位操作是在数值的底层表示上完成的。
 
+两个按位非操作符效果上等同于 Math.trunc()，截断了小数部分：
+
+```js
+function test = (number) => ~~number === Math.trunc(number);
+console.log(test(1.05)); // true
+console.log(test(-1.05)); // true
+```
+
+但不同的是，Math.trunc(NaN) 返回 NaN，Math.trunc(Infinity) 返回 Infinity，而`~~`对于这2个数值返回0。例如：
+
+```js
+console.log(Math.trunc(NaN)); // NaN
+console.log(~~NaN); // 0
+console.log(Math.trunc(Infinity)); // Infinity
+console.log(~~Infinity); // 0
+```
+
+从某些方面来说，开发者更愿意使用 `~~`；
+
 2. **按位与**
 
 按位与操作符用和号（&）表示，有两个操作数。本质上，按位与就是将两个数的每一个位对齐，然后基于真值表中的规则，对每一位执行相应的与操作。
