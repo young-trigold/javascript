@@ -8683,10 +8683,10 @@ console.log(iter.next()); // { value: 'bar', done: false }
 console.log(iter.next()); // { value: undefined, done: true }
 ```
 
-这里通过创建迭代器并调用 next()方法按顺序迭代了数组，直至不再产生新值。迭代器并不知道怎么从可迭代对象中取得下一个值，也不知道可迭代对象有多大。只要迭代器到达 done: true 状态，后续调用 next()就一直返回同样的值了：
+这里通过创建迭代器并调用next()方法按顺序迭代了数组，直至不再产生新值。迭代器并不知道怎么从可迭代对象中取得下一个值，也不知道可迭代对象有多大。只要迭代器到达done: true 状态，后续调用next()就一直返回同样的值了：
 
 ```js
-let arr = ["foo"];
+let arr = ['foo'];
 let iter = arr[Symbol.iterator]();
 console.log(iter.next()); // { value: undefined, done: true }
 console.log(iter.next()); // { value: undefined, done: true }
@@ -8714,7 +8714,7 @@ while (!done) {
 每个迭代器都表示对可迭代对象的一次性有序遍历。不同迭代器的实例相互之间没有联系，只会独立地遍历可迭代对象：
 
 ```js
-let arr = ["foo", "bar"];
+let arr = ['foo', 'bar'];
 let iter1 = arr[Symbol.iterator]();
 let iter2 = arr[Symbol.iterator]();
 
@@ -8732,12 +8732,12 @@ console.log(arr[Symbol.iterator]().next()); // { value: 'foo', done: false }
 迭代器并不与可迭代对象某个时刻的快照绑定，而仅仅是使用游标来记录遍历可迭代对象的历程。如果可迭代对象在迭代期间被修改了，那么迭代器也会反映相应的变化：
 
 ```js
-let arr = ["foo", "baz"];
+let arr = ['foo', 'baz'];
 let iter = arr[Symbol.iterator]();
 console.log(iter.next()); // { value: 'foo', done: false }
 
 // 在数组中间插入值
-arr.splice(1, 0, "bar");
+arr.splice(1, 0, 'bar');
 console.log(iter.next()); // { value: 'bar', done: false }
 console.log(iter.next()); // { value: 'baz', done: false }
 console.log(iter.next()); // { value: undefined, done: true }
@@ -8755,9 +8755,9 @@ class Foo {
   [Symbol.iterator]() {
     return {
       next() {
-        return { value: "foo", done: false };
-      },
-    };
+        return { value: 'foo', done: false };
+      }
+    }
   }
 }
 let f = new Foo();
@@ -8774,7 +8774,7 @@ console.log(a[Symbol.iterator]()); // Array Iterator {}
 
 ### 7.2.3. 自定义迭代器
 
-与 Iterable 接口类似，任何实现 Iterator 接口的对象都可以作为迭代器使用。下面这个例子中的 Counter 类只能被迭代一定的次数：
+与Iterable 接口类似，任何实现Iterator 接口的对象都可以作为迭代器使用。下面这个例子中的Counter 类只能被迭代一定的次数：
 
 ```js
 class Counter {
@@ -8785,9 +8785,9 @@ class Counter {
   }
   next() {
     if (this.count <= this.limit) {
-      return { done: false, value: this.count++ };
+      return { value: this.count++, done: false };
     } else {
-      return { done: true, value: undefined };
+      return { value: undefined, done: true };
     }
   }
   [Symbol.iterator]() {
@@ -8797,7 +8797,7 @@ class Counter {
 let counter = new Counter(3);
 for (let i of counter) {
   console.log(i);
-}
+} 
 // 1
 // 2
 // 3
