@@ -161,6 +161,11 @@ plan : 7 chapter / week
     - [8.1.5. 对象标识及相等判定](#815-对象标识及相等判定)
     - [8.1.6. 增强的对象语法](#816-增强的对象语法)
     - [8.1.7. 对象解构](#817-对象解构)
+  - [8.2. 创建对象](#82-创建对象)
+    - [8.2.1. 概述](#821-概述)
+    - [8.2.2. 工厂模式](#822-工厂模式)
+    - [8.2.3. 构造函数模式](#823-构造函数模式)
+    - [8.2.4. 原型模式](#824-原型模式)
 
 # 1. 什么是 JavaScript
 
@@ -8698,10 +8703,10 @@ console.log(iter.next()); // { value: 'bar', done: false }
 console.log(iter.next()); // { value: undefined, done: true }
 ```
 
-这里通过创建迭代器并调用next()方法按顺序迭代了数组，直至不再产生新值。迭代器并不知道怎么从可迭代对象中取得下一个值，也不知道可迭代对象有多大。只要迭代器到达done: true 状态，后续调用next()就一直返回同样的值了：
+这里通过创建迭代器并调用 next()方法按顺序迭代了数组，直至不再产生新值。迭代器并不知道怎么从可迭代对象中取得下一个值，也不知道可迭代对象有多大。只要迭代器到达 done: true 状态，后续调用 next()就一直返回同样的值了：
 
 ```js
-let arr = ['foo'];
+let arr = ["foo"];
 let iter = arr[Symbol.iterator]();
 console.log(iter.next()); // { value: undefined, done: true }
 console.log(iter.next()); // { value: undefined, done: true }
@@ -8729,7 +8734,7 @@ while (!done) {
 每个迭代器都表示对可迭代对象的一次性有序遍历。不同迭代器的实例相互之间没有联系，只会独立地遍历可迭代对象：
 
 ```js
-let arr = ['foo', 'bar'];
+let arr = ["foo", "bar"];
 let iter1 = arr[Symbol.iterator]();
 let iter2 = arr[Symbol.iterator]();
 
@@ -8747,12 +8752,12 @@ console.log(arr[Symbol.iterator]().next()); // { value: 'foo', done: false }
 迭代器并不与可迭代对象某个时刻的快照绑定，而仅仅是使用游标来记录遍历可迭代对象的历程。如果可迭代对象在迭代期间被修改了，那么迭代器也会反映相应的变化：
 
 ```js
-let arr = ['foo', 'baz'];
+let arr = ["foo", "baz"];
 let iter = arr[Symbol.iterator]();
 console.log(iter.next()); // { value: 'foo', done: false }
 
 // 在数组中间插入值
-arr.splice(1, 0, 'bar');
+arr.splice(1, 0, "bar");
 console.log(iter.next()); // { value: 'bar', done: false }
 console.log(iter.next()); // { value: 'baz', done: false }
 console.log(iter.next()); // { value: undefined, done: true }
@@ -8770,9 +8775,9 @@ class Foo {
   [Symbol.iterator]() {
     return {
       next() {
-        return { value: 'foo', done: false };
-      }
-    }
+        return { value: "foo", done: false };
+      },
+    };
   }
 }
 let f = new Foo();
@@ -8789,7 +8794,7 @@ console.log(a[Symbol.iterator]()); // Array Iterator {}
 
 ### 7.2.3. 自定义迭代器
 
-与Iterable 接口类似，任何实现Iterator 接口的对象都可以作为迭代器使用。下面这个例子中的Counter 类只能被迭代一定的次数：
+与 Iterable 接口类似，任何实现 Iterator 接口的对象都可以作为迭代器使用。下面这个例子中的 Counter 类只能被迭代一定的次数：
 
 ```js
 class Counter {
@@ -8812,20 +8817,24 @@ class Counter {
 let counter = new Counter(3);
 for (let i of counter) {
   console.log(i);
-} 
+}
 // 1
 // 2
 // 3
 ```
 
-这个类实现了Iterator 接口，但不理想。这是因为它的每个实例只能被迭代一次：
+这个类实现了 Iterator 接口，但不理想。这是因为它的每个实例只能被迭代一次：
 
 ```js
-for (let i of counter) { console.log(i); }
+for (let i of counter) {
+  console.log(i);
+}
 // 1
 // 2
 // 3
-for (let i of counter) { console.log(i); }
+for (let i of counter) {
+  console.log(i);
+}
 // (nothing logged)
 ```
 
@@ -8838,7 +8847,7 @@ class Counter {
   }
   [Symbol.iterator]() {
     let count = 1,
-    limit = this.limit;
+      limit = this.limit;
     return {
       next() {
         if (count <= limit) {
@@ -8846,39 +8855,47 @@ class Counter {
         } else {
           return { done: true, value: undefined };
         }
-      }
+      },
     };
   }
 }
 let counter = new Counter(3);
-for (let i of counter) { console.log(i); }
+for (let i of counter) {
+  console.log(i);
+}
 // 1
 // 2
 // 3
-for (let i of counter) { console.log(i); }
+for (let i of counter) {
+  console.log(i);
+}
 // 1
 // 2
 // 3
 ```
 
-每个以这种方式创建的迭代器也实现了Iterable 接口。Symbol.iterator 属性引用的工厂函数会返回相同的迭代器：
+每个以这种方式创建的迭代器也实现了 Iterable 接口。Symbol.iterator 属性引用的工厂函数会返回相同的迭代器：
 
 ```js
-let arr = ['foo', 'bar', 'baz'];
+let arr = ["foo", "bar", "baz"];
 let iter1 = arr[Symbol.iterator]();
 console.log(iter1[Symbol.iterator]); // f values() { [native code] }
 let iter2 = iter1[Symbol.iterator]();
 console.log(iter1 === iter2); // true
 ```
 
-因为每个迭代器也实现了Iterable 接口，所以它们可以用在任何期待可迭代对象的地方，比如for-of 循环：
+因为每个迭代器也实现了 Iterable 接口，所以它们可以用在任何期待可迭代对象的地方，比如 for-of 循环：
 
 ```js
-for (let item of arr ) { console.log(item); }
+for (let item of arr) {
+  console.log(item);
+}
 // 3
 // 1
 // 4
-for (let item of iter ) { console.log(item); }
+for (let item of iter) {
+  console.log(item);
+}
 // 3
 // 1
 // 4
@@ -8886,57 +8903,57 @@ for (let item of iter ) { console.log(item); }
 
 ### 7.2.4. 提前终止迭代器
 
-可选的return()方法用于指定在迭代器提前关闭时执行的逻辑。执行迭代的结构在想让迭代器知道它不想遍历到可迭代对象耗尽时，就可以“关闭”迭代器。可能的情况包括：
+可选的 return()方法用于指定在迭代器提前关闭时执行的逻辑。执行迭代的结构在想让迭代器知道它不想遍历到可迭代对象耗尽时，就可以“关闭”迭代器。可能的情况包括：
 
-- for-of 循环通过break、continue、return 或throw 提前退出；
+- for-of 循环通过 break、continue、return 或 throw 提前退出；
 - 解构操作并未消费所有值。
 
-return()方法必须返回一个有效的IteratorResult 对象。简单情况下，可以只返回{ done: true }。因为这个返回值只会用在生成器的上下文中，所以本章后面再讨论这种情况。
+return()方法必须返回一个有效的 IteratorResult 对象。简单情况下，可以只返回{ done: true }。因为这个返回值只会用在生成器的上下文中，所以本章后面再讨论这种情况。
 
-如下面的代码所示，内置语言结构在发现还有更多值可以迭代，但不会消费这些值时，会自动调用return()方法。
+如下面的代码所示，内置语言结构在发现还有更多值可以迭代，但不会消费这些值时，会自动调用 return()方法。
 
 ```js
 class Counter {
-constructor(limit) {
-this.limit = limit;
-}
-[Symbol.iterator]() {
-let count = 1,
-limit = this.limit;
-return {
-next() {
-if (count <= limit) {
-return { done: false, value: count++ };
-} else {
-return { done: true };
-}
-},
-return() {
-console.log('Exiting early');
-return { done: true };
-}
-};
-}
+  constructor(limit) {
+    this.limit = limit;
+  }
+  [Symbol.iterator]() {
+    let count = 1,
+      limit = this.limit;
+    return {
+      next() {
+        if (count <= limit) {
+          return { done: false, value: count++ };
+        } else {
+          return { done: true };
+        }
+      },
+      return() {
+        console.log("Exiting early");
+        return { done: true };
+      },
+    };
+  }
 }
 let counter1 = new Counter(5);
 for (let i of counter1) {
-if (i > 2) {
-break;
-}
-console.log(i);
+  if (i > 2) {
+    break;
+  }
+  console.log(i);
 }
 // 1
 // 2
 // Exiting early
 let counter2 = new Counter(5);
 try {
-for (let i of counter2) {
-if (i > 2) {
-throw 'err';
-}
-console.log(i);
-}
-} catch(e) {}
+  for (let i of counter2) {
+    if (i > 2) {
+      throw "err";
+    }
+    console.log(i);
+  }
+} catch (e) {}
 // 1
 // 2
 // Exiting early
@@ -8953,40 +8970,40 @@ let iter = a[Symbol.iterator]();
 for (let i of iter) {
   console.log(i);
   if (i > 2) {
-    break
+    break;
   }
 }
 // 1
 // 2
 // 3
 for (let i of iter) {
-console.log(i);
+  console.log(i);
 }
 // 4
 // 5
 ```
 
-因为return()方法是可选的，所以并非所有迭代器都是可关闭的。要知道某个迭代器是否可关闭，可以测试这个迭代器实例的return 属性是不是函数对象。不过，仅仅给一个不可关闭的迭代器增加这个方法并不能让它变成可关闭的。这是因为调用return()不会强制迭代器进入关闭状态。即便如此，return()方法还是会被调用。
+因为 return()方法是可选的，所以并非所有迭代器都是可关闭的。要知道某个迭代器是否可关闭，可以测试这个迭代器实例的 return 属性是不是函数对象。不过，仅仅给一个不可关闭的迭代器增加这个方法并不能让它变成可关闭的。这是因为调用 return()不会强制迭代器进入关闭状态。即便如此，return()方法还是会被调用。
 
 ```js
 let a = [1, 2, 3, 4, 5];
 let iter = a[Symbol.iterator]();
-iter.return = function() {
-console.log('Exiting early');
-return { done: true };
+iter.return = function () {
+  console.log("Exiting early");
+  return { done: true };
 };
 for (let i of iter) {
-console.log(i);
-if (i > 2) {
-break
-}
+  console.log(i);
+  if (i > 2) {
+    break;
+  }
 }
 // 1
 // 2
 // 3
 // 提前退出
 for (let i of iter) {
-console.log(i);
+  console.log(i);
 }
 // 4
 // 5
@@ -8994,30 +9011,30 @@ console.log(i);
 
 ## 7.3. 生成器
 
-生成器是ECMAScript 6 新增的一个极为灵活的结构，拥有在一个函数块内暂停和恢复代码执行的能力。这种新能力具有深远的影响，比如，使用生成器可以自定义迭代器和实现协程。
+生成器是 ECMAScript 6 新增的一个极为灵活的结构，拥有在一个函数块内暂停和恢复代码执行的能力。这种新能力具有深远的影响，比如，使用生成器可以自定义迭代器和实现协程。
 
 ### 7.3.1. 生成器基础
 
-生成器的形式是一个函数，函数名称前面加一个星号（*）表示它是一个生成器。只要是可以定义函数的地方，就可以定义生成器。
+生成器的形式是一个函数，函数名称前面加一个星号（\*）表示它是一个生成器。只要是可以定义函数的地方，就可以定义生成器。
 
 ```js
 // 生成器函数声明
 function* generatorFn() {}
 
 // 生成器函数表达式
-let generatorFn = function* () {}
+let generatorFn = function* () {};
 
 // 作为对象字面量方法的生成器函数
 let foo = {
-  * generatorFn() {}
-}
+  *generatorFn() {},
+};
 // 作为类实例方法的生成器函数
 class Foo {
-  * generatorFn() {}
+  *generatorFn() {}
 }
 // 作为类静态方法的生成器函数
 class Bar {
-  static * generatorFn() {}
+  static *generatorFn() {}
 }
 ```
 
@@ -9028,16 +9045,16 @@ class Bar {
 ```js
 // 等价的生成器函数：
 function* generatorFnA() {}
-function *generatorFnB() {}
-function * generatorFnC() {}
+function* generatorFnB() {}
+function* generatorFnC() {}
 // 等价的生成器方法：
 class Foo {
   *generatorFnD() {}
-  * generatorFnE() {}
+  *generatorFnE() {}
 }
 ```
 
-调用生成器函数会产生一个 **生成器对象**。生成器对象一开始处于暂停执行（suspended）的状态。与迭代器相似，生成器对象也实现了Iterator 接口，因此具有next()方法。调用这个方法会让生成器开始或恢复执行。
+调用生成器函数会产生一个 **生成器对象**。生成器对象一开始处于暂停执行（suspended）的状态。与迭代器相似，生成器对象也实现了 Iterator 接口，因此具有 next()方法。调用这个方法会让生成器开始或恢复执行。
 
 ```js
 function* generatorFn() {}
@@ -9046,7 +9063,7 @@ console.log(g); // generatorFn {<suspended>}
 console.log(g.next); // f next() { [native code] }
 ```
 
-next()方法的返回值类似于迭代器，有一个done 属性和一个value 属性。函数体为空的生成器函数中间不会停留，调用一次next()就会让生成器到达done: true 状态。
+next()方法的返回值类似于迭代器，有一个 done 属性和一个 value 属性。函数体为空的生成器函数中间不会停留，调用一次 next()就会让生成器到达 done: true 状态。
 
 ```js
 function* generatorFn() {}
@@ -9055,29 +9072,29 @@ console.log(generatorObject); // generatorFn {<suspended>}
 console.log(generatorObject.next()); // { done: true, value: undefined }
 ```
 
-value 属性是生成器函数的返回值，默认值为undefined，可以通过生成器函数的返回值指定：
+value 属性是生成器函数的返回值，默认值为 undefined，可以通过生成器函数的返回值指定：
 
 ```js
 function* generatorFn() {
-  return 'foo';
+  return "foo";
 }
 let generatorObject = generatorFn();
 console.log(generatorObject); // generatorFn {<suspended>}
 console.log(generatorObject.next()); // { done: true, value: 'foo' }
 ```
 
-生成器函数只会在初次调用next()方法后开始执行，如下所示：
+生成器函数只会在初次调用 next()方法后开始执行，如下所示：
 
 ```js
 function* generatorFn() {
-  console.log('foobar');
+  console.log("foobar");
 }
 // 初次调用生成器函数并不会打印日志
 let generatorObject = generatorFn();
 generatorObject.next(); // foobar
 ```
 
-生成器对象实现了Iterable 接口，它们默认的迭代器是自引用的：
+生成器对象实现了 Iterable 接口，它们默认的迭代器是自引用的：
 
 ```js
 function* generatorFn() {}
@@ -9096,7 +9113,7 @@ console.log(g === g[Symbol.iterator]());
 
 ### 7.3.2. 通过 yield 中断执行
 
-yield 关键字可以让生成器停止和开始执行，也是生成器最有用的地方。生成器函数在遇到yield关键字之前会正常执行。遇到这个关键字后，执行会停止，函数作用域的状态会被保留。停止执行的生成器函数只能通过在生成器对象上调用next()方法来恢复执行：
+yield 关键字可以让生成器停止和开始执行，也是生成器最有用的地方。生成器函数在遇到 yield 关键字之前会正常执行。遇到这个关键字后，执行会停止，函数作用域的状态会被保留。停止执行的生成器函数只能通过在生成器对象上调用 next()方法来恢复执行：
 
 ```js
 function* generatorFn() {
@@ -9107,13 +9124,13 @@ console.log(generatorObject.next()); // { value: undefined, done: false }
 console.log(generatorObject.next()); // { value: undefined, done: true }
 ```
 
-此时的yield 关键字有点像函数的中间返回语句，它生成的值会出现在next()方法返回的对象里。通过yield 关键字退出的生成器函数会处在done: false 状态；通过return 关键字退出的生成器函数会处于done: true 状态。
+此时的 yield 关键字有点像函数的中间返回语句，它生成的值会出现在 next()方法返回的对象里。通过 yield 关键字退出的生成器函数会处在 done: false 状态；通过 return 关键字退出的生成器函数会处于 done: true 状态。
 
 ```js
 function* generatorFn() {
-  yield 'foo';
-  yield 'bar';
-  return 'baz';
+  yield "foo";
+  yield "bar";
+  return "baz";
 }
 let generatorObject = generatorFn();
 console.log(generatorObject.next()); // { done: false, value: 'foo' }
@@ -9121,13 +9138,13 @@ console.log(generatorObject.next()); // { done: false, value: 'bar' }
 console.log(generatorObject.next()); // { done: true, value: 'baz' }
 ```
 
-生成器函数内部的执行流程会针对每个生成器对象区分作用域。在一个生成器对象上调用next()不会影响其他生成器：
+生成器函数内部的执行流程会针对每个生成器对象区分作用域。在一个生成器对象上调用 next()不会影响其他生成器：
 
 ```js
 function* generatorFn() {
-  yield 'foo';
-  yield 'bar';
-  return 'baz';
+  yield "foo";
+  yield "bar";
+  return "baz";
 }
 let generatorObject1 = generatorFn();
 let generatorObject2 = generatorFn();
@@ -9137,7 +9154,7 @@ console.log(generatorObject2.next()); // { done: false, value: 'bar' }
 console.log(generatorObject1.next()); // { done: false, value: 'bar' }
 ```
 
-yield 关键字只能在生成器函数内部使用，用在其他地方会抛出错误。类似函数的return 关键字，yield 关键字必须直接位于生成器函数定义中，出现在嵌套的非生成器函数中会抛出语法错误：
+yield 关键字只能在生成器函数内部使用，用在其他地方会抛出错误。类似函数的 return 关键字，yield 关键字必须直接位于生成器函数定义中，出现在嵌套的非生成器函数中会抛出语法错误：
 
 ```js
 // 有效
@@ -9154,7 +9171,7 @@ function* invalidGeneratorFnA() {
 function* invalidGeneratorFnB() {
   const b = () => {
     yield;
-  }
+  };
 }
 // 无效
 function* invalidGeneratorFnC() {
@@ -9166,7 +9183,7 @@ function* invalidGeneratorFnC() {
 
 1. **生成器作为可迭代对象**
 
-在生成器对象上显式调用next()方法的用处并不大。其实，如果把生成器对象当成可迭代对象，那么使用起来会更方便：
+在生成器对象上显式调用 next()方法的用处并不大。其实，如果把生成器对象当成可迭代对象，那么使用起来会更方便：
 
 ```js
 function* generatorFn() {
@@ -9186,24 +9203,24 @@ for (const x of generatorFn()) {
 
 ```js
 function* nTimes(n) {
-  while(n--) {
+  while (n--) {
     yield;
   }
 }
 
 for (let _ of nTimes(3)) {
-  console.log('foo');
+  console.log("foo");
 }
 // foo
 // foo
 // foo
 ```
 
-传给生成器的函数可以控制迭代循环的次数。在n 为0 时，while 条件为假，循环退出，生成器函数返回。
+传给生成器的函数可以控制迭代循环的次数。在 n 为 0 时，while 条件为假，循环退出，生成器函数返回。
 
-2. **使用yield 实现输入和输出**
+2. **使用 yield 实现输入和输出**
 
-除了可以作为函数的中间返回语句使用，yield 关键字还可以作为函数的中间参数使用。上一次让生成器函数暂停的yield 关键字会接收到传给next()方法的第一个值。这里有个地方不太好理解——第一次调用next()传入的值不会被使用，因为这一次调用是为了开始执行生成器函数：
+除了可以作为函数的中间返回语句使用，yield 关键字还可以作为函数的中间参数使用。上一次让生成器函数暂停的 yield 关键字会接收到传给 next()方法的第一个值。这里有个地方不太好理解——第一次调用 next()传入的值不会被使用，因为这一次调用是为了开始执行生成器函数：
 
 ```js
 function* generatorFn(initial) {
@@ -9211,30 +9228,30 @@ function* generatorFn(initial) {
   console.log(yield);
   console.log(yield);
 }
-let generatorObject = generatorFn('foo');
-generatorObject.next('bar'); // foo
-generatorObject.next('baz'); // baz
-generatorObject.next('qux'); // qux
+let generatorObject = generatorFn("foo");
+generatorObject.next("bar"); // foo
+generatorObject.next("baz"); // baz
+generatorObject.next("qux"); // qux
 ```
 
 yield 关键字可以同时用于输入和输出，如下例所示：
 
 ```js
 function* generatorFn() {
-  return yield 'foo';
+  return yield "foo";
 }
 let generatorObject = generatorFn();
 console.log(generatorObject.next()); // { done: false, value: 'foo' }
-console.log(generatorObject.next('bar')); // { done: true, value: 'bar' }
+console.log(generatorObject.next("bar")); // { done: true, value: 'bar' }
 ```
 
-因为函数必须对整个表达式求值才能确定要返回的值，所以它在遇到yield 关键字时暂停执行并计算出要产生的值："foo"。下一次调用next()传入了"bar"，作为交给同一个yield 的值。然后这个值被确定为本次生成器函数要返回的值。
+因为函数必须对整个表达式求值才能确定要返回的值，所以它在遇到 yield 关键字时暂停执行并计算出要产生的值："foo"。下一次调用 next()传入了"bar"，作为交给同一个 yield 的值。然后这个值被确定为本次生成器函数要返回的值。
 
 yield 关键字并非只能使用一次。比如，以下代码就定义了一个无穷计数生成器函数：
 
 ```js
 function* generatorFn() {
-  for (let i = 0;;++i) {
+  for (let i = 0; ; ++i) {
     yield i;
   }
 }
@@ -9263,12 +9280,12 @@ for (let x of nTimes(3)) {
 // 2
 ```
 
-另外，使用while 循环也可以，而且代码稍微简洁一点：
+另外，使用 while 循环也可以，而且代码稍微简洁一点：
 
 ```js
 function* nTimes(n) {
   let i = 0;
-  while(n--) {
+  while (n--) {
     yield i++;
   }
 }
@@ -9284,7 +9301,7 @@ for (let x of nTimes(3)) {
 
 ```js
 function* range(start, end) {
-  while(end > start) {
+  while (end > start) {
     yield start++;
   }
 }
@@ -9295,7 +9312,7 @@ for (const x of range(4, 7)) {
 // 5
 // 6
 function* zeroes(n) {
-  while(n--) {
+  while (n--) {
     yield 0;
   }
 }
@@ -9304,7 +9321,7 @@ console.log(Array.from(zeroes(8))); // [0, 0, 0, 0, 0, 0, 0, 0]
 
 3. **产生可迭代对象**
 
-可以使用星号增强yield 的行为，让它能够迭代一个可迭代对象，从而一次产出一个值：
+可以使用星号增强 yield 的行为，让它能够迭代一个可迭代对象，从而一次产出一个值：
 
 ```js
 // 等价的generatorFn：
@@ -9330,11 +9347,11 @@ for (const x of generatorFn()) {
 ```js
 function* generatorFn() {
   yield* [1, 2];
-  yield *[3, 4];
-  yield * [5, 6];
+  yield* [3, 4];
+  yield* [5, 6];
 }
 for (const x of generatorFn()) {
-`console.log(x);`
+  `console.log(x);`;
 }
 // 1
 // 2
@@ -9344,7 +9361,7 @@ for (const x of generatorFn()) {
 // 6
 ```
 
-因为yield*实际上只是将一个可迭代对象序列化为一连串可以单独产出的值，所以这跟把yield放到一个循环里没什么不同。下面两个生成器函数的行为是等价的：
+因为 yield\*实际上只是将一个可迭代对象序列化为一连串可以单独产出的值，所以这跟把 yield 放到一个循环里没什么不同。下面两个生成器函数的行为是等价的：
 
 ```js
 function* generatorFnA() {
@@ -9369,14 +9386,14 @@ for (const x of generatorFnB()) {
 // 3
 ```
 
-yield*的值是关联迭代器返回done: true 时的value 属性。对于普通迭代器来说，这个值是undefined：
+yield\*的值是关联迭代器返回 done: true 时的 value 属性。对于普通迭代器来说，这个值是 undefined：
 
 ```js
 function* generatorFn() {
-  console.log('iter value:', yield* [1, 2, 3]);
+  console.log("iter value:", yield* [1, 2, 3]);
 }
 for (const x of generatorFn()) {
-  console.log('value:', x);
+  console.log("value:", x);
 }
 // value: 1
 // value: 2
@@ -9388,22 +9405,22 @@ for (const x of generatorFn()) {
 
 ```js
 function* innerGeneratorFn() {
-  yield 'foo';
-  return 'bar';
+  yield "foo";
+  return "bar";
 }
 function* outerGeneratorFn(genObj) {
-  console.log('iter value:', yield* innerGeneratorFn());
+  console.log("iter value:", yield* innerGeneratorFn());
 }
 for (const x of outerGeneratorFn()) {
-  console.log('value:', x);
+  console.log("value:", x);
 }
 // value: foo
 // iter value: bar
 ```
 
-4. **使用yield*实现递归算法**
+4. **使用 yield\*实现递归算法**
 
-yield*最有用的地方是实现递归操作，此时生成器可以产生自身。看下面的例子：
+yield\*最有用的地方是实现递归操作，此时生成器可以产生自身。看下面的例子：
 
 ```js
 function* nTimes(n) {
@@ -9422,7 +9439,7 @@ for (const x of nTimes(3)) {
 
 在这个例子中，每个生成器首先都会从新创建的生成器对象产出每个值，然后再产出一个整数。结果就是生成器函数会递归地减少计数器值，并实例化另一个生成器对象。从最顶层来看，这就相当于创建一个可迭代对象并返回递增的整数。
 
-使用递归生成器结构和yield*可以优雅地表达递归算法。下面是一个图的实现，用于生成一个随机的双向图：
+使用递归生成器结构和 yield\*可以优雅地表达递归算法。下面是一个图的实现，用于生成一个随机的双向图：
 
 ```js
 class Node {
@@ -9457,9 +9474,7 @@ class RandomGraph {
   // 这个方法仅用于调试
   print() {
     for (const node of this.nodes) {
-      const ids = [...node.neighbors]
-      .map((n) => n.id)
-      .join(',');
+      const ids = [...node.neighbors].map((n) => n.id).join(",");
       console.log(`${node.id}: ${ids}`);
     }
   }
@@ -9516,14 +9531,14 @@ class RandomGraph {
 
 ### 7.3.3. 生成器作为默认迭代器
 
-因为生成器对象实现了Iterable 接口，而且生成器函数和默认迭代器被调用之后都产生迭代器，所以生成器格外适合作为默认迭代器。下面是一个简单的例子，这个类的默认迭代器可以用一行代码产出类的内容：
+因为生成器对象实现了 Iterable 接口，而且生成器函数和默认迭代器被调用之后都产生迭代器，所以生成器格外适合作为默认迭代器。下面是一个简单的例子，这个类的默认迭代器可以用一行代码产出类的内容：
 
 ```js
 class Foo {
   constructor() {
     this.values = [1, 2, 3];
   }
-  * [Symbol.iterator]() {
+  *[Symbol.iterator]() {
     yield* this.values;
   }
 }
@@ -9540,7 +9555,7 @@ for (const x of f) {
 
 ### 7.3.4. 提前终止迭代器
 
-与迭代器类似，生成器也支持“可关闭”的概念。一个实现Iterator 接口的对象一定有next()方法，还有一个可选的return()方法用于提前终止迭代器。生成器对象除了有这两个方法，还有第三个方法：throw()。
+与迭代器类似，生成器也支持“可关闭”的概念。一个实现 Iterator 接口的对象一定有 next()方法，还有一个可选的 return()方法用于提前终止迭代器。生成器对象除了有这两个方法，还有第三个方法：throw()。
 
 ```js
 function* generatorFn() {}
@@ -9551,11 +9566,11 @@ console.log(g.return); // f return() { [native code] }
 console.log(g.throw); // f throw() { [native code] }
 ```
 
-return()和throw()方法都可以用于强制生成器进入关闭状态。
+return()和 throw()方法都可以用于强制生成器进入关闭状态。
 
 1. **return()**
 
-return()方法会强制生成器进入关闭状态。提供给return()方法的值，就是终止迭代器对象的值：
+return()方法会强制生成器进入关闭状态。提供给 return()方法的值，就是终止迭代器对象的值：
 
 ```js
 function* generatorFn() {
@@ -9569,7 +9584,7 @@ console.log(g.return(4)); // { done: true, value: 4 }
 console.log(g); // generatorFn {<closed>}
 ```
 
-与迭代器不同，所有生成器对象都有return()方法，只要通过它进入关闭状态，就无法恢复了。后续调用next()会显示done: true 状态，而提供的任何返回值都不会被存储或传播：
+与迭代器不同，所有生成器对象都有 return()方法，只要通过它进入关闭状态，就无法恢复了。后续调用 next()会显示 done: true 状态，而提供的任何返回值都不会被存储或传播：
 
 ```js
 function* generatorFn() {
@@ -9585,7 +9600,7 @@ console.log(g.next()); // { done: true, value: undefined }
 console.log(g.next()); // { done: true, value: undefined }
 ```
 
-for-of 循环等内置语言结构会忽略状态为done: true 的IteratorObject 内部返回的值。
+for-of 循环等内置语言结构会忽略状态为 done: true 的 IteratorObject 内部返回的值。
 
 ```js
 function* generatorFn() {
@@ -9617,58 +9632,59 @@ function* generatorFn() {
 const g = generatorFn();
 console.log(g); // generatorFn {<suspended>}
 try {
-  g.throw('foo');
+  g.throw("foo");
 } catch (e) {
   console.log(e); // foo
 }
 console.log(g); // generatorFn {<closed>}
 ```
 
-不过，假如生成器函数内部处理了这个错误，那么生成器就不会关闭，而且还可以恢复执行。错误处理会跳过对应的yield，因此在这个例子中会跳过一个值。比如：
+不过，假如生成器函数内部处理了这个错误，那么生成器就不会关闭，而且还可以恢复执行。错误处理会跳过对应的 yield，因此在这个例子中会跳过一个值。比如：
 
 ```js
 function* generatorFn() {
   for (const x of [1, 2, 3]) {
     try {
       yield x;
-    } catch(e) {}
+    } catch (e) {}
   }
 }
 const g = generatorFn();
 console.log(g.next()); // { done: false, value: 1}
-g.throw('foo');
+g.throw("foo");
 console.log(g.next()); // { done: false, value: 3}
 ```
 
-在这个例子中，生成器在try/catch 块中的yield 关键字处暂停执行。在暂停期间，throw()方法向生成器对象内部注入了一个错误：字符串"foo"。这个错误会被yield 关键字抛出。因为错误是在生成器的try/catch 块中抛出的，所以仍然在生成器内部被捕获。可是，由于yield 抛出了那个错误，生成器就不会再产出值2。此时，生成器函数继续执行，在下一次迭代再次遇到yield 关键字时产出了值3。
+在这个例子中，生成器在 try/catch 块中的 yield 关键字处暂停执行。在暂停期间，throw()方法向生成器对象内部注入了一个错误：字符串"foo"。这个错误会被 yield 关键字抛出。因为错误是在生成器的 try/catch 块中抛出的，所以仍然在生成器内部被捕获。可是，由于 yield 抛出了那个错误，生成器就不会再产出值 2。此时，生成器函数继续执行，在下一次迭代再次遇到 yield 关键字时产出了值 3。
 
-注意 如果生成器对象还没有开始执行，那么调用throw()抛出的错误不会在函数内部被捕获，因为这相当于在函数块外部抛出了错误。
+注意 如果生成器对象还没有开始执行，那么调用 throw()抛出的错误不会在函数内部被捕获，因为这相当于在函数块外部抛出了错误。
 
 # 8. 对象、类与面向对象编程
 
 本章内容
+
 - 理解对象
 - 理解对象创建过程
 - 理解继承
 - 理解类
 
-ECMA-262 将对象定义为一组属性的无序集合。严格来说，这意味着对象就是一组没有特定顺序的值。对象的每个属性或方法都由一个名称来标识，这个名称映射到一个值。正因为如此（以及其他还未讨论的原因），可以把ECMAScript 的对象想象成一张散列表，其中的内容就是一组名/值对，值可以是数据或者函数。
+ECMA-262 将对象定义为一组属性的无序集合。严格来说，这意味着对象就是一组没有特定顺序的值。对象的每个属性或方法都由一个名称来标识，这个名称映射到一个值。正因为如此（以及其他还未讨论的原因），可以把 ECMAScript 的对象想象成一张散列表，其中的内容就是一组名/值对，值可以是数据或者函数。
 
 ## 8.1. 理解对象
 
-创建自定义对象的通常方式是创建Object 的一个新实例，然后再给它添加属性和方法，如下例所示：
+创建自定义对象的通常方式是创建 Object 的一个新实例，然后再给它添加属性和方法，如下例所示：
 
 ```js
 let person = new Object();
 person.name = "Nicholas";
 person.age = 29;
 person.job = "Software Engineer";
-person.sayName = function() {
+person.sayName = function () {
   console.log(this.name);
 };
 ```
 
-这个例子创建了一个名为person 的对象，而且有三个属性（name、age 和job）和一个方法（sayName()）。sayName()方法会显示this.name 的值，这个属性会解析为person.name。早期JavaScript 开发者频繁使用这种方式创建新对象。几年后，对象字面量变成了更流行的方式。前面的例子如果使用对象字面量则可以这样写：
+这个例子创建了一个名为 person 的对象，而且有三个属性（name、age 和 job）和一个方法（sayName()）。sayName()方法会显示 this.name 的值，这个属性会解析为 person.name。早期 JavaScript 开发者频繁使用这种方式创建新对象。几年后，对象字面量变成了更流行的方式。前面的例子如果使用对象字面量则可以这样写：
 
 ```js
 let person = {
@@ -9677,51 +9693,51 @@ let person = {
   job: "Software Engineer",
   sayName() {
     console.log(this.name);
-  }
+  },
 };
 ```
 
-这个例子中的person 对象跟前面例子中的person 对象是等价的，它们的属性和方法都一样。这些属性都有自己的特征，而这些特征决定了它们在 JavaScript 中的行为。
+这个例子中的 person 对象跟前面例子中的 person 对象是等价的，它们的属性和方法都一样。这些属性都有自己的特征，而这些特征决定了它们在 JavaScript 中的行为。
 
 ### 8.1.1. 属性的类型
 
-ECMA-262 使用一些内部特性来描述属性的特征。这些特性是由为JavaScript 实现引擎的规范定义的。因此，开发者不能在JavaScript 中直接访问这些特性。为了将某个特性标识为内部特性，规范会用两个中括号把特性的名称括起来，比如[[Enumerable]]。
+ECMA-262 使用一些内部特性来描述属性的特征。这些特性是由为 JavaScript 实现引擎的规范定义的。因此，开发者不能在 JavaScript 中直接访问这些特性。为了将某个特性标识为内部特性，规范会用两个中括号把特性的名称括起来，比如[[Enumerable]]。
 
 属性分两种：数据属性和访问器属性。
 
 1. **数据属性**
 
-数据属性包含一个保存数据值的位置。值会从这个位置读取，也会写入到这个位置。数据属性有4个特性描述它们的行为。
+数据属性包含一个保存数据值的位置。值会从这个位置读取，也会写入到这个位置。数据属性有 4 个特性描述它们的行为。
 
-- [[Configurable]]：表示属性是否可以通过 delete 删除并重新定义，是否可以修改它的特性，以及是否可以把它改为访问器属性。默认情况下，所有直接定义在对象上的属性的这个特性都是true，如前面的例子所示。
-- [[Enumerable]]：表示属性是否可以通过 for-in 循环返回。默认情况下，所有直接定义在对象上的属性的这个特性都是true，如前面的例子所示。
-- [[Writable]]：表示属性的值是否可以被修改。默认情况下，所有直接定义在对象上的属性的这个特性都是true，如前面的例子所示。
+- [[Configurable]]：表示属性是否可以通过 delete 删除并重新定义，是否可以修改它的特性，以及是否可以把它改为访问器属性。默认情况下，所有直接定义在对象上的属性的这个特性都是 true，如前面的例子所示。
+- [[Enumerable]]：表示属性是否可以通过 for-in 循环返回。默认情况下，所有直接定义在对象上的属性的这个特性都是 true，如前面的例子所示。
+- [[Writable]]：表示属性的值是否可以被修改。默认情况下，所有直接定义在对象上的属性的这个特性都是 true，如前面的例子所示。
 - [[Value]]：包含属性实际的值。这就是前面提到的那个读取和写入属性值的位置。这个特性的默认值为 undefined。
 
-在像前面例子中那样将属性显式添加到对象之后，[[Configurable]]、[[Enumerable]]和[[Writable]]都会被设置为true，而[[Value]]特性会被设置为指定的值。比如：
+在像前面例子中那样将属性显式添加到对象之后，[[Configurable]]、[[Enumerable]]和[[Writable]]都会被设置为 true，而[[Value]]特性会被设置为指定的值。比如：
 
 ```js
 let person = {
-  name: "Nicholas"
+  name: "Nicholas",
 };
 ```
 
-这里，我们创建了一个名为name 的属性，并给它赋予了一个值"Nicholas"。这意味着[[Value]]特性会被设置为"Nicholas"，之后对这个值的任何修改都会保存这个位置。
+这里，我们创建了一个名为 name 的属性，并给它赋予了一个值"Nicholas"。这意味着[[Value]]特性会被设置为"Nicholas"，之后对这个值的任何修改都会保存这个位置。
 
-要修改属性的默认特性，就必须使用Object.defineProperty()方法。这个方法接收3 个参数：要给其添加属性的对象、属性的名称和一个描述符对象。最后一个参数，即描述符对象上的属性可以包含：configurable、enumerable、writable 和value，跟相关特性的名称一一对应。根据要修改的特性，可以设置其中一个或多个值。比如：
+要修改属性的默认特性，就必须使用 Object.defineProperty()方法。这个方法接收 3 个参数：要给其添加属性的对象、属性的名称和一个描述符对象。最后一个参数，即描述符对象上的属性可以包含：configurable、enumerable、writable 和 value，跟相关特性的名称一一对应。根据要修改的特性，可以设置其中一个或多个值。比如：
 
 ```js
 let person = {};
 Object.defineProperty(person, "name", {
   writable: false,
-  value: "Nicholas"
+  value: "Nicholas",
 });
 console.log(person.name); // "Nicholas"
 person.name = "Greg";
 console.log(person.name); // "Nicholas"
 ```
 
-这个例子创建了一个名为name 的属性并给它赋予了一个只读的值"Nicholas"。这个属性的值就不能再修改了，在非严格模式下尝试给这个属性重新赋值会被忽略。在严格模式下，尝试修改只读属性的值会抛出错误。
+这个例子创建了一个名为 name 的属性并给它赋予了一个只读的值"Nicholas"。这个属性的值就不能再修改了，在非严格模式下尝试给这个属性重新赋值会被忽略。在严格模式下，尝试修改只读属性的值会抛出错误。
 
 类似的规则也适用于创建不可配置的属性。比如：
 
@@ -9729,48 +9745,48 @@ console.log(person.name); // "Nicholas"
 let person = {};
 Object.defineProperty(person, "name", {
   configurable: false,
-  value: "Nicholas"
+  value: "Nicholas",
 });
 console.log(person.name); // "Nicholas"
 delete person.name;
 console.log(person.name); // "Nicholas"
 ```
 
-这个例子把configurable 设置为false，意味着这个属性不能从对象上删除。非严格模式下对这个属性调用delete 没有效果，严格模式下会抛出错误。此外，一个属性被定义为不可配置之后，就不能再变回可配置的了。再次调用Object.defineProperty()并修改任何非writable 属性会导致错误：
+这个例子把 configurable 设置为 false，意味着这个属性不能从对象上删除。非严格模式下对这个属性调用 delete 没有效果，严格模式下会抛出错误。此外，一个属性被定义为不可配置之后，就不能再变回可配置的了。再次调用 Object.defineProperty()并修改任何非 writable 属性会导致错误：
 
 ```js
 let person = {};
 Object.defineProperty(person, "name", {
   configurable: false,
-  value: "Nicholas"
+  value: "Nicholas",
 });
 // 抛出错误
 Object.defineProperty(person, "name", {
   configurable: true,
-  value: "Nicholas"
+  value: "Nicholas",
 });
 ```
 
-因此，虽然可以对同一个属性多次调用Object.defineProperty()，但在把configurable 设置为false 之后就会受限制了。
+因此，虽然可以对同一个属性多次调用 Object.defineProperty()，但在把 configurable 设置为 false 之后就会受限制了。
 
-在调用Object.defineProperty()时，configurable、enumerable 和writable 的值如果不指定，则都默认为false。多数情况下，可能都不需要Object.defineProperty()提供的这些强大的设置，但要理解JavaScript 对象，就要理解这些概念。
+在调用 Object.defineProperty()时，configurable、enumerable 和 writable 的值如果不指定，则都默认为 false。多数情况下，可能都不需要 Object.defineProperty()提供的这些强大的设置，但要理解 JavaScript 对象，就要理解这些概念。
 
 2. **访问器属性**
 
-访问器属性不包含数据值。相反，它们包含一个获取（getter）函数和一个设置（setter）函数，不过这两个函数不是必需的。在读取访问器属性时，会调用获取函数，这个函数的责任就是返回一个有效的值。在写入访问器属性时，会调用设置函数并传入新值，这个函数必须决定对数据做出什么修改。访问器属性有4 个特性描述它们的行为。
+访问器属性不包含数据值。相反，它们包含一个获取（getter）函数和一个设置（setter）函数，不过这两个函数不是必需的。在读取访问器属性时，会调用获取函数，这个函数的责任就是返回一个有效的值。在写入访问器属性时，会调用设置函数并传入新值，这个函数必须决定对数据做出什么修改。访问器属性有 4 个特性描述它们的行为。
 
-- [[Configurable]]：表示属性是否可以通过delete 删除并重新定义，是否可以修改它的特性，以及是否可以把它改为数据属性。默认情况下，所有直接定义在对象上的属性的这个特性都是true。
-- [[Enumerable]]：表示属性是否可以通过for-in 循环返回。默认情况下，所有直接定义在对象上的属性的这个特性都是true。
-- [[Get]]：获取函数，在读取属性时调用。默认值为undefined。
-- [[Set]]：设置函数，在写入属性时调用。默认值为undefined。
+- [[Configurable]]：表示属性是否可以通过 delete 删除并重新定义，是否可以修改它的特性，以及是否可以把它改为数据属性。默认情况下，所有直接定义在对象上的属性的这个特性都是 true。
+- [[Enumerable]]：表示属性是否可以通过 for-in 循环返回。默认情况下，所有直接定义在对象上的属性的这个特性都是 true。
+- [[Get]]：获取函数，在读取属性时调用。默认值为 undefined。
+- [[Set]]：设置函数，在写入属性时调用。默认值为 undefined。
 
-访问器属性是不能直接定义的，必须使用Object.defineProperty()。下面是一个例子：
+访问器属性是不能直接定义的，必须使用 Object.defineProperty()。下面是一个例子：
 
 ```js
 // 定义一个对象，包含伪私有成员year_和公共成员edition
 let book = {
   year_: 2017,
-  edition: 1
+  edition: 1,
 };
 Object.defineProperty(book, "year", {
   get() {
@@ -9781,32 +9797,32 @@ Object.defineProperty(book, "year", {
       this.year_ = newValue;
       this.edition += newValue - 2017;
     }
-  }
+  },
 });
 book.year = 2018;
 console.log(book.edition); // 2
 ```
 
-在这个例子中，对象book 有两个默认属性：year_和edition。year_中的下划线常用来表示该属性并不希望在对象方法的外部被访问。另一个属性year 被定义为一个访问器属性，其中获取函数简单地返回year_的值，而设置函数会做一些计算以决定正确的版本（edition）。因此，把year 属性修改为2018 会导致year_变成2018，edition 变成2。这是访问器属性的典型使用场景，即设置一个属性值会导致一些其他变化发生。
+在这个例子中，对象 book 有两个默认属性：year*和 edition。year*中的下划线常用来表示该属性并不希望在对象方法的外部被访问。另一个属性 year 被定义为一个访问器属性，其中获取函数简单地返回 year*的值，而设置函数会做一些计算以决定正确的版本（edition）。因此，把 year 属性修改为 2018 会导致 year*变成 2018，edition 变成 2。这是访问器属性的典型使用场景，即设置一个属性值会导致一些其他变化发生。
 
-获取函数和设置函数不一定都要定义。只定义获取函数意味着属性是只读的，尝试修改属性会被忽略。在严格模式下，尝试写入只定义了获取函数的属性会抛出错误。类似地，只有一个设置函数的属性是不能读取的，非严格模式下读取会返回undefined，严格模式下会抛出错误。
+获取函数和设置函数不一定都要定义。只定义获取函数意味着属性是只读的，尝试修改属性会被忽略。在严格模式下，尝试写入只定义了获取函数的属性会抛出错误。类似地，只有一个设置函数的属性是不能读取的，非严格模式下读取会返回 undefined，严格模式下会抛出错误。
 
-在不支持Object.defineProperty()的浏览器中没有办法修改[[Configurable]]或[[Enumerable]]。
+在不支持 Object.defineProperty()的浏览器中没有办法修改[[Configurable]]或[[Enumerable]]。
 
-注意 在ECMAScript 5 以前，开发者会使用两个非标准的访问创建访问器属性：__defineGetter__()和__defineSetter__()。这两个方法最早是Firefox 引入的，后来Safari、Chrome 和Opera 也实现了。
+注意 在 ECMAScript 5 以前，开发者会使用两个非标准的访问创建访问器属性：**defineGetter**()和**defineSetter**()。这两个方法最早是 Firefox 引入的，后来 Safari、Chrome 和 Opera 也实现了。
 
 ### 8.1.2. 定义多个属性
 
-在一个对象上同时定义多个属性的可能性是非常大的。为此，ECMAScript 提供了Object.defineProperties()方法。这个方法可以通过多个描述符一次性定义多个属性。它接收两个参数：要为之添加或修改属性的对象和另一个描述符对象，其属性与要添加或修改的属性一一对应。比如：
+在一个对象上同时定义多个属性的可能性是非常大的。为此，ECMAScript 提供了 Object.defineProperties()方法。这个方法可以通过多个描述符一次性定义多个属性。它接收两个参数：要为之添加或修改属性的对象和另一个描述符对象，其属性与要添加或修改的属性一一对应。比如：
 
 ```js
 let book = {};
 Object.defineProperties(book, {
   year_: {
-    value: 2017
+    value: 2017,
   },
   edition: {
-    value: 1
+    value: 1,
   },
   year: {
     get() {
@@ -9817,37 +9833,37 @@ Object.defineProperties(book, {
         this.year_ = newValue;
         this.edition += newValue - 2017;
       }
-    }
-  }
+    },
+  },
 });
 ```
 
-这段代码在book 对象上定义了两个数据属性year_和edition，还有一个访问器属性year。最终的对象跟上一节示例中的一样。唯一的区别是所有属性都是同时定义的，并且数据属性的configurable、enumerable 和writable 特性值都是false。
+这段代码在 book 对象上定义了两个数据属性 year\_和 edition，还有一个访问器属性 year。最终的对象跟上一节示例中的一样。唯一的区别是所有属性都是同时定义的，并且数据属性的 configurable、enumerable 和 writable 特性值都是 false。
 
 ### 8.1.3. 读取属性的特性
 
-使用Object.getOwnPropertyDescriptor()方法可以取得指定属性的属性描述符。这个方法接收两个参数：属性所在的对象和要取得其描述符的属性名。返回值是一个对象，对于访问器属性包含configurable、enumerable、get 和set 属性，对于数据属性包含configurable、enumerable、writable 和value 属性。比如：
+使用 Object.getOwnPropertyDescriptor()方法可以取得指定属性的属性描述符。这个方法接收两个参数：属性所在的对象和要取得其描述符的属性名。返回值是一个对象，对于访问器属性包含 configurable、enumerable、get 和 set 属性，对于数据属性包含 configurable、enumerable、writable 和 value 属性。比如：
 
 ```js
 let book = {};
 Object.defineProperties(book, {
   year_: {
-    value: 2017
+    value: 2017,
   },
   edition: {
-    value: 1
+    value: 1,
   },
   year: {
-  get: function() {
-    return this.year_;
+    get: function () {
+      return this.year_;
+    },
+    set: function (newValue) {
+      if (newValue > 2017) {
+        this.year_ = newValue;
+        this.edition += newValue - 2017;
+      }
+    },
   },
-  set: function(newValue){
-    if (newValue > 2017) {
-      this.year_ = newValue;
-      this.edition += newValue - 2017;
-    }
-  }
-  }
 });
 let descriptor = Object.getOwnPropertyDescriptor(book, "year_");
 console.log(descriptor.value); // 2017
@@ -9859,30 +9875,30 @@ console.log(descriptor.enumerable); // false
 console.log(typeof descriptor.get); // "function"
 ```
 
-对于数据属性year_，value 等于原来的值，configurable 是false，get 是undefined。对于访问器属性year，value 是undefined，enumerable 是false，get 是一个指向获取函数的指针。
+对于数据属性 year\_，value 等于原来的值，configurable 是 false，get 是 undefined。对于访问器属性 year，value 是 undefined，enumerable 是 false，get 是一个指向获取函数的指针。
 
-ECMAScript 2017 新增了Object.getOwnPropertyDescriptors()静态方法。这个方法实际上会在每个自有属性上调用Object.getOwnPropertyDescriptor()并在一个新对象中返回它们。对于前面的例子，使用这个静态方法会返回如下对象：
+ECMAScript 2017 新增了 Object.getOwnPropertyDescriptors()静态方法。这个方法实际上会在每个自有属性上调用 Object.getOwnPropertyDescriptor()并在一个新对象中返回它们。对于前面的例子，使用这个静态方法会返回如下对象：
 
 ```js
 let book = {};
 Object.defineProperties(book, {
   year_: {
-    value: 2017
+    value: 2017,
   },
   edition: {
-    value: 1
+    value: 1,
   },
   year: {
-    get: function() {
+    get: function () {
       return this.year_;
     },
-    set: function(newValue){
+    set: function (newValue) {
       if (newValue > 2017) {
         this.year_ = newValue;
         this.edition += newValue - 2017;
       }
-    }
-  }
+    },
+  },
 });
 console.log(Object.getOwnPropertyDescriptors(book));
 // {
@@ -9911,15 +9927,15 @@ console.log(Object.getOwnPropertyDescriptors(book));
 
 JavaScript 开发者经常觉得“合并”（merge）两个对象很有用。更具体地说，就是把源对象所有的本地属性一起复制到目标对象上。有时候这种操作也被称为“混入”（mixin），因为目标对象通过混入源对象的属性得到了增强。
 
-ECMAScript 6 专门为合并对象提供了Object.assign()方法。这个方法接收一个目标对象和一个或多个源对象作为参数，然后将每个源对象中可枚举（Object.propertyIsEnumerable()返回true）和自有（Object.hasOwnProperty()返回true）属性复制到目标对象。以字符串和符号为键的属性会被复制。对每个符合条件的属性，这个方法会使用源对象上的[[Get]]取得属性的值，然后使用目标对象上的[[Set]]设置属性的值。
+ECMAScript 6 专门为合并对象提供了 Object.assign()方法。这个方法接收一个目标对象和一个或多个源对象作为参数，然后将每个源对象中可枚举（Object.propertyIsEnumerable()返回 true）和自有（Object.hasOwnProperty()返回 true）属性复制到目标对象。以字符串和符号为键的属性会被复制。对每个符合条件的属性，这个方法会使用源对象上的[[Get]]取得属性的值，然后使用目标对象上的[[Set]]设置属性的值。
 
 ```js
 let dest, src, result;
 /**
-* 简单复制
-*/
+ * 简单复制
+ */
 dest = {};
-src = { id: 'src' };
+src = { id: "src" };
 result = Object.assign(dest, src);
 // Object.assign 修改目标对象
 // 也会返回修改后的目标对象
@@ -9928,24 +9944,24 @@ console.log(dest !== src); // true
 console.log(result); // { id: src }
 console.log(dest); // { id: src }
 /**
-* 多个源对象
-*/
+ * 多个源对象
+ */
 dest = {};
-result = Object.assign(dest, { a: 'foo' }, { b: 'bar' });
+result = Object.assign(dest, { a: "foo" }, { b: "bar" });
 console.log(result); // { a: foo, b: bar }
 /**
-* 获取函数与设置函数
-*/
+ * 获取函数与设置函数
+ */
 dest = {
   set a(val) {
     console.log(`Invoked dest setter with param ${val}`);
-  }
+  },
 };
 src = {
   get a() {
-    console.log('Invoked src getter');
-    return 'foo';
-  }
+    console.log("Invoked src getter");
+    return "foo";
+  },
 };
 Object.assign(dest, src);
 // 调用src 的获取方法
@@ -9960,25 +9976,29 @@ Object.assign()实际上对每个源对象执行的是浅复制。如果多个�
 ```js
 let dest, src, result;
 /**
-* 覆盖属性
-*/
-dest = { id: 'dest' };
-result = Object.assign(dest, { id: 'src1', a: 'foo' }, { id: 'src2', b: 'bar' });
+ * 覆盖属性
+ */
+dest = { id: "dest" };
+result = Object.assign(
+  dest,
+  { id: "src1", a: "foo" },
+  { id: "src2", b: "bar" }
+);
 // Object.assign 会覆盖重复的属性
 console.log(result); // { id: src2, a: foo, b: bar }
 // 可以通过目标对象上的设置函数观察到覆盖的过程：
 dest = {
   set id(x) {
-      console.log(x);
-  }
+    console.log(x);
+  },
 };
-Object.assign(dest, { id: 'first' }, { id: 'second' }, { id: 'third' });
+Object.assign(dest, { id: "first" }, { id: "second" }, { id: "third" });
 // first
 // second
 // third
 /**
-* 对象引用
-*/
+ * 对象引用
+ */
 dest = {};
 src = { a: {} };
 Object.assign(dest, src);
@@ -9992,20 +10012,20 @@ console.log(dest.a === src.a); // true
 ```js
 let dest, src, result;
 /**
-* 错误处理
-*/
+ * 错误处理
+ */
 dest = {};
 src = {
-a: 'foo',
+  a: "foo",
   get b() {
     // Object.assign()在调用这个获取函数时会抛出错误
     throw new Error();
   },
-  c: 'bar'
+  c: "bar",
 };
 try {
   Object.assign(dest, src);
-} catch(e) {}
+} catch (e) {}
 // Object.assign()没办法回滚已经完成的修改
 // 因此在抛出错误之前，目标对象上已经完成的修改会继续存在：
 console.log(dest); // { a: foo }
@@ -10013,7 +10033,7 @@ console.log(dest); // { a: foo }
 
 ### 8.1.5. 对象标识及相等判定
 
-在ECMAScript 6 之前，有些特殊情况即使是===操作符也无能为力：
+在 ECMAScript 6 之前，有些特殊情况即使是===操作符也无能为力：
 
 ```js
 // 这些是===符合预期的情况
@@ -10029,7 +10049,7 @@ console.log(NaN === NaN); // false
 console.log(Number.isNaN(NaN)); // true
 ```
 
-为改善这类情况，ECMAScript 6 规范新增了Object.is()，这个方法与===很像，但同时也考虑到了上述边界情形。这个方法必须接收两个参数：
+为改善这类情况，ECMAScript 6 规范新增了 Object.is()，这个方法与===很像，但同时也考虑到了上述边界情形。这个方法必须接收两个参数：
 
 ```js
 console.log(Object.is(true, 1)); // false
@@ -10047,8 +10067,9 @@ console.log(Object.is(NaN, NaN)); // true
 
 ```js
 function recursivelyCheckEqual(x, ...rest) {
-  return Object.is(x, rest[0]) &&
-  (rest.length < 2 || recursivelyCheckEqual(...rest));
+  return (
+    Object.is(x, rest[0]) && (rest.length < 2 || recursivelyCheckEqual(...rest))
+  );
 }
 ```
 
@@ -10056,7 +10077,7 @@ function recursivelyCheckEqual(x, ...rest) {
 
 ECMAScript 6 为定义和操作对象新增了很多极其有用的语法糖特性。这些特性都没有改变现有引擎的行为，但极大地提升了处理对象的方便程度。
 
-本节介绍的所有对象语法同样适用于ECMAScript 6 的类，本章后面会讨论。
+本节介绍的所有对象语法同样适用于 ECMAScript 6 的类，本章后面会讨论。
 
 注意 相比于以往的替代方案，本节介绍的增强对象语法可以说是一骑绝尘。因此本章及本书会默认使用这些新语法特性。
 
@@ -10065,21 +10086,21 @@ ECMAScript 6 为定义和操作对象新增了很多极其有用的语法糖特�
 在给对象添加变量的时候，开发者经常会发现属性名和变量名是一样的。例如：
 
 ```js
-let name = 'Matt';
+let name = "Matt";
 let person = {
-  name: name
+  name: name,
 };
 console.log(person); // { name: 'Matt' }
 ```
 
-为此，简写属性名语法出现了。简写属性名只要使用变量名（不用再写冒号）就会自动被解释为同名的属性键。如果没有找到同名变量，则会抛出ReferenceError。
+为此，简写属性名语法出现了。简写属性名只要使用变量名（不用再写冒号）就会自动被解释为同名的属性键。如果没有找到同名变量，则会抛出 ReferenceError。
 
 以下代码和之前的代码是等价的：
 
 ```js
-let name = 'Matt';
+let name = "Matt";
 let person = {
-  name
+  name,
 };
 console.log(person); // { name: 'Matt' }
 ```
@@ -10089,19 +10110,19 @@ console.log(person); // { name: 'Matt' }
 ```js
 function makePerson(name) {
   return {
-    name
+    name,
   };
 }
-let person = makePerson('Matt');
+let person = makePerson("Matt");
 console.log(person.name); // Matt
 ```
 
-在这里，即使参数标识符只限定于函数作用域，编译器也会保留初始的name 标识符。如果使用Google Closure 编译器压缩，那么函数参数会被缩短，而属性名不变：
+在这里，即使参数标识符只限定于函数作用域，编译器也会保留初始的 name 标识符。如果使用 Google Closure 编译器压缩，那么函数参数会被缩短，而属性名不变：
 
 ```js
 function makePerson(a) {
   return {
-    name: a
+    name: a,
   };
 }
 var person = makePerson("Matt");
@@ -10113,44 +10134,44 @@ console.log(person.name); // Matt
 在引入可计算属性之前，如果想使用变量的值作为属性，那么必须先声明对象，然后使用中括号语法来添加属性。换句话说，不能在对象字面量中直接动态命名属性。比如：
 
 ```js
-const nameKey = 'name';
-const ageKey = 'age';
-const jobKey = 'job';
+const nameKey = "name";
+const ageKey = "age";
+const jobKey = "job";
 let person = {};
-person[nameKey] = 'Matt';
+person[nameKey] = "Matt";
 person[ageKey] = 27;
-person[jobKey] = 'Software engineer';
+person[jobKey] = "Software engineer";
 console.log(person); // { name: 'Matt', age: 27, job: 'Software engineer' }
 ```
 
-有了可计算属性，就可以在对象字面量中完成动态属性赋值。中括号包围的对象属性键告诉运行时将其作为JavaScript 表达式而不是字符串来求值：
+有了可计算属性，就可以在对象字面量中完成动态属性赋值。中括号包围的对象属性键告诉运行时将其作为 JavaScript 表达式而不是字符串来求值：
 
 ```js
-const nameKey = 'name';
-const ageKey = 'age';
-const jobKey = 'job';
+const nameKey = "name";
+const ageKey = "age";
+const jobKey = "job";
 let person = {
-  [nameKey]: 'Matt',
+  [nameKey]: "Matt",
   [ageKey]: 27,
-  [jobKey]: 'Software engineer'
+  [jobKey]: "Software engineer",
 };
 console.log(person); // { name: 'Matt', age: 27, job: 'Software engineer' }
 ```
 
-因为被当作JavaScript 表达式求值，所以可计算属性本身可以是复杂的表达式，在实例化时再求值：
+因为被当作 JavaScript 表达式求值，所以可计算属性本身可以是复杂的表达式，在实例化时再求值：
 
 ```js
-const nameKey = 'name';
-const ageKey = 'age';
-const jobKey = 'job';
+const nameKey = "name";
+const ageKey = "age";
+const jobKey = "job";
 let uniqueToken = 0;
 function getUniqueKey(key) {
   return `${key}_${uniqueToken++}`;
 }
 let person = {
-[getUniqueKey(nameKey)]: 'Matt',
-[getUniqueKey(ageKey)]: 27,
-[getUniqueKey(jobKey)]: 'Software engineer'
+  [getUniqueKey(nameKey)]: "Matt",
+  [getUniqueKey(ageKey)]: 27,
+  [getUniqueKey(jobKey)]: "Software engineer",
 };
 console.log(person); // { name_0: 'Matt', age_1: 27, job_2: 'Software engineer' }
 ```
@@ -10163,11 +10184,11 @@ console.log(person); // { name_0: 'Matt', age_1: 27, job_2: 'Software engineer' 
 
 ```js
 let person = {
-  sayName: function(name) {
+  sayName: function (name) {
     console.log(`My name is ${name}`);
-  }
+  },
 };
-person.sayName('Matt'); // My name is Matt
+person.sayName("Matt"); // My name is Matt
 ```
 
 新的简写方法的语法遵循同样的模式，但开发者要放弃给函数表达式命名（不过给作为方法的函数命名通常没什么用）。相应地，这样也可以明显缩短方法声明。
@@ -10178,16 +10199,16 @@ person.sayName('Matt'); // My name is Matt
 let person = {
   sayName(name) {
     console.log(`My name is ${name}`);
-  }
+  },
 };
-person.sayName('Matt'); // My name is Matt
+person.sayName("Matt"); // My name is Matt
 ```
 
 简写方法名对获取函数和设置函数也是适用的：
 
 ```js
 let person = {
-  name_: '',
+  name_: "",
   get name() {
     return this.name_;
   },
@@ -10196,25 +10217,25 @@ let person = {
   },
   sayName() {
     console.log(`My name is ${this.name_}`);
-  }
+  },
 };
-person.name = 'Matt';
+person.name = "Matt";
 person.sayName(); // My name is Matt
 ```
 
 简写方法名与可计算属性键相互兼容：
 
 ```js
-const methodKey = 'sayName';
+const methodKey = "sayName";
 let person = {
   [methodKey](name) {
     console.log(`My name is ${name}`);
-  }
-}
-person.sayName('Matt'); // My name is Matt
+  },
+};
+person.sayName("Matt"); // My name is Matt
 ```
 
-注意 简写方法名对于本章后面介绍的ECMAScript 6 的类更有用。
+注意 简写方法名对于本章后面介绍的 ECMAScript 6 的类更有用。
 
 ### 8.1.7. 对象解构
 
@@ -10225,11 +10246,11 @@ ECMAScript 6 新增了对象解构语法，可以在一条语句中使用嵌套�
 ```js
 // 不使用对象解构
 let person = {
-  name: 'Matt',
-  age: 27
+  name: "Matt",
+  age: 27,
 };
 let personName = person.name,
-    personAge = person.age;
+  personAge = person.age;
 console.log(personName); // Matt
 console.log(personAge); // 27
 ```
@@ -10239,8 +10260,8 @@ console.log(personAge); // 27
 ```js
 // 使用对象解构
 let person = {
-  name: 'Matt',
-  age: 27
+  name: "Matt",
+  age: 27,
 };
 let { name: personName, age: personAge } = person;
 console.log(personName); // Matt
@@ -10251,20 +10272,20 @@ console.log(personAge); // 27
 
 ```js
 let person = {
-name: 'Matt',
-age: 27
+  name: "Matt",
+  age: 27,
 };
 let { name, age } = person;
 console.log(name); // Matt
 console.log(age); // 27
 ```
 
-解构赋值不一定与对象的属性匹配。赋值的时候可以忽略某些属性，而如果引用的属性不存在，则该变量的值就是undefined：
+解构赋值不一定与对象的属性匹配。赋值的时候可以忽略某些属性，而如果引用的属性不存在，则该变量的值就是 undefined：
 
 ```js
 let person = {
-  name: 'Matt',
-  age: 27
+  name: "Matt",
+  age: 27,
 };
 let { name, job } = person;
 console.log(name); // Matt
@@ -10275,18 +10296,18 @@ console.log(job); // undefined
 
 ```js
 let person = {
-  name: 'Matt',
-  age: 27
+  name: "Matt",
+  age: 27,
 };
-let { name, job='Software engineer' } = person;
+let { name, job = "Software engineer" } = person;
 console.log(name); // Matt
 console.log(job); // Software engineer
 ```
 
-解构在内部使用函数ToObject()（不能在运行时环境中直接访问）把源数据结构转换为对象。这意味着在对象解构的上下文中，原始值会被当成对象。这也意味着（根据ToObject()的定义），null和undefined 不能被解构，否则会抛出错误。
+解构在内部使用函数 ToObject()（不能在运行时环境中直接访问）把源数据结构转换为对象。这意味着在对象解构的上下文中，原始值会被当成对象。这也意味着（根据 ToObject()的定义），null 和 undefined 不能被解构，否则会抛出错误。
 
 ```js
-let { length } = 'foobar';
+let { length } = "foobar";
 console.log(length); // 6
 let { constructor: c } = 4;
 console.log(c === Number); // true
@@ -10299,10 +10320,325 @@ let { _ } = undefined; // TypeError
 ```js
 let personName, personAge;
 let person = {
-  name: 'Matt',
-  age: 27
+  name: "Matt",
+  age: 27,
 };
-({name: personName, age: personAge} = person);
+({ name: personName, age: personAge } = person);
 console.log(personName, personAge); // Matt, 27
 ```
 
+1. **嵌套解构**
+
+解构对于引用嵌套的属性或赋值目标没有限制。为此，可以通过解构来复制对象属性：
+
+```js
+let person = {
+  name: "Matt",
+  age: 27,
+  job: {
+    title: "Software engineer",
+  },
+};
+let personCopy = {};
+({ name: personCopy.name, age: personCopy.age, job: personCopy.job } = person);
+// 因为一个对象的引用被赋值给personCopy，所以修改
+// person.job 对象的属性也会影响personCopy
+person.job.title = "Hacker";
+console.log(person);
+// { name: 'Matt', age: 27, job: { title: 'Hacker' } }
+console.log(personCopy);
+// { name: 'Matt', age: 27, job: { title: 'Hacker' } }
+```
+
+解构赋值可以使用嵌套结构，以匹配嵌套的属性：
+
+```js
+let person = {
+  name: "Matt",
+  age: 27,
+  job: {
+    title: "Software engineer",
+  },
+};
+// 声明title 变量并将person.job.title 的值赋给它
+let {
+  job: { title },
+} = person;
+console.log(title); // Software engineer
+```
+
+在外层属性没有定义的情况下不能使用嵌套解构。无论源对象还是目标对象都一样：
+
+```js
+let person = {
+  job: {
+    title: "Software engineer",
+  },
+};
+let personCopy = {};
+// foo 在源对象上是undefined
+({
+  foo: { bar: personCopy.bar },
+} = person);
+// TypeError: Cannot destructure property 'bar' of 'undefined' or 'null'.
+// job 在目标对象上是undefined
+({
+  job: { title: personCopy.job.title },
+} = person);
+// TypeError: Cannot set property 'title' of undefined
+```
+
+2. **部分解构**
+
+需要注意的是，涉及多个属性的解构赋值是一个输出无关的顺序化操作。如果一个解构表达式涉及多个赋值，开始的赋值成功而后面的赋值出错，则整个解构赋值只会完成一部分：
+
+```js
+let person = {
+  name: "Matt",
+  age: 27,
+};
+let personName, personBar, personAge;
+try {
+  // person.foo 是undefined，因此会抛出错误
+  ({
+    name: personName,
+    foo: { bar: personBar },
+    age: personAge,
+  } = person);
+} catch (e) {}
+console.log(personName, personBar, personAge);
+// Matt, undefined, undefined
+```
+
+3. **参数上下文匹配**
+
+在函数参数列表中也可以进行解构赋值。对参数的解构赋值不会影响 arguments 对象，但可以在函数签名中声明在函数体内使用局部变量：
+
+```js
+let person = {
+  name: "Matt",
+  age: 27,
+};
+function printPerson(foo, { name, age }, bar) {
+  console.log(arguments);
+  console.log(name, age);
+}
+function printPerson2(foo, { name: personName, age: personAge }, bar) {
+  console.log(arguments);
+  console.log(personName, personAge);
+}
+printPerson("1st", person, "2nd");
+// ['1st', { name: 'Matt', age: 27 }, '2nd']
+// 'Matt', 27
+printPerson2("1st", person, "2nd");
+// ['1st', { name: 'Matt', age: 27 }, '2nd']
+// 'Matt', 27
+```
+
+## 8.2. 创建对象
+
+虽然使用 Object 构造函数或对象字面量可以方便地创建对象，但这些方式也有明显不足：创建具有同样接口的多个对象需要重复编写很多代码。
+
+### 8.2.1. 概述
+
+综观 ECMAScript 规范的历次发布，每个版本的特性似乎都出人意料。ECMAScript 5.1 并没有正式支持面向对象的结构，比如类或继承。但是，正如接下来几节会介绍的，巧妙地运用原型式继承可以成功地模拟同样的行为。
+
+ECMAScript 6 开始正式支持类和继承。ES6 的类旨在完全涵盖之前规范设计的基于原型的继承模式。不过，无论从哪方面看，ES6 的类都仅仅是封装了 ES5.1 构造函数加原型继承的语法糖而已。
+
+注意 不要误会：采用面向对象编程模式的 JavaScript 代码还是应该使用 ECMAScript 6 的类。但不管怎么说，理解 ES6 类出现之前的惯例总是有益无害的。特别是 ES6 的类定义本身就相当于对原有结构的封装。因此，在介绍 ES6 的类之前，本书会循序渐进地介绍被类取代的那些底层概念。
+
+### 8.2.2. 工厂模式
+
+工厂模式是一种众所周知的设计模式，广泛应用于软件工程领域，用于抽象创建特定对象的过程。（本书后面还会讨论其他设计模式及其在 JavaScript 中的实现。）下面的例子展示了一种按照特定接口创建对象的方式：
+
+```js
+function createPerson(name, age, job) {
+  let o = new Object();
+  o.name = name;
+  o.age = age;
+  o.job = job;
+  o.sayName = function () {
+    console.log(this.name);
+  };
+  return o;
+}
+let person1 = createPerson("Nicholas", 29, "Software Engineer");
+let person2 = createPerson("Greg", 27, "Doctor");
+```
+
+这里，函数 createPerson()接收 3 个参数，根据这几个参数构建了一个包含 Person 信息的对象。可以用不同的参数多次调用这个函数，每次都会返回包含 3 个属性和 1 个方法的对象。这种工厂模式虽然可以解决创建多个类似对象的问题，但没有解决对象标识问题（即新创建的对象是什么类型）。
+
+### 8.2.3. 构造函数模式
+
+前面几章提到过，ECMAScript 中的构造函数是用于创建特定类型对象的。像 Object 和 Array 这样的原生构造函数，运行时可以直接在执行环境中使用。当然也可以自定义构造函数，以函数的形式为自己的对象类型定义属性和方法。
+
+比如，前面的例子使用构造函数模式可以这样写：
+
+```js
+function Person(name, age, job) {
+  this.name = name;
+  this.age = age;
+  this.job = job;
+  this.sayName = function () {
+    console.log(this.name);
+  };
+}
+let person1 = new Person("Nicholas", 29, "Software Engineer");
+let person2 = new Person("Greg", 27, "Doctor");
+person1.sayName(); // Nicholas
+person2.sayName(); // Greg
+```
+
+在这个例子中，Person()构造函数代替了 createPerson()工厂函数。实际上，Person()内部的代码跟 createPerson()基本是一样的，只是有如下区别。
+
+- 没有显式地创建对象。
+- 属性和方法直接赋值给了 this。
+- 没有 return。
+
+另外，要注意函数名 Person 的首字母大写了。按照惯例，构造函数名称的首字母都是要大写的，非构造函数则以小写字母开头。这是从面向对象编程语言那里借鉴的，有助于在 ECMAScript 中区分构造函数和普通函数。毕竟 ECMAScript 的构造函数就是能创建对象的函数。
+
+要创建 Person 的实例，应使用 new 操作符。以这种方式调用构造函数会执行如下操作。
+
+1. 在内存中创建一个新对象。
+2. 这个新对象内部的[[Prototype]]特性被赋值为构造函数的 prototype 属性。
+3. 构造函数内部的 this 被赋值为这个新对象（即 this 指向新对象）。
+4. 执行构造函数内部的代码（给新对象添加属性）。
+5. 如果构造函数返回非空对象，则返回该对象；否则，返回刚创建的新对象。
+
+上一个例子的最后，person1 和 person2 分别保存着 Person 的不同实例。这两个对象都有一个 constructor 属性指向 Person，如下所示：
+
+```js
+console.log(person1.constructor == Person); // true
+console.log(person2.constructor == Person); // true
+```
+
+constructor 本来是用于标识对象类型的。不过，一般认为 instanceof 操作符是确定对象类型更可靠的方式。前面例子中的每个对象都是 Object 的实例，同时也是 Person 的实例，如下面调用 instanceof 操作符的结果所示：
+
+```js
+console.log(person1 instanceof Object); // true
+console.log(person1 instanceof Person); // true
+console.log(person2 instanceof Object); // true
+console.log(person2 instanceof Person); // true
+```
+
+定义自定义构造函数可以确保实例被标识为特定类型，相比于工厂模式，这是一个很大的好处。在这个例子中，person1 和 person2 之所以也被认为是 Object 的实例，是因为所有自定义对象都继承自 Object（后面再详细讨论这一点）。
+
+构造函数不一定要写成函数声明的形式。赋值给变量的函数表达式也可以表示构造函数：
+
+```js
+let Person = function (name, age, job) {
+  this.name = name;
+  this.age = age;
+  this.job = job;
+  this.sayName = function () {
+    console.log(this.name);
+  };
+};
+let person1 = new Person("Nicholas", 29, "Software Engineer");
+let person2 = new Person("Greg", 27, "Doctor");
+person1.sayName(); // Nicholas
+person2.sayName(); // Greg
+console.log(person1 instanceof Object); // true
+console.log(person1 instanceof Person); // true
+console.log(person2 instanceof Object); // true
+console.log(person2 instanceof Person); // true
+```
+
+在实例化时，如果不想传参数，那么构造函数后面的括号可加可不加。只要有 new 操作符，就可以调用相应的构造函数：
+
+```js
+function Person() {
+  this.name = "Jake";
+  this.sayName = function () {
+    console.log(this.name);
+  };
+}
+let person1 = new Person();
+let person2 = new Person();
+person1.sayName(); // Jake
+person2.sayName(); // Jake
+console.log(person1 instanceof Object); // true
+console.log(person1 instanceof Person); // true
+console.log(person2 instanceof Object); // true
+console.log(person2 instanceof Person); // true
+```
+
+1. **构造函数也是函数**
+
+构造函数与普通函数唯一的区别就是调用方式不同。除此之外，构造函数也是函数。并没有把某个函数定义为构造函数的特殊语法。任何函数只要使用 new 操作符调用就是构造函数，而不使用 new 操作符调用的函数就是普通函数。比如，前面的例子中定义的 Person()可以像下面这样调用：
+
+```js
+// 作为构造函数
+let person = new Person("Nicholas", 29, "Software Engineer");
+person.sayName(); // "Nicholas"
+// 作为函数调用
+Person("Greg", 27, "Doctor"); // 添加到window 对象
+window.sayName(); // "Greg"
+// 在另一个对象的作用域中调用
+let o = new Object();
+Person.call(o, "Kristen", 25, "Nurse");
+o.sayName(); // "Kristen"
+```
+
+这个例子一开始展示了典型的构造函数调用方式，即使用 new 操作符创建一个新对象。然后是普通函数的调用方式，这时候没有使用 new 操作符调用 Person()，结果会将属性和方法添加到 window 对象。这里要记住，在调用一个函数而没有明确设置 this 值的情况下（即没有作为对象的方法调用，或者没有使用 call()/apply()调用），this 始终指向 Global 对象（在浏览器中就是 window 对象）。因此在上面的调用之后，window 对象上就有了一个 sayName()方法，调用它会返回"Greg"。最后展示的调用方式是通过 call()（或 apply()）调用函数，同时将特定对象指定为作用域。这里的调用将
+对象 o 指定为 Person()内部的 this 值，因此执行完函数代码后，所有属性和 sayName()方法都会添加到对象 o 上面。
+
+2. **构造函数的问题**
+
+构造函数虽然有用，但也不是没有问题。构造函数的主要问题在于，其定义的方法会在每个实例上都创建一遍。因此对前面的例子而言，person1 和 person2 都有名为 sayName()的方法，但这两个方法不是同一个 Function 实例。我们知道，ECMAScript 中的函数是对象，因此每次定义函数时，都会初始化一个对象。逻辑上讲，这个构造函数实际上是这样的：
+
+```js
+function Person(name, age, job) {
+  this.name = name;
+  this.age = age;
+  this.job = job;
+  this.sayName = new Function("console.log(this.name)"); // 逻辑等价
+}
+```
+
+这样理解这个构造函数可以更清楚地知道，每个 Person 实例都会有自己的 Function 实例用于显示 name 属性。当然了，以这种方式创建函数会带来不同的作用域链和标识符解析。但创建新 Function 实例的机制是一样的。因此不同实例上的函数虽然同名却不相等，如下所示：
+
+```js
+console.log(person1.sayName == person2.sayName); // false
+```
+
+因为都是做一样的事，所以没必要定义两个不同的 Function 实例。况且，this 对象可以把函数与对象的绑定推迟到运行时。
+
+要解决这个问题，可以把函数定义转移到构造函数外部：
+
+```js
+function Person(name, age, job) {
+  this.name = name;
+  this.age = age;
+  this.job = job;
+  this.sayName = sayName;
+}
+function sayName() {
+  console.log(this.name);
+}
+let person1 = new Person("Nicholas", 29, "Software Engineer");
+let person2 = new Person("Greg", 27, "Doctor");
+person1.sayName(); // Nicholas
+person2.sayName(); // Greg
+```
+
+在这里，sayName()被定义在了构造函数外部。在构造函数内部，sayName 属性等于全局 sayName()函数。因为这一次 sayName 属性中包含的只是一个指向外部函数的指针，所以 person1 和 person2 共享了定义在全局作用域上的 sayName()函数。这样虽然解决了相同逻辑的函数重复定义的问题，但全局作用域也因此被搞乱了，因为那个函数实际上只能在一个对象上调用。如果这个对象需要多个方法，那么就要在全局作用域中定义多个函数。这会导致自定义类型引用的代码不能很好地聚集一起。这个新问题可以通过原型模式来解决。
+
+### 8.2.4. 原型模式
+
+每个函数都会创建一个 prototype 属性，这个属性是一个对象，包含应该由特定引用类型的实例共享的属性和方法。实际上，这个对象就是通过调用构造函数创建的对象的原型。使用原型对象的好处是，在它上面定义的属性和方法可以被对象实例共享。原来在构造函数中直接赋给对象实例的值，可以直接赋值给它们的原型，如下所示：
+
+```js
+function Person() {}
+Person.prototype.name = "Nicholas";
+Person.prototype.age = 29;
+Person.prototype.job = "Software Engineer";
+Person.prototype.sayName = function () {
+  console.log(this.name);
+};
+let person1 = new Person();
+person1.sayName(); // "Nicholas"
+let person2 = new Person();
+person2.sayName(); // "Nicholas"
+console.log(person1.sayName == person2.sayName); // true
+```
