@@ -176,7 +176,9 @@ plan : 1 chapter/2 day
     - [8.3.6. 寄生式组合继承](#836-寄生式组合继承)
   - [8.4. 类](#84-类)
     - [8.4.1. 类定义](#841-类定义)
-    - [类构造函数](#类构造函数)
+    - [8.4.2. 类构造函数](#842-类构造函数)
+    - [8.4.3. 实例，原型和类成员](#843-实例原型和类成员)
+    - [8.4.4. 继承](#844-继承)
 
 # 1. 什么是 JavaScript
 
@@ -11670,7 +11672,7 @@ console.log(Person.name); // PersonName
 console.log(PersonName); // ReferenceError: PersonName is not defined
 ```
 
-### 类构造函数
+### 8.4.2. 类构造函数
 
 constructor 关键字用于在类定义块内部创建类的构造函数。方法名 constructor 会告诉解释器在使用 new 操作符创建类的新实例时，应该调用这个函数。构造函数的定义不是必需的，不定义构造函数相当于将构造函数定义为空函数。
 
@@ -11838,4 +11840,283 @@ let p = new (class Foo {
 })("bar"); // bar
 console.log(p); // Foo {}
 ```
+
+### 8.4.3. 实例，原型和类成员
+
+类的语法可以非常方便地定义应该存在于实例上的成员、应该存在于原型上的成员，以及应该存在于类本身的成员。
+
+1. **实例成员**
+
+每次通过new 调用类标识符时，都会执行类构造函数。在这个函数内部，可以为新创建的实例（this）添加“自有”属性。至于添加什么样的属性，则没有限制。另外，在构造函数执行完毕后，仍然可以给实例继续添加新成员。
+
+每个实例都对应一个唯一的成员对象，这意味着所有成员都不会在原型上共享：
+
+```js
+class Person {
+  constructor() {
+  // 这个例子先使用对象包装类型定义一个字符串
+  // 为的是在下面测试两个对象的相等性
+  this.name = new String('Jack');
+  this.sayName = () => console.log(this.name);
+  this.nicknames = ['Jake', 'J-Dog']
+  }
+}
+let p1 = new Person(),
+p2 = new Person();
+p1.sayName(); // Jack
+p2.sayName(); // Jack
+console.log(p1.name === p2.name); // false
+console.log(p1.sayName === p2.sayName); // false
+console.log(p1.nicknames === p2.nicknames); // false
+p1.name = p1.nicknames[0];
+p2.name = p2.nicknames[1];
+p1.sayName(); // Jake
+p2.sayName(); // J-Dog
+```
+
+2. **原型方法与访问器**
+
+为了在实例间共享方法，类定义语法把在类块中定义的方法作为原型方法。
+
+```js
+class Person {
+  constructor() {
+    // 添加到this 的所有内容都会存在于不同的实例上
+    this.locate = () => console.log('instance');
+  }
+  // 在类块中定义的所有内容都会定义在类的原型上
+  locate() {
+    console.log('prototype');
+  }
+}
+let p = new Person();
+p.locate(); // instance
+Person.prototype.locate(); // prototype
+```
+
+可以把方法定义在类构造函数中或者类块中，但不能在类块中给原型添加原始值或对象作为成员数据：
+
+```js
+class Person {
+  name: 'Jake'
+}
+// Uncaught SyntaxError: Unexpected token
+```
+
+类方法等同于对象属性，因此可以使用字符串、符号或计算的值作为键：
+
+```js
+const symbolKey = Symbol('symbolKey');
+class Person {
+  stringKey() {
+    console.log('invoked stringKey');
+  }
+  [symbolKey]() {
+    console.log('invoked symbolKey');
+  }
+  ['computed' + 'Key']() {
+    console.log('invoked computedKey');
+  }
+}
+let p = new Person();
+p.stringKey(); // invoked stringKey
+p[symbolKey](); // invoked symbolKey
+p.computedKey(); // invoked computedKey
+```
+
+类定义也支持获取和设置访问器。语法与行为跟普通对象一样：
+
+```js
+class Person {
+  set name(newName) {
+    this.name_ = newName;
+  }
+  get name() {
+    return this.name_;
+  }
+}
+let p = new Person();
+p.name = 'Jake';
+console.log(p.name); // Jake
+```
+
+3. **类静态方法**
+
+可以在类上定义静态方法。这些方法通常用于执行不特定于实例的操作，也不要求存在类的实例。与原型成员类似，静态成员每个类上只能有一个。
+
+静态类成员在类定义中使用static 关键字作为前缀。在静态成员中，this 引用类自身。其他所有约定跟原型成员一样：
+
+```js
+class Person {
+  constructor() {
+  // 添加到this 的所有内容都会存在于不同的实例上
+    this.locate = () => console.log('instance', this);
+  }
+  // 定义在类的原型对象上
+  locate() {
+    console.log('prototype', this);
+  }
+  // 定义在类本身上
+  static locate() {
+    console.log('class', this);
+  }
+}
+let p = new Person();
+p.locate(); // instance, Person {}
+Person.prototype.locate(); // prototype, {constructor: ... }
+Person.locate(); // class, class Person {}
+```
+
+静态类方法非常适合作为实例工厂：
+
+```js
+class Person {
+  constructor(age) {
+    this.age_ = age;
+  }
+  sayAge() {
+    console.log(this.age_);
+  }
+  static create() {
+    // 使用随机年龄创建并返回一个Person 实例
+    return new Person(Math.floor(Math.random()*100));
+  }
+}
+console.log(Person.create()); // Person { age_: ... }
+```
+
+4. **非函数原型和类成员**
+
+虽然类定义并不显式支持在原型或类上添加成员数据，但在类定义外部，可以手动添加：
+
+```js
+class Person {
+  sayName() {
+    console.log(`${Person.greeting} ${this.name}`);
+  }
+}
+// 在类上定义数据成员
+Person.greeting = 'My name is';
+// 在原型上定义数据成员
+Person.prototype.name = 'Jake';
+let p = new Person();
+p.sayName(); // My name is Jake
+```
+
+注意 类定义中之所以没有显式支持添加数据成员，是因为在共享目标（原型和类）上添加可变（可修改）数据成员是一种反模式。一般来说，对象实例应该独自拥有通过this引用的数据。
+
+5. **迭代器与生成器方法**
+
+类定义语法支持在原型和类本身上定义生成器方法：
+
+```js
+class Person {
+  // 在原型上定义生成器方法
+  *createNicknameIterator() {
+    yield 'Jack';
+    yield 'Jake';
+    yield 'J-Dog';
+  }
+  // 在类上定义生成器方法
+  static *createJobIterator() {
+    yield 'Butcher';
+    yield 'Baker';
+    yield 'Candlestick maker';
+  }
+}
+let jobIter = Person.createJobIterator();
+console.log(jobIter.next().value); // Butcher
+console.log(jobIter.next().value); // Baker
+console.log(jobIter.next().value); // Candlestick maker
+let p = new Person();
+let nicknameIter = p.createNicknameIterator();
+console.log(nicknameIter.next().value); // Jack
+console.log(nicknameIter.next().value); // Jake
+console.log(nicknameIter.next().value); // J-Dog
+```
+
+因为支持生成器方法，所以可以通过添加一个默认的迭代器，把类实例变成可迭代对象：
+
+```js
+class Person {
+  constructor() {
+    this.nicknames = ['Jack', 'Jake', 'J-Dog'];
+  }
+  *[Symbol.iterator]() {
+    yield *this.nicknames.entries();
+  }
+}
+let p = new Person();
+for (let [idx, nickname] of p) {
+  console.log(nickname);
+}
+// Jack
+// Jake
+// J-Dog
+```
+
+也可以只返回迭代器实例：
+
+```js
+class Person {
+  constructor() {
+    this.nicknames = ['Jack', 'Jake', 'J-Dog'];
+  }
+  [Symbol.iterator]() {
+    return this.nicknames.entries();
+  }
+}
+let p = new Person();
+for (let [idx, nickname] of p) {
+  console.log(nickname);
+}
+// Jack
+// Jake
+// J-Dog
+```
+
+### 8.4.4. 继承
+
+本章前面花了大量篇幅讨论如何使用ES5 的机制实现继承。ECMAScript 6 新增特性中最出色的一个就是原生支持了类继承机制。虽然类继承使用的是新语法，但背后依旧使用的是原型链。
+
+1. **继承基础**
+
+ES6 类支持单继承。使用extends 关键字，就可以继承任何拥有[[Construct]]和原型的对象。很大程度上，这意味着不仅可以继承一个类，也可以继承普通的构造函数（保持向后兼容）：
+
+```js
+class Vehicle {}
+// 继承类
+class Bus extends Vehicle {}
+let b = new Bus();
+console.log(b instanceof Bus); // true
+console.log(b instanceof Vehicle); // true
+function Person() {}
+// 继承普通构造函数
+class Engineer extends Person {}
+let e = new Engineer();
+console.log(e instanceof Engineer); // true
+console.log(e instanceof Person); // true
+```
+
+派生类都会通过原型链访问到类和原型上定义的方法。this 的值会反映调用相应方法的实例或者类：
+
+```js
+class Vehicle {
+  identifyPrototype(id) {
+    console.log(id, this);
+  }
+  static identifyClass(id) {
+    console.log(id, this);
+  }
+}
+class Bus extends Vehicle {}
+let v = new Vehicle();
+let b = new Bus();
+b.identifyPrototype('bus'); // bus, Bus {}
+v.identifyPrototype('vehicle'); // vehicle, Vehicle {}
+Bus.identifyClass('bus'); // bus, class Bus {}
+Vehicle.identifyClass('vehicle'); // vehicle, class Vehicle {}
+```
+
+注意 extends 关键字也可以在类表达式中使用，因此let Bar = class extends Foo {}是有效的语法。
 
