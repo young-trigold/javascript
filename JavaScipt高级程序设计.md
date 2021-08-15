@@ -9813,13 +9813,13 @@ book.year = 2018;
 console.log(book.edition); // 2
 ```
 
-在这个例子中，对象 book 有两个默认属性：year*和 edition。year*中的下划线常用来表示该属性并不希望在对象方法的外部被访问。另一个属性 year 被定义为一个访问器属性，其中获取函数简单地返回 year*的值，而设置函数会做一些计算以决定正确的版本（edition）。因此，把 year 属性修改为 2018 会导致 year*变成 2018，edition 变成 2。这是访问器属性的典型使用场景，即设置一个属性值会导致一些其他变化发生。
+在这个例子中，对象 book 有两个默认属性：year\_ 和 edition。year\_ 中的下划线常用来表示该属性并不希望在对象方法的外部被访问。另一个属性 year 被定义为一个访问器属性，其中获取函数简单地返回 year\_ 的值，而设置函数会做一些计算以决定正确的版本（edition）。因此，把 year 属性修改为 2018 会导致 year\_ 变成 2018，edition 变成 2。这是访问器属性的典型使用场景，即设置一个属性值会导致一些其他变化发生。
 
 获取函数和设置函数不一定都要定义。只定义获取函数意味着属性是只读的，尝试修改属性会被忽略。在严格模式下，尝试写入只定义了获取函数的属性会抛出错误。类似地，只有一个设置函数的属性是不能读取的，非严格模式下读取会返回 undefined，严格模式下会抛出错误。
 
 在不支持 Object.defineProperty()的浏览器中没有办法修改[[Configurable]]或[[Enumerable]]。
 
-注意 在 ECMAScript 5 以前，开发者会使用两个非标准的访问创建访问器属性：**defineGetter**()和**defineSetter**()。这两个方法最早是 Firefox 引入的，后来 Safari、Chrome 和 Opera 也实现了。
+注意 在 ECMAScript 5 以前，开发者会使用两个非标准的访问创建访问器属性：`__defineGetter__()` 和 `__defineSetter__()`。这两个方法最早是 Firefox 引入的，后来 Safari、Chrome 和 Opera 也实现了。
 
 ### 8.1.2. 定义多个属性
 
