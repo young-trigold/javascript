@@ -86,11 +86,11 @@ ECMA-262 第 8 版，也称为 ES8、ES2017，完成于 2017 年 6 月。这一�
 
 ECMA-262 第 9 版，也称为 ES9、ES2018，发布于 2018 年 6 月。这次修订包括异步迭代、剩余和扩展属性、一组新的正则表达式特性、Promise finally()，以及模板字面量修订。
 
-ECMA-262 第 10 版，也称为 ES10、ES2019，发布于 2019 年 6 月。这次修订增加了 Array.prototype. flat()/flatMap()、String.prototype.trimStart()/trimEnd()、Object.fromEntries()方法，以及 Symbol.prototype.description 属性，明确定义了 Function.prototype.toString() 的返回值并固定了 Array.prototype.sort()的顺序。另外，这次修订解决了与 JSON 字符串兼容的问题，并定义了 catch 子句的可选绑定。
+ECMA-262 第 10 版，也称为 ES10、ES2019，发布于 2019 年 6 月。这次修订增加了 Array.prototype.flat()/flatMap()、String.prototype.trimStart()/trimEnd()、Object.fromEntries()方法，以及 Symbol.prototype.description 属性，明确定义了 Function.prototype.toString() 的返回值并固定了 Array.prototype.sort()的顺序。另外，这次修订解决了与 JSON 字符串兼容的问题，并定义了 catch 子句的可选绑定。
 
-第 11 版，即 ECMAScript 2020，于 2020 年 6 月发布。除了新的函数，该版本还引入了一个用于任意大小的整数的 BigInt 原始类型，nullish 组合运算符，以及 globalThis 对象。
+ECMA-262 第 11 版，即 ECMAScript 2020，于 2020 年 6 月发布。除了新的函数，该版本还引入了一个用于任意大小的整数的 BigInt 原始类型，nullish 组合运算符，以及 globalThis 对象。
 
-最新(2021 年)第 12 版于 2021 年 6 月发布。第 12 版增添了字符串方法 replaceALL，逻辑赋值操作符(??==, &&==, ||==)，Promise.any 方法，一种新的错误类型 AggregateError 表示同时发生多个错误，等等。
+最新(2021 年)的第 12 版于 2021 年 6 月发布。第 12 版新增了字符串方法 replaceALL()，逻辑赋值操作符(??==, &&==, ||==)，Promise.any 方法，一种新的错误类型 AggregateError 表示同时发生多个错误，等等。
 
 2. **符合性**
 
