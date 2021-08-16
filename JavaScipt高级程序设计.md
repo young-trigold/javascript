@@ -10053,7 +10053,7 @@ console.log("2" === 2); // false
 console.log(+0 === -0); // true
 console.log(+0 === 0); // true
 console.log(-0 === 0); // true
-// 要确定NaN 的相等性，必须使用极为讨厌的Number.isNaN()
+// 要确定NaN 的相等性，必须使用极为讨厌的 Number.isNaN()
 console.log(NaN === NaN); // false
 console.log(Number.isNaN(NaN)); // true
 ```
@@ -10462,14 +10462,14 @@ ECMAScript 6 开始正式支持类和继承。ES6 的类旨在完全涵盖之前
 
 ```js
 function createPerson(name, age, job) {
-  let o = new Object();
-  o.name = name;
-  o.age = age;
-  o.job = job;
-  o.sayName = function () {
-    console.log(this.name);
+  return {
+    name,
+    age,
+    job,
+    introduce(){
+        console.log(`${this.name}, ${this.age}, ${this.job}`);
+    }
   };
-  return o;
 }
 let person1 = createPerson("Nicholas", 29, "Software Engineer");
 let person2 = createPerson("Greg", 27, "Doctor");
