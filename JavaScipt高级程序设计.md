@@ -12154,10 +12154,10 @@ class Vehicle {
 ```js
 class Vehicle {}
 class Bus extends Vehicle {
-constructor() {
-console.log(super);
-// SyntaxError: 'super' keyword unexpected here
-}
+  constructor() {
+    console.log(super);
+    // SyntaxError: 'super' keyword unexpected here
+  }
 }
 ```
 
