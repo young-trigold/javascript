@@ -9830,7 +9830,7 @@ let book = {};
 Object.defineProperties(book, {
   year_: {
     value: 2020,
-    writable: true
+    writable: true,
   },
   edition: {
     value: 4,
@@ -9860,7 +9860,7 @@ let book = {};
 Object.defineProperties(book, {
   year_: {
     value: 2017,
-    writable: true
+    writable: true,
   },
   edition: {
     value: 1,
@@ -9896,7 +9896,7 @@ let book = {};
 Object.defineProperties(book, {
   year_: {
     value: 2017,
-    writable: true
+    writable: true,
   },
   edition: {
     value: 1,
@@ -10466,9 +10466,9 @@ function createPerson(name, age, job) {
     name,
     age,
     job,
-    introduce(){
-        console.log(`${this.name}, ${this.age}, ${this.job}`);
-    }
+    introduce() {
+      console.log(`${this.name}, ${this.age}, ${this.job}`);
+    },
   };
 }
 let person1 = createPerson("Nicholas", 29, "Software Engineer");
@@ -10488,14 +10488,14 @@ function Person(name, age, job) {
   this.name = name;
   this.age = age;
   this.job = job;
-  this.sayName = function () {
-    console.log(this.name);
+  this.introduce = function () {
+    console.log(`${this.name}, ${this.age}, ${this.job}`);
   };
 }
 let person1 = new Person("Nicholas", 29, "Software Engineer");
 let person2 = new Person("Greg", 27, "Doctor");
-person1.sayName(); // Nicholas
-person2.sayName(); // Greg
+person1.introduce(); // Nicholas, 29, Software Engineer
+person2.introduce(); // Greg, 27, Doctor
 ```
 
 在这个例子中，Person()构造函数代替了 createPerson()工厂函数。实际上，Person()内部的代码跟 createPerson()基本是一样的，只是有如下区别。
@@ -10509,7 +10509,7 @@ person2.sayName(); // Greg
 要创建 Person 的实例，应使用 new 操作符。以这种方式调用构造函数会执行如下操作。
 
 1. 在内存中创建一个新对象。
-2. 这个新对象内部的[[Prototype]]特性被赋值为构造函数的 prototype 属性。
+2. 这个新对象内部的`[[Prototype]]`特性被赋值为构造函数的 prototype 属性。
 3. 构造函数内部的 this 被赋值为这个新对象（即 this 指向新对象）。
 4. 执行构造函数内部的代码（给新对象添加属性）。
 5. 如果构造函数返回非空对象，则返回该对象；否则，返回刚创建的新对象。
@@ -10539,14 +10539,14 @@ let Person = function (name, age, job) {
   this.name = name;
   this.age = age;
   this.job = job;
-  this.sayName = function () {
-    console.log(this.name);
+  this.introduce = function () {
+    console.log(`${this.name}, ${this.age}, ${this.job}`);
   };
 };
 let person1 = new Person("Nicholas", 29, "Software Engineer");
 let person2 = new Person("Greg", 27, "Doctor");
-person1.sayName(); // Nicholas
-person2.sayName(); // Greg
+person1.introduce(); // Nicholas, 29, Software Engineer
+person2.introduce(); // Greg, 27, Doctor
 console.log(person1 instanceof Object); // true
 console.log(person1 instanceof Person); // true
 console.log(person2 instanceof Object); // true
@@ -10563,7 +10563,7 @@ function Person() {
   };
 }
 let person1 = new Person();
-let person2 = new Person();
+let person2 = new Person;
 person1.sayName(); // Jake
 person2.sayName(); // Jake
 console.log(person1 instanceof Object); // true
@@ -10675,7 +10675,7 @@ console.log(person1.sayName == person2.sayName); // true
 
 无论何时，只要创建一个函数，就会按照特定的规则为这个函数创建一个 prototype 属性（指向原型对象）。默认情况下，所有原型对象自动获得一个名为 constructor 的属性，指回与之关联的构造函数。对前面的例子而言，Person.prototype.constructor 指向 Person。然后，因构造函数而异，可能会给原型对象添加其他属性和方法。
 
-在自定义构造函数时，原型对象默认只会获得 constructor 属性，其他的所有方法都继承自 Object。每次调用构造函数创建一个新实例，这个实例的内部[[Prototype]]指针就会被赋值为构造函数的原型对象。脚本中没有访问这个[[Prototype]]特性的标准方式，但 Firefox、Safari 和 Chrome 会在每个对象上暴露**proto**属性，通过这个属性可以访问对象的原型。在其他实现中，这个特性完全被隐藏了。关键在于理解这一点：实例与构造函数原型之间有直接的联系，但实例与构造函数之间没有。
+在自定义构造函数时，原型对象默认只会获得 constructor 属性，其他的所有方法都继承自 Object。每次调用构造函数创建一个新实例，这个实例的内部`[[Prototype]]`指针就会被赋值为构造函数的原型对象。脚本中没有访问这个`[[Prototype]]`特性的标准方式，但 Firefox、Safari 和 Chrome 会在每个对象上暴露**proto**属性，通过这个属性可以访问对象的原型。在其他实现中，这个特性完全被隐藏了。关键在于理解这一点：实例与构造函数原型之间有直接的联系，但实例与构造函数之间没有。
 
 这种关系不好可视化，但可以通过下面的代码来理解原型的行为：
 
@@ -10730,7 +10730,7 @@ console.log(person1 !== Person.prototype); // true
 console.log(Person.prototype !== Person); // true
 /**
  * 实例通过__proto__链接到原型对象，
- * 它实际上指向隐藏特性[[Prototype]]
+ * 它实际上指向隐藏特性`[[Prototype]]`
  *
  * 构造函数通过prototype 属性链接到原型对象
  *
@@ -10758,7 +10758,7 @@ console.log(Person.prototype instanceof Object); // true
 
 上图展示了 Person 构造函数、Person 的原型对象和 Person 现有两个实例之间的关系。注意，Person.prototype 指向原型对象，而 Person.prototype.contructor 指回 Person 构造函数。原型对象包含 constructor 属性和其他后来添加的属性。Person 的两个实例 person1 和 person2 都只有一个内部属性指回 Person.prototype，而且两者都与构造函数没有直接联系。另外要注意，虽然这两个实例都没有属性和方法，但 person1.sayName()可以正常调用。这是由于对象属性查找机制的原因。
 
-虽然不是所有实现都对外暴露了[[Prototype]]，但可以使用 isPrototypeOf()方法确定两个对象之间的这种关系。本质上，isPrototypeOf()会在传入参数的[[Prototype]]指向调用它的对象时返回 true，如下所示：
+虽然不是所有实现都对外暴露了`[[Prototype]]`，但可以使用 isPrototypeOf()方法确定两个对象之间的这种关系。本质上，isPrototypeOf()会在传入参数的`[[Prototype]]`指向调用它的对象时返回 true，如下所示：
 
 ```js
 console.log(Person.prototype.isPrototypeOf(person1)); // true
@@ -10767,7 +10767,7 @@ console.log(Person.prototype.isPrototypeOf(person2)); // true
 
 这里通过原型对象调用 isPrototypeOf()方法检查了 person1 和 person2。因为这两个例子内部都有链接指向 Person.prototype，所以结果都返回 true。
 
-ECMAScript 的 Object 类型有一个方法叫 Object.getPrototypeOf()，返回参数的内部特性[[Prototype]]的值。例如：
+ECMAScript 的 Object 类型有一个方法叫 Object.getPrototypeOf()，返回参数的内部特性`[[Prototype]]`的值。例如：
 
 ```js
 console.log(Object.getPrototypeOf(person1) == Person.prototype); // true
@@ -10776,7 +10776,7 @@ console.log(Object.getPrototypeOf(person1).name); // "Nicholas"
 
 第一行代码简单确认了 Object.getPrototypeOf()返回的对象就是传入对象的原型对象。第二行代码则取得了原型对象上 name 属性的值，即"Nicholas"。使用 Object.getPrototypeOf()可以方便地取得一个对象的原型，而这在通过原型实现继承时显得尤为重要（本章后面会介绍）。
 
-Object 类型还有一个 setPrototypeOf()方法，可以向实例的私有特性[[Prototype]]写入一个新值。这样就可以重写一个对象的原型继承关系：
+Object 类型还有一个 setPrototypeOf()方法，可以向实例的私有特性`[[Prototype]]`写入一个新值。这样就可以重写一个对象的原型继承关系：
 
 ```js
 let biped = {
@@ -10791,7 +10791,7 @@ console.log(person.numLegs); // 2
 console.log(Object.getPrototypeOf(person) === biped); // true
 ```
 
-警告 Object.setPrototypeOf()可能会严重影响代码性能。Mozilla 文档说得很清楚：“在所有浏览器和 JavaScript 引擎中，修改继承关系的影响都是微妙且深远的。这种影响并不仅是执行 Object.setPrototypeOf()语句那么简单，而是会涉及所有访问了那些修改过[[Prototype]]的对象的代码。”
+警告 Object.setPrototypeOf()可能会严重影响代码性能。Mozilla 文档说得很清楚：“在所有浏览器和 JavaScript 引擎中，修改继承关系的影响都是微妙且深远的。这种影响并不仅是执行 Object.setPrototypeOf()语句那么简单，而是会涉及所有访问了那些修改过`[[Prototype]]`的对象的代码。”
 
 为避免使用 Object.setPrototypeOf()可能造成的性能下降，可以通过 Object.create()来创建一个新对象，同时为其指定原型：
 
@@ -11128,7 +11128,7 @@ friend.sayHi(); // "hi"，没问题！
 以上代码先创建一个 Person 实例并保存在 friend 中。然后一条语句在 Person.prototype 上添加了一个名为 sayHi()的方法。虽然 friend 实例是在添加方法之前创建的，但它仍然可以访问这个方法。之所以会这样，主要原因是实例与原型之间松散的联系。在调用 friend.sayHi()时，首先会从
 这个实例中搜索名为 sayHi 的属性。在没有找到的情况下，运行时会继续搜索原型对象。因为实例和原型之间的链接就是简单的指针，而不是保存的副本，所以会在原型上找到 sayHi 属性并返回这个属性保存的函数。
 
-虽然随时能给原型添加属性和方法，并能够立即反映在所有对象实例上，但这跟重写整个原型是两回事。实例的[[Prototype]]指针是在调用构造函数时自动赋值的，这个指针即使把原型修改为不同的对象也不会变。重写整个原型会切断最初原型与构造函数的联系，但实例引用的仍然是最初的原型。记住，实例只有指向原型的指针，没有指向构造函数的指针。来看下面的例子：
+虽然随时能给原型添加属性和方法，并能够立即反映在所有对象实例上，但这跟重写整个原型是两回事。实例的`[[Prototype]]`指针是在调用构造函数时自动赋值的，这个指针即使把原型修改为不同的对象也不会变。重写整个原型会切断最初原型与构造函数的联系，但实例引用的仍然是最初的原型。记住，实例只有指向原型的指针，没有指向构造函数的指针。来看下面的例子：
 
 ```js
 function Person() {}
@@ -11235,7 +11235,7 @@ console.log(instance.getSuperValue()); // true
 
 ![8-4-原型链](illustrations/8-4-原型链.png)
 
-这个例子中实现继承的关键，是 SubType 没有使用默认原型，而是将其替换成了一个新的对象。这个新的对象恰好是 SuperType 的实例。这样一来，SubType 的实例不仅能从 SuperType 的实例中继承属性和方法，而且还与 SuperType 的原型挂上了钩。于是 instance（通过内部的[[Prototype]]）指向 SubType.prototype，而 SubType.prototype（作为 SuperType 的实例又通过内部的[[Prototype]]）指向 SuperType.prototype。注意，getSuperValue()方法还在 SuperType.prototype 对象上，而 property 属性则在 SubType.prototype 上。这是因为 getSuperValue()是一个原型方法，而 property 是一个实例属性。SubType.prototype 现在是 SuperType 的一个实例，因此 property 才会存储在它上面。还要注意，由于 SubType.prototype 的 constructor 属性被重写为指向 SuperType，所以 instance.constructor 也指向 SuperType。
+这个例子中实现继承的关键，是 SubType 没有使用默认原型，而是将其替换成了一个新的对象。这个新的对象恰好是 SuperType 的实例。这样一来，SubType 的实例不仅能从 SuperType 的实例中继承属性和方法，而且还与 SuperType 的原型挂上了钩。于是 instance（通过内部的`[[Prototype]]`）指向 SubType.prototype，而 SubType.prototype（作为 SuperType 的实例又通过内部的`[[Prototype]]`）指向 SuperType.prototype。注意，getSuperValue()方法还在 SuperType.prototype 对象上，而 property 属性则在 SubType.prototype 上。这是因为 getSuperValue()是一个原型方法，而 property 是一个实例属性。SubType.prototype 现在是 SuperType 的一个实例，因此 property 才会存储在它上面。还要注意，由于 SubType.prototype 的 constructor 属性被重写为指向 SuperType，所以 instance.constructor 也指向 SuperType。
 
 原型链扩展了前面描述的原型搜索机制。我们知道，在读取实例上的属性时，首先会在实例上搜索这个属性。如果没找到，则会继承搜索实例的原型。在通过原型链实现继承之后，搜索就可以继承向上，搜索原型的原型。对前面的例子而言，调用 instance.getSuperValue()经过了 3 步搜索：instance、SubType.prototype 和 SuperType.prototype，最后一步才找到这个方法。对属性和方法的搜索会一直持续到原型链的末端。
 
@@ -11682,7 +11682,7 @@ constructor 关键字用于在类定义块内部创建类的构造函数。方�
 使用 new 调用类的构造函数会执行如下操作:
 
 1. 在内存中创建一个新对象。
-2. 这个新对象内部的[[Prototype]]指针被赋值为构造函数的 prototype 属性。
+2. 这个新对象内部的`[[Prototype]]`指针被赋值为构造函数的 prototype 属性。
 3. 构造函数内部的 this 被赋值为这个新对象（即 this 指向新对象）。
 4. 执行构造函数内部的代码（给新对象添加属性）。
 5. 如果构造函数返回非空对象，则返回该对象；否则，返回刚创建的新对象。
@@ -11846,22 +11846,22 @@ console.log(p); // Foo {}
 
 1. **实例成员**
 
-每次通过new 调用类标识符时，都会执行类构造函数。在这个函数内部，可以为新创建的实例（this）添加“自有”属性。至于添加什么样的属性，则没有限制。另外，在构造函数执行完毕后，仍然可以给实例继续添加新成员。
+每次通过 new 调用类标识符时，都会执行类构造函数。在这个函数内部，可以为新创建的实例（this）添加“自有”属性。至于添加什么样的属性，则没有限制。另外，在构造函数执行完毕后，仍然可以给实例继续添加新成员。
 
 每个实例都对应一个唯一的成员对象，这意味着所有成员都不会在原型上共享：
 
 ```js
 class Person {
   constructor() {
-  // 这个例子先使用对象包装类型定义一个字符串
-  // 为的是在下面测试两个对象的相等性
-  this.name = new String('Jack');
-  this.sayName = () => console.log(this.name);
-  this.nicknames = ['Jake', 'J-Dog']
+    // 这个例子先使用对象包装类型定义一个字符串
+    // 为的是在下面测试两个对象的相等性
+    this.name = new String("Jack");
+    this.sayName = () => console.log(this.name);
+    this.nicknames = ["Jake", "J-Dog"];
   }
 }
 let p1 = new Person(),
-p2 = new Person();
+  p2 = new Person();
 p1.sayName(); // Jack
 p2.sayName(); // Jack
 console.log(p1.name === p2.name); // false
@@ -11881,11 +11881,11 @@ p2.sayName(); // J-Dog
 class Person {
   constructor() {
     // 添加到this 的所有内容都会存在于不同的实例上
-    this.locate = () => console.log('instance');
+    this.locate = () => console.log("instance");
   }
   // 在类块中定义的所有内容都会定义在类的原型上
   locate() {
-    console.log('prototype');
+    console.log("prototype");
   }
 }
 let p = new Person();
@@ -11897,7 +11897,7 @@ Person.prototype.locate(); // prototype
 
 ```js
 class Person {
-  name: 'Jake'
+  name: "Jake";
 }
 // Uncaught SyntaxError: Unexpected token
 ```
@@ -11905,16 +11905,16 @@ class Person {
 类方法等同于对象属性，因此可以使用字符串、符号或计算的值作为键：
 
 ```js
-const symbolKey = Symbol('symbolKey');
+const symbolKey = Symbol("symbolKey");
 class Person {
   stringKey() {
-    console.log('invoked stringKey');
+    console.log("invoked stringKey");
   }
   [symbolKey]() {
-    console.log('invoked symbolKey');
+    console.log("invoked symbolKey");
   }
-  ['computed' + 'Key']() {
-    console.log('invoked computedKey');
+  ["computed" + "Key"]() {
+    console.log("invoked computedKey");
   }
 }
 let p = new Person();
@@ -11935,7 +11935,7 @@ class Person {
   }
 }
 let p = new Person();
-p.name = 'Jake';
+p.name = "Jake";
 console.log(p.name); // Jake
 ```
 
@@ -11943,21 +11943,21 @@ console.log(p.name); // Jake
 
 可以在类上定义静态方法。这些方法通常用于执行不特定于实例的操作，也不要求存在类的实例。与原型成员类似，静态成员每个类上只能有一个。
 
-静态类成员在类定义中使用static 关键字作为前缀。在静态成员中，this 引用类自身。其他所有约定跟原型成员一样：
+静态类成员在类定义中使用 static 关键字作为前缀。在静态成员中，this 引用类自身。其他所有约定跟原型成员一样：
 
 ```js
 class Person {
   constructor() {
-  // 添加到this 的所有内容都会存在于不同的实例上
-    this.locate = () => console.log('instance', this);
+    // 添加到this 的所有内容都会存在于不同的实例上
+    this.locate = () => console.log("instance", this);
   }
   // 定义在类的原型对象上
   locate() {
-    console.log('prototype', this);
+    console.log("prototype", this);
   }
   // 定义在类本身上
   static locate() {
-    console.log('class', this);
+    console.log("class", this);
   }
 }
 let p = new Person();
@@ -11978,7 +11978,7 @@ class Person {
   }
   static create() {
     // 使用随机年龄创建并返回一个Person 实例
-    return new Person(Math.floor(Math.random()*100));
+    return new Person(Math.floor(Math.random() * 100));
   }
 }
 console.log(Person.create()); // Person { age_: ... }
@@ -11995,14 +11995,14 @@ class Person {
   }
 }
 // 在类上定义数据成员
-Person.greeting = 'My name is';
+Person.greeting = "My name is";
 // 在原型上定义数据成员
-Person.prototype.name = 'Jake';
+Person.prototype.name = "Jake";
 let p = new Person();
 p.sayName(); // My name is Jake
 ```
 
-注意 类定义中之所以没有显式支持添加数据成员，是因为在共享目标（原型和类）上添加可变（可修改）数据成员是一种反模式。一般来说，对象实例应该独自拥有通过this引用的数据。
+注意 类定义中之所以没有显式支持添加数据成员，是因为在共享目标（原型和类）上添加可变（可修改）数据成员是一种反模式。一般来说，对象实例应该独自拥有通过 this 引用的数据。
 
 5. **迭代器与生成器方法**
 
@@ -12012,15 +12012,15 @@ p.sayName(); // My name is Jake
 class Person {
   // 在原型上定义生成器方法
   *createNicknameIterator() {
-    yield 'Jack';
-    yield 'Jake';
-    yield 'J-Dog';
+    yield "Jack";
+    yield "Jake";
+    yield "J-Dog";
   }
   // 在类上定义生成器方法
   static *createJobIterator() {
-    yield 'Butcher';
-    yield 'Baker';
-    yield 'Candlestick maker';
+    yield "Butcher";
+    yield "Baker";
+    yield "Candlestick maker";
   }
 }
 let jobIter = Person.createJobIterator();
@@ -12039,10 +12039,10 @@ console.log(nicknameIter.next().value); // J-Dog
 ```js
 class Person {
   constructor() {
-    this.nicknames = ['Jack', 'Jake', 'J-Dog'];
+    this.nicknames = ["Jack", "Jake", "J-Dog"];
   }
   *[Symbol.iterator]() {
-    yield *this.nicknames.entries();
+    yield* this.nicknames.entries();
   }
 }
 let p = new Person();
@@ -12059,7 +12059,7 @@ for (let [idx, nickname] of p) {
 ```js
 class Person {
   constructor() {
-    this.nicknames = ['Jack', 'Jake', 'J-Dog'];
+    this.nicknames = ["Jack", "Jake", "J-Dog"];
   }
   [Symbol.iterator]() {
     return this.nicknames.entries();
@@ -12076,11 +12076,11 @@ for (let [idx, nickname] of p) {
 
 ### 8.4.4. 继承
 
-本章前面花了大量篇幅讨论如何使用ES5 的机制实现继承。ECMAScript 6 新增特性中最出色的一个就是原生支持了类继承机制。虽然类继承使用的是新语法，但背后依旧使用的是原型链。
+本章前面花了大量篇幅讨论如何使用 ES5 的机制实现继承。ECMAScript 6 新增特性中最出色的一个就是原生支持了类继承机制。虽然类继承使用的是新语法，但背后依旧使用的是原型链。
 
 1. **继承基础**
 
-ES6 类支持单继承。使用extends 关键字，就可以继承任何拥有[[Construct]]和原型的对象。很大程度上，这意味着不仅可以继承一个类，也可以继承普通的构造函数（保持向后兼容）：
+ES6 类支持单继承。使用 extends 关键字，就可以继承任何拥有`[[Construct]]`和原型的对象。很大程度上，这意味着不仅可以继承一个类，也可以继承普通的构造函数（保持向后兼容）：
 
 ```js
 class Vehicle {}
@@ -12111,17 +12111,17 @@ class Vehicle {
 class Bus extends Vehicle {}
 let v = new Vehicle();
 let b = new Bus();
-b.identifyPrototype('bus'); // bus, Bus {}
-v.identifyPrototype('vehicle'); // vehicle, Vehicle {}
-Bus.identifyClass('bus'); // bus, class Bus {}
-Vehicle.identifyClass('vehicle'); // vehicle, class Vehicle {}
+b.identifyPrototype("bus"); // bus, Bus {}
+v.identifyPrototype("vehicle"); // vehicle, Vehicle {}
+Bus.identifyClass("bus"); // bus, class Bus {}
+Vehicle.identifyClass("vehicle"); // vehicle, class Vehicle {}
 ```
 
-注意 extends 关键字也可以在类表达式中使用，因此let Bar = class extends Foo {}是有效的语法。
+注意 extends 关键字也可以在类表达式中使用，因此 let Bar = class extends Foo {}是有效的语法。
 
-2. **构造函数、HomeObject 和super()**
+2. **构造函数、HomeObject 和 super()**
 
-派生类的方法可以通过super 关键字引用它们的原型。这个关键字只能在派生类中使用，而且仅限于类构造函数、实例方法和静态方法内部。在类构造函数中使用super 可以调用父类构造函数。
+派生类的方法可以通过 super 关键字引用它们的原型。这个关键字只能在派生类中使用，而且仅限于类构造函数、实例方法和静态方法内部。在类构造函数中使用 super 可以调用父类构造函数。
 
 ```js
 class Vehicle {
@@ -12131,12 +12131,11 @@ class Vehicle {
 }
 class Bus extends Vehicle {
   constructor() {
-  // 不要在调用super()之前引用this，否则会抛出ReferenceError
-  super(); // 相当于super.constructor()
-  console.log(this instanceof Vehicle); // true
-  console.log(this); // Bus { hasEngine: true }
+    // 不要在调用super()之前引用this，否则会抛出ReferenceError
+    super(); // 相当于super.constructor()
+    console.log(this instanceof Vehicle); // true
+    console.log(this); // Bus { hasEngine: true }
   }
 }
 new Bus();
 ```
-
