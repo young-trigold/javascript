@@ -129,7 +129,7 @@ plan : 1 chapter/2 day
     - [6.5.1. 基本 API](#651-基本-api)
     - [6.5.2. 弱键](#652-弱键)
     - [6.5.3. 不可迭代键](#653-不可迭代键)
-    - [6.5.4. 使用弱映射](#654-使用弱映射)
+    - [6.5.4. 使用弱映像](#654-使用弱映像)
   - [6.6. Set](#66-set)
     - [6.6.1. 基本 API](#661-基本-api)
     - [6.6.2. 顺序与迭代](#662-顺序与迭代)
@@ -179,6 +179,18 @@ plan : 1 chapter/2 day
     - [8.4.2. 类构造函数](#842-类构造函数)
     - [8.4.3. 实例，原型和类成员](#843-实例原型和类成员)
     - [8.4.4. 继承](#844-继承)
+- [9. 代理与映像](#9-代理与映像)
+  - [9.1. 代理基础](#91-代理基础)
+    - [9.1.1. 创建空代理](#911-创建空代理)
+    - [9.1.2. 定义捕获器](#912-定义捕获器)
+    - [9.1.3. 捕获器参数和映像 API](#913-捕获器参数和映像-api)
+    - [9.1.4. 捕获器不变式](#914-捕获器不变式)
+    - [9.1.5. 可撤销代理](#915-可撤销代理)
+    - [9.1.6. 使用映像 API](#916-使用映像-api)
+    - [9.1.7. 代理另一个代理](#917-代理另一个代理)
+    - [9.1.8. 代理的问题与不足](#918-代理的问题与不足)
+  - [9.2. 代理捕获器与映像方法](#92-代理捕获器与映像方法)
+    - [9.2.1. get()](#921-get)
 
 # 1. 什么是 JavaScript
 
@@ -251,7 +263,7 @@ ECMA-262 第 4 版是对这门语言的一次彻底修订。作为对 JavaScript
 
 ECMAScript 3.1 变成了 ECMA-262 的第 5 版，于 2009 年 12 月 3 日正式发布。第 5 版致力于厘清第 3 版存在的歧义，也增加了新功能。新功能包括原生的解析和序列化 JSON 数据的 JSON 对象、方便继承和高级属性定义的方法，以及新的增强 ECMAScript 引擎解释和执行代码能力的严格模式。第 5 版在 2011 年 6 月发布了一个维护性修订版，这个修订版只更正了规范中的错误，并未增加任何新的语言或库特性。
 
-ECMA-262 第 6 版，俗称 ES6、ES2015 或 ES Harmony（和谐版），于 2015 年 6 月发布。这一版包含了大概这个规范有史以来最重要的一批增强特性。ES6 正式支持了类、模块、迭代器、生成器、箭头函数、期约、反射、代理和众多新的数据类型。
+ECMA-262 第 6 版，俗称 ES6、ES2015 或 ES Harmony（和谐版），于 2015 年 6 月发布。这一版包含了大概这个规范有史以来最重要的一批增强特性。ES6 正式支持了类、模块、迭代器、生成器、箭头函数、期约、映像、代理和众多新的数据类型。
 
 ECMA-262 第 7 版，也称为 ES7 或 ES2016，于 2016 年 6 月发布。这次修订只包含少量语法层面的增强，如 Array.prototype.includes 和指数操作符。
 
@@ -356,9 +368,9 @@ DOM 通过创建表示文档的树，让开发者可以随心所欲地控制网�
 
 2. **DOM 级别**
 
-1998 年 10 月，DOM Level 1 成为 W3C 的推荐标准。这个规范由两个模块组成：DOM Core 和 DOM HTML。前者提供了一种映射 XML 文档，从而方便访问和操作文档任意部分的方式；后者扩展了前者，并增加了特定于 HTML 的对象和方法。
+1998 年 10 月，DOM Level 1 成为 W3C 的推荐标准。这个规范由两个模块组成：DOM Core 和 DOM HTML。前者提供了一种映像 XML 文档，从而方便访问和操作文档任意部分的方式；后者扩展了前者，并增加了特定于 HTML 的对象和方法。
 
-DOM Level 1 的目标是映射文档结构，而 DOM Level 2 的目标则宽泛得多。这个对最初 DOM 的扩展增加了对（DHTML 早就支持的）鼠标和用户界面事件、范围、遍历（迭代 DOM 节点的方法）的支持，而且通过对象接口支持了层叠样式表（CSS）。另外，DOM Level 1 中的 DOM Core 也被扩展以包含对 XML 命名空间的支持。
+DOM Level 1 的目标是映像文档结构，而 DOM Level 2 的目标则宽泛得多。这个对最初 DOM 的扩展增加了对（DHTML 早就支持的）鼠标和用户界面事件、范围、遍历（迭代 DOM 节点的方法）的支持，而且通过对象接口支持了层叠样式表（CSS）。另外，DOM Level 1 中的 DOM Core 也被扩展以包含对 XML 命名空间的支持。
 
 DOM Level 2 新增了以下模块，以支持新的接口：
 
@@ -6401,7 +6413,7 @@ Array.from()的第一个参数是一个类数组对象，即任何可迭代的�
 // 字符串会被拆分为单字符数组
 console.log(Array.from("Matt")); // ["M", "a", "t", "t"]
 
-// 可以使用from()将集合和映射转换为一个新数组
+// 可以使用from()将集合和映像转换为一个新数组
 const m = new Map().set(1, 2).set(3, 4);
 const s = new Set().add(1).add(2).add(3).add(4);
 
@@ -6443,7 +6455,7 @@ const arrayLikeObject = {
 console.log(Array.from(arrayLikeObject)); // [1, 2, 3, 4]
 ```
 
-Array.from()还接收第二个可选的映射函数参数。这个函数可以直接增强新数组的值，而无须像调用 Array.from().map()那样先创建一个中间数组。还可以接收第三个可选参数，用于指定映射函数中 this 的值。但这个重写的 this 值在箭头函数中不适用。
+Array.from()还接收第二个可选的映像函数参数。这个函数可以直接增强新数组的值，而无须像调用 Array.from().map()那样先创建一个中间数组。还可以接收第三个可选参数，用于指定映像函数中 this 的值。但这个重写的 this 值在箭头函数中不适用。
 
 ```js
 const a1 = [1, 2, 3, 4];
@@ -7592,16 +7604,16 @@ ECMAScript 6 以前，在 JavaScript 中实现“键/值”式存储可以使用
 
 ### 6.4.1. 基本 API
 
-使用 new 关键字和 Map 构造函数可以创建一个空映射：
+使用 new 关键字和 Map 构造函数可以创建一个空映像：
 
 ```js
 const m = new Map();
 ```
 
-如果想在创建的同时初始化实例，可以给 Map 构造函数传入一个可迭代对象，需要包含键/值对数组。可迭代对象中的每个键/值对都会按照迭代顺序插入到新映射实例中：
+如果想在创建的同时初始化实例，可以给 Map 构造函数传入一个可迭代对象，需要包含键/值对数组。可迭代对象中的每个键/值对都会按照迭代顺序插入到新映像实例中：
 
 ```js
-// 使用嵌套数组初始化映射
+// 使用嵌套数组初始化映像
 const m1 = new Map([
   ["key1", "val1"],
   ["key2", "val2"],
@@ -7609,7 +7621,7 @@ const m1 = new Map([
 ]);
 console.log(m1.size); // 3
 
-// 使用自定义迭代器初始化映射
+// 使用自定义迭代器初始化映像
 const m2 = new Map({
   [Symbol.iterator]: function* () {
     yield ["key1", "val1"];
@@ -7619,13 +7631,13 @@ const m2 = new Map({
 });
 console.log(m2.size); // 3
 
-// 映射期待的键/值对，无论是否提供
+// 映像期待的键/值对，无论是否提供
 const m3 = new Map([[]]);
 console.log(m3.has(undefined)); // true
 console.log(m3.get(undefined)); // undefined
 ```
 
-初始化之后，可以使用 set()方法再添加键/值对。另外，可以使用 get()和 has()进行查询，可以通过 size 属性获取映射中的键/值对的数量，还可以使用 delete()和 clear()删除值。
+初始化之后，可以使用 set()方法再添加键/值对。另外，可以使用 get()和 has()进行查询，可以通过 size 属性获取映像中的键/值对的数量，还可以使用 delete()和 clear()删除值。
 
 ```js
 const m = new Map();
@@ -7643,13 +7655,13 @@ console.log(m.has("firstName")); // false
 console.log(m.has("lastName")); // true
 console.log(m.size); // 1
 
-m.clear(); // 清除这个映射实例中的所有键/值对
+m.clear(); // 清除这个映像实例中的所有键/值对
 console.log(m.has("firstName")); // false
 console.log(m.has("lastName")); // false
 console.log(m.size); // 0
 ```
 
-set()方法返回映射实例，因此可以把多个操作连缀起来，包括初始化声明：
+set()方法返回映像实例，因此可以把多个操作连缀起来，包括初始化声明：
 
 ```js
 const m = new Map().set("key1", "val1").set("key2", "val2").set("key3", "val3");
@@ -7657,7 +7669,7 @@ const m = new Map().set("key1", "val1").set("key2", "val2").set("key3", "val3");
 console.log(m.size); // 3
 ```
 
-与 Object 只能使用数值、字符串或符号作为键不同，Map 可以使用任何 JavaScript 数据类型作为键。Map 内部使用 SameValueZero 比较操作（ECMAScript 规范内部定义，语言中不能使用），基本上相当于使用严格对象相等的标准来检查键的匹配性。与 Object 类似，映射的值是没有限制的。
+与 Object 只能使用数值、字符串或符号作为键不同，Map 可以使用任何 JavaScript 数据类型作为键。Map 内部使用 SameValueZero 比较操作（ECMAScript 规范内部定义，语言中不能使用），基本上相当于使用严格对象相等的标准来检查键的匹配性。与 Object 类似，映像的值是没有限制的。
 
 ```js
 const m = new Map();
@@ -7678,7 +7690,7 @@ console.log(m.get(objectKey)); // objectValue
 console.log(m.get(function () {})); // undefined
 ```
 
-与严格相等一样，在映射中用作键和值的对象及其他“集合”类型，在自己的内容或属性被修改时仍然保持不变：
+与严格相等一样，在映像中用作键和值的对象及其他“集合”类型，在自己的内容或属性被修改时仍然保持不变：
 
 ```js
 const m = new Map();
@@ -7722,7 +7734,7 @@ console.log(m.get(nz)); // bar
 
 与 Object 类型的一个主要差异是，Map 实例会维护键值对的插入顺序，因此可以根据插入顺序执行迭代操作。
 
-映射实例可以提供一个迭代器（Iterator），能以插入顺序生成[key, value]形式的数组。可以通过 entries()方法（或者 Symbol.iterator 属性，它引用 entries()）取得这个迭代器：
+映像实例可以提供一个迭代器（Iterator），能以插入顺序生成[key, value]形式的数组。可以通过 entries()方法（或者 Symbol.iterator 属性，它引用 entries()）取得这个迭代器：
 
 ```js
 const m = new Map([
@@ -7745,7 +7757,7 @@ for (let pair of m[Symbol.iterator]()) {
 // [key3,val3]
 ```
 
-因为 entries()是默认迭代器，所以可以直接对映射实例使用扩展操作，把映射转换为数组：
+因为 entries()是默认迭代器，所以可以直接对映像实例使用扩展操作，把映像转换为数组：
 
 ```js
 const m = new Map([
@@ -7756,7 +7768,7 @@ const m = new Map([
 console.log([...m]); // [[key1,val1],[key2,val2],[key3,val3]]
 ```
 
-如果不使用迭代器，而是使用回调方式，则可以调用映射的 forEach(callback, opt_thisArg)方法并传入回调，依次迭代每个键/值对。传入的回调接收可选的第二个参数，这个参数用于重写回调内部 this 的值：
+如果不使用迭代器，而是使用回调方式，则可以调用映像的 forEach(callback, opt_thisArg)方法并传入回调，依次迭代每个键/值对。传入的回调接收可选的第二个参数，这个参数用于重写回调内部 this 的值：
 
 ```js
 const m = new Map([
@@ -7792,7 +7804,7 @@ for (let key of m.values()) {
 // value3
 ```
 
-键和值在迭代器遍历时是可以修改的，但映射内部的引用则无法修改。当然，这并不妨碍修改作为键或值的对象内部的属性，因为这样并不影响它们在映射实例中的身份：
+键和值在迭代器遍历时是可以修改的，但映像内部的引用则无法修改。当然，这并不妨碍修改作为键或值的对象内部的属性，因为这样并不影响它们在映像实例中的身份：
 
 ```js
 const m1 = new Map([["key1", "val1"]]);
@@ -7806,7 +7818,7 @@ for (let key of m1.keys()) {
 const keyObj = { id: 1 };
 const m = new Map([[keyObj, "val1"]]);
 
-// 修改了作为键的对象的属性，但对象在映射内部仍然引用相同的值
+// 修改了作为键的对象的属性，但对象在映像内部仍然引用相同的值
 for (let key of m.keys()) {
   key.id = "newKey";
   console.log(key); // {id: "newKey"}
@@ -7817,7 +7829,7 @@ console.log(keyObj); // {id: "newKey"}
 
 ### 6.4.3. 选择 Object 还是 Map
 
-对于多数 Web 开发任务来说，选择 Object 还是 Map 只是个人偏好问题，影响不大。不过，对于在乎内存和性能的开发者来说，对象和映射之间确实存在显著的差别。
+对于多数 Web 开发任务来说，选择 Object 还是 Map 只是个人偏好问题，影响不大。不过，对于在乎内存和性能的开发者来说，对象和映像之间确实存在显著的差别。
 
 1. 内存占用
    Object 和 Map 的工程级实现在不同浏览器间存在明显差异，但存储单个键/值对所占用的内存数量都会随键的数量线性增加。批量添加或删除键/值对则取决于各浏览器对该类型内存分配的工程实现。不同浏览器的情况不同，但给定固定大小的内存，Map 大约可以比 Object 多存储 50%的键/值对。
@@ -7830,7 +7842,7 @@ console.log(keyObj); // {id: "newKey"}
 
 ## 6.5. WeakMap
 
-ECMAScript 6 新增的“弱映射”（WeakMap）是一种新的集合类型，为这门语言带来了增强的键/值对存储机制。WeakMap 是 Map 的“兄弟”类型，其 API 也是 Map 的子集。WeakMap 中的“weak”（弱），描述的是 JavaScript 垃圾回收程序对待“弱映射”中键的方式。
+ECMAScript 6 新增的“弱映像”（WeakMap）是一种新的集合类型，为这门语言带来了增强的键/值对存储机制。WeakMap 是 Map 的“兄弟”类型，其 API 也是 Map 的子集。WeakMap 中的“weak”（弱），描述的是 JavaScript 垃圾回收程序对待“弱映像”中键的方式。
 
 ### 6.5.1. 基本 API
 
@@ -7840,16 +7852,16 @@ ECMAScript 6 新增的“弱映射”（WeakMap）是一种新的集合类型，
 const wm = new WeakMap();
 ```
 
-弱映射中的键只能是 Object 或者继承自 Object 的类型，尝试使用非对象设置键会抛出 TypeError。值的类型没有限制。
+弱映像中的键只能是 Object 或者继承自 Object 的类型，尝试使用非对象设置键会抛出 TypeError。值的类型没有限制。
 
-如果想在初始化时填充弱映射，则构造函数可以接收一个可迭代对象，其中需要包含键/值对数组。可迭代对象中的每个键/值都会按照迭代顺序插入新实例中：
+如果想在初始化时填充弱映像，则构造函数可以接收一个可迭代对象，其中需要包含键/值对数组。可迭代对象中的每个键/值都会按照迭代顺序插入新实例中：
 
 ```js
 const key1 = { id: 1 },
   key2 = { id: 2 },
   key3 = { id: 3 };
 
-// 使用嵌套数组初始化弱映射
+// 使用嵌套数组初始化弱映像
 const wm1 = new WeakMap([
   [key1, "val1"],
   [key2, "val2"],
@@ -7890,7 +7902,7 @@ console.log(wm.has(key1)); // false
 console.log(wm.has(key2)); // true
 ```
 
-set()方法返回弱映射实例，因此可以把多个操作连缀起来，包括初始化声明：
+set()方法返回弱映像实例，因此可以把多个操作连缀起来，包括初始化声明：
 
 ```js
 const key1 = { id: 1 },
@@ -7905,7 +7917,7 @@ console.log(wm.get(key3)); // val3
 
 ### 6.5.2. 弱键
 
-WeakMap 中“weak”表示弱映射的键是“弱弱地拿着”的。意思就是，这些键不属于正式的引用，不会阻止垃圾回收。但要注意的是，弱映射中值的引用可不是“弱弱地拿着”的。只要键存在，键/值对就会存在于映射中，并被当作对值的引用，因此就不会被当作垃圾回收。
+WeakMap 中“weak”表示弱映像的键是“弱弱地拿着”的。意思就是，这些键不属于正式的引用，不会阻止垃圾回收。但要注意的是，弱映像中值的引用可不是“弱弱地拿着”的。只要键存在，键/值对就会存在于映像中，并被当作对值的引用，因此就不会被当作垃圾回收。
 
 来看下面的例子：
 
@@ -7914,7 +7926,7 @@ const wm = new WeakMap();
 wm.set({}, "val");
 ```
 
-set()方法初始化了一个新对象并将它用作一个字符串的键。因为没有指向这个对象的其他引用，所以当这行代码执行完成后，这个对象键就会被当作垃圾回收。然后，这个键/值对就从弱映射中消失了，使其成为一个空映射。在这个例子中，因为值也没有被引用，所以这对键/值被破坏以后，值本身也会成为垃圾回收的目标。
+set()方法初始化了一个新对象并将它用作一个字符串的键。因为没有指向这个对象的其他引用，所以当这行代码执行完成后，这个对象键就会被当作垃圾回收。然后，这个键/值对就从弱映像中消失了，使其成为一个空映像。在这个例子中，因为值也没有被引用，所以这对键/值被破坏以后，值本身也会成为垃圾回收的目标。
 
 再看一个稍微不同的例子：
 
@@ -7929,21 +7941,21 @@ function removeReference() {
 }
 ```
 
-这一次，container 对象维护着一个对弱映射键的引用，因此这个对象键不会成为垃圾回收的目标。不过，如果调用了 removeReference()，就会摧毁键对象的最后一个引用，垃圾回收程序就可以把这个键/值对清理掉。
+这一次，container 对象维护着一个对弱映像键的引用，因此这个对象键不会成为垃圾回收的目标。不过，如果调用了 removeReference()，就会摧毁键对象的最后一个引用，垃圾回收程序就可以把这个键/值对清理掉。
 
 ### 6.5.3. 不可迭代键
 
-因为 WeakMap 中的键/值对任何时候都可能被销毁，所以没必要提供迭代其键/值对的能力。当然，也用不着像 clear()这样一次性销毁所有键/值的方法。WeakMap 确实没有这个方法。因为不可能迭代，所以也不可能在不知道对象引用的情况下从弱映射中取得值。即便代码可以访问 WeakMap 实例，也没办法看到其中的内容。
+因为 WeakMap 中的键/值对任何时候都可能被销毁，所以没必要提供迭代其键/值对的能力。当然，也用不着像 clear()这样一次性销毁所有键/值的方法。WeakMap 确实没有这个方法。因为不可能迭代，所以也不可能在不知道对象引用的情况下从弱映像中取得值。即便代码可以访问 WeakMap 实例，也没办法看到其中的内容。
 
 WeakMap 实例之所以限制只能用对象作为键，是为了保证只有通过键对象的引用才能取得值。如果允许原始值，那就没办法区分初始化时使用的字符串字面量和初始化之后使用的一个相等的字符串了。
 
-### 6.5.4. 使用弱映射
+### 6.5.4. 使用弱映像
 
 WeakMap 实例与现有 JavaScript 对象有着很大不同，可能一时不容易说清楚应该怎么使用它。这个问题没有唯一的答案，但已经出现了很多相关策略。
 
 1. **私有对象**
 
-弱映射造就了在 JavaScript 中实现真正私有变量的一种新方式。前提很明确：私有变量会存储在弱映射中，以对象实例为键，以私有成员的字典为值。
+弱映像造就了在 JavaScript 中实现真正私有变量的一种新方式。前提很明确：私有变量会存储在弱映像中，以对象实例为键，以私有成员的字典为值。
 
 下面是一个示例实现：
 
@@ -7977,7 +7989,7 @@ console.log(user.getId()); // 456
 console.log(wm.get(user)[user.idProperty]); // 456
 ```
 
-慧眼独具的读者会发现，对于上面的实现，外部代码只需要拿到对象实例的引用和弱映射，就可以取得“私有”变量了。为了避免这种访问，可以用一个闭包把 WeakMap 包装起来，这样就可以把弱映射与外界完全隔离开了：
+慧眼独具的读者会发现，对于上面的实现，外部代码只需要拿到对象实例的引用和弱映像，就可以取得“私有”变量了。为了避免这种访问，可以用一个闭包把 WeakMap 包装起来，这样就可以把弱映像与外界完全隔离开了：
 
 ```js
 const User = (() => {
@@ -8010,7 +8022,7 @@ user.setId(456);
 console.log(user.getId()); // 456
 ```
 
-这样，拿不到弱映射中的健，也就无法取得弱映射中对应的值。虽然这防止了前面提到的访问，但整个代码也完全陷入了 ES6 之前的闭包私有变量模式。
+这样，拿不到弱映像中的健，也就无法取得弱映像中对应的值。虽然这防止了前面提到的访问，但整个代码也完全陷入了 ES6 之前的闭包私有变量模式。
 
 2. **DOM 节点元数据**
 
@@ -8023,9 +8035,9 @@ const loginButton = document.querySelector("#login");
 m.set(loginButton, { disabled: true });
 ```
 
-假设在上面的代码执行后，页面被 JavaScript 改变了，原来的登录按钮从 DOM 树中被删掉了。但由于映射中还保存着按钮的引用，所以对应的 DOM 节点仍然会逗留在内存中，除非明确将其从映射中删除或者等到映射本身被销毁。
+假设在上面的代码执行后，页面被 JavaScript 改变了，原来的登录按钮从 DOM 树中被删掉了。但由于映像中还保存着按钮的引用，所以对应的 DOM 节点仍然会逗留在内存中，除非明确将其从映像中删除或者等到映像本身被销毁。
 
-如果这里使用的是弱映射，如以下代码所示，那么当节点从 DOM 树中被删除后，垃圾回收程序就可以立即释放其内存（假设没有其他地方引用这个对象）：
+如果这里使用的是弱映像，如以下代码所示，那么当节点从 DOM 树中被删除后，垃圾回收程序就可以立即释放其内存（假设没有其他地方引用这个对象）：
 
 ```js
 const wm = new WeakMap();
@@ -8511,7 +8523,7 @@ let typedArr1 = Int16Array.of(...arr1);
 let typedArr2 = Int16Array.from(arr1);
 console.log(typedArr1); // Int16Array [1, 2, 3]
 console.log(typedArr2); // Int16Array [1, 2, 3]
-// 把数组复制到映射
+// 把数组复制到映像
 let map = new Map(arr1.map((x) => [x, "val" + x]));
 console.log(map); // Map {1 => 'val 1', 2 => 'val 2', 3 => 'val 3'}
 // 把数组复制到集合
@@ -8604,7 +8616,7 @@ let set = new Set().add(3).add(1).add(4);
 
 - 字符串
 - 数组
-- 映射
+- 映像
 - 集合
 - arguments 对象
 - NodeList 等 DOM 集合类型
@@ -8645,7 +8657,7 @@ console.log(els[Symbol.iterator]()); // ArrayIterator {}
 - 扩展操作符
 - Array.from()
 - 创建集合
-- 创建映射
+- 创建映像
 - Promise.all()接收由期约组成的可迭代对象
 - Promise.race()接收由期约组成的可迭代对象
 - yield\*操作符，在生成器中使用
@@ -9678,7 +9690,7 @@ console.log(g.next()); // { done: false, value: 3}
 - 理解继承
 - 理解类
 
-ECMA-262 将对象定义为一组属性的无序集合。严格来说，这意味着对象就是一组没有特定顺序的值。对象的每个属性或方法都由一个名称来标识，这个名称映射到一个值。正因为如此（以及其他还未讨论的原因），可以把 ECMAScript 的对象想象成一张散列表，其中的内容就是一组名/值对，值可以是数据或者函数。
+ECMA-262 将对象定义为一组属性的无序集合。严格来说，这意味着对象就是一组没有特定顺序的值。对象的每个属性或方法都由一个名称来标识，这个名称映像到一个值。正因为如此（以及其他还未讨论的原因），可以把 ECMAScript 的对象想象成一张散列表，其中的内容就是一组名/值对，值可以是数据或者函数。
 
 ## 8.1. 理解对象
 
@@ -12418,4 +12430,445 @@ b.baz(); // baz
 
 注意 很多 JavaScript 框架（特别是 React）已经抛弃混入模式，转向了组合模式（把方法提取到独立的类和辅助对象中，然后把它们组合起来，但不使用继承）。这反映了那个众所周知的软件设计原则：“组合胜过继承（composition over inheritance）。”这个设计原则被很多人遵循，在代码设计中能提供极大的灵活性。
 
+# 9. 代理与映像
 
+本章内容
+
+- 代理基础
+- 代码捕获器与映像方法
+- 代理模式
+
+ECMAScript 6 新增的代理和映像为开发者提供了拦截并向基本操作嵌入额外行为的能力。具体地说，可以给目标对象定义一个关联的代理对象，而这个代理对象可以作为抽象的目标对象来使用。在对目标对象的各种操作影响目标对象之前，可以在代理对象中对这些操作加以控制。
+
+对刚刚接触这个主题的开发者而言，代理是一个比较模糊的概念，而且还夹杂着很多新术语。其实只要看几个例子，就很容易理解了。
+
+注意 在 ES6 之前，ECMAScript 中并没有类似代理的特性。由于代理是一种新的基础性语言能力，很多转译程序都不能把代理行为转换为之前的 ECMAScript 代码，因为代理的行为实际上是无可替代的。为此，代理和映像只在百分之百支持它们的平台上有用。可以检测代理是否存在，不存在则提供后备代码。不过这会导致代码冗余，因此并不推荐。
+
+## 9.1. 代理基础
+
+正如本章开头所介绍的，代理是目标对象的抽象。从很多方面看，代理类似 C++指针，因为它可以用作目标对象的替身，但又完全独立于目标对象。目标对象既可以直接被操作，也可以通过代理来操作。但直接操作会绕过代理施予的行为。
+
+注意 ECMAScript 代理与 C++指针有重大区别，后面会再讨论。不过作为一种有助于理解的类比，指针在概念上还是比较合适的结构。
+
+### 9.1.1. 创建空代理
+
+最简单的代理是空代理，即除了作为一个抽象的目标对象，什么也不做。默认情况下，在代理对象上执行的所有操作都会无障碍地传播到目标对象。因此，在任何可以使用目标对象的地方，都可以通过同样的方式来使用与之关联的代理对象。
+
+代理是使用 Proxy 构造函数创建的。这个构造函数接收两个参数：目标对象和处理程序对象。缺少其中任何一个参数都会抛出 TypeError。要创建空代理，可以传一个简单的对象字面量作为处理程序对象，从而让所有操作畅通无阻地抵达目标对象。
+
+如下面的代码所示，在代理对象上执行的任何操作实际上都会应用到目标对象。唯一可感知的不同就是代码中操作的是代理对象。
+
+```js
+const target = {
+  id: 'target'
+};
+const handler = {};
+const proxy = new Proxy(target, handler);
+// id 属性会访问同一个值
+console.log(target.id); // target
+console.log(proxy.id); // target
+// 给目标属性赋值会反映在两个对象上
+// 因为两个对象访问的是同一个值
+target.id = 'foo';
+console.log(target.id); // foo
+console.log(proxy.id); // foo
+// 给代理属性赋值会反映在两个对象上
+// 因为这个赋值会转移到目标对象
+proxy.id = 'bar';
+console.log(target.id); // bar
+console.log(proxy.id); // bar
+// hasOwnProperty()方法在两个地方
+// 都会应用到目标对象
+console.log(target.hasOwnProperty('id')); // true
+console.log(proxy.hasOwnProperty('id')); // true
+// Proxy.prototype 是undefined
+// 因此不能使用instanceof 操作符
+console.log(target instanceof Proxy); // TypeError: Function has non-object prototype
+'undefined' in instanceof check
+console.log(proxy instanceof Proxy); // TypeError: Function has non-object prototype
+'undefined' in instanceof check
+// 严格相等可以用来区分代理和目标
+console.log(target === proxy); // false
+```
+
+### 9.1.2. 定义捕获器
+
+使用代理的主要目的是可以定义 **捕获器（trap）**。捕获器就是在处理程序对象中定义的“基本操作的拦截器”。每个处理程序对象可以包含零个或多个捕获器，每个捕获器都对应一种基本操作，可以直接或间接在代理对象上调用。每次在代理对象上调用这些基本操作时，代理可以在这些操作传播到目标对象之前先调用捕获器函数，从而拦截并修改相应的行为。
+
+注意 捕获器（trap）是从操作系统中借用的概念。在操作系统中，捕获器是程序流中的一个同步中断，可以暂停程序流，转而执行一段子例程，之后再返回原始程序流。
+
+例如，可以定义一个 get()捕获器，在 ECMAScript 操作以某种形式调用 get()时触发。下面的例子定义了一个 get()捕获器：
+
+```js
+const target = {
+  foo: "bar",
+};
+const handler = {
+  // 捕获器在处理程序对象中以方法名为键
+  get() {
+    return "handler override";
+  },
+};
+const proxy = new Proxy(target, handler);
+```
+
+这样，当通过代理对象执行 get()操作时，就会触发定义的 get()捕获器。当然，get()不是 ECMAScript 对象可以调用的方法。这个操作在 JavaScript 代码中可以通过多种形式触发并被 get()捕获器拦截到。proxy[property]、proxy.property 或 Object.create(proxy)[property]等操作都会触发基本的 get()操作以获取属性。因此所有这些操作只要发生在代理对象上，就会触发 get()捕获器。注意，只有在代理对象上执行这些操作才会触发捕获器。在目标对象上执行这些操作仍然会产生正常的行为。
+
+```js
+const target = {
+  foo: "bar",
+};
+const handler = {
+  // 捕获器在处理程序对象中以方法名为键
+  get() {
+    return "handler override";
+  },
+};
+const proxy = new Proxy(target, handler);
+console.log(target.foo); // bar
+console.log(proxy.foo); // handler override
+console.log(target["foo"]); // bar
+console.log(proxy["foo"]); // handler override
+console.log(Object.create(target)["foo"]); // bar
+console.log(Object.create(proxy)["foo"]); // handler override
+```
+
+### 9.1.3. 捕获器参数和映像 API
+
+所有捕获器都可以访问相应的参数，基于这些参数可以重建被捕获方法的原始行为。比如，get()捕获器会接收到目标对象、要查询的属性和代理对象三个参数。
+
+```js
+const target = {
+  foo: "bar",
+};
+const handler = {
+  get(trapTarget, property, receiver) {
+    console.log(trapTarget === target);
+    console.log(property);
+    console.log(receiver === proxy);
+  },
+};
+const proxy = new Proxy(target, handler);
+proxy.foo;
+// true
+// foo
+// true
+```
+
+有了这些参数，就可以重建被捕获方法的原始行为：
+
+```js
+const target = {
+  foo: "bar",
+};
+const handler = {
+  get(trapTarget, property, receiver) {
+    return trapTarget[property];
+  },
+};
+const proxy = new Proxy(target, handler);
+console.log(proxy.foo); // bar
+console.log(target.foo); // bar
+```
+
+所有捕获器都可以基于自己的参数重建原始操作，但并非所有捕获器行为都像 get()那么简单。因此，通过手动写码如法炮制的想法是不现实的。实际上，开发者并不需要手动重建原始行为，而是可以通过调用全局 Reflect 对象上（封装了原始行为）的同名方法来轻松重建。
+
+处理程序对象中所有可以捕获的方法都有对应的映像（Reflect）API 方法。这些方法与捕获器拦截的方法具有相同的名称和函数签名，而且也具有与被拦截方法相同的行为。因此，使用映像 API 也可以像下面这样定义出空代理对象：
+
+```js
+const target = {
+  foo: "bar",
+};
+const handler = {
+  get() {
+    return Reflect.get(...arguments);
+  },
+};
+const proxy = new Proxy(target, handler);
+console.log(proxy.foo); // bar
+console.log(target.foo); // bar
+```
+
+甚至还可以写得更简洁一些：
+
+```js
+const target = {
+  foo: "bar",
+};
+const handler = {
+  get: Reflect.get,
+};
+const proxy = new Proxy(target, handler);
+console.log(proxy.foo); // bar
+console.log(target.foo); // bar
+```
+
+事实上，如果真想创建一个可以捕获所有方法，然后将每个方法转发给对应映像 API 的空代理，那么甚至不需要定义处理程序对象：
+
+```js
+const target = {
+  foo: "bar",
+};
+const proxy = new Proxy(target, Reflect);
+console.log(proxy.foo); // bar
+console.log(target.foo); // bar
+```
+
+映像 API 为开发者准备好了样板代码，在此基础上开发者可以用最少的代码修改捕获的方法。比如，下面的代码在某个属性被访问时，会对返回的值进行一番修饰：
+
+```js
+const target = {
+  foo: "bar",
+  baz: "qux",
+};
+
+const handler = {
+  get(trapTarget, property, receiver) {
+    let decoration = "";
+    if (property === "foo") {
+      decoration = "!!!";
+    }
+    return Reflect.get(...arguments) + decoration;
+  },
+};
+const proxy = new Proxy(target, handler);
+console.log(proxy.foo); // bar!!!
+console.log(target.foo); // bar
+console.log(proxy.baz); // qux
+console.log(target.baz); // qux
+```
+
+### 9.1.4. 捕获器不变式
+
+使用捕获器几乎可以改变所有基本方法的行为，但也不是没有限制。根据 ECMAScript 规范，每个捕获的方法都知道目标对象上下文、捕获函数签名，而捕获处理程序的行为必须遵循“捕获器不变式”（trap invariant）。捕获器不变式因方法不同而异，但通常都会防止捕获器定义出现过于反常的行为。
+
+比如，如果目标对象有一个不可配置且不可写的数据属性，那么在捕获器返回一个与该属性不同的值时，会抛出 TypeError：
+
+```js
+const target = {};
+Object.defineProperty(target, "foo", {
+  configurable: false,
+  writable: false,
+  value: "bar",
+});
+const handler = {
+  get() {
+    return "qux";
+  },
+};
+const proxy = new Proxy(target, handler);
+console.log(proxy.foo);
+// TypeError
+```
+
+### 9.1.5. 可撤销代理
+
+有时候可能需要中断代理对象与目标对象之间的联系。对于使用 new Proxy()创建的普通代理来说，这种联系会在代理对象的生命周期内一直持续存在。
+
+Proxy 也暴露了 revocable()方法，这个方法支持撤销代理对象与目标对象的关联。撤销代理的操作是不可逆的。而且，撤销函数（revoke()）是幂等的，调用多少次的结果都一样。撤销代理之后再调用代理会抛出 TypeError。
+
+```js
+const target = {
+  foo: "bar",
+};
+const handler = {
+  get() {
+    return "intercepted";
+  },
+};
+const { proxy, revoke } = Proxy.revocable(target, handler);
+console.log(proxy.foo); // intercepted
+console.log(target.foo); // bar
+revoke();
+console.log(proxy.foo); // TypeError
+```
+
+### 9.1.6. 使用映像 API
+
+某些情况下应该优先使用映像 API，这是有一些理由的。
+
+1. **映像 API 与对象 API**
+
+在使用映像 API 时，要记住：
+
+(1) 映像 API 并不限于捕获处理程序；
+(2) 大多数映像 API 方法在 Object 类型上有对应的方法。
+
+通常，Object 上的方法适用于通用程序，而映像方法适用于细粒度的对象控制与操作。
+
+2. **状态标记**
+
+很多映像方法返回称作“状态标记”的布尔值，表示意图执行的操作是否成功。有时候，状态标记比那些返回修改后的对象或者抛出错误（取决于方法）的映像 API 方法更有用。例如，可以使用映像 API 对下面的代码进行重构：
+
+```js
+// 初始代码
+const o = {};
+try {
+  Object.defineProperty(o, "foo", "bar");
+  console.log("success");
+} catch (e) {
+  console.log("failure");
+}
+```
+
+在定义新属性时如果发生问题，Reflect.defineProperty()会返回 false，而不是抛出错误。因此使用这个映像方法可以这样重构上面的代码：
+
+```js
+// 重构后的代码
+const o = {};
+if (Reflect.defineProperty(o, "foo", { value: "bar" })) {
+  console.log("success");
+} else {
+  console.log("failure");
+}
+```
+
+以下映像方法都会提供状态标记：
+
+- Reflect.defineProperty()
+- Reflect.preventExtensions()
+- Reflect.setPrototypeOf()
+- Reflect.set()
+- Reflect.deleteProperty()
+
+3. **用一等函数替代操作符**
+
+以下映像方法提供只有通过操作符才能完成的操作：
+
+- Reflect.get()：可以替代对象属性访问操作符。
+- Reflect.set()：可以替代=赋值操作符。
+- Reflect.has()：可以替代 in 操作符或 with()。
+- Reflect.deleteProperty()：可以替代 delete 操作符。
+- Reflect.construct()：可以替代 new 操作符。
+
+4. **安全地应用函数**
+
+在通过 apply 方法调用函数时，被调用的函数可能也定义了自己的 apply 属性（虽然可能性极小）。为绕过这个问题，可以使用定义在 Function 原型上的 apply 方法，比如：
+
+```js
+Function.prototype.apply.call(myFunc, thisVal, argumentList);
+```
+
+这种可怕的代码完全可以使用 Reflect.apply 来避免：
+
+```js
+Reflect.apply(myFunc, thisVal, argumentsList);
+```
+
+### 9.1.7. 代理另一个代理
+
+代理可以拦截映像 API 的操作，而这意味着完全可以创建一个代理，通过它去代理另一个代理。这样就可以在一个目标对象之上构建多层拦截网：
+
+```js
+const target = {
+  foo: "bar",
+};
+const firstProxy = new Proxy(target, {
+  get() {
+    console.log("first proxy");
+    return Reflect.get(...arguments);
+  },
+});
+const secondProxy = new Proxy(firstProxy, {
+  get() {
+    console.log("second proxy");
+    return Reflect.get(...arguments);
+  },
+});
+console.log(secondProxy.foo);
+// second proxy
+// first proxy
+// bar
+```
+
+### 9.1.8. 代理的问题与不足
+
+代理是在 ECMAScript 现有基础之上构建起来的一套新 API，因此其实现已经尽力做到最好了。很大程度上，代理作为对象的虚拟层可以正常使用。但在某些情况下，代理也不能与现在的 ECMAScript 机制很好地协同。
+
+1. **代理中的 this**
+
+代理潜在的一个问题来源是 this 值。我们知道，方法中的 this 通常指向调用这个方法的对象：
+
+```js
+const target = {
+  thisValEqualsProxy() {
+    return this === proxy;
+  },
+};
+const proxy = new Proxy(target, {});
+console.log(target.thisValEqualsProxy()); // false
+console.log(proxy.thisValEqualsProxy()); // true
+```
+
+从直觉上讲，这样完全没有问题：调用代理上的任何方法，比如 proxy.outerMethod()，而这个方法进而又会调用另一个方法，如 this.innerMethod()，实际上都会调用 proxy.innerMethod()。多数情况下，这是符合预期的行为。可是，如果目标对象依赖于对象标识，那就可能碰到意料之外的问题。
+
+还记得第 6 章中通过 WeakMap 保存私有变量的例子吧，以下是它的简化版：
+
+```js
+const wm = new WeakMap();
+class User {
+  constructor(userId) {
+    wm.set(this, userId);
+  }
+  set id(userId) {
+    wm.set(this, userId);
+  }
+  get id() {
+    return wm.get(this);
+  }
+}
+```
+
+由于这个实现依赖 User 实例的对象标识，在这个实例被代理的情况下就会出问题：
+
+```js
+const user = new User(123);
+console.log(user.id); // 123
+const userInstanceProxy = new Proxy(user, {});
+console.log(userInstanceProxy.id); // undefined
+```
+
+这是因为 User 实例一开始使用目标对象作为 WeakMap 的键，代理对象却尝试从自身取得这个实例。要解决这个问题，就需要重新配置代理，把代理 User 实例改为代理 User 类本身。之后再创建代理的实例就会以代理实例作为 WeakMap 的键了：
+
+```js
+const UserClassProxy = new Proxy(User, {});
+const proxyUser = new UserClassProxy(456);
+console.log(proxyUser.id);
+```
+
+2. **代理与内部槽位**
+
+代理与内置引用类型（比如 Array）的实例通常可以很好地协同，但有些 ECMAScript 内置类型可能会依赖代理无法控制的机制，结果导致在代理上调用某些方法会出错。
+
+一个典型的例子就是 Date 类型。根据 ECMAScript 规范，Date 类型方法的执行依赖 this 值上的内部槽位`[[NumberDate]]`。代理对象上不存在这个内部槽位，而且这个内部槽位的值也不能通过普通的 get()和 set()操作访问到，于是代理拦截后本应转发给目标对象的方法会抛出 TypeError：
+
+```js
+const target = new Date();
+const proxy = new Proxy(target, {});
+console.log(proxy instanceof Date); // true
+proxy.getDate(); // TypeError: 'this' is not a Date object
+```
+
+## 9.2. 代理捕获器与映像方法
+
+代理可以捕获 13 种不同的基本操作。这些操作有各自不同的映像 API 方法、参数、关联 ECMAScript 操作和不变式。
+
+正如前面示例所展示的，有几种不同的 JavaScript 操作会调用同一个捕获器处理程序。不过，对于在代理对象上执行的任何一种操作，只会有一个捕获处理程序被调用。不会存在重复捕获的情况。
+
+只要在代理上调用，所有捕获器都会拦截它们对应的映像 API 操作。
+
+### 9.2.1. get()
+
+get()捕获器会在获取属性值的操作中被调用。对应的反射 API 方法为 Reflect.get()。
+
+```js
+const myTarget = {};
+const proxy = new Proxy(myTarget, {
+  get(target, property, receiver) {
+    console.log("get()");
+    return Reflect.get(...arguments);
+  },
+});
+proxy.foo;
+// get()
+```
