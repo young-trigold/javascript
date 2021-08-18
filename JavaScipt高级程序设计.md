@@ -12350,7 +12350,7 @@ class Van extends Vehicle {}
 new Bus(); // success!
 new Van(); // Error: Inheriting class must define foo()
 ```
-
+ 
 4. **继承内置类型**
 
 ES6 类为继承内置引用类型提供了顺畅的机制，开发者可以方便地扩展内置类型：
@@ -12394,7 +12394,7 @@ class SuperArray extends Array {
   }
 }
 let a1 = new SuperArray(1, 2, 3, 4, 5);
-let a2 = a1.filter((x) => !!(x % 2));
+let a2 = a1.filter((x) => x % 2);
 console.log(a1); // [1, 2, 3, 4, 5]
 console.log(a2); // [1, 3, 5]
 console.log(a1 instanceof SuperArray); // true
