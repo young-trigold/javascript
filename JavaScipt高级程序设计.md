@@ -13437,6 +13437,72 @@ proxy.onlyNumbersGoHere = "2";
 console.log(proxy.onlyNumbersGoHere); // 1
 ```
 
+下面是一个综合的例子，演示了以上 3 种模式：
+
+```js
+const person = {
+  name: "jack",
+  age: 28,
+  job: "Software Engineer",
+};
+
+const monitor = {
+  records: [],
+  getTime() {
+    const date = new Date(),
+      fullYear = date.getFullYear(),
+      month = date.getMonth() + 1,
+      day = date.getDate(),
+      hours = date.getHours(),
+      minutes = date.getMinutes(),
+      seconds = date.getSeconds(),
+      normalize = (timeNum) => timeNum.toString().padStart(2, "0");
+    return `${fullYear}-${normalize(month)}-${normalize(day)} ${normalize(
+      hours
+    )}:${normalize(minutes)}:${normalize(seconds)}`;
+  },
+  get(target, prop, proxy) {
+    if (prop === "job") {
+      console.log("person.job is protected!");
+      return undefined;
+    } else {
+      this.records.push(`you got person.${prop} at ${this.getTime()}`);
+      console.log(this.records[this.records.length - 1]);
+      return Reflect.get(...arguments);
+    }
+  },
+  set(target, prop, value, proxy) {
+    if (typeof target[prop] === typeof value) {
+      if (value > 0) {
+        this.records.push(
+          `you set person.${prop} as ${value} at ${this.getTime()}`
+        );
+        console.log(this.records[this.records.length - 1]);
+        return Reflect.set(...arguments);
+      } else {
+        console.log("The value you set must be positive!");
+      }
+    } else {
+      console.log("The type of argument must be matched!");
+    }
+  },
+};
+
+const proxy = new Proxy(person, monitor);
+
+console.log(proxy.name);
+// you got person.name at 2021-08-18 14:23:56
+// jack
+proxy.job;
+// person.job is protected!
+proxy.age = "text";
+// The type of argument must be matched!
+proxy.age = -1;
+// The value you set must be positive!
+proxy.age = 30;
+// you set person.age as 30 at 2021-08-18 14:26:03
+```
+
 ### 9.3.4. 函数与构造函数参数验证
 
 跟保护和验证对象属性类似，也可对函数和构造函数参数进行审查。比如，可以让函数只接收某种类型的值：
