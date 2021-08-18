@@ -13443,7 +13443,13 @@ console.log(proxy.onlyNumbersGoHere); // 1
 
 ```js
 function median(...nums) {
-  return nums.sort()[Math.floor(nums.length / 2)];
+  const sortedNums = nums.sort((a, b) => a - b);
+  const len = nums.length;
+  if (len % 2) {
+    return sortedNums[~~(len / 2)];
+  } else {
+    return (sortedNums[len / 2 - 1] + sortedNums[len / 2]) / 2;
+  }
 }
 const proxy = new Proxy(median, {
   apply(target, thisArg, argumentsList) {
