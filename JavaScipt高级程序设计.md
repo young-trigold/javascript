@@ -4196,13 +4196,13 @@ console.log(pattern instanceof RegExp); // 变量pattern 是RegExp 吗？
 
 ## 4.2. 执行上下文和作用域
 
-执行上下文（以下简称“上下文”）的概念在 JavaScript 中是颇为重要的。变量或函数的上下文决定了它们可以访问哪些数据，以及它们的行为。每个上下文都有一个关联的变量对象(variable object)，而这个上下文中定义的所有变量和函数都存在于这个对象上。虽然无法通过代码访问变量对象，但后台处理数据会用到它。
+执行上下文（以下简称“上下文”）的概念在 JavaScript 中是颇为重要的。变量或函数的上下文决定了它们可以访问哪些数据，以及它们的行为。每个上下文都有一个关联的 **变量对象(variable object)**，而这个上下文中定义的所有变量和函数都存在于这个对象上。虽然无法通过代码访问变量对象，但后台处理数据会用到它。
 
 全局上下文是最外层的上下文。根据 ECMAScript 实现的宿主环境，表示全局上下文的对象可能不一样。在浏览器中，全局上下文就是我们常说的 window 对象（第 12 章会详细介绍），因此所有通过 var 定义的全局变量和函数都会成为 window 对象的属性和方法。使用 let 和 const 的顶级声明不会定义在全局上下文中，但在作用域链解析上效果是一样的。上下文在其所有代码都执行完毕后会被销毁，包括定义在它上面的所有变量和函数（全局上下文在应用程序退出前才会被销毁，比如关闭网页或退出浏览器）。
 
 每个函数调用都有自己的上下文。当代码执行流进入函数时，函数的上下文被推到一个上下文栈上。在函数执行完之后，上下文栈会弹出该函数上下文，将控制权返还给之前的执行上下文。ECMAScript 程序的执行流就是通过这个上下文栈进行控制的。
 
-上下文中的代码在执行的时候，会创建变量对象的一个 **作用域链(scope chain)**。这个作用域链决定了各级上下文中的代码在访问变量和函数时的顺序。代码正在执行的上下文的变量对象始终位于作用域链的最前端。如果上下文是函数，则其**活动对象(activation object)** 用作变量对象。活动对象最初只有一个定义变量：arguments。（全局上下文中没有这个变量。）作用域链中的下一个变量对象来自包含上下文，再下一个对象来自再下一个包含上下文。以此类推直至全局上下文；全局上下文的变量对象始终是作用域链的最后一个变量对象。
+上下文中的代码在执行的时候，会创建变量对象的一个 **作用域链(scope chain)**。这个作用域链决定了各级上下文中的代码在访问变量和函数时的顺序。代码正在执行的上下文的变量对象始终位于作用域链的最前端。如果上下文是函数，则其 **活动对象(activation object)** 用作变量对象。活动对象最初只有一个定义变量：arguments。（全局上下文中没有这个变量。）作用域链中的下一个变量对象来自包含上下文，再下一个对象来自再下一个包含上下文。以此类推直至全局上下文；全局上下文的变量对象始终是作用域链的最后一个变量对象。
 
 代码执行时的标识符解析是通过沿作用域链逐级搜索标识符名称完成的。搜索过程始终从作用域链的最前端开始，然后逐级往后，直到找到标识符。（如果没有找到标识符，那么通常会报错。）
 
@@ -14121,8 +14121,7 @@ console.log(getSum(...[0, 1, 2, 3])); // 3
 
 ### 10.6.2. 收集参数
 
-在构思函数定义时，可以使用扩展操作符把不同长度的独立参数组合为一个数组。这有点类似
-arguments 对象的构造机制，只不过收集参数的结果会得到一个 Array 实例。
+在构思函数定义时，可以使用扩展操作符把不同长度的独立参数组合为一个数组。这有点类似 arguments 对象的构造机制，只不过收集参数的结果会得到一个 Array 实例。
 
 ```js
 function getSum(...values) {
@@ -14249,8 +14248,7 @@ function createComparisonFunction(propertyName) {
 }
 ```
 
-这个函数的语法乍一看比较复杂，但实际上就是在一个函数中返回另一个函数，注意那个 return
-操作符。内部函数可以访问 propertyName 参数，并通过中括号语法取得要比较的对象的相应属性值。取得属性值以后，再按照 sort()方法的需要返回比较值就行了。这个函数可以像下面这样使用：
+这个函数的语法乍一看比较复杂，但实际上就是在一个函数中返回另一个函数，注意那个 return 操作符。内部函数可以访问 propertyName 参数，并通过中括号语法取得要比较的对象的相应属性值。取得属性值以后，再按照 sort()方法的需要返回比较值就行了。这个函数可以像下面这样使用：
 
 ```js
 let data = [
@@ -14310,28 +14308,93 @@ console.log(factorial(5)); // 0
 
 ### 10.9.2. this
 
-另一个特殊的对象是 this，它在标准函数和箭头函数中有不同的行为。
+另一个特殊的对象是 this。
 
-在标准函数中，this 引用的是把函数当成方法调用的上下文对象，这时候通常称其为 this 值（在网页的全局上下文中调用函数时，this 指向 windows）。来看下面的例子：
+this 在全局上下文中，即在任何函数体的外部时，都指向全局对象，在浏览器宿主环境中就是 window。来看下面的例子：
 
 ```js
-window.color = "red";
-let o = {
-  color: "blue",
+let o1 = {
+  this: this,
+  o2: {
+    this: [this],
+  },
 };
-function sayColor() {
-  console.log(this.color);
-}
-sayColor(); // 'red'
-o.sayColor = sayColor;
-o.sayColor(); // 'blue'
+
+console.log(o1.this === window); // true
+console.log(o1.o2.this[0] === window); // true
 ```
 
-定义在全局上下文中的函数 sayColor()引用了 this 对象。这个 this 到底引用哪个对象必须到
-函数被调用时才能确定。因此这个值在代码执行的过程中可能会变。如果在全局上下文中调用
-sayColor()，这结果会输出"red"，因为 this 指向 window，而 this.color 相当于 window.color。而在把 sayColor()赋值给 o 之后再调用 o.sayColor()，this 会指向 o，即 this.color 相当于 o.color，所以会显示"blue"。
+在这个例子中，对象 o1 的 this 属性引用 this 值，而这个 this 值在全局上下文中指向 window。同样的，o2 的 this 值引用一个数组对象，这个数组的第一个元素为 this，但无论如何 this 值都在全局上下文中，所以都指向 window。
 
-在箭头函数中，this 引用的是定义箭头函数的上下文。下面的例子演示了这一点。在对 sayColor()的两次调用中，this 引用的都是 window 对象，因为这个箭头函数是在 window 上下文中定义的：
+this 在标准函数上下文（使用 function 关键字的函数）中的值是最有意思的部分。this 在标准函数上下文中的值取决于调用它的上下文对象。来看下面几个例子：
+
+```js
+function getThis() {
+  return this;
+}
+// 相当于 window.getThis()
+console.log(getThis() === window); // true
+```
+
+在这个例子中，getThis() 是一个函数声明，它返回 this 值。下面在全局上下文中调用了 getThis() 则它返回 window 对象。
+
+严格模式下，进入函数上下文而不指定 this 的值，则以 undefined 填充。
+
+```js
+function getThisInStrict() {
+  "use strict";
+  return this;
+}
+console.log(getThisInStrict() === undefined); // true
+// 指定了 this 为 window
+console.log(window.getThisInStrict() === window); // true
+```
+
+最难理解的是，调用函数的方式决定了 this 的值，而不是函数本身的定义，接着上面定义过的 getThis()：
+
+```js
+console.log(getThis.prototype.constructor === getThis); // true
+console.log(getThis.prototype.constructor() === getThis.prototype); // true
+
+let constructor = getThis.prototype.constructor;
+console.log(constructor() === window); // true
+```
+
+在这个例子中，getThis.prototype.constructor 指向函数本身，我们在第 8 章时已经知道，但调用 getThis.prototype.constructor 返回的却不是 window，而是 getThis.prototype 对象。
+
+下面的例子，我们已经遇到过：
+
+```js
+let o = {};
+o.getThis = getThis;
+console.log(o.getThis() === o); // true
+```
+
+调用对象 o 的 getThis 方法，则 this 返回 o 本身。
+
+在另一个函数上下文中的函数，这个函数的上下文中的 this 值指向全局对象 window：
+
+```js
+function test() {
+  function getThis() {
+    return this;
+  }
+  return getThis();
+}
+console.log(test() === window); // true
+```
+
+另外，我们知道使用 new 调用构造函数，则该构造函数中的 this 指向正在构建的对象：
+
+```js
+function Person() {
+  this.name = "Nicholas";
+  console.log(this instanceof Person); // true
+}
+new Person();
+```
+
+在箭头函数中，this 引用的是定义箭头函数的上下文，这点和标准函数不同。下面的例子演示了这一点。在对 sayColor()的两次调用中，this 引用的都是 window 对象，因为这个箭头函数是在 window 上下文中定义的：
 
 ```js
 window.color = "red";
@@ -14363,9 +14426,6 @@ new King(); // Henry
 new Queen(); // undefined
 ```
 
-注意 函数名只是保存指针的变量。因此全局定义的 sayColor()函数和 o.sayColor()
-是同一个函数，只不过执行的上下文不同。
-
 ### 10.9.3. caller
 
 ECMAScript 5 也会给函数对象上添加一个属性：caller。虽然 ECMAScript 3 中并没有定义，但所有浏览器除了早期版本的 Opera 都支持这个属性。这个属性引用的是调用当前函数的函数，或者如果是在全局作用域中调用的则为 null。比如：
@@ -14380,8 +14440,7 @@ function inner() {
 outer();
 ```
 
-以上代码会显示 outer()函数的源代码。这是因为 ourter()调用了 inner()，inner.caller
-指向 outer()。如果要降低耦合度，则可以通过 arguments.callee.caller 来引用同样的值：
+以上代码会显示 outer()函数的源代码。这是因为 ourter()调用了 inner()，inner.caller 指向 outer()。如果要降低耦合度，则可以通过 arguments.callee.caller 来引用同样的值：
 
 ```js
 function outer() {
@@ -14399,8 +14458,7 @@ outer();
 
 ### 10.9.4. new.target
 
-ECMAScript 中的函数始终可以作为构造函数实例化一个新对象，也可以作为普通函数被调用。
-ECMAScript 6 新增了检测函数是否使用 new 关键字调用的 new.target 属性。如果函数是正常调用的，则 new.target 的值是 undefined；如果是使用 new 关键字调用的，则 new.target 将引用被调用的构造函数。
+ECMAScript 中的函数始终可以作为构造函数实例化一个新对象，也可以作为普通函数被调用。ECMAScript 6 新增了检测函数是否使用 new 关键字调用的 new.target 属性。如果函数是正常调用的，则 new.target 的值是 undefined；如果是使用 new 关键字调用的，则 new.target 将引用被调用的构造函数。
 
 ```js
 function King() {
@@ -14453,11 +14511,9 @@ console.log(callSum1(10, 10)); // 20
 console.log(callSum2(10, 10)); // 20
 ```
 
-在这个例子中，callSum1()会调用 sum()函数，将 this 作为函数体内的 this 值（这里等于
-window，因为是在全局作用域中调用的）传入，同时还传入了 arguments 对象。callSum2()也会调用 sum()函数，但会传入参数的数组。这两个函数都会执行并返回正确的结果。
+在这个例子中，callSum1()会调用 sum()函数，将 this 作为函数体内的 this 值（这里等于 window，因为是在全局作用域中调用的）传入，同时还传入了 arguments 对象。callSum2()也会调用 sum()函数，但会传入参数的数组。这两个函数都会执行并返回正确的结果。
 
-注意 在严格模式下，调用函数时如果没有指定上下文对象，则 this 值不会指向 window。
-除非使用 apply()或 call()把函数指定给一个对象，否则 this 的值会变成 undefined。
+注意 在严格模式下，调用函数时如果没有指定上下文对象，则 this 值不会指向 window。除非使用 apply()或 call()把函数指定给一个对象，否则 this 的值会变成 undefined。
 
 call()方法与 apply()的作用一样，只是传参的形式不同。第一个参数跟 apply()一样，也是 this 值，而剩下的要传给被调用函数的参数则是逐个传递的。换句话说，通过 call()向函数传参时，必须将参数一个一个地列出来，比如：
 
@@ -14471,8 +14527,7 @@ function callSum(num1, num2) {
 console.log(callSum(10, 10)); // 20
 ```
 
-这里的 callSum()函数必须逐个地把参数传给 call()方法。结果跟 apply()的例子一样。到底是
-使用 apply()还是 call()，完全取决于怎么给要调用的函数传参更方便。如果想直接传 arguments 对象或者一个数组，那就用 apply()；否则，就用 call()。当然，如果不用给被调用的函数传参，则使用哪个方法都一样。
+这里的 callSum()函数必须逐个地把参数传给 call()方法。结果跟 apply()的例子一样。到底是使用 apply()还是 call()，完全取决于怎么给要调用的函数传参更方便。如果想直接传 arguments 对象或者一个数组，那就用 apply()；否则，就用 call()。当然，如果不用给被调用的函数传参，则使用哪个方法都一样。
 
 apply()和 call()真正强大的地方并不是给函数传参，而是控制函数调用上下文即函数体内 this 值的能力。考虑下面的例子：
 
@@ -14490,11 +14545,9 @@ sayColor.call(window); // red
 sayColor.call(o); // blue
 ```
 
-这个例子是在之前那个关于 this 对象的例子基础上修改而成的。同样，sayColor()是一个全局
-函数，如果在全局作用域中调用它，那么会显示"red"。这是因为 this.color 会求值为 window.color。如果在全局作用域中显式调用 sayColor.call(this)或者 sayColor.call(window)，则同样都会显示"red"。而在使用 sayColor.call(o)把函数的执行上下文即 this 切换为对象 o 之后，结果就变成了显示"blue"了。
+这个例子是在之前那个关于 this 对象的例子基础上修改而成的。同样，sayColor()是一个全局函数，如果在全局作用域中调用它，那么会显示"red"。这是因为 this.color 会求值为 window.color。如果在全局作用域中显式调用 sayColor.call(this)或者 sayColor.call(window)，则同样都会显示"red"。而在使用 sayColor.call(o)把函数的执行上下文即 this 切换为对象 o 之后，结果就变成了显示"blue"了。
 
-使用 call()或 apply()的好处是可以将任意对象设置为任意函数的作用域，这样对象可以不用关
-心方法。在前面例子最初的版本中，为切换上下文需要先把 sayColor()直接赋值为 o 的属性，然后再调用。而在这个修改后的版本中，就不需要这一步操作了。
+使用 call()或 apply()的好处是可以将任意对象设置为任意函数的作用域，这样对象可以不用关心方法。在前面例子最初的版本中，为切换上下文需要先把 sayColor()直接赋值为 o 的属性，然后再调用。而在这个修改后的版本中，就不需要这一步操作了。
 
 ECMAScript 5 出于同样的目的定义了一个新方法：bind()。bind()方法会创建一个新的函数实例，其 this 值会被绑定到传给 bind()的对象。比如：
 
@@ -14510,11 +14563,9 @@ let objectSayColor = sayColor.bind(o);
 objectSayColor(); // blue
 ```
 
-这里，在 sayColor()上调用 bind()并传入对象 o 创建了一个新函数 objectSayColor()。
-objectSayColor()中的 this 值被设置为 o，因此直接调用这个函数，即使是在全局作用域中调用，也会返回字符串"blue"。
+这里，在 sayColor()上调用 bind()并传入对象 o 创建了一个新函数 objectSayColor()。objectSayColor()中的 this 值被设置为 o，因此直接调用这个函数，即使是在全局作用域中调用，也会返回字符串"blue"。
 
-对函数而言，继承的方法 toLocaleString()和 toString()始终返回函数的代码。返回代码的
-具体格式因浏览器而异。有的返回源代码，包含注释，而有的只返回代码的内部形式，会删除注释，甚至代码可能被解释器修改过。由于这些差异，因此不能在重要功能中依赖这些方法返回的值，而只应在调试中使用它们。继承的方法 valueOf()返回函数本身。
+对函数而言，继承的方法 toLocaleString()和 toString()始终返回函数的代码。返回代码的具体格式因浏览器而异。有的返回源代码，包含注释，而有的只返回代码的内部形式，会删除注释，甚至代码可能被解释器修改过。由于这些差异，因此不能在重要功能中依赖这些方法返回的值，而只应在调试中使用它们。继承的方法 valueOf()返回函数本身。
 
 ## 10.11. 函数表达式
 
@@ -14545,8 +14596,7 @@ let functionName = function (arg0, arg1, arg2) {
 };
 ```
 
-函数表达式看起来就像一个普通的变量定义和赋值，即创建一个函数再把它赋值给一个变量
-functionName。这样创建的函数叫作 **匿名函数（anonymous funtion）**，因为 function 关键字后面没有标识符。（匿名函数有也时候也被称为 **兰姆达函数**）。未赋值给其他变量的匿名函数的 name 属性是空字符串。
+函数表达式看起来就像一个普通的变量定义和赋值，即创建一个函数再把它赋值给一个变量 functionName。这样创建的函数叫作 **匿名函数（anonymous funtion）**，因为 function 关键字后面没有标识符。（匿名函数有也时候也被称为 **兰姆达函数**）。未赋值给其他变量的匿名函数的 name 属性是空字符串。
 
 函数表达式跟 JavaScript 中的其他表达式一样，需要先赋值再使用。下面的例子会导致错误：
 
@@ -14572,8 +14622,7 @@ if (condition) {
 }
 ```
 
-这段代码看起来很正常，就是如果 condition 为 true，则使用第一个 sayHi()定义；否则，就
-使用第二个。事实上，这种写法在 ECAMScript 中不是有效的语法。JavaScript 引擎会尝试将其纠正为适当的声明。问题在于浏览器纠正这个问题的方式并不一致。多数浏览器会忽略 condition 直接返回第二个声明。Firefox 会在 condition 为 true 时返回第一个声明。这种写法很危险，不要使用。不过，如果把上面的函数声明换成函数表达式就没问题了：
+这段代码看起来很正常，就是如果 condition 为 true，则使用第一个 sayHi()定义；否则，就使用第二个。事实上，这种写法在 ECAMScript 中不是有效的语法。JavaScript 引擎会尝试将其纠正为适当的声明。问题在于浏览器纠正这个问题的方式并不一致。多数浏览器会忽略 condition 直接返回第二个声明。Firefox 会在 condition 为 true 时返回第一个声明。这种写法很危险，不要使用。不过，如果把上面的函数声明换成函数表达式就没问题了：
 
 ```js
 // 没问题
