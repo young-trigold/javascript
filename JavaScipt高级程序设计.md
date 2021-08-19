@@ -14579,6 +14579,27 @@ objectSayColor(); // blue
 
 这里，在 sayColor()上调用 bind()并传入对象 o 创建了一个新函数 objectSayColor()。objectSayColor()中的 this 值被设置为 o，因此直接调用这个函数，即使是在全局作用域中调用，也会返回字符串"blue"。
 
+对于箭头函数调用以上 3 种方法，实际上箭头函数会忽略传进去的 this 参数，例如：
+
+```js
+const arrFn = () => console.log(this); // window
+let o = { id: "o" };
+arrFn.apply(o); // window
+arrFn.call(o); // window
+let arrFnBindO = arrFn.bind(o);
+arrFnBindO(o); // window
+
+const normalFn = function () {
+  console.log(this);
+}; // window
+normalFn.apply(o); // { id: 'o' }
+normalFn.call(o); // { id: 'o' }
+let normalFnBindO = normalFn.bind(o);
+normalFnBindO(window); // { id: 'o' }
+```
+
+在这个例子中，arrFn 的 this 始终指向全局上下文的 window，而标准函数 normalFn 则不同。
+
 对函数而言，继承的方法 toLocaleString()和 toString()始终返回函数的代码。返回代码的具体格式因浏览器而异。有的返回源代码，包含注释，而有的只返回代码的内部形式，会删除注释，甚至代码可能被解释器修改过。由于这些差异，因此不能在重要功能中依赖这些方法返回的值，而只应在调试中使用它们。继承的方法 valueOf()返回函数本身。
 
 ## 10.11. 函数表达式
