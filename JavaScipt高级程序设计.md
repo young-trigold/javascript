@@ -8611,6 +8611,39 @@ let arr2 = [...set];
 console.log(arr2); // [1, 2, 3]
 ```
 
+到目前为止，我们已经学习了 JavaScript 中的主要的数据类型，下面给出了一个函数用以判断一个值的数据类型：
+
+```js
+const options1 = [
+  Date,
+  RegExp,
+  Boolean,
+  Number,
+  String,
+  Array,
+  Map,
+  WeakMap,
+  Set,
+  WeakSet,
+  Object,
+];
+const options2 = [
+  "undefined",
+  "number",
+  "boolean",
+  "string",
+  "symbol",
+  "function",
+];
+
+const getType = (any) =>
+  typeof any === "object"
+    ? any === null
+      ? null
+      : options1.filter((ele) => any instanceof ele)[0].name
+    : options2.filter((ele) => typeof any === ele)[0];
+```
+
 # 7. 迭代器与生成器
 
 本章内容
@@ -15458,7 +15491,7 @@ double(3);
 function double(value, callback) {
   setTimeout(() => callback(value * 2), 1000);
 }
-double(3, (x) => console.log(`I was given: ${x}`));
+
 // I was given: 6（大约1000 毫秒之后）
 ```
 
@@ -15559,7 +15592,7 @@ setTimeout(console.log, 0, p); // Promise <pending>
 
 在另外一些情况下，期约封装的异步操作会实际生成某个值，而程序期待期约状态改变时可以访问这个值。相应地，如果期约被拒绝，程序就会期待期约状态改变时可以拿到拒绝的理由。比如，假设期约向服务器发送一个 HTTP 请求并预定会返回一个 JSON。如果请求返回范围在 200~299 的状态码，则足以让期约的状态变为兑现。此时期约内部就可以收到一个 JSON 字符串。类似地，如果请求返回的状态码不在 200~299 这个范围内，那么就会把期约状态切换为拒绝。此时拒绝的理由可能是一个 Error 对象，包含着 HTTP 状态码及相关错误消息。
 
-为了支持这两种用例，每个期约只要状态切换为兑现，就会有一个私有的内部值。类似地，每个期约只要状态切换为拒绝，就会有一个私有的内部理由（reason）。无论是值还是理由，都是包含原始值或对象的不可修改的引用。二者都是可选的，而且默认值为 undefined。在期约到达某个落定状态时执行的异步代码始终会收到这个值或理由。
+为了支持这两种用例，每个期约只要状态切换为兑现，就会有一个私有的 **内部值（value）**。类似地，每个期约只要状态切换为拒绝，就会有一个私有的 **内部理由（reason）**。无论是值还是理由，都是包含原始值或对象的不可修改的引用。二者都是可选的，而且默认值为 undefined。在期约到达某个落定状态时执行的异步代码始终会收到这个值或理由。
 
 3. **通过执行函数控制期约状态**
 
@@ -18003,48 +18036,48 @@ navigator 对象实现了 NavigatorID 、NavigatorLanguage 、NavigatorOnLine �
 
 下表列出了这些接口定义的属性和方法：
 
-| 属性/方法                     | 说 明                                                                 |
-| ----------------------------- | --------------------------------------------------------------------- |
-| activeVrDisplays              | 返回数组，包含 ispresenting 属性为 true 的 VRDisplay 实例             |
-| appCodeName                   | 即使在非 Mozilla 浏览器中也会返回"Mozilla"                            |
-| appName                       | 浏览器全名                                                            |
-| appVersion                    | 浏览器版本。通常与实际的浏览器版本不一致                              |
-| battery                       | 返回暴露 Battery Status API 的 BatteryManager 对象                    |
-| buildId                       | 浏览器的构建编号                                                      |
-| connection                    | 返回暴露 Network Information API 的 NetworkInformation 对象           |
-| cookieEnabled                 | 返回布尔值，表示是否启用了 cookie                                     |
-| credentials                   | 返回暴露 Credentials Management API 的 CredentialsContainer 对象      |
-| deviceMemory                  | 返回单位为 GB 的设备内存容量                                          |
-| doNotTrack                    | 返回用户的“不跟踪”（do-not-track）设置                                |
-| geolocation                   | 返回暴露 Geolocation API 的 Geolocation 对象                          |
-| getVRDisplays()               | 返回数组，包含可用的每个 VRDisplay 实例                               |
-| getUserMedia()                | 返回与可用媒体设备硬件关联的流                                        |
-| hardwareConcurrency           | 返回设备的处理器核心数量                                              |
-| javaEnabled                   | 返回布尔值，表示浏览器是否启用了 Java                                 |
-| language                      | 返回浏览器的主语言                                                    |
-| languages                     | 返回浏览器偏好的语言数组                                              |
-| locks                         | 返回暴露 Web Locks API 的 LockManager 对象                            |
-| mediaCapabilities             | 返回暴露 Media Capabilities API 的 MediaCapabilities 对象             |
-| mediaDevices                  | 返回可用的媒体设备                                                    |
-| maxTouchPoints                | 返回设备触摸屏支持的最大触点数                                        |
-| mimeTypes                     | 返回浏览器中注册的 MIME 类型数组                                      |
-| onLine                        | 返回布尔值，表示浏览器是否联网                                        |
-| oscpu                         | 返回浏览器运行设备的操作系统和（或）CPU                               |
-| permissions                   | 返回暴露 Permissions API 的 Permissions 对象                          |
-| platform                      | 返回浏览器运行的系统平台                                              |
+| 属性/方法                     | 说 明                                                                   |
+| ----------------------------- | ----------------------------------------------------------------------- |
+| activeVrDisplays              | 返回数组，包含 ispresenting 属性为 true 的 VRDisplay 实例               |
+| appCodeName                   | 即使在非 Mozilla 浏览器中也会返回"Mozilla"                              |
+| appName                       | 浏览器全名                                                              |
+| appVersion                    | 浏览器版本。通常与实际的浏览器版本不一致                                |
+| battery                       | 返回暴露 Battery Status API 的 BatteryManager 对象                      |
+| buildId                       | 浏览器的构建编号                                                        |
+| connection                    | 返回暴露 Network Information API 的 NetworkInformation 对象             |
+| cookieEnabled                 | 返回布尔值，表示是否启用了 cookie                                       |
+| credentials                   | 返回暴露 Credentials Management API 的 CredentialsContainer 对象        |
+| deviceMemory                  | 返回单位为 GB 的设备内存容量                                            |
+| doNotTrack                    | 返回用户的“不跟踪”（do-not-track）设置                                  |
+| geolocation                   | 返回暴露 Geolocation API 的 Geolocation 对象                            |
+| getVRDisplays()               | 返回数组，包含可用的每个 VRDisplay 实例                                 |
+| getUserMedia()                | 返回与可用媒体设备硬件关联的流                                          |
+| hardwareConcurrency           | 返回设备的处理器核心数量                                                |
+| javaEnabled                   | 返回布尔值，表示浏览器是否启用了 Java                                   |
+| language                      | 返回浏览器的主语言                                                      |
+| languages                     | 返回浏览器偏好的语言数组                                                |
+| locks                         | 返回暴露 Web Locks API 的 LockManager 对象                              |
+| mediaCapabilities             | 返回暴露 Media Capabilities API 的 MediaCapabilities 对象               |
+| mediaDevices                  | 返回可用的媒体设备                                                      |
+| maxTouchPoints                | 返回设备触摸屏支持的最大触点数                                          |
+| mimeTypes                     | 返回浏览器中注册的 MIME 类型数组                                        |
+| onLine                        | 返回布尔值，表示浏览器是否联网                                          |
+| oscpu                         | 返回浏览器运行设备的操作系统和（或）CPU                                 |
+| permissions                   | 返回暴露 Permissions API 的 Permissions 对象                            |
+| platform                      | 返回浏览器运行的系统平台                                                |
 | plugins                       | 返回浏览器安装的插件数组。在 IE 中，这个数组包含页面中所有`<embed>`元素 |
-| product                       | 返回产品名称（通常是"Gecko"）                                         |
-| productSub                    | 返回产品的额外信息（通常是 Gecko 的版本）                             |
-| registerProtocolHandler()     | 将一个网站注册为特定协议的处理程序                                    |
-| requestMediaKeySystemAccess() | 返回一个期约，解决为 MediaKeySystemAccess 对象                        |
-| sendBeacon()                  | 异步传输一些小数据                                                    |
-| serviceWorker                 | 返回用来与 ServiceWorker 实例交互的 ServiceWorkerContainer            |
-| share()                       | 返回当前平台的原生共享机制                                            |
-| storage                       | 返回暴露 Storage API 的 StorageManager 对象                           |
-| userAgent                     | 返回浏览器的用户代理字符串                                            |
-| vendor                        | 返回浏览器的厂商名称                                                  |
-| vendorSub                     | 返回浏览器厂商的更多信息                                              |
-| vibrate()                     | 触发设备振动                                                          |
-| webdriver                     | 返回浏览器当前是否被自动化程序控制                                    |
+| product                       | 返回产品名称（通常是"Gecko"）                                           |
+| productSub                    | 返回产品的额外信息（通常是 Gecko 的版本）                               |
+| registerProtocolHandler()     | 将一个网站注册为特定协议的处理程序                                      |
+| requestMediaKeySystemAccess() | 返回一个期约，解决为 MediaKeySystemAccess 对象                          |
+| sendBeacon()                  | 异步传输一些小数据                                                      |
+| serviceWorker                 | 返回用来与 ServiceWorker 实例交互的 ServiceWorkerContainer              |
+| share()                       | 返回当前平台的原生共享机制                                              |
+| storage                       | 返回暴露 Storage API 的 StorageManager 对象                             |
+| userAgent                     | 返回浏览器的用户代理字符串                                              |
+| vendor                        | 返回浏览器的厂商名称                                                    |
+| vendorSub                     | 返回浏览器厂商的更多信息                                                |
+| vibrate()                     | 触发设备振动                                                            |
+| webdriver                     | 返回浏览器当前是否被自动化程序控制                                      |
 
 navigator 对象的属性通常用于确定浏览器的类型。
