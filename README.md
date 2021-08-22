@@ -1,4 +1,4 @@
-# javascript-learning
+# JavaScript
 
 # References (参考)
 
