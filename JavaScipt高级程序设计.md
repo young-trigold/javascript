@@ -9694,7 +9694,7 @@ class RandomGraph {
 
 ```js
 let person = {
-  name: "jack",
+  name: "Nicholas",
   age: 28,
   job: "Software Egineer",
   *[Symbol.iterator]() {
@@ -16697,12 +16697,12 @@ let p = new TrackablePromise((resolve, reject, notify) => {
 ...
 let p = new TrackablePromise((resolve, reject, notify) => {
 function countdown(x) {
-if (x > 0) {
-notify(`${20 * x}% remaining`);
-setTimeout(() => countdown(x - 1), 1000);
-} else {
-resolve();
-}
+  if (x > 0) {
+    notify(`${20 * x}% remaining`);
+    setTimeout(() => countdown(x - 1), 1000);
+  } else {
+    resolve();
+  }
 }
 countdown(5);
 });
@@ -17455,7 +17455,7 @@ window.moveTo(200, 300);
 window.moveBy(-50, 0);
 ```
 
-依浏览器而定，以上方法可能会被部分或全部禁用。
+这些方法只对使用 window.open() (见12.1.6节) 打开的窗口有效。
 
 **像素比**
 
