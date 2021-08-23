@@ -15609,10 +15609,12 @@ setTimeout(console.log, 0, p2); // Promise <rejected>
 在前面的例子中，并没有什么异步操作，因为在初始化期约时，执行器函数已经改变了每个期约的状态。这里的关键在于，执行器函数是同步执行的。这是因为执行器函数是期约的初始化程序。通过下面的例子可以看出上面代码的执行顺序：
 
 ```js
-new Promise(() => setTimeout(console.log, 0, "executor"));
-setTimeout(console.log, 0, "promise initialized");
-// executor
-// promise initialized
+console.log(1);
+setTimeout(console.log, 0, 3);
+new Promise(() => console.log(2));
+// 1
+// 2
+// 3
 ```
 
 添加 setTimeout 可以推迟切换状态：
@@ -17052,26 +17054,6 @@ function qux() {
 
 ### 11.3.2. 停止和回复执行
 
-使用 await 关键字之后的区别其实比看上去的还要微妙一些。比如，下面的例子中按顺序调用了 3 个函数，但它们的输出结果顺序是相反的：
-
-```js
-async function foo() {
-  console.log(await Promise.resolve("foo"));
-}
-async function bar() {
-  console.log(await "bar");
-}
-async function baz() {
-  console.log("baz");
-}
-foo();
-bar();
-baz();
-// baz
-// bar
-// foo
-```
-
 async/await 中真正起作用的是 await。async 关键字，无论从哪方面来看，都不过是一个标识符。毕竟，异步函数如果不包含 await 关键字，其执行基本上跟普通函数没有什么区别：
 
 ```js
@@ -17119,62 +17101,6 @@ console.log(3);
 (10)（在 foo()中）打印 4；
 (11) foo()返回。
 
-如果 await 后面是一个期约，则问题会稍微复杂一些。此时，为了执行异步函数，实际上会有两个任务被添加到消息队列并被异步求值。下面的例子虽然看起来很反直觉，但它演示了真正的执行顺序：
-
-```js
-async function foo() {
-  console.log(2);
-  console.log(await Promise.resolve(8));
-  console.log(9);
-}
-async function bar() {
-  console.log(4);
-  console.log(await 6);
-  console.log(7);
-}
-console.log(1);
-foo();
-console.log(3);
-bar();
-console.log(5);
-// 1
-// 2
-// 3
-// 4
-// 5
-// 6
-// 7
-// 8
-// 9
-```
-
-运行时会像这样执行上面的例子：
-
-(1) 打印 1；
-(2) 调用异步函数 foo()；
-(3)（在 foo()中）打印 2；
-(4)（在 foo()中）await 关键字暂停执行，向消息队列中添加一个期约在落定之后执行的任务；
-(5) 期约立即落定，把给 await 提供值的任务添加到消息队列；
-(6) foo()退出；
-(7) 打印 3；
-(8) 调用异步函数 bar()；
-(9)（在 bar()中）打印 4；
-(10)（在 bar()中）await 关键字暂停执行，为立即可用的值 6 向消息队列中添加一个任务；
-(11) bar()退出；
-(12) 打印 5；
-(13) 顶级线程执行完毕；
-(14) JavaScript 运行时从消息队列中取出解决 await 期约的处理程序，并将解决的值 8 提供给它；
-(15) JavaScript 运行时向消息队列中添加一个恢复执行 foo()函数的任务；
-(16) JavaScript 运行时从消息队列中取出恢复执行 bar()的任务及值 6；
-(17)（在 bar()中）恢复执行，await 取得值 6；
-(18)（在 bar()中）打印 6；
-(19)（在 bar()中）打印 7；
-(20) bar()返回；
-(21) 异步任务完成，JavaScript 从消息队列中取出恢复执行 foo()的任务及值 8；
-(22)（在 foo()中）打印 8；
-(23)（在 foo()中）打印 9；
-(24) foo()返回。
-
 ### 11.3.3. 异步函数策略
 
 因为简单实用，所以异步函数很快成为 JavaScript 项目使用最广泛的特性之一。不过，在使用异步函数时，还是有些问题要注意。
@@ -17186,9 +17112,7 @@ console.log(5);
 有了异步函数之后，就不一样了。一个简单的箭头函数就可以实现 sleep()：
 
 ```js
-async function sleep(delay) {
-  return new Promise((resolve) => setTimeout(resolve, delay));
-}
+let sleep = (time) => new Promise((r) => setTimeout(r, time));
 async function foo() {
   const t0 = Date.now();
   await sleep(1500); // 暂停约1500 毫秒
