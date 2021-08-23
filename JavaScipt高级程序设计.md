@@ -279,6 +279,7 @@ plan : 1 chapter/2 day
     - [13.1.2. 基于能力检测进行浏览器分析](#1312-基于能力检测进行浏览器分析)
   - [13.2. 用户代理检测](#132-用户代理检测)
     - [13.2.1. 用户代理的历史](#1321-用户代理的历史)
+    - [13.2.2. 浏览器分析](#1322-浏览器分析)
 
 # 1. 什么是 JavaScript
 
@@ -18806,3 +18807,96 @@ AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1
 ```
 
 这个用户代理字符串是谷歌 Nexus One 手机上的默认浏览器的。不过，其他 Android 设备上的浏览器也遵循相同的模式。
+
+### 13.2.2. 浏览器分析
+
+想要知道自己代码运行在什么浏览器上，大部分开发者会分析 window.navigator.userAgent 返回的字符串值。所有浏览器都会提供这个值，如果相信这些返回值并基于给定的一组浏览器检测这个字符串，最终会得到关于浏览器和操作系统的比较精确的结果。
+
+相比于能力检测，用户代理检测还是有一定优势的。能力检测可以保证脚本不必理会浏览器而正常执行。现代浏览器用户代理字符串的过去、现在和未来格式都是有章可循的，我们能够利用它们准确识别浏览器。
+
+1. **伪造用户代理**
+
+通过检测用户代理来识别浏览器并不是完美的方式，毕竟这个字符串是可以造假的。只不过实现 window.navigator 对象的浏览器（即所有现代浏览器）都会提供 userAgent 这个只读属性。因此，简单地给这个属性设置其他值不会有效：
+
+```js
+console.log(window.navigator.userAgent);
+// Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36
+window.navigator.userAgent = "foobar";
+console.log(window.navigator.userAgent);
+// Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36
+```
+
+不过，通过简单的办法可以绕过这个限制。比如，有些浏览器提供伪私有的**defineGetter**方法，利用它可以篡改用户代理字符串：
+
+```js
+console.log(window.navigator.userAgent);
+// Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36
+window.navigator.__defineGetter__("userAgent", () => "foobar");
+console.log(window.navigator.userAgent);
+// foobar
+```
+
+对付这种造假是一件吃力不讨好的事。检测用户代理是否以这种方式被篡改过是可能的，但总体来看还是一场猫捉老鼠的游戏。
+
+与其劳心费力检测造假，不如更好地专注于浏览器识别。如果相信浏览器返回的用户代理字符串，那就可以用它来判断浏览器。如果怀疑脚本或浏览器可能篡改这个值，那最好还是使用能力检测。
+
+2. **分析浏览器**
+
+通过解析浏览器返回的用户代理字符串，可以极其准确地推断出下列相关的环境信息：
+
+- 浏览器
+- 浏览器版本
+- 浏览器渲染引擎
+- 设备类型（桌面/移动）
+- 设备生产商
+- 设备型号
+- 操作系统
+- 操作系统版本
+
+当然，新浏览器、新操作系统和新硬件设备随时可能出现，其中很多可能有着类似但并不相同的用户代理字符串。因此，用户代理解析程序需要与时俱进，频繁更新，以免落伍。自己手写的解析程序如果不及时更新或修订，很容易就过时了。本书上一版写过一个用户代理解析程序，但这一版并不推荐读者自己从头再写一个。相反，这里推荐一些 GitHub 上维护比较频繁的第三方用户代理解析程序：
+
+- [ua-parser-js](https://github.com/faisalman/ua-parser-js)
+- [bowser](https://github.com/lancedikson/bowser)
+- [closure-library](https://github.com/google/closure-library)
+- [current-device](https://github.com/matthewhudson/current-device)
+- [platform.js](https://github.com/bestiejs/platform.js/)
+- [mootools](https://github.com/mootools)
+
+这里使用 ua-parser-js 做个简单的演示：
+
+```js
+const parser = new UAParser();
+const result = parser.getResult();
+
+for (const prop in result) {
+  if (result[prop] instanceof Object) {
+    console.log(`${prop}:\r\n`);
+    for (const key in result[prop]) {
+      console.log(`\t${key}: ${result[prop][key]}`);
+    }
+  } else {
+    console.log(`${prop}: ${result[prop]}`);
+  }
+}
+/* 
+ua: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36
+browser:
+    name: Chrome
+    version: 92.0.4515.159
+    major: 92
+engine:
+    name: Blink
+    version: 92.0.4515.159
+os:
+    name: Windows
+    version: 10
+device:
+    vendor: undefined
+    model: undefined
+    type: undefined
+cpu:
+    architecture: amd64 
+*/
+```
+
+注意 Mozilla 维基有一个页面“Compatibility/UADetectionLibraries”，其中提供了用户代理解析程序的列表，可以用来识别 Mozilla 浏览器（甚至所有主流浏览器）。这些解析程序是按照语言分组的。这个页面好像维护不频繁，但其中给出了所有主流的解析库。（注意 JavaScript 部分包含客户端库和 Node.js 库。）GitHub 上的文章“Are We Detectable Yet?”中还有一张可视化的表格，能让我们对这些库的检测能力一目了然。
