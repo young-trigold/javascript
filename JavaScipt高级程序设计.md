@@ -257,16 +257,22 @@ plan : 1 chapter/2 day
   - [12.1. window 对象](#121-window-对象)
     - [12.1.1. Gobal 作用域](#1211-gobal-作用域)
     - [12.1.2. 窗口关系](#1212-窗口关系)
-    - [12.1.3. 窗口位置和像素比](#1213-窗口位置和像素比)
-    - [12.1.4. 窗口大小](#1214-窗口大小)
-    - [12.1.5. 视口位置](#1215-视口位置)
-    - [12.1.6. 导航与打开新窗口](#1216-导航与打开新窗口)
+    - [12.1.3. 导航与打开新窗口](#1213-导航与打开新窗口)
+    - [12.1.4. 窗口位置和像素比](#1214-窗口位置和像素比)
+    - [12.1.5. 窗口大小](#1215-窗口大小)
+    - [12.1.6. 视口位置](#1216-视口位置)
     - [12.1.7. 定时器](#1217-定时器)
     - [12.1.8. 系统对话框](#1218-系统对话框)
   - [12.2. Location 对象](#122-location-对象)
     - [12.2.1. 查询字符串](#1221-查询字符串)
     - [12.2.2. 操作地址](#1222-操作地址)
   - [12.3. navigator 对象](#123-navigator-对象)
+    - [12.3.1. 检测插件](#1231-检测插件)
+    - [12.3.2. 注册处理程序](#1232-注册处理程序)
+  - [12.4. screen 对象](#124-screen-对象)
+  - [12.5. history 对象](#125-history-对象)
+    - [12.5.1. 导航](#1251-导航)
+    - [12.5.2. 历史状态管理](#1252-历史状态管理)
 
 # 1. 什么是 JavaScript
 
@@ -6044,9 +6050,9 @@ ecnodeURI()方法用于对整个 URI 进行编码，比如"www.wrox.com/illegal 
 井号，而 encodeURIComponent()会编码它发现的所有非标准字符。来看下面的例子：
 
 ```js
-let uri = "http://www.wrox.com/illegal value.js#start";
+let uri = "http://www.google.com/illegal value.js#start";
 
-// "http://www.wrox.com/illegal%20value.js#start"
+// "http://www.google.com/illegal%20value.js#start"
 console.log(encodeURI(uri));
 
 // "http%3A%2F%2Fwww.wrox.com%2Fillegal%20value.js%23start"
@@ -17438,7 +17444,143 @@ top 对象始终指向最上层（最外层）窗口，即浏览器窗口本身�
 
 这些属性都是 window 对象的属性，因此访问 window.parent、window.top 和 window.self 都可以。这意味着可以把访问多个窗口的 window 对象串联起来，比如 window.parent.parent。
 
-### 12.1.3. 窗口位置和像素比
+### 12.1.3. 导航与打开新窗口
+
+window.open()方法可以用于导航到指定 URL，也可以用于打开新浏览器窗口。这个方法接收 4 个参数：要加载的 URL、目标窗口、特性字符串和表示新窗口在浏览器历史记录中是否替代当前加载页面的布尔值。通常，调用这个方法时只传前 3 个参数，最后一个参数只有在不打开新窗口时才会使用。
+
+如果 window.open()的第二个参数是一个已经存在的窗口或窗格（frame）的名字，则会在对应的窗口或窗格中打开 URL。下面是一个例子：
+
+```js
+// 与<a href="http://www.google.com" target="topFrame"/>相同
+window.open("http://www.google.com/", "topFrame");
+```
+
+执行这行代码的结果就如同用户点击了一个 href 属性为"http://www.google.com"，target 属性为"topFrame"的链接。如果有一个窗口名叫"topFrame"，则这个窗口就会打开这个 URL；否则就会打开一个新窗口并将其命名为"topFrame"。第二个参数也可以是一个特殊的窗口名，比如\_self、\_parent、\_top 或\_blank。
+
+1. **弹出窗口**
+
+如果 window.open()的第二个参数不是已有窗口，则会打开一个新窗口或标签页。第三个参数，即特性字符串，用于指定新窗口的配置。如果没有传第三个参数，则新窗口（或标签页）会带有所有默认的浏览器特性（工具栏、地址栏、状态栏等都是默认配置）。如果打开的不是新窗口，则忽略第三个参数。
+
+特性字符串是一个逗号分隔的设置字符串，用于指定新窗口包含的特性。下表列出了一些选项。
+
+| 设 置      | 值          | 说 明                                                                                                |
+| ---------- | ----------- | ---------------------------------------------------------------------------------------------------- |
+| fullscreen | "yes"或"no" | 表示新窗口是否最大化。仅限 IE 支持                                                                   |
+| height     | 数值        | 新窗口高度。这个值不能小于 100                                                                       |
+| left       | 数值        | 新窗口的 x 轴坐标。这个值不能是负值                                                                  |
+| location   | "yes"或"no" | 表示是否显示地址栏。不同浏览器的默认值也不一样。在设置为"no"时，地址栏可能隐藏或禁用（取决于浏览器） |
+| Menubar    | "yes"或"no" | 表示是否显示菜单栏。默认为"no"                                                                       |
+| resizable  | "yes"或"no" | 表示是否可以拖动改变新窗口大小。默认为"no"                                                           |
+| scrollbars | "yes"或"no" | 表示是否可以在内容过长时滚动。默认为"no"                                                             |
+| status     | "yes"或"no" | 表示是否显示状态栏。不同浏览器的默认值也不一样                                                       |
+| toolbar    | "yes"或"no" | 表示是否显示工具栏。默认为"no"                                                                       |
+| top        | 数值        | 新窗口的 y 轴坐标。这个值不能是负值                                                                  |
+| width      | 数值        | 新窗口的宽度。这个值不能小于 100                                                                     |
+
+这些设置需要以逗号分隔的名值对形式出现，其中名值对以等号连接。（特性字符串中不能包含空格。）来看下面的例子：
+
+```js
+window.open(
+  "http://www.google.com/",
+  "googleWindow",
+  "height=400,width=400,top=10,left=10,resizable=yes"
+);
+```
+
+这行代码会打开一个可缩放的新窗口，大小为 400 像素 ×400 像素，位于离屏幕左边及顶边各 10 像素的位置。
+
+window.open()方法返回一个对新建窗口的引用。这个对象与普通 window 对象没有区别，只是为控制新窗口提供了方便。例如，某些浏览器默认不允许缩放或移动主窗口，但可能允许缩放或移动通过 window.open()创建的窗口。跟使用任何 window 对象一样，可以使用这个对象操纵新打开的窗口。
+
+```js
+let googleWin = window.open(
+  "http://www.google.com/",
+  "googleWindow",
+  "height=400,width=400,top=10,left=10,resizable=yes"
+);
+// 缩放
+googleWin.resizeTo(500, 500);
+// 移动
+googleWin.moveTo(100, 100);
+```
+
+还可以使用 close()方法像这样关闭新打开的窗口：
+
+```js
+googleWin.close();
+```
+
+这个方法只能用于 window.open()创建的弹出窗口。虽然不可能不经用户确认就关闭主窗口，但弹出窗口可以调用 top.close()来关闭自己。关闭窗口以后，窗口的引用虽然还在，但只能用于检查其 closed 属性了：
+
+```js
+googleWin.close();
+alert(googleWin.closed); // true
+```
+
+新创建窗口的 window 对象有一个属性 opener，指向打开它的窗口。这个属性只在弹出窗口的最上层 window 对象（top）有定义，是指向调用 window.open()打开它的窗口或窗格的指针。例如：
+
+```js
+let googleWin = window.open(
+  "http://www.google.com/",
+  "googleWindow",
+  "height=400,width=400,top=10,left=10,resizable=yes"
+);
+alert(googleWin.opener === window); // true
+```
+
+虽然新建窗口中有指向打开它的窗口的指针，但反之则不然。窗口不会跟踪记录自己打开的新窗口，因此开发者需要自己记录。
+
+在某些浏览器中，每个标签页会运行在独立的进程中。如果一个标签页打开了另一个，而 window 对象需要跟另一个标签页通信，那么标签便不能运行在独立的进程中。在这些浏览器中，可以将新打开的标签页的 opener 属性设置为 null，表示新打开的标签页可以运行在独立的进程中。比如：
+
+```js
+let googleWin = window.open(
+  "http://www.google.com/",
+  "googleWindow",
+  "height=400,width=400,top=10,left=10,resizable=yes"
+);
+googleWin.opener = null;
+```
+
+把 opener 设置为 null 表示新打开的标签页不需要与打开它的标签页通信，因此可以在独立进程中运行。这个连接一旦切断，就无法恢复了。
+
+2. **安全限制**
+
+弹出窗口有段时间被在线广告用滥了。很多在线广告会把弹出窗口伪装成系统对话框，诱导用户点击。因为长得像系统对话框，所以用户很难分清这些弹窗的来源。为了让用户能够区分清楚，浏览器开始对弹窗施加限制。
+
+IE 的早期版本实现针对弹窗的多重安全限制，包括不允许创建弹窗或把弹窗移出屏幕之外，以及不允许隐藏状态栏等。从 IE7 开始，地址栏也不能隐藏了，而且弹窗默认是不能移动或缩放的。Firefox 1 禁用了隐藏状态栏的功能，因此无论 window.open()的特性字符串是什么，都不会隐藏弹窗的状态栏。Firefox 3 强制弹窗始终显示地址栏。Opera 只会在主窗口中打开新窗口，但不允许它们出现在系统对话框的位置。
+
+此外，浏览器会在用户操作下才允许创建弹窗。在网页加载过程中调用 window.open()没有效果，而且还可能导致向用户显示错误。弹窗通常可能在鼠标点击或按下键盘中某个键的情况下才能打开。
+
+3. **弹窗屏蔽程序**
+
+所有现代浏览器都内置了屏蔽弹窗的程序，因此大多数意料之外的弹窗都会被屏蔽。在浏览器屏蔽弹窗时，可能会发生一些事。如果浏览器内置的弹窗屏蔽程序阻止了弹窗，那么 window.open()很可能会返回 null。此时，只要检查这个方法的返回值就可以知道弹窗是否被屏蔽了，比如：
+
+```js
+let googleWin = window.open("http://www.google.com/", "_blank");
+if (googleWin == null) {
+  alert("The popup was blocked!");
+}
+```
+
+在浏览器扩展或其他程序屏蔽弹窗时，window.open()通常会抛出错误。因此要准确检测弹窗是否被屏蔽，除了检测 window.open()的返回值，还要把它用 try/catch 包装起来，像这样：
+
+```js
+let blocked = false;
+try {
+  let googleWin = window.open("http://www.google.com/", "_blank");
+  if (googleWin == null) {
+    blocked = true;
+  }
+} catch (ex) {
+  blocked = true;
+}
+if (blocked) {
+  alert("The popup was blocked!");
+}
+```
+
+无论弹窗是用什么方法屏蔽的，以上代码都可以准确判断调用 window.open()的弹窗是否被屏蔽了。
+
+### 12.1.4. 窗口位置和像素比
 
 window 对象的位置可以通过不同的属性和方法来确定。现代浏览器提供了 screenLeft 和 screenTop 属性，用于表示窗口相对于屏幕左侧和顶部的位置 ，返回值的单位是 CSS 像素。
 
@@ -17455,7 +17597,7 @@ window.moveTo(200, 300);
 window.moveBy(-50, 0);
 ```
 
-这些方法只对使用 window.open() (见12.1.6节) 打开的窗口有效。
+这些方法只对使用 window.open() (见 12.1.6 节) 打开的窗口有效。
 
 **像素比**
 
@@ -17465,7 +17607,7 @@ CSS 像素是 Web 开发中使用的统一像素单位。这个单位的背后�
 
 window.devicePixelRatio 实际上与每英寸像素数（DPI，dots per inch）是对应的。DPI 表示单位像素密度，而 window.devicePixelRatio 表示物理像素与逻辑像素之间的缩放系数。
 
-### 12.1.4. 窗口大小
+### 12.1.5. 窗口大小
 
 在不同浏览器中确定浏览器窗口大小没有想象中那么容易。所有现代浏览器都支持 4 个属性：innerWidth、innerHeight、outerWidth 和 outerHeight。outerWidth 和 outerHeight 返回浏览器窗口自身的大小（不管是在最外层 window 上使用，还是在窗格`<frame>`中使用）。innerWidth 和 innerHeight 返回浏览器窗口中页面视口的大小（不包含浏览器边框和工具栏）。
 
@@ -17510,7 +17652,7 @@ window.resizeTo(300, 300);
 
 与移动窗口的方法一样，缩放窗口的方法可能会被浏览器禁用，而且在某些浏览器中默认是禁用的。同样，缩放窗口的方法只能应用到最上层的 window 对象。
 
-### 12.1.5. 视口位置
+### 12.1.6. 视口位置
 
 浏览器窗口尺寸通常无法满足完整显示整个页面，为此用户可以通过滚动在有限的视口中查看文档。度量文档相对于视口滚动距离的属性有两对，返回相等的值：window.pageXoffset/window.scrollX 和 window.pageYoffset/window.scrollY。
 
@@ -17543,142 +17685,6 @@ window.scrollTo({
   behavior: "smooth",
 });
 ```
-
-### 12.1.6. 导航与打开新窗口
-
-window.open()方法可以用于导航到指定 URL，也可以用于打开新浏览器窗口。这个方法接收 4 个参数：要加载的 URL、目标窗口、特性字符串和表示新窗口在浏览器历史记录中是否替代当前加载页面的布尔值。通常，调用这个方法时只传前 3 个参数，最后一个参数只有在不打开新窗口时才会使用。
-
-如果 window.open()的第二个参数是一个已经存在的窗口或窗格（frame）的名字，则会在对应的窗口或窗格中打开 URL。下面是一个例子：
-
-```js
-// 与<a href="http://www.wrox.com" target="topFrame"/>相同
-window.open("http://www.wrox.com/", "topFrame");
-```
-
-执行这行代码的结果就如同用户点击了一个 href 属性为"http://www.wrox.com"，target 属性为"topFrame"的链接。如果有一个窗口名叫"topFrame"，则这个窗口就会打开这个 URL；否则就会打开一个新窗口并将其命名为"topFrame"。第二个参数也可以是一个特殊的窗口名，比如\_self、\_parent、\_top 或\_blank。
-
-1. **弹出窗口**
-
-如果 window.open()的第二个参数不是已有窗口，则会打开一个新窗口或标签页。第三个参数，即特性字符串，用于指定新窗口的配置。如果没有传第三个参数，则新窗口（或标签页）会带有所有默认的浏览器特性（工具栏、地址栏、状态栏等都是默认配置）。如果打开的不是新窗口，则忽略第三个参数。
-
-特性字符串是一个逗号分隔的设置字符串，用于指定新窗口包含的特性。下表列出了一些选项。
-
-| 设 置      | 值          | 说 明                                                                                                |
-| ---------- | ----------- | ---------------------------------------------------------------------------------------------------- |
-| fullscreen | "yes"或"no" | 表示新窗口是否最大化。仅限 IE 支持                                                                   |
-| height     | 数值        | 新窗口高度。这个值不能小于 100                                                                       |
-| left       | 数值        | 新窗口的 x 轴坐标。这个值不能是负值                                                                  |
-| location   | "yes"或"no" | 表示是否显示地址栏。不同浏览器的默认值也不一样。在设置为"no"时，地址栏可能隐藏或禁用（取决于浏览器） |
-| Menubar    | "yes"或"no" | 表示是否显示菜单栏。默认为"no"                                                                       |
-| resizable  | "yes"或"no" | 表示是否可以拖动改变新窗口大小。默认为"no"                                                           |
-| scrollbars | "yes"或"no" | 表示是否可以在内容过长时滚动。默认为"no"                                                             |
-| status     | "yes"或"no" | 表示是否显示状态栏。不同浏览器的默认值也不一样                                                       |
-| toolbar    | "yes"或"no" | 表示是否显示工具栏。默认为"no"                                                                       |
-| top        | 数值        | 新窗口的 y 轴坐标。这个值不能是负值                                                                  |
-| width      | 数值        | 新窗口的宽度。这个值不能小于 100                                                                     |
-
-这些设置需要以逗号分隔的名值对形式出现，其中名值对以等号连接。（特性字符串中不能包含空格。）来看下面的例子：
-
-```js
-window.open(
-  "http://www.wrox.com/",
-  "wroxWindow",
-  "height=400,width=400,top=10,left=10,resizable=yes"
-);
-```
-
-这行代码会打开一个可缩放的新窗口，大小为 400 像素 ×400 像素，位于离屏幕左边及顶边各 10 像素的位置。
-
-window.open()方法返回一个对新建窗口的引用。这个对象与普通 window 对象没有区别，只是为控制新窗口提供了方便。例如，某些浏览器默认不允许缩放或移动主窗口，但可能允许缩放或移动通过 window.open()创建的窗口。跟使用任何 window 对象一样，可以使用这个对象操纵新打开的窗口。
-
-```js
-let wroxWin = window.open(
-  "http://www.wrox.com/",
-  "wroxWindow",
-  "height=400,width=400,top=10,left=10,resizable=yes"
-);
-// 缩放
-wroxWin.resizeTo(500, 500);
-// 移动
-wroxWin.moveTo(100, 100);
-```
-
-还可以使用 close()方法像这样关闭新打开的窗口：
-
-```js
-wroxWin.close();
-```
-
-这个方法只能用于 window.open()创建的弹出窗口。虽然不可能不经用户确认就关闭主窗口，但弹出窗口可以调用 top.close()来关闭自己。关闭窗口以后，窗口的引用虽然还在，但只能用于检查其 closed 属性了：
-
-```js
-wroxWin.close();
-alert(wroxWin.closed); // true
-```
-
-新创建窗口的 window 对象有一个属性 opener，指向打开它的窗口。这个属性只在弹出窗口的最上层 window 对象（top）有定义，是指向调用 window.open()打开它的窗口或窗格的指针。例如：
-
-```js
-let wroxWin = window.open(
-  "http://www.wrox.com/",
-  "wroxWindow",
-  "height=400,width=400,top=10,left=10,resizable=yes"
-);
-alert(wroxWin.opener === window); // true
-```
-
-虽然新建窗口中有指向打开它的窗口的指针，但反之则不然。窗口不会跟踪记录自己打开的新窗口，因此开发者需要自己记录。
-
-在某些浏览器中，每个标签页会运行在独立的进程中。如果一个标签页打开了另一个，而 window 对象需要跟另一个标签页通信，那么标签便不能运行在独立的进程中。在这些浏览器中，可以将新打开的标签页的 opener 属性设置为 null，表示新打开的标签页可以运行在独立的进程中。比如：
-
-```js
-let wroxWin = window.open(
-  "http://www.wrox.com/",
-  "wroxWindow",
-  "height=400,width=400,top=10,left=10,resizable=yes"
-);
-wroxWin.opener = null;
-```
-
-把 opener 设置为 null 表示新打开的标签页不需要与打开它的标签页通信，因此可以在独立进程中运行。这个连接一旦切断，就无法恢复了。
-
-2. **安全限制**
-
-弹出窗口有段时间被在线广告用滥了。很多在线广告会把弹出窗口伪装成系统对话框，诱导用户点击。因为长得像系统对话框，所以用户很难分清这些弹窗的来源。为了让用户能够区分清楚，浏览器开始对弹窗施加限制。
-
-IE 的早期版本实现针对弹窗的多重安全限制，包括不允许创建弹窗或把弹窗移出屏幕之外，以及不允许隐藏状态栏等。从 IE7 开始，地址栏也不能隐藏了，而且弹窗默认是不能移动或缩放的。Firefox 1 禁用了隐藏状态栏的功能，因此无论 window.open()的特性字符串是什么，都不会隐藏弹窗的状态栏。Firefox 3 强制弹窗始终显示地址栏。Opera 只会在主窗口中打开新窗口，但不允许它们出现在系统对话框的位置。
-
-此外，浏览器会在用户操作下才允许创建弹窗。在网页加载过程中调用 window.open()没有效果，而且还可能导致向用户显示错误。弹窗通常可能在鼠标点击或按下键盘中某个键的情况下才能打开。
-
-3. **弹窗屏蔽程序**
-
-所有现代浏览器都内置了屏蔽弹窗的程序，因此大多数意料之外的弹窗都会被屏蔽。在浏览器屏蔽弹窗时，可能会发生一些事。如果浏览器内置的弹窗屏蔽程序阻止了弹窗，那么 window.open()很可能会返回 null。此时，只要检查这个方法的返回值就可以知道弹窗是否被屏蔽了，比如：
-
-```js
-let wroxWin = window.open("http://www.wrox.com", "_blank");
-if (wroxWin == null) {
-  alert("The popup was blocked!");
-}
-```
-
-在浏览器扩展或其他程序屏蔽弹窗时，window.open()通常会抛出错误。因此要准确检测弹窗是否被屏蔽，除了检测 window.open()的返回值，还要把它用 try/catch 包装起来，像这样：
-
-```js
-let blocked = false;
-try {
-  let wroxWin = window.open("http://www.wrox.com", "_blank");
-  if (wroxWin == null) {
-    blocked = true;
-  }
-} catch (ex) {
-  blocked = true;
-}
-if (blocked) {
-  alert("The popup was blocked!");
-}
-```
-
-无论弹窗是用什么方法屏蔽的，以上代码都可以准确判断调用 window.open()的弹窗是否被屏蔽了。
 
 ### 12.1.7. 定时器
 
@@ -17804,24 +17810,23 @@ window.find();
 
 ## 12.2. Location 对象
 
-location 是最有用的 BOM 对象之一，提供了当前窗口中加载文档的信息，以及通常的导航功能。这个对象独特的地方在于， 它既是 window 的属性， 也是 document 的属性。也就是说，window.location 和 document.location 指向同一个对象。location 对象不仅保存着当前加载文
-档的信息，也保存着把 URL 解析为离散片段后能够通过属性访问的信息。这些解析后的属性在下表中有详细说明（location 前缀是必需的）。
+location 是最有用的 BOM 对象之一，提供了当前窗口中加载文档的信息，以及通常的导航功能。这个对象独特的地方在于， 它既是 window 的属性， 也是 document 的属性。也就是说，window.location 和 document.location 指向同一个对象。location 对象不仅保存着当前加载文档的信息，也保存着把 URL 解析为离散片段后能够通过属性访问的信息。这些解析后的属性在下表中有详细说明（location 前缀是必需的）。
 
 假设浏览器当前加载的 URL 是 http://foouser:barpassword@www.wrox.com:80/WileyCDA/?q=javascript#contents，location 对象的内容如下表所示。
 
-| 属 性             | 值                                                       | 说 明                                                        |
-| ----------------- | -------------------------------------------------------- | ------------------------------------------------------------ |
-| location.hash     | "#contents"                                              | URL 散列值（井号后跟零或多个字符），如果没有则为空字符串     |
-| location.host     | "www.wrox.com:80"                                        | 服务器名及端口号                                             |
-| location.hostname | "www.wrox.com"                                           | 服务器名                                                     |
-| location.href     | "http://www.wrox.com:80/WileyCDA/?q=javascript#contents" | 当前加载页面的完整 URL。location 的 toString()方法返回这个值 |
-| location.pathname | "/WileyCDA/"                                             | URL 中的路径和（或）文件名                                   |
-| location.port     | "80"                                                     | 请求的端口。如果 URL 中没有端口，则返回空字符串              |
-| location.protocol | "http:"                                                  | 页面使用的协议。通常是"http:"或"https:"                      |
-| location.search   | "?q=javascript"                                          | URL 的查询字符串。这个字符串以问号开头                       |
-| location.username | "foouser"                                                | 域名前指定的用户名                                           |
-| location.password | "barpassword"                                            | 域名前指定的密码                                             |
-| location.origin   | "http://www.wrox.com"                                    | URL 的源地址。只读                                           |
+| 属 性             | 值                                                         | 说 明                                                        |
+| ----------------- | ---------------------------------------------------------- | ------------------------------------------------------------ |
+| location.hash     | "#contents"                                                | URL 散列值（井号后跟零或多个字符），如果没有则为空字符串     |
+| location.host     | "www.wrox.com:80"                                          | 服务器名及端口号                                             |
+| location.hostname | "www.wrox.com"                                             | 服务器名                                                     |
+| location.href     | "http://www.google.com:80/WileyCDA/?q=javascript#contents" | 当前加载页面的完整 URL。location 的 toString()方法返回这个值 |
+| location.pathname | "/WileyCDA/"                                               | URL 中的路径和（或）文件名                                   |
+| location.port     | "80"                                                       | 请求的端口。如果 URL 中没有端口，则返回空字符串              |
+| location.protocol | "http:"                                                    | 页面使用的协议。通常是"http:"或"https:"                      |
+| location.search   | "?q=javascript"                                            | URL 的查询字符串。这个字符串以问号开头                       |
+| location.username | "foouser"                                                  | 域名前指定的用户名                                           |
+| location.password | "barpassword"                                              | 域名前指定的密码                                             |
+| location.origin   | "http://www.google.com"                                    | URL 的源地址。只读                                           |
 
 ### 12.2.1. 查询字符串
 
@@ -17889,14 +17894,14 @@ for (let param of searchParams) {
 可以通过修改 location 对象修改浏览器的地址。首先，最常见的是使用 assign()方法并传入一个 URL，如下所示：
 
 ```js
-location.assign("http://www.wrox.com");
+location.assign("http://www.google.com/");
 ```
 
 这行代码会立即启动导航到新 URL 的操作，同时在浏览器历史记录中增加一条记录。如果给 location.href 或 window.location 设置一个 URL，也会以同一个 URL 值调用 assign()方法。比如，下面两行代码都会执行与显式调用 assign()一样的操作：
 
 ```js
-window.location = "http://www.wrox.com";
-location.href = "http://www.wrox.com";
+window.location = "http://www.google.com/";
+location.href = "http://www.google.com/";
 ```
 
 在这 3 种修改浏览器地址的方法中，设置 location.href 是最常见的。
@@ -17904,10 +17909,10 @@ location.href = "http://www.wrox.com";
 修改 location 对象的属性也会修改当前加载的页面。其中，hash、search、hostname、pathname 和 port 属性被设置为新值之后都会修改当前 URL，如下面的例子所示：
 
 ```js
-// 假设当前URL 为http://www.wrox.com/WileyCDA/
-// 把URL 修改为http://www.wrox.com/WileyCDA/#section1
+// 假设当前URL 为http://www.google.com/WileyCDA/
+// 把URL 修改为http://www.google.com/WileyCDA/#section1
 location.hash = "#section1";
-// 把URL 修改为http://www.wrox.com/WileyCDA/?q=javascript
+// 把URL 修改为http://www.google.com/WileyCDA/?q=javascript
 location.search = "?q=javascript";
 // 把URL 修改为http://www.somewhere.com/WileyCDA/
 location.hostname = "www.somewhere.com";
@@ -17933,7 +17938,7 @@ location.port = 8080;
   <body>
     <p>Enjoy this page for a second, because you won't be coming back here.</p>
     <script>
-      setTimeout(() => location.replace("http://www.wrox.com/"), 1000);
+      setTimeout(() => location.replace("http://www.google.com/"), 1000);
     </script>
   </body>
 </html>
@@ -18005,3 +18010,208 @@ navigator 对象实现了 NavigatorID 、NavigatorLanguage 、NavigatorOnLine �
 | webdriver                     | 返回浏览器当前是否被自动化程序控制                                      |
 
 navigator 对象的属性通常用于确定浏览器的类型。
+
+### 12.3.1. 检测插件
+
+检测浏览器是否安装了某个插件是开发中常见的需求。除 IE10 及更低版本外的浏览器，都可以通过 plugins 类数组对象来确定。这个对象中的每一项都包含如下属性。
+
+- name：插件名称。
+- description：插件介绍。
+- filename：插件的文件名。
+- length：由当前插件处理的 MIME 类型数量。
+
+通常，name 属性包含识别插件所需的必要信息，尽管不是特别准确。检测插件就是遍历浏览器中可用的插件，并逐个比较插件的名称，如下所示：
+
+```js
+// 插件检测，IE10 及更低版本无效
+let hasPlugin = function (name) {
+  name = name.toLowerCase();
+  for (let plugin of window.navigator.plugins) {
+    if (plugin.name.toLowerCase().indexOf(name) > -1) {
+      return true;
+    }
+  }
+  return false;
+};
+// 检测Flash
+alert(hasPlugin("Flash"));
+// 检测QuickTime
+alert(hasPlugin("QuickTime"));
+```
+
+这个 hasPlugin()方法接收一个参数，即待检测插件的名称。第一步是把插件名称转换为小写形式，以便于比较。然后，遍历 plugins 数组，通过 indexOf()方法检测每个 name 属性，看传入的名称是不是存在于某个数组中。比较的字符串全部小写，可以避免大小写问题。传入的参数应该尽可能独一无二，以避免混淆。像"Flash"、"QuickTime"这样的字符串就可以避免混淆。这个方法可以在 Firefox、Safari、Opera 和 Chrome 中检测插件。
+
+注意 plugins 数组中的每个插件对象还有一个 MimeType 对象，可以通过中括号访问。每个 MimeType 对象有 4 个属性：description 描述 MIME 类型，enabledPlugin 是指向插件对象的指针，suffixes 是该 MIME 类型对应扩展名的逗号分隔的字符串，type 是完整的 MIME 类型字符串。
+
+IE11 的 window.navigator 对象开始支持 plugins 和 mimeTypes 属性。这意味着前面定义的函数可以适用于所有较新版本的浏览器。而且，IE11 中的 ActiveXObject 也从 DOM 中隐身了，意味着不能再用它来作为检测特性的手段。
+
+**旧版本 IE 中的插件检测**
+
+IE10 及更低版本中检测插件的问题比较多，因为这些浏览器不支持 Netscape 式的插件。在这些 IE 中检测插件要使用专有的 ActiveXObject，并尝试实例化特定的插件。IE 中的插件是实现为 COM 对象的，由唯一的字符串标识。因此，要检测某个插件就必须知道其 COM 标识符。例如，Flash 的标识符是"ShockwaveFlash.ShockwaveFlash"。知道了这个信息后，就可以像这样检测 IE 中是否安装了 Flash：
+
+```js
+// 在旧版本IE 中检测插件
+function hasIEPlugin(name) {
+  try {
+    new ActiveXObject(name);
+    return true;
+  } catch (ex) {
+    return false;
+  }
+}
+// 检测Flash
+alert(hasIEPlugin("ShockwaveFlash.ShockwaveFlash"));
+// 检测QuickTime
+alert(hasIEPlugin("QuickTime.QuickTime"));
+```
+
+在这个例子中，hasIEPlugin()函数接收一个 DOM 标识符参数。为检测插件，这个函数会使用传入的标识符创建一个新 ActiveXObject 实例。相应代码封装在一个 try/catch 语句中，因此如果创建的插件不存在则会抛出错误。如果创建成功则返回 true，如果失败则在 catch 块中返回 false。上
+面的例子还演示了如何检测 Flash 和 QuickTime 插件。
+
+因为检测插件涉及两种方式，所以一般要针对特定插件写一个函数，而不是使用通常的检测函数。比如下面的例子：
+
+```js
+// 在所有浏览器中检测Flash
+function hasFlash() {
+  var result = hasPlugin("Flash");
+  if (!result) {
+    result = hasIEPlugin("ShockwaveFlash.ShockwaveFlash");
+  }
+  return result;
+}
+// 在所有浏览器中检测QuickTime
+function hasQuickTime() {
+  var result = hasPlugin("QuickTime");
+  if (!result) {
+    result = hasIEPlugin("QuickTime.QuickTime");
+  }
+  return result;
+}
+// 检测Flash
+alert(hasFlash());
+// 检测QuickTime
+alert(hasQuickTime());
+```
+
+以上代码定义了两个函数 hasFlash()和 hasQuickTime()。每个函数都先尝试使用非 IE 插件检测方式，如果返回 false（对 IE 可能会），则再使用 IE 插件检测方式。如果 IE 插件检测方式再返回 false，整个检测方法也返回 false。只要有一种方式返回 true，检测方法就会返回 true。
+
+注意 plugins 有一个 refresh()方法，用于刷新 plugins 属性以反映新安装的插件。这个方法接收一个布尔值参数，表示刷新时是否重新加载页面。如果传入 true，则所有包含插件的页面都会重新加载。否则，只有 plugins 会更新，但页面不会重新加载。
+
+### 12.3.2. 注册处理程序
+
+现代浏览器支持 navigator 上的（在 HTML5 中定义的）registerProtocolHandler()方法。这个方法可以把一个网站注册为处理某种特定类型信息应用程序。随着在线 RSS 阅读器和电子邮件客户端的流行，可以借助这个方法将 Web 应用程序注册为像桌面软件一样的默认应用程序。
+
+要使用 registerProtocolHandler()方法，必须传入 3 个参数：要处理的协议（如"mailto"或"ftp"）、处理该协议的 URL，以及应用名称。比如，要把一个 Web 应用程序注册为默认邮件客户端，可以这样做：
+
+```js
+navigator.registerProtocolHandler(
+  "mailto",
+  "http://www.somemailclient.com?cmd=%s",
+  "Some Mail Client"
+);
+```
+
+这个例子为"mailto"协议注册了一个处理程序，这样邮件地址就可以通过指定的 Web 应用程序打开。注意，第二个参数是负责处理请求的 URL，%s 表示原始的请求。
+
+## 12.4. screen 对象
+
+window 的另一个属性 screen 对象，是为数不多的几个在编程中很少用的 JavaScript 对象。这个对象中保存的纯粹是客户端能力信息，也就是浏览器窗口外面的客户端显示器的信息，比如像素宽度和像素高度。每个浏览器都会在 screen 对象上暴露不同的属性。下表总结了这些属性。
+
+| 属 性       | 说 明                                        |
+| ----------- | -------------------------------------------- |
+| availHeight | 屏幕像素高度减去系统组件高度（只读）         |
+| availLeft   | 没有被系统组件占用的屏幕的最左侧像素（只读） |
+| availTop    | 没有被系统组件占用的屏幕的最顶端像素（只读） |
+| availWidth  | 屏幕像素宽度减去系统组件宽度（只读）         |
+| colorDepth  | 表示屏幕颜色的位数；多数系统是 32（只读）    |
+| height      | 屏幕像素高度                                 |
+| left        | 当前屏幕左边的像素距离                       |
+| pixelDepth  | 屏幕的位深（只读）                           |
+| top         | 当前屏幕顶端的像素距离                       |
+| width       | 屏幕像素宽度                                 |
+| orientation | 返回 Screen Orientation API 中屏幕的朝向     |
+
+## 12.5. history 对象
+
+history 对象表示当前窗口首次使用以来用户的导航历史记录。因为 history 是 window 的属性，所以每个 window 都有自己的 history 对象。出于安全考虑，这个对象不会暴露用户访问过的 URL，但可以通过它在不知道实际 URL 的情况下前进和后退。
+
+### 12.5.1. 导航
+
+go()方法可以在用户历史记录中沿任何方向导航，可以前进也可以后退。这个方法只接收一个参数，这个参数可以是一个整数，表示前进或后退多少步。负值表示在历史记录中后退（类似点击浏览器的“后退”按钮），而正值表示在历史记录中前进（类似点击浏览器的“前进”按钮）。下面来看几个例子：
+
+```js
+// 后退一页
+history.go(-1);
+// 前进一页
+history.go(1);
+// 前进两页
+history.go(2);
+```
+
+在旧版本的一些浏览器中，go()方法的参数也可以是一个字符串，这种情况下浏览器会导航到历史中包含该字符串的第一个位置。最接近的位置可能涉及后退，也可能涉及前进。如果历史记录中没有匹配的项，则这个方法什么也不做，如下所示：
+
+```js
+// 导航到最近的wrox.com 页面
+history.go("google.com");
+// 导航到最近的nczonline.net 页面
+history.go("nczonline.net");
+```
+
+go()有两个简写方法：back()和 forward()。顾名思义，这两个方法模拟了浏览器的后退按钮和前进按钮：
+
+```js
+// 后退一页
+history.back();
+// 前进一页
+history.forward();
+```
+
+history 对象还有一个 length 属性，表示历史记录中有多个条目。这个属性反映了历史记录的数量，包括可以前进和后退的页面。对于窗口或标签页中加载的第一个页面，history.length 等于 1。通过以下方法测试这个值，可以确定用户浏览器的起点是不是你的页面：
+
+```js
+if (history.length == 1) {
+  // 这是用户窗口中的第一个页面
+}
+```
+
+history 对象通常被用于创建“后退”和“前进”按钮，以及确定页面是不是用户历史记录中的第一条记录。
+
+注意 如果页面 URL 发生变化，则会在历史记录中生成一个新条目。对于 2009 年以来发布的主流浏览器，这包括改变 URL 的散列值（因此，把 location.hash 设置为一个新值会在这些浏览器的历史记录中增加一条记录）。这个行为常被单页应用程序框架用来模拟前进和后退，这样做是为了不会因导航而触发页面刷新。
+
+### 12.5.2. 历史状态管理
+
+现代 Web 应用程序开发中最难的环节之一就是历史记录管理。用户每次点击都会触发页面刷新的时代早已过去，“后退”和“前进”按钮对用户来说就代表“帮我切换一个状态”的历史也就随之结束了。为解决这个问题，首先出现的是 hashchange 事件（第 17 章介绍事件时会讨论）。HTML5 也为
+history 对象增加了方便的状态管理特性。
+
+hashchange 会在页面 URL 的散列变化时被触发，开发者可以在此时执行某些操作。而状态管理 API 则可以让开发者改变浏览器 URL 而不会加载新页面。为此，可以使用 history.pushState()方法。这个方法接收 3 个参数：一个 state 对象、一个新状态的标题和一个（可选的）相对 URL。例如：
+
+```js
+let stateObject = { foo: "bar" };
+history.pushState(stateObject, "My title", "baz.html");
+```
+
+pushState()方法执行后，状态信息就会被推到历史记录中，浏览器地址栏也会改变以反映新的相对 URL。除了这些变化之外，即使 location.href 返回的是地址栏中的内容，浏览器页不会向服务器发送请求。第二个参数并未被当前实现所使用，因此既可以传一个空字符串也可以传一个短标题。第一个参数应该包含正确初始化页面状态所必需的信息。为防止滥用，这个状态的对象大小是有限制的，通常在 500KB ～ 1MB 以内。
+
+因为 pushState()会创建新的历史记录，所以也会相应地启用“后退”按钮。此时单击“后退”按钮，就会触发 window 对象上的 popstate 事件。popstate 事件的事件对象有一个 state 属性，其中包含通过 pushState()第一个参数传入的 state 对象：
+
+```js
+window.addEventListener("popstate", (event) => {
+  let state = event.state;
+  if (state) {
+    // 第一个页面加载时状态是null
+    processState(state);
+  }
+});
+```
+
+基于这个状态，应该把页面重置为状态对象所表示的状态（因为浏览器不会自动为你做这些）。记住，页面初次加载时没有状态。因此点击“后退”按钮直到返回最初页面时，event.state 会为 null。
+
+可以通过 history.state 获取当前的状态对象，也可以使用 replaceState()并传入与 pushState()同样的前两个参数来更新状态。更新状态不会创建新历史记录，只会覆盖当前状态：
+
+```js
+history.replaceState({ newFoo: "newBar" }, "New title");
+```
+
+传给 pushState()和 replaceState()的 state 对象应该只包含可以被序列化的信息。因此，DOM 元素之类并不适合放到状态对象里保存。
+
+注意 使用 HTML5 状态管理时，要确保通过 pushState()创建的每个“假”URL 背后都对应着服务器上一个真实的物理 URL。否则，单击“刷新”按钮会导致 404 错误。所有单页应用程序（SPA，Single Page Application）框架都必须通过服务器或客户端的某些配置解决这个问题。
