@@ -6312,8 +6312,9 @@ let color = colors[selectFrom(0, colors.length - 1)];
 let maxValue = (0xffffff).toString(10);
 console.log(maxValue); // 16777215
 
-let colorCode = "#" + Math.floor(Math.random() * 16777216).toString(16);
-console.log(colorCode); // #3684b4
+let randomColor =
+  "#" + (~~(Math.random() * parseInt("0xffffff", 16) + 1)).toString(16);
+console.log(randomColor); // #3684b4
 ```
 
 注意 Math.random()方法在这里出于演示目的是没有问题的。如果是为了加密而需要生成随机数（传给生成器的输入需要较高的不确定性），那么建议使用 window.crypto.getRandomValues()。
