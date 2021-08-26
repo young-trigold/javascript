@@ -549,3 +549,204 @@ open()和 close()方法分别用于打开和关闭网页输出流。在调用 wr
 注意 严格的 XHTML 文档不支持文档写入。对于内容类型为 application/xml+xhtml 的页面，这些方法不起作用。
 
 ### 14.1.3. Element 类型
+
+除了 Document 类型，Element 类型就是 Web 开发中最常用的类型了。Element 表示 XML 或 HTML 元素，对外暴露出访问元素标签名、子节点和属性的能力。Element 类型的节点具有以下特征：
+
+- nodeType 等于 1；
+- nodeName 值为元素的标签名；
+- nodeValue 值为 null；
+- parentNode 值为 Document 或 Element 对象；
+- 子节点可以是 Element、Text、Comment、ProcessingInstruction、CDATASection、EntityReference 类型。
+
+可以通过 nodeName 或 tagName 属性来获取元素的标签名。这两个属性返回同样的值（添加后一个属性明显是为了不让人误会）。比如有下面的元素：
+
+```html
+<div id="myDiv"></div>
+```
+
+可以像这样取得这个元素的标签名：
+
+```js
+const myDiv = document.getElementById("myDiv");
+console.log(myDiv.nodeName); // DIV
+console.log(myDIv.tagName); // DIV
+```
+
+例子中的元素标签名为 div，ID 为"myDiv"。注意，div.tagName 实际上返回的是"DIV"而不是"div"。在 HTML 中，元素标签名始终以全大写表示；在 XML（包括 XHTML）中，标签名始终与源代码中的大小写一致。如果不确定脚本是在 HTML 文档还是 XML 文档中运行，最好将标签名转换为小写形式，以便于比较：
+
+```js
+if (element.tagName === "div") {
+  // 不要这样做，可能出错！
+  // do something here
+}
+if (element.tagName.toLowerCase() === "div") {
+  // 推荐，适用于所有文档
+  // 做点什么
+}
+```
+
+这个例子演示了比较 tagName 属性的情形。第一个是容易出错的写法，因为 HTML 文档中 tagName 返回大写形式的标签名。第二个先把标签名转换为全部小写后再比较，这是推荐的做法，因为这对 HTML 和 XML 都适用。
+
+1. **HTML 元素**
+
+所有 HTML 元素都通过 HTMLElement 类型表示，包括其直接实例和间接实例。另外，HTMLElement 直接继承 Element 并增加了一些属性。每个属性都对应下列属性之一，它们是所有 HTML 元素上都有的标准属性：
+
+- id，元素在文档中的唯一标识符；
+- title，包含元素的额外信息，通常以提示条形式展示；
+- lang，元素内容的语言代码（很少用）；
+- dir，语言的书写方向（"ltr"表示从左到右，"rtl"表示从右到左，同样很少用）；
+- className，相当于 class 属性，用于指定元素的 CSS 类（因为 class 是 ECMAScript 关键字，所以不能直接用这个名字）。
+
+所有这些都可以用来获取对应的属性值，也可以用来修改相应的值。比如有下面的 HTML 元素：
+
+```html
+<div id="myDiv" class="bd" title="Body text" lang="en" dir="ltr"></div>
+```
+
+这个元素中的所有属性都可以使用下列 JavaScript 代码读取：
+
+```js
+let div = document.getElementById("myDiv");
+console.log(div.id); // "myDiv"
+console.log(div.className); // "bd"
+console.log(div.title); // "Body text"
+console.log(div.lang); // "en"
+console.log(div.dir); // "ltr"
+```
+
+而且，可以使用下列代码修改元素的属性：
+
+```js
+div.id = "someOtherId";
+div.className = "ft";
+div.title = "Some other text";
+div.lang = "fr";
+div.dir = "rtl";
+```
+
+并非所有这些属性的修改都会对页面产生影响。比如，把 id 或 lang 改成其他值对用户是不可见的（假设没有基于这两个属性应用 CSS 样式），而修改 title 属性则只会在鼠标移到这个元素上时才会反映出来。修改 dir 会导致页面文本立即向左或向右对齐。修改 className 会立即反映应用到新类名的 CSS 样式（如果定义了不同的样式）。
+
+如前所述，所有 HTML 元素都是 HTMLElement 或其子类型的实例。下表列出了所有 HTML 元素及其对应的类型（斜体表示已经废弃的元素）。
+
+| 元 素      | 类 型                   | 元 素    | 类 型                   |
+| ---------- | ----------------------- | -------- | ----------------------- |
+| A          | HTMLAnchorElement       | COL      | HTMLTableColElement     |
+| ABBR       | HTMLElement             | COLGROUP | HTMLTableColElement     |
+| ACRONYM    | HTMLElement             | DD       | HTMLElement             |
+| ADDRESS    | HTMLElement             | DEL      | HTMLModElement          |
+| _APPLET_   | HTMLAppletElement       | DFN      | HTMLElement             |
+| AREA       | HTMLAreaElement         | _DIR_    | HTMLDirectoryElement    |
+| B          | HTMLElement             | DIV      | HTMLDivElement          |
+| BASE       | HTMLBaseElement         | DL       | HTMLDListElement        |
+| _BASEFONT_ | HTMLBaseFontElement     | DT       | HTMLElement             |
+| BDO        | HTMLElement             | EM       | HTMLElement             |
+| BIG        | HTMLElement             | FIELDSET | HTMLFieldSetElement     |
+| BLOCKQUOTE | HTMLQuoteElement        | _FONT_   | HTMLFontElement         |
+| BODY       | HTMLBodyElement         | FORM     | HTMLFormElement         |
+| BR         | HTMLBRElement           | FRAME    | HTMLFrameElement        |
+| BUTTON     | HTMLButtonElement       | FRAMESET | HTMLFrameSetElement     |
+| CAPTION    | HTMLTableCaptionElement | H1       | HTMLHeadingElement      |
+| _CENTER_   | HTMLElement             | H2       | HTMLHeadingElement      |
+| CITE       | HTMLElement             | H3       | HTMLHeadingElement      |
+| CODE       | HTMLElement             | H4       | HTMLHeadingElement      |
+| H5         | HTMLHeadingElement      | PRE      | HTMLPreElement          |
+| H6         | HTMLHeadingElement      | Q        | HTMLQuoteElement        |
+| HEAD       | HTMLHeadElement         | _S_      | HTMLElement             |
+| HR         | HTMLHRElement           | SAMP     | HTMLElement             |
+| HTML       | HTMLHtmlElement         | SCRIPT   | HTMLScriptElement       |
+| I          | HTMLElement             | SELECT   | HTMLSelectElement       |
+| IFRAME     | HTMLIFrameElement       | SMALL    | HTMLElement             |
+| IMG        | HTMLImageElement        | SPAN     | HTMLElement             |
+| INPUT      | HTMLInputElement        | _STRIKE_ | HTMLElement             |
+| INS        | HTMLModElement          | STRONG   | HTMLElement             |
+| _ISINDEX_  | HTMLIsIndexElement      | STYLE    | HTMLStyleElement        |
+| KBD        | HTMLElement             | SUB      | HTMLElement             |
+| LABEL      | HTMLLabelElement        | SUP      | HTMLElement             |
+| LEGEND     | HTMLLegendElement       | TABLE    | HTMLTableElement        |
+| LI         | HTMLLIElement           | TBODY    | HTMLTableSectionElement |
+| LINK       | HTMLLinkElement         | TD       | HTMLTableCellElement    |
+| MAP        | HTMLMapElement          | TEXTAREA | HTMLTextAreaElement     |
+| _MENU_     | HTMLMenuElement         | TFOOT    | HTMLTableSectionElement |
+| META       | HTMLMetaElement         | TH       | HTMLTableCellElement    |
+| NOFRAMES   | HTMLElement             | THEAD    | HTMLTableSectionElement |
+| NOSCRIPT   | HTMLElement             | TITLE    | HTMLTitleElement        |
+| OBJECT     | HTMLObjectElement       | TR       | HTMLTableRowElement     |
+| OL         | HTMLOListElement        | TT       | HTMLElement             |
+| OPTGROUP   | HTMLOptGroupElement     | _U_      | HTMLElement             |
+| OPTION     | HTMLOptionElement       | UL       | HTMLUListElement        |
+| P          | HTMLParagraphElement    | VAR      | HTMLElement             |
+| PARAM      | HTMLParamElement        |          |                         |
+
+这里列出的每种类型都有关联的属性和方法。本书会涉及其中的很多类型。
+
+2. **取得属性**
+
+每个元素都有零个或多个属性，通常用于为元素或其内容附加更多信息。与属性相关的DOM 方法主要有3 个：getAttribute()、setAttribute()和removeAttribute()。这些方法主要用于操纵属性，包括在HTMLElement 类型上定义的属性。下面看一个例子：
+
+```js
+let div = document.getElementById("myDiv");
+console.log(div.getAttribute("id")); // "myDiv"
+console.log(div.getAttribute("class")); // "bd"
+console.log(div.getAttribute("title")); // "Body text"
+console.log(div.getAttribute("lang")); // "en"
+console.log(div.getAttribute("dir")); // "ltr"
+```
+
+注意传给getAttribute()的属性名与它们实际的属性名是一样的，因此这里要传"class"而非"className"（className 是作为对象属性时才那么拼写的）。如果给定的属性不存在，则getAttribute()返回null。
+
+getAttribute()方法也能取得不是HTML 语言正式属性的自定义属性的值。比如下面的元素：
+
+```html
+<div id="myDiv" my_special_attribute="hello!"></div>
+```
+
+这个元素有一个自定义属性my_special_attribute，值为"hello!"。可以像其他属性一样使用getAttribute()取得这个属性的值：
+
+```js
+let value = div.getAttribute("my_special_attribute");
+```
+
+注意，属性名不区分大小写，因此"ID"和"id"被认为是同一个属性。另外，根据HTML5 规范的要求，自定义属性名应该前缀data-以方便验证。
+
+元素的所有属性也可以通过相应DOM元素对象的属性来取得。当然，这包括HTMLElement 上定义的直接映射对应属性的5 个属性，还有所有公认（非自定义）的属性也会被添加为DOM 对象的属性。比如下面的例子：
+
+```html
+<div id="myDiv" align="left" my_special_attribute="hello"></div>
+```
+
+因为id 和align 在HTML 中是`<div>`元素公认的属性，所以DOM对象上也会有这两个属性。但my_special_attribute 是自定义属性，因此不会成为DOM 对象的属性。
+
+通过DOM 对象访问的属性中有两个返回的值跟使用getAttribute()取得的值不一样。首先是style 属性，这个属性用于为元素设定CSS 样式。在使用getAttribute()访问style 属性时，返回的是CSS 字符串。而在通过DOM对象的属性访问时，style 属性返回的是一个（CSSStyleDeclaration）对象。DOM 对象的style 属性用于以编程方式读写元素样式，因此不会直接映射为元素中style 属性的字符串值。
+
+第二个属性其实是一类，即事件处理程序（或者事件属性），比如onclick。在元素上使用事件属性时（比如onclick），属性的值是一段JavaScript 代码。如果使用getAttribute()访问事件属性，则返回的是字符串形式的源代码。而通过DOM 对象的属性访问事件属性时返回的则是一个JavaScript函数（未指定该属性则返回null）。这是因为onclick 及其他事件属性是可以接受函数作为值的。
+
+考虑到以上差异，开发者在进行DOM编程时通常会放弃使用getAttribute()而只使用对象属性。getAttribute()主要用于取得自定义属性的值。
+
+3. **设置属性**
+
+与getAttribute()配套的方法是setAttribute()，这个方法接收两个参数：要设置的属性名和属性的值。如果属性已经存在，则setAttribute()会以指定的值替换原来的值；如果属性不存在，则setAttribute()会以指定的值创建该属性。下面看一个例子：
+
+```js
+div.setAttribute("id", "someOtherId");
+div.setAttribute("class", "ft");
+div.setAttribute("title", "Some other text");
+div.setAttribute("lang","fr");
+div.setAttribute("dir", "rtl");
+```
+
+setAttribute()适用于HTML 属性，也适用于自定义属性。另外，使用setAttribute()方法设置的属性名会规范为小写形式，因此"ID"会变成"id"。
+
+因为元素属性也是DOM 对象属性，所以直接给DOM 对象的属性赋值也可以设置元素属性的值，如下所示：
+
+```js
+div.id = "someOtherId";
+div.align = "left";
+```
+
+注意，在DOM 对象上添加自定义属性，如下面的例子所示，不会自动让它变成元素的属性：
+
+```js
+div.mycolor = "red";
+console.log(div.getAttribute("mycolor")); // null（IE 除外）
+```
+
