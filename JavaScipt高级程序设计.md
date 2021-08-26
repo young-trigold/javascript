@@ -289,6 +289,16 @@ plan : 1 chapter/2 day
     - [14.1.1. Node 类型](#1411-node-类型)
     - [14.1.2. Document 类型](#1412-document-类型)
     - [14.1.3. Element 类型](#1413-element-类型)
+    - [14.1.4. Text 类型](#1414-text-类型)
+    - [14.1.5. Comment 类型](#1415-comment-类型)
+    - [14.1.6. CDATASection 类型](#1416-cdatasection-类型)
+    - [14.1.7. DocumentType类型](#1417-documenttype类型)
+    - [14.1.8. DocumentFragment 类型](#1418-documentfragment-类型)
+    - [14.1.9. Attr 类型](#1419-attr-类型)
+  - [14.2. DOM 编程](#142-dom-编程)
+    - [14.2.1. 动态脚本](#1421-动态脚本)
+    - [14.2.2. 动态样式](#1422-动态样式)
+    - [14.2.3. 操作表格](#1423-操作表格)
 
 # 1. 什么是 JavaScript
 
@@ -19937,4 +19947,691 @@ div.align = "left";
 div.mycolor = "red";
 console.log(div.getAttribute("mycolor")); // null（IE 除外）
 ```
+
+这个例子添加了一个自定义属性mycolor 并将其值设置为"red"。在多数浏览器中，这个属性不会自动变成元素属性。因此调用getAttribute()取得mycolor 的值会返回null。
+
+最后一个方法removeAttribute()用于从元素中删除属性。这样不单单是清除属性的值，而是会把整个属性完全从元素中去掉，如下所示：
+
+```js
+div.removeAttribute("class");
+```
+
+这个方法用得并不多，但在序列化DOM元素时可以通过它控制要包含的属性。
+
+4. **attributes 属性**
+
+Element 类型是唯一使用attributes 属性的DOM 节点类型。attributes 属性包含一个NamedNodeMap 实例，是一个类似NodeList 的“实时”集合。元素的每个属性都表示为一个Attr 节点，并保存在这个NamedNodeMap 对象中。NamedNodeMap 对象包含下列方法：
+
+- getNamedItem(name)，返回nodeName 属性等于name 的节点；
+- removeNamedItem(name)，删除nodeName 属性等于name 的节点；
+- setNamedItem(node)，向列表中添加node 节点，以其nodeName 为索引；
+- item(pos)，返回索引位置pos 处的节点。
+
+attributes 属性中的每个节点的nodeName 是对应属性的名字，nodeValue 是属性的值。比如，要取得元素id 属性的值，可以使用以下代码：
+
+```js
+let id = element.attributes.getNamedItem("id").nodeValue;
+```
+
+下面是使用中括号访问属性的简写形式：
+
+```js
+let id = element.attributes["id"].nodeValue;
+```
+
+同样，也可以用这种语法设置属性的值，即先取得属性节点，再将其nodeValue 设置为新值，如下所示：
+
+```js
+element.attributes["id"].nodeValue = "someOtherId";
+```
+
+removeNamedItem()方法与元素上的removeAttribute()方法类似，也是删除指定名字的属性。下面的例子展示了这两个方法唯一的不同之处，就是removeNamedItem()返回表示被删除属性的Attr节点：
+
+```js
+let oldAttr = element.attributes.removeNamedItem("id");
+```
+
+setNamedItem()方法很少使用，它接收一个属性节点，然后给元素添加一个新属性，如下所示：
+
+```js
+element.attributes.setNamedItem(newAttr);
+```
+
+一般来说，因为使用起来更简便，通常开发者更喜欢使用getAttribute()、removeAttribute()和setAttribute()方法，而不是刚刚介绍的NamedNodeMap 对象的方法。
+
+attributes 属性最有用的场景是需要迭代元素上所有属性的时候。这时候往往是要把DOM结构序列化为XML 或HTML 字符串。比如，以下代码能够迭代一个元素上的所有属性并以attribute1="value1" attribute2="value2"的形式生成格式化字符串：
+
+```js
+function outputAttributes(element) {
+let pairs = [];
+for (let i = 0, len = element.attributes.length; i < len; ++i) {
+const attribute = element.attributes[i];
+pairs.push(`${attribute.nodeName}="${attribute.nodeValue}"`);
+}
+return pairs.join(" ");
+}
+```
+
+这个函数使用数组存储每个名/值对，迭代完所有属性后，再将这些名/值对用空格拼接在一起。（这个技术常用于序列化为长字符串。）这个函数中的for 循环使用attributes.length 属性迭代每个属性，将每个属性的名字和值输出为字符串。不同浏览器返回的attributes 中的属性顺序也可能不一样。HTML 或XML 代码中属性出现的顺序不一定与attributes 中的顺序一致。
+
+5. **创建元素**
+
+可以使用document.createElement()方法创建新元素。这个方法接收一个参数，即要创建元素的标签名。在HTML 文档中，标签名是不区分大小写的，而XML 文档（包括XHTML）是区分大小写的。要创建`<div>`元素，可以使用下面的代码：
+
+```js
+let div = document.createElement("div");
+```
+
+使用createElement()方法创建新元素的同时也会将其ownerDocument 属性设置为document。此时，可以再为其添加属性、添加更多子元素。比如：
+
+```js
+div.id = "myNewDiv";
+div.className = "box";
+```
+
+在新元素上设置这些属性只会附加信息。因为这个元素还没有添加到文档树，所以不会影响浏览器显示。要把元素添加到文档树，可以使用appendChild()、insertBefore()或replaceChild()。比如，以下代码会把刚才创建的元素添加到文档的`<body>`元素中：
+
+```js
+document.body.appendChild(div);
+```
+
+元素被添加到文档树之后，浏览器会立即将其渲染出来。之后再对这个元素所做的任何修改，都会立即在浏览器中反映出来。
+
+6. **元素后代**
+
+元素可以拥有任意多个子元素和后代元素，因为元素本身也可以是其他元素的子元素。childNodes属性包含元素所有的子节点，这些子节点可能是其他元素、文本节点、注释或处理指令。不同浏览器在识别这些节点时的表现有明显不同。比如下面的代码：
+
+```html
+<ul id="myList">
+<li>Item 1</li>
+<li>Item 2</li>
+<li>Item 3</li>
+</ul>
+```
+
+在解析以上代码时，`<ul>`元素会包含7 个子元素，其中3 个是`<li>`元素，还有4 个Text 节点（表示`<li>`元素周围的空格）。如果把元素之间的空格删掉，变成下面这样，则所有浏览器都会返回同样数量的子节点：
+
+```html
+<ul id="myList"><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>
+```
+
+所有浏览器解析上面的代码后，`<ul>`元素都会包含3 个子节点。考虑到这种情况，通常在执行某个操作之后需要先检测一下节点的nodeType，如下所示：
+
+```js
+for (let i = 0, len = element.childNodes.length; i < len; ++i) {
+if (element.childNodes[i].nodeType == 1) {
+// 执行某个操作
+}
+}
+```
+
+以上代码会遍历某个元素的子节点，并且只在nodeType 等于1（即Element 节点）时执行某个操作。
+
+要取得某个元素的子节点和其他后代节点，可以使用元素的getElementsByTagName()方法。在元素上调用这个方法与在文档上调用是一样的，只不过搜索范围限制在当前元素之内，即只会返回当前元素的后代。对于本节前面`<ul>`的例子，可以像下面这样取得其所有的`<li>`元素：
+
+```js
+let ul = document.getElementById("myList");
+let items = ul.getElementsByTagName("li");
+```
+
+这里例子中的`<ul>`元素只有一级子节点，如果它包含更多层级，则所有层级中的`<li>`元素都会返回。
+
+### 14.1.4. Text 类型
+
+Text 节点由Text 类型表示，包含按字面解释的纯文本，也可能包含转义后的HTML 字符，但不含HTML 代码。Text 类型的节点具有以下特征：
+
+- nodeType 等于3；
+- nodeName 值为"#text"；
+- nodeValue 值为节点中包含的文本；
+- parentNode 值为Element 对象；
+- 不支持子节点。
+
+Text 节点中包含的文本可以通过nodeValue 属性访问，也可以通过data 属性访问，这两个属性包含相同的值。修改nodeValue 或data 的值，也会在另一个属性反映出来。文本节点暴露了以下操作文本的方法：
+
+- appendData(text)，向节点末尾添加文本text；
+- deleteData(offset, count)，从位置offset 开始删除count 个字符；
+- insertData(offset, text)，在位置offset 插入text；
+- replaceData(offset, count, text)，用text 替换从位置offset 到offset + count 的文本；
+- splitText(offset)，在位置offset 将当前文本节点拆分为两个文本节点；
+- substringData(offset, count)，提取从位置offset 到offset + count 的文本。
+
+除了这些方法，还可以通过length 属性获取文本节点中包含的字符数量。这个值等于nodeValue.length 和data.length。
+
+默认情况下，包含文本内容的每个元素最多只能有一个文本节点。例如：
+
+```html
+<!-- 没有内容，因此没有文本节点 -->
+<div></div>
+```
+
+<!-- 有空格，因此有一个文本节点 -->
+<div> </div>
+
+<!-- 有内容，因此有一个文本节点 -->
+<div>Hello World!</div>
+```
+
+示例中的第一个`<div>`元素中不包含内容，因此不会产生文本节点。只要开始标签和结束标签之间有内容，就会创建一个文本节点，因此第二个`<div>`元素会有一个文本节点的子节点，虽然它只包含空格。这个文本节点的nodeValue 就是一个空格。第三个`<div>`元素也有一个文本节点的子节点，其nodeValue 的值为"Hello World!"。下列代码可以用来访问这个文本节点：
+
+```js
+let textNode = div.firstChild; // 或div.childNodes[0]
+```
+
+取得文本节点的引用后，可以像这样来修改它：
+
+```js
+div.firstChild.nodeValue = "Some other message";
+```
+
+只要节点在当前的文档树中，这样的修改就会马上反映出来。修改文本节点还有一点要注意，就是HTML 或XML 代码（取决于文档类型）会被转换成实体编码，即小于号、大于号或引号会被转义，如下所示：
+
+```js
+// 输出为"Some &lt;strong&gt;other&lt;/strong&gt; message"
+div.firstChild.nodeValue = "Some <strong>other</strong> message";
+```
+
+这实际上是在将HTML 字符串插入DOM文档前进行编码的有效方式。
+
+1. **创建文本节点**
+
+document.createTextNode()可以用来创建新文本节点，它接收一个参数，即要插入节点的文本。跟设置已有文本节点的值一样，这些要插入的文本也会应用HTML 或XML 编码，如下面的例子所示：
+
+```js
+let textNode = document.createTextNode("<strong>Hello</strong> world!");
+```
+
+创建新文本节点后，其ownerDocument 属性会被设置为document。但在把这个节点添加到文档树之前，我们不会在浏览器中看到它。以下代码创建了一个`<div>`元素并给它添加了一段文本消息：
+
+```js
+let element = document.createElement("div");
+element.className = "message";
+let textNode = document.createTextNode("Hello world!");
+element.appendChild(textNode);
+document.body.appendChild(element);
+```
+
+这个例子首先创建了一个`<div>`元素并给它添加了值为"message"的class 属性，然后又创建了一个文本节点并添加到该元素。最后一步是把这个元素添加到文档的主体上，这样元素及其包含的文本会出现在浏览器中。
+
+一般来说一个元素只包含一个文本子节点。不过，也可以让元素包含多个文本子节点，如下面的例子所示：
+
+```js
+let element = document.createElement("div");
+element.className = "message";
+let textNode = document.createTextNode("Hello world!");
+element.appendChild(textNode);
+let anotherTextNode = document.createTextNode("Yippee!");
+element.appendChild(anotherTextNode);
+document.body.appendChild(element);
+```
+
+在将一个文本节点作为另一个文本节点的同胞插入后，两个文本节点的文本之间不会包含空格。
+
+2. **规范化文本节点**
+
+DOM 文档中的同胞文本节点可能导致困惑，因为一个文本节点足以表示一个文本字符串。同样，DOM 文档中也经常会出现两个相邻文本节点。为此，有一个方法可以合并相邻的文本节点。这个方法叫normalize()，是在Node 类型中定义的（因此所有类型的节点上都有这个方法）。在包含两个或多
+个相邻文本节点的父节点上调用normalize()时，所有同胞文本节点会被合并为一个文本节点，这个文本节点的nodeValue 就等于之前所有同胞节点nodeValue 拼接在一起得到的字符串。来看下面的例子：
+
+```js
+let element = document.createElement("div");
+element.className = "message";
+let textNode = document.createTextNode("Hello world!");
+element.appendChild(textNode);
+let anotherTextNode = document.createTextNode("Yippee!");
+element.appendChild(anotherTextNode);
+document.body.appendChild(element);
+console.log(element.childNodes.length); // 2
+element.normalize();
+console.log(element.childNodes.length); // 1
+console.log(element.firstChild.nodeValue); // "Hello world!Yippee!"
+```
+
+浏览器在解析文档时，永远不会创建同胞文本节点。同胞文本节点只会出现在DOM 脚本生成的文档树中。
+
+3. **拆分文本节点**
+
+Text 类型定义了一个与normalize()相反的方法——splitText()。这个方法可以在指定的偏移位置拆分nodeValue，将一个文本节点拆分成两个文本节点。拆分之后，原来的文本节点包含开头到偏移位置前的文本，新文本节点包含剩下的文本。这个方法返回新的文本节点，具有与原来的文本节点
+相同的parentNode。来看下面的例子：
+
+```js
+let element = document.createElement("div");
+element.className = "message";
+let textNode = document.createTextNode("Hello world!");
+element.appendChild(textNode);
+document.body.appendChild(element);
+let newNode = element.firstChild.splitText(5);
+console.log(element.firstChild.nodeValue); // "Hello"
+console.log(newNode.nodeValue); // " world!"
+console.log(element.childNodes.length); // 2
+```
+
+在这个例子中，包含"Hello world!"的文本节点被从位置5 拆分成两个文本节点。位置5 对应"Hello"和"world!"之间的空格，因此原始文本节点包含字符串"Hello"，而新文本节点包含文本"world!"（包含空格）。
+
+拆分文本节点最常用于从文本节点中提取数据的DOM解析技术。
+
+### 14.1.5. Comment 类型
+
+DOM 中的注释通过Comment 类型表示。Comment 类型的节点具有以下特征：
+
+- nodeType 等于8；
+- nodeName 值为"#comment"；
+- nodeValue 值为注释的内容；
+- parentNode 值为Document 或Element 对象；
+- 不支持子节点。
+
+Comment 类型与Text 类型继承同一个基类（CharacterData），因此拥有除splitText()之外Text 节点所有的字符串操作方法。与Text 类型相似，注释的实际内容可以通过nodeValue 或data属性获得。
+
+注释节点可以作为父节点的子节点来访问。比如下面的HTML 代码：
+
+```html
+<div id="myDiv"><!-- A comment --></div>
+```
+
+这里的注释是`<div>`元素的子节点，这意味着可以像下面这样访问它：
+
+```js
+let div = document.getElementById("myDiv");
+let comment = div.firstChild;
+console.log(comment.data); // "A comment"
+```
+
+可以使用document.createComment()方法创建注释节点，参数为注释文本，如下所示：
+
+```js
+let comment = document.createComment("A comment");
+```
+
+显然，注释节点很少通过JavaScrpit 创建和访问，因为注释几乎不涉及算法逻辑。此外，浏览器不承认结束的`</html>`标签之后的注释。如果要访问注释节点，则必须确定它们是`<html>`元素的后代。
+
+### 14.1.6. CDATASection 类型
+
+CDATASection 类型表示XML 中特有的CDATA 区块。CDATASection 类型继承Text 类型，因此拥有包括splitText()在内的所有字符串操作方法。CDATASection 类型的节点具有以下特征：
+
+- nodeType 等于4；
+- nodeName 值为"#cdata-section"；
+- nodeValue 值为CDATA 区块的内容；
+- parentNode 值为Document 或Element 对象；
+- 不支持子节点。
+
+CDATA 区块只在XML 文档中有效，因此某些浏览器比较陈旧的版本会错误地将CDATA 区块解析为Comment 或Element。比如下面这行代码：
+
+```html
+<div id="myDiv"><![CDATA[This is some content.]]></div>
+```
+
+这里`<div>`的第一个子节点应该是CDATASection 节点。但主流的四大浏览器没有一个将其识别为CDATASection。即使在有效的XHTML 文档中，这些浏览器也不能恰当地支持嵌入的CDATA 区块。
+
+在真正的XML 文档中，可以使用document.createCDataSection()并传入节点内容来创建CDATA 区块。
+
+### 14.1.7. DocumentType类型
+
+DocumentType 类型的节点包含文档的文档类型（doctype）信息，具有以下特征：
+
+- nodeType 等于10；
+- nodeName 值为文档类型的名称；
+- nodeValue 值为null；
+- parentNode 值为Document 对象；
+- 不支持子节点。
+
+DocumentType 对象在DOM Level 1 中不支持动态创建，只能在解析文档代码时创建。对于支持这个类型的浏览器，DocumentType 对象保存在document.doctype 属性中。DOM Level 1 规定了DocumentType 对象的3 个属性：name、entities 和notations。其中，name 是文档类型的名称，entities 是这个文档类型描述的实体的NamedNodeMap，而notations 是这个文档类型描述的表示法的NamedNodeMap。因为浏览器中的文档通常是HTML 或XHTML 文档类型，所以entities 和notations 列表为空。（这个对象只包含行内声明的文档类型。）无论如何，只有name 属性是有用的。这个属性包含文档类型的名称，即紧跟在`<!DOCTYPE` 后面的那串文本。比如下面的HTML 4.01 严格文档类型：
+
+```html
+<!DOCTYPE HTML PUBLIC "-// W3C// DTD HTML 4.01// EN"
+"http:// www.w3.org/TR/html4/strict.dtd">
+```
+
+对于这个文档类型，name 属性的值是"html"：
+
+```js
+console.log(document.doctype.name); // "html"
+```
+
+### 14.1.8. DocumentFragment 类型
+
+在所有节点类型中，DocumentFragment 类型是唯一一个在标记中没有对应表示的类型。DOM将文档片段定义为“轻量级”文档，能够包含和操作节点，却没有完整文档那样额外的消耗。DocumentFragment 节点具有以下特征：
+
+- nodeType 等于11；
+- nodeName 值为"#document-fragment"；
+- nodeValue 值为null；
+- parentNode 值为null；
+- 子节点可以是Element、ProcessingInstruction、Comment、Text、CDATASection 或EntityReference。
+
+不能直接把文档片段添加到文档。相反，文档片段的作用是充当其他要被添加到文档的节点的仓库。可以使用document.createDocumentFragment()方法像下面这样创建文档片段：
+
+```js
+let fragment = document.createDocumentFragment();
+```
+
+文档片段从Node 类型继承了所有文档类型具备的可以执行DOM操作的方法。如果文档中的一个节点被添加到一个文档片段，则该节点会从文档树中移除，不会再被浏览器渲染。添加到文档片段的新节点同样不属于文档树，不会被浏览器渲染。可以通过appendChild()或insertBefore()方法将文
+档片段的内容添加到文档。在把文档片段作为参数传给这些方法时，这个文档片段的所有子节点会被添加到文档中相应的位置。文档片段本身永远不会被添加到文档树。以下面的HTML 为例：
+
+```html
+<ul id="myList"></ul>
+```
+
+假设想给这个`<ul>`元素添加3 个列表项。如果分3 次给这个元素添加列表项，浏览器就要重新渲染3 次页面，以反映新添加的内容。为避免多次渲染，下面的代码示例使用文档片段创建了所有列表项，然后一次性将它们添加到了`<ul>`元素：
+
+```js
+let fragment = document.createDocumentFragment();
+let ul = document.getElementById("myList");
+for (let i = 0; i < 3; ++i) {
+let li = document.createElement("li");
+li.appendChild(document.createTextNode(`Item ${i + 1}`));
+fragment.appendChild(li);
+}
+ul.appendChild(fragment);
+```
+
+这个例子先创建了一个文档片段，然后取得了`<ul>`元素的引用。接着通过for 循环创建了3 个列表项，每一项都包含表明自己身份的文本。为此先创建`<li>`元素，再创建文本节点并添加到该元素。然后通过appendChild()把`<li>`元素添加到文档片段。循环结束后，通过把文档片段传给appendChild()将所有列表项添加到了`<ul>`元素。此时，文档片段的子节点全部被转移到了`<ul>`元素。
+
+### 14.1.9. Attr 类型
+
+元素数据在DOM中通过Attr 类型表示。Attr 类型构造函数和原型在所有浏览器中都可以直接访问。技术上讲，属性是存在于元素attributes 属性中的节点。Attr 节点具有以下特征：
+
+- nodeType 等于2；
+- nodeName 值为属性名；
+- nodeValue 值为属性值；
+- parentNode 值为null；
+- 在HTML 中不支持子节点；
+- 在XML 中子节点可以是Text 或EntityReference。
+
+属性节点尽管是节点，却不被认为是DOM 文档树的一部分。Attr 节点很少直接被引用，通常开发者更喜欢使用getAttribute()、removeAttribute()和setAttribute()方法操作属性。
+
+Attr 对象上有3 个属性：name、value 和specified。其中，name 包含属性名（与nodeName一样），value 包含属性值（与nodeValue 一样），而specified 是一个布尔值，表示属性使用的是默认值还是被指定的值。
+
+可以使用document.createAttribute()方法创建新的Attr 节点，参数为属性名。比如，要给元素添加align 属性，可以使用下列代码：
+
+```js
+let attr = document.createAttribute("align");
+attr.value = "left";
+element.setAttributeNode(attr);
+console.log(element.attributes["align"].value); // "left"
+console.log(element.getAttributeNode("align").value); // "left"
+console.log(element.getAttribute("align")); // "left"
+```
+
+在这个例子中，首先创建了一个新属性。调用createAttribute()并传入"align"为新属性设置了name 属性，因此就不用再设置了。随后，value 属性被赋值为"left"。为把这个新属性添加到元素上，可以使用元素的setAttributeNode()方法。添加这个属性后，可以通过不同方式访问它，包
+括attributes 属性、getAttributeNode()和getAttribute()方法。其中，attributes 属性和getAttributeNode()方法都返回属性对应的Attr 节点，而getAttribute()方法只返回属性的值。
+
+注意 将属性作为节点来访问多数情况下并无必要。推荐使用getAttribute()、removeAttribute()和setAttribute()方法操作属性，而不是直接操作属性节点。
+
+## 14.2. DOM 编程
+
+很多时候，操作DOM是很直观的。通过HTML 代码能实现的，也一样能通过JavaScript 实现。但有时候，DOM 也没有看起来那么简单。浏览器能力的参差不齐和各种问题，也会导致DOM 的某些方面会复杂一些。
+
+### 14.2.1. 动态脚本
+
+`<script>`元素用于向网页中插入JavaScript 代码，可以是src 属性包含的外部文件，也可以是作为该元素内容的源代码。动态脚本就是在页面初始加载时不存在，之后又通过DOM 包含的脚本。与对应的HTML 元素一样，有两种方式通过`<script>`动态为网页添加脚本：引入外部文件和直接插入源代码。
+
+动态加载外部文件很容易实现，比如下面的`<script>`元素：
+
+```html
+<script src="foo.js"></script>
+```
+
+可以像这样通过DOM 编程创建这个节点：
+
+```js
+let script = document.createElement("script");
+script.src = "foo.js";
+document.body.appendChild(script);
+```
+
+这里的DOM代码实际上完全照搬了它要表示的HTML 代码。注意，在上面最后一行把`<script>`元素添加到页面之前，是不会开始下载外部文件的。当然也可以把它添加到`<head>`元素，同样可以实现动态脚本加载。这个过程可以抽象为一个函数，比如：
+
+```js
+function loadScript(url) {
+let script = document.createElement("script");
+script.src = url;
+document.body.appendChild(script);
+}
+```
+
+然后，就可以像下面这样加载外部JavaScript 文件了：
+
+```js
+loadScript("client.js");
+```
+
+加载之后，这个脚本就可以对页面执行操作了。这里有个问题：怎么能知道脚本什么时候加载完？这个问题并没有标准答案。第17 章会讨论一些与加载相关的事件，具体情况取决于使用的浏览器。
+
+另一个动态插入JavaScript 的方式是嵌入源代码，如下面的例子所示：
+
+```html
+<script>
+function sayHi() {
+console.log("hi");
+}
+</script>
+```
+
+使用DOM，可以实现以下逻辑：
+
+```js
+let script = document.createElement("script");
+script.appendChild(document.createTextNode("function sayHi(){alert('hi');}"));
+document.body.appendChild(script);
+```
+
+以上代码可以在Firefox、Safari、Chrome 和Opera 中运行。不过在旧版本的IE 中可能会导致问题。这是因为IE 对`<script>`元素做了特殊处理，不允许常规DOM 访问其子节点。但`<script>`元素上有一个text 属性，可以用来添加JavaScript 代码，如下所示：
+
+```js
+var script = document.createElement("script");
+script.text = "function sayHi(){alert('hi');}";
+document.body.appendChild(script);
+```
+
+这样修改后，上面的代码可以在IE、Firefox、Opera 和Safari 3 及更高版本中运行。Safari 3 之前的版本不能正确支持这个text 属性，但这些版本却支持文本节点赋值。对于早期的Safari 版本，需要使用以下代码：
+
+```js
+var script = document.createElement("script");
+var code = "function sayHi(){alert('hi');}";
+try {
+script.appendChild(document.createTextNode("code"));
+} catch (ex){
+script.text = "code";
+}
+document.body.appendChild(script);
+```
+
+这里先尝试使用标准的DOM 文本节点插入方式，因为除IE 之外的浏览器都支持这种方式。IE 此时会抛出错误，那么可以在捕获错误之后再使用text 属性来插入JavaScript 代码。于是，我们就可以抽象出一个跨浏览器的函数：
+
+```js
+function loadScriptString(code){
+var script = document.createElement("script");
+script.type = "text/javascript";
+try {
+script.appendChild(document.createTextNode(code));
+} catch (ex){
+script.text = code;
+}
+document.body.appendChild(script);
+}
+```
+
+这个函数可以这样调用：
+
+```js
+loadScriptString("function sayHi(){alert('hi');}");
+```
+
+以这种方式加载的代码会在全局作用域中执行，并在调用返回后立即生效。基本上，这就相当于在全局作用域中把源代码传给eval()方法。
+
+注意，通过innerHTML 属性创建的`<script>`元素永远不会执行。浏览器会尽责地创建`<script>`元素，以及其中的脚本文本，但解析器会给这个`<script>`元素打上永不执行的标签。只要是使用innerHTML 创建的`<script>`元素，以后也没有办法强制其执行。
+
+### 14.2.2. 动态样式
+
+CSS 样式在HTML 页面中可以通过两个元素加载。`<link>`元素用于包含CSS 外部文件，而`<style>`元素用于添加嵌入样式。与动态脚本类似，动态样式也是页面初始加载时并不存在，而是在之后才添加到页面中的。
+
+来看下面这个典型的`<link>`元素：
+
+```html
+<link rel="stylesheet" type="text/css" href="styles.css">
+```
+
+这个元素很容易使用DOM编程创建出来：
+
+```js
+let link = document.createElement("link");
+link.rel = "stylesheet";
+link.type = "text/css";
+link.href = "styles.css";
+let head = document.getElementsByTagName("head")[0];
+head.appendChild(link);
+```
+
+以上代码在所有主流浏览器中都能正常运行。注意应该把`<link>`元素添加到`<head>`元素而不是`<body>`元素，这样才能保证所有浏览器都能正常运行。这个过程可以抽象为以下通用函数：
+
+```js
+function loadStyles(url){
+let link = document.createElement("link");
+link.rel = "stylesheet";
+link.type = "text/css";
+link.href = url;
+let head = document.getElementsByTagName("head")[0];
+head.appendChild(link);
+}
+```
+
+然后就可以这样调用这个loadStyles()函数了：
+
+```js
+loadStyles("styles.css");
+```
+
+通过外部文件加载样式是一个异步过程。因此，样式的加载和正执行的JavaScript 代码并没有先后顺序。一般来说，也没有必要知道样式什么时候加载完成。
+
+另一种定义样式的方式是使用`<script>`元素包含嵌入的CSS 规则，例如：
+
+```html
+<style type="text/css">
+body {
+background-color: red;
+}
+</style>
+```
+
+逻辑上，下列DOM 代码会有同样的效果：
+
+```js
+let style = document.createElement("style");
+style.type = "text/css";
+style.appendChild(document.createTextNode("body{background-color:red}"));
+let head = document.getElementsByTagName("head")[0];
+head.appendChild(style);
+```
+
+以上代码在Firefox、Safari、Chrome 和Opera 中都可以运行，但IE 除外。IE 对`<style>`节点会施加限制，不允许访问其子节点，这一点与它对`<script>`元素施加的限制一样。事实上，IE 在执行到给`<style>`添加子节点的代码时，会抛出与给`<script>`添加子节点时同样的错误。对于IE，解决方案是访问元素的styleSheet 属性，这个属性又有一个cssText 属性，然后给这个属性添加CSS 代码：
+
+```js
+let style = document.createElement("style");
+style.type = "text/css";
+try{
+style.appendChild(document.createTextNode("body{background-color:red}"));
+} catch (ex){
+style.styleSheet.cssText = "body{background-color:red}";
+}
+let head = document.getElementsByTagName("head")[0];
+head.appendChild(style);
+```
+
+与动态添加脚本源代码类似，这里也使用了try...catch 语句捕获IE 抛出的错误，然后再以IE特有的方式来设置样式。这是最终的通用函数：
+
+```js
+function loadStyleString(css){
+let style = document.createElement("style");
+style.type = "text/css";
+try{
+style.appendChild(document.createTextNode(css));
+} catch (ex){
+style.styleSheet.cssText = css;
+}
+let head = document.getElementsByTagName("head")[0];
+head.appendChild(style);
+}
+```
+
+可以这样调用这个函数：
+
+```js
+loadStyleString("body{background-color:red}");
+```
+
+这样添加的样式会立即生效，因此所有变化会立即反映出来。
+
+注意 对于IE，要小心使用styleSheet.cssText。如果重用同一个`<style>`元素并设置该属性超过一次，则可能导致浏览器崩溃。同样，将cssText 设置为空字符串也可能导致浏览器崩溃。
+
+### 14.2.3. 操作表格
+
+表格是HTML 中最复杂的结构之一。通过DOM 编程创建`<table>`元素，通常要涉及大量标签，包括表行、表元、表题，等等。因此，通过DOM 编程创建和修改表格时可能要写很多代码。假设要通过DOM 来创建以下HTML 表格：
+
+```html
+<table border="1" width="100%">
+<tbody>
+<tr>
+<td>Cell 1,1</td>
+<td>Cell 2,1</td>
+</tr>
+<tr>
+<td>Cell 1,2</td>
+<td>Cell 2,2</td>
+</tr>
+</tbody>
+</table>
+```
+
+下面就是以DOM编程方式重建这个表格的代码：
+
+```js
+// 创建表格
+let table = document.createElement("table");
+table.border = 1;
+table.width = "100%";
+// 创建表体
+let tbody = document.createElement("tbody");
+table.appendChild(tbody);
+// 创建第一行
+let row1 = document.createElement("tr");
+tbody.appendChild(row1);
+let cell1_1 = document.createElement("td");
+cell1_1.appendChild(document.createTextNode("Cell 1,1"));
+row1.appendChild(cell1_1);
+let cell2_1 = document.createElement("td");
+cell2_1.appendChild(document.createTextNode("Cell 2,1"));
+row1.appendChild(cell2_1);
+// 创建第二行
+let row2 = document.createElement("tr");
+tbody.appendChild(row2);
+let cell1_2 = document.createElement("td");
+cell1_2.appendChild(document.createTextNode("Cell 1,2"));
+row2.appendChild(cell1_2);
+let cell2_2= document.createElement("td");
+cell2_2.appendChild(document.createTextNode("Cell 2,2"));
+row2.appendChild(cell2_2);
+// 把表格添加到文档主体
+document.body.appendChild(table);
+```
+
+以上代码相当烦琐，也不好理解。为了方便创建表格，HTML DOM给`<table>`、`<tbody>`和`<tr>`元素添加了一些属性和方法。
+
+`<table>`元素添加了以下属性和方法：
+
+- caption，指向`<caption>`元素的指针（如果存在）；
+- tBodies，包含`<tbody>`元素的HTMLCollection；
+- tFoot，指向`<tfoot>`元素（如果存在）；
+- tHead，指向`<thead>`元素（如果存在）；
+- rows，包含表示所有行的HTMLCollection；
+- createTHead()，创建`<thead>`元素，放到表格中，返回引用；
+- createTFoot()，创建`<tfoot>`元素，放到表格中，返回引用；
+- createCaption()，创建`<caption>`元素，放到表格中，返回引用；
+- deleteTHead()，删除`<thead>`元素；
+- deleteTFoot()，删除`<tfoot>`元素；
+- deleteCaption()，删除`<caption>`元素；
+- deleteRow(pos)，删除给定位置的行；
+- insertRow(pos)，在行集合中给定位置插入一行。`<tbody>`元素添加了以下属性和方法：
+- rows，包含`<tbody>`元素中所有行的HTMLCollection；
+- deleteRow(pos)，删除给定位置的行；
+- insertRow(pos)，在行集合中给定位置插入一行，返回该行的引用。`<tr>`元素添加了以下属性和方法：
+- cells，包含`<tr>`元素所有表元的HTMLCollection；
+- deleteCell(pos)，删除给定位置的表元；
+- insertCell(pos)，在表元集合给定位置插入一个表元，返回该表元的引用。
 
