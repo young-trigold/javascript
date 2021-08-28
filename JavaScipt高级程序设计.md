@@ -304,6 +304,7 @@ plan : 1 chapter/2 day
     - [14.3.1. 基本用法](#1431-基本用法)
     - [14.3.2. MutationObserverInit 与观察范围](#1432-mutationobserverinit-与观察范围)
     - [14.3.3. 异步回调与记录队列](#1433-异步回调与记录队列)
+    - [14.3.4. 性能，内存与垃圾回收](#1434-性能内存与垃圾回收)
 
 # 1. 什么是 JavaScript
 
@@ -21166,21 +21167,22 @@ document.body.insertBefore(document.body.lastChild, document.body.firstChild);
 
 4. **观察子树**
 
-默认情况下，MutationObserver 将观察的范围限定为一个元素及其子节点的变化。可以把观察的范围扩展到这个元素的子树（所有后代节点），这需要在MutationObserverInit 对象中将subtree属性设置为true。
+默认情况下，MutationObserver 将观察的范围限定为一个元素及其子节点的变化。可以把观察的范围扩展到这个元素的子树（所有后代节点），这需要在 MutationObserverInit 对象中将 subtree 属性设置为 true。
 
 下面的代码展示了观察元素及其后代节点属性的变化：
 
 ```js
 // 清空主体
-document.body.innerHTML = '';
-let observer = new MutationObserver(
-(mutationRecords) => console.log(mutationRecords));
+document.body.innerHTML = "";
+let observer = new MutationObserver((mutationRecords) =>
+  console.log(mutationRecords)
+);
 // 创建一个后代
-document.body.appendChild(document.createElement('div'));
+document.body.appendChild(document.createElement("div"));
 // 观察<body>元素及其子树
 observer.observe(document.body, { attributes: true, subtree: true });
 // 修改<body>元素的子树
-document.body.firstChild.setAttribute('foo', 'bar');
+document.body.firstChild.setAttribute("foo", "bar");
 // 记录了子树变化的事件
 // [
 // {
@@ -21203,11 +21205,12 @@ document.body.firstChild.setAttribute('foo', 'bar');
 
 ```js
 // 清空主体
-document.body.innerHTML = '';
-let observer = new MutationObserver(
-(mutationRecords) => console.log(mutationRecords));
-let subtreeRoot = document.createElement('div'),
-subtreeLeaf = document.createElement('span');
+document.body.innerHTML = "";
+let observer = new MutationObserver((mutationRecords) =>
+  console.log(mutationRecords)
+);
+let subtreeRoot = document.createElement("div"),
+  subtreeLeaf = document.createElement("span");
 // 创建包含两层的子树
 document.body.appendChild(subtreeRoot);
 subtreeRoot.appendChild(subtreeLeaf);
@@ -21215,17 +21218,55 @@ subtreeRoot.appendChild(subtreeLeaf);
 observer.observe(subtreeRoot, { attributes: true, subtree: true });
 // 把节点转移到其他子树
 document.body.insertBefore(subtreeLeaf, subtreeRoot);
-subtreeLeaf.setAttribute('foo', 'bar');
+subtreeLeaf.setAttribute("foo", "bar");
 // 移出的节点仍然触发变化事件
 // [MutationRecord]
 ```
 
 ### 14.3.3. 异步回调与记录队列
 
-MutationObserver 接口是出于性能考虑而设计的，其核心是异步回调与记录队列模型。为了在大量变化事件发生时不影响性能，每次变化的信息（由观察者实例决定）会保存在MutationRecord实例中，然后添加到 **记录队列**。这个队列对每个MutationObserver 实例都是唯一的，是所有DOM变化事件的有序列表。
+MutationObserver 接口是出于性能考虑而设计的，其核心是异步回调与记录队列模型。为了在大量变化事件发生时不影响性能，每次变化的信息（由观察者实例决定）会保存在 MutationRecord 实例中，然后添加到 **记录队列**。这个队列对每个 MutationObserver 实例都是唯一的，是所有 DOM 变化事件的有序列表。
 
 1. **记录队列**
 
-每次MutationRecord 被添加到MutationObserver 的记录队列时，仅当之前没有已排期的微任务回调时（队列中微任务长度为0），才会将观察者注册的回调（在初始化MutationObserver 时传入）作为微任务调度到任务队列上。这样可以保证记录队列的内容不会被回调处理两次。
+每次 MutationRecord 被添加到 MutationObserver 的记录队列时，仅当之前没有已排期的微任务回调时（队列中微任务长度为 0），才会将观察者注册的回调（在初始化 MutationObserver 时传入）作为微任务调度到任务队列上。这样可以保证记录队列的内容不会被回调处理两次。
 
-不过在回调的微任务异步执行期间，有可能又会发生更多变化事件。因此被调用的回调会接收到一个MutationRecord 实例的数组，顺序为它们进入记录队列的顺序。回调要负责处理这个数组的每一个实例，因为函数退出之后这些实现就不存在了。回调执行后，这些MutationRecord 就用不着了，因此记录队列会被清空，其内容会被丢弃。
+不过在回调的微任务异步执行期间，有可能又会发生更多变化事件。因此被调用的回调会接收到一个 MutationRecord 实例的数组，顺序为它们进入记录队列的顺序。回调要负责处理这个数组的每一个实例，因为函数退出之后这些实现就不存在了。回调执行后，这些 MutationRecord 就用不着了，因此记录队列会被清空，其内容会被丢弃。
+
+2. **takeRecords()方法**
+
+调用 MutationObserver 实例的 takeRecords()方法可以清空记录队列，取出并返回其中的所有 MutationRecord 实例。看这个例子：
+
+```js
+let observer = new MutationObserver((mutationRecords) =>
+  console.log(mutationRecords)
+);
+observer.observe(document.body, { attributes: true });
+document.body.className = "foo";
+document.body.className = "bar";
+document.body.className = "baz";
+console.log(observer.takeRecords());
+console.log(observer.takeRecords());
+// [MutationRecord, MutationRecord, MutationRecord]
+// []
+```
+
+这在希望断开与观察目标的联系，但又希望处理由于调用 disconnect()而被抛弃的记录队列中的 MutationRecord 实例时比较有用。
+
+### 14.3.4. 性能，内存与垃圾回收
+
+DOM Level 2 规范中描述的 MutationEvent 定义了一组会在各种 DOM 变化时触发的事件。由于浏览器事件的实现机制，这个接口出现了严重的性能问题。因此，DOM Level 3 规定废弃了这些事件。MutationObserver 接口就是为替代这些事件而设计的更实用、性能更好的方案。
+
+将变化回调委托给微任务来执行可以保证事件同步触发，同时避免随之而来的混乱。为 MutationObserver 而实现的记录队列，可以保证即使变化事件被爆发式地触发，也不会显著地拖慢浏览器。无论如何，使用 MutationObserver 仍然 **不是没有代价** 的。因此理解什么时候避免出现这种情况就很重要了。
+
+1. **MutationObserver 的引用**
+
+MutationObserver 实例与目标节点之间的引用关系是非对称的。MutationObserver 拥有对要观察的目标节点的弱引用。因为是弱引用，所以不会妨碍垃圾回收程序回收目标节点。
+
+然而，目标节点却拥有对 MutationObserver 的强引用。如果目标节点从 DOM 中被移除，随后被垃圾回收，则关联的 MutationObserver 也会被垃圾回收。
+
+2. **MutationRecord 的引用**
+
+记录队列中的每个 MutationRecord 实例至少包含对已有 DOM 节点的一个引用。如果变化是 childList 类型，则会包含多个节点的引用。记录队列和回调处理的默认行为是耗尽这个队列，处理每个 MutationRecord，然后让它们超出作用域并被垃圾回收。
+
+有时候可能需要保存某个观察者的完整变化记录。保存这些 MutationRecord 实例，也就会保存它们引用的节点，因而会妨碍这些节点被回收。如果需要尽快地释放内存，建议从每个 MutationRecord 中抽取出最有用的信息，然后保存到一个新对象中，最后抛弃 MutationRecord。
