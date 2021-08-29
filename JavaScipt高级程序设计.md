@@ -323,6 +323,8 @@ plan : 1 chapter/2 day
     - [15.4.2. contains()方法](#1542-contains方法)
     - [15.4.3. 插入标记](#1543-插入标记)
     - [15.4.4. 滚动](#1544-滚动)
+- [16. DOM2 和 DOM3](#16-dom2-和-dom3)
+  - [16.1. DOM 的演进](#161-dom-的演进)
 
 # 1. 什么是 JavaScript
 
@@ -21962,7 +21964,7 @@ div.innerText = div.innerText;
 
 2. **outerText 属性**
 
-outerText 与innerText 是类似的，只不过作用范围包含调用它的节点。要读取文本值时，outerText 与innerText 实际上会返回同样的内容。但在写入文本值时，outerText 就大不相同了。写入文本值时，outerText 不止会移除所有后代节点，而是会替换整个元素。比如：
+outerText 与 innerText 是类似的，只不过作用范围包含调用它的节点。要读取文本值时，outerText 与 innerText 实际上会返回同样的内容。但在写入文本值时，outerText 就大不相同了。写入文本值时，outerText 不止会移除所有后代节点，而是会替换整个元素。比如：
 
 ```js
 div.outerText = "Hello world!";
@@ -21975,21 +21977,52 @@ let text = document.createTextNode("Hello world!");
 div.parentNode.replaceChild(text, div);
 ```
 
-本质上，这相当于用新的文本节点替代outerText 所在的元素。此时，原来的元素会与文档脱离关系，因此也无法访问。
+本质上，这相当于用新的文本节点替代 outerText 所在的元素。此时，原来的元素会与文档脱离关系，因此也无法访问。
 
-outerText 是一个非标准的属性，而且也没有被标准化的前景。因此，不推荐依赖这个属性实现重要的操作。除Firefox 之外所有主流浏览器都支持outerText。
+outerText 是一个非标准的属性，而且也没有被标准化的前景。因此，不推荐依赖这个属性实现重要的操作。除 Firefox 之外所有主流浏览器都支持 outerText。
 
 ### 15.4.4. 滚动
 
-如前所述，滚动是HTML5 之前DOM标准没有涉及的领域。虽然HTML5 把scrollIntoView()标准化了， 但不同浏览器中仍然有其他专有方法。比如， scrollIntoViewIfNeeded() 作为HTMLElement 类型的扩展可以在所有元素上调用。scrollIntoViewIfNeeded(alingCenter)会在
-元素不可见的情况下，将其滚动到窗口或包含窗口中，使其可见；如果已经在视口中可见，则这个方法什么也不做。如果将可选的参数alingCenter 设置为true，则浏览器会尝试将其放在视口中央。Safari、Chrome 和Opera 实现了这个方法。
+如前所述，滚动是 HTML5 之前 DOM 标准没有涉及的领域。虽然 HTML5 把 scrollIntoView()标准化了， 但不同浏览器中仍然有其他专有方法。比如， scrollIntoViewIfNeeded() 作为 HTMLElement 类型的扩展可以在所有元素上调用。scrollIntoViewIfNeeded(alingCenter)会在
+元素不可见的情况下，将其滚动到窗口或包含窗口中，使其可见；如果已经在视口中可见，则这个方法什么也不做。如果将可选的参数 alingCenter 设置为 true，则浏览器会尝试将其放在视口中央。Safari、Chrome 和 Opera 实现了这个方法。
 
-下面使用scrollIntoViewIfNeeded()方法的一个例子：
+下面使用 scrollIntoViewIfNeeded()方法的一个例子：
 
 ```js
 // 如果不可见，则将元素可见
 document.images[0].scrollIntoViewIfNeeded();
 ```
 
-考虑到scrollIntoView()是唯一一个所有浏览器都支持的方法，所以只用它就可以了。
+考虑到 scrollIntoView()是唯一一个所有浏览器都支持的方法，所以只用它就可以了。
+
+# 16. DOM2 和 DOM3
+
+本章内容
+
+- DOM2 到 DOM3 的变化
+- 操作样式的 DOM API
+- DOM 遍历与范围
+
+DOM1（DOM Level 1）主要定义了 HTML 和 XML 文档的底层结构。DOM2（DOM Level 2）和 DOM3（DOM Level 3）在这些结构之上加入更多交互能力，提供了更高级的 XML 特性。实际上，DOM2 和 DOM3 是按照模块化的思路来制定标准的，每个模块之间有一定关联，但分别针对某个 DOM 子集。
+这些模式如下所示。
+
+- DOM Core：在 DOM1 核心部分的基础上，为节点增加方法和属性。
+- DOM Views：定义基于样式信息的不同视图。
+- DOM Events：定义通过事件实现 DOM 文档交互。
+- DOM Style：定义以编程方式访问和修改 CSS 样式的接口。
+- DOM Traversal and Range：新增遍历 DOM 文档及选择文档内容的接口。
+- DOM HTML：在 DOM1 HTML 部分的基础上，增加属性、方法和新接口。
+- DOM Mutation Observers：定义基于 DOM 变化触发回调的接口。这个模块是 DOM4 级模块，用于取代 Mutation Events。
+
+本章介绍除 DOM Events 和 DOM Mutation Observers 之外的其他所有模块，第 17 章会专门介绍事件，而 DOM Mutation Observers 第 14 章已经介绍过了。DOM3 还有 XPath 模块和 Load and Save 模块，将在第 22 章介绍。
+
+注意 比较老旧的浏览器（如 IE8）对本章内容支持有限。如果你的项目要兼容这些低版本浏览器，在使用本章介绍的 API 之前先确认浏览器的支持情况。推荐参考 Can I Use 网站。
+
+## 16.1. DOM 的演进
+
+DOM2 和 DOM3 Core 模块的目标是扩展 DOM API，满足 XML 的所有需求并提供更好的错误处理和特性检测。很大程度上，这意味着支持 XML 命名空间的概念。DOM2 Core 没有新增任何类型，仅仅在 DOM1 Core 基础上增加了一些方法和属性。DOM3 Core 则除了增强原有类型，也新增了一些新类型。
+
+类似地，DOM View 和HTML 模块也丰富了DOM 接口，定义了新的属性和方法。这两个模块很小，因此本章将在讨论JavaScript 对象的基本变化时将它们与Core 模块放在一起讨论。
+
+注意 本章只讨论浏览器实现的DOM API，不会提及未被浏览器实现的。
 
