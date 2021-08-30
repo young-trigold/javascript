@@ -325,6 +325,7 @@ plan : 1 chapter/2 day
     - [15.4.4. 滚动](#1544-滚动)
 - [16. DOM2 和 DOM3](#16-dom2-和-dom3)
   - [16.1. DOM 的演进](#161-dom-的演进)
+    - [16.1.1. XML 命名空间](#1611-xml-命名空间)
 
 # 1. 什么是 JavaScript
 
@@ -21785,7 +21786,7 @@ element.insertAdjacentText("afterend", "Hello world!");
 
 使用本节介绍的方法替换子节点可能在浏览器（特别是 IE）中导致内存问题。比如，如果被移除的子树元素中之前有关联的事件处理程序或其他 JavaScript 对象（作为元素的属性），那它们之间的绑定关系会滞留在内存中。如果这种替换操作频繁发生，页面的内存占用就会持续攀升。在使用 innerHTML、outerHTML 和 insertAdjacentHTML()之前，最好手动删除要被替换的元素上关联的事件处理程序和 JavaScript 对象。
 
-使用这些属性当然有其方便之处，特别是 innerHTML。一般来讲，插入大量的新 HTML 使用 innerHTML 比使用多次 DOM 操作创建节点再插入来得更便捷。这是因为 HTML 解析器会解析设置给 innerHTML（或 outerHTML）的值。解析器在浏览器中是底层代码（通常是 C++代码），比 JavaScript快得多。不过，HTML 解析器的构建与解构也不是没有代价，因此最好限制使用 innerHTML 和 outerHTML 的次数。比如，下面的代码使用 innerHTML 创建了一些列表项：
+使用这些属性当然有其方便之处，特别是 innerHTML。一般来讲，插入大量的新 HTML 使用 innerHTML 比使用多次 DOM 操作创建节点再插入来得更便捷。这是因为 HTML 解析器会解析设置给 innerHTML（或 outerHTML）的值。解析器在浏览器中是底层代码（通常是 C++代码），比 JavaScript 快得多。不过，HTML 解析器的构建与解构也不是没有代价，因此最好限制使用 innerHTML 和 outerHTML 的次数。比如，下面的代码使用 innerHTML 创建了一些列表项：
 
 ```js
 for (let value of values) {
@@ -22016,7 +22017,49 @@ DOM1（DOM Level 1）主要定义了 HTML 和 XML 文档的底层结构。DOM2�
 
 DOM2 和 DOM3 Core 模块的目标是扩展 DOM API，满足 XML 的所有需求并提供更好的错误处理和特性检测。很大程度上，这意味着支持 XML 命名空间的概念。DOM2 Core 没有新增任何类型，仅仅在 DOM1 Core 基础上增加了一些方法和属性。DOM3 Core 则除了增强原有类型，也新增了一些新类型。
 
-类似地，DOM View 和HTML 模块也丰富了DOM 接口，定义了新的属性和方法。这两个模块很小，因此本章将在讨论JavaScript 对象的基本变化时将它们与Core 模块放在一起讨论。
+类似地，DOM View 和 HTML 模块也丰富了 DOM 接口，定义了新的属性和方法。这两个模块很小，因此本章将在讨论 JavaScript 对象的基本变化时将它们与 Core 模块放在一起讨论。
 
-注意 本章只讨论浏览器实现的DOM API，不会提及未被浏览器实现的。
+注意 本章只讨论浏览器实现的 DOM API，不会提及未被浏览器实现的。
 
+### 16.1.1. XML 命名空间
+
+XML 命名空间可以实现在一个格式规范的文档中混用不同的 XML 语言，而不必担心元素命名冲突。严格来讲，XML 命名空间在 XHTML 中才支持，HTML 并不支持。因此，本节的示例使用 XHTML。
+
+命名空间是使用 xmlns 指定的。XHTML 的命名空间是"http://www.w3.org/1999/xhtml"，应该包含在任何格式规范的XHTML 页面的`<html>`元素中，如下所示：
+
+```html
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Example XHTML page</title>
+  </head>
+  <body>
+    Hello world!
+  </body>
+</html>
+```
+
+对这个例子来说，所有元素都默认属于 XHTML 命名空间。可以使用 xmlns 给命名空间创建一个前缀，格式为“xmlns: 前缀”，如下面的例子所示：
+
+```html
+<xhtml:html xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <xhtml:head>
+    <xhtml:title>Example XHTML page</xhtml:title>
+  </xhtml:head>
+  <xhtml:body>
+    Hello world!
+  </xhtml:body>
+</xhtml:html>
+```
+
+这里为 XHTML 命名空间定义了一个前缀 xhtml，同时所有 XHTML 元素都必须加上这个前缀。为避免混淆，属性也可以加上命名空间前缀，比如：
+
+```html
+<xhtml:html xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <xhtml:head>
+    <xhtml:title>Example XHTML page</xhtml:title>
+  </xhtml:head>
+  <xhtml:body xhtml:class="home">
+    Hello world!
+  </xhtml:body>
+</xhtml:html>
+```
