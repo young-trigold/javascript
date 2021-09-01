@@ -1126,7 +1126,30 @@ function foo() {
 foo(); // undefined
 ```
 
-这就是所谓的“提升”（hoist），也就是把所有变量声明都拉到函数作用域的顶部。此外，反复多次使用 var 声明同一个变量也没有问题：
+这就是所谓的“提升”（hoist），也就是把所有变量声明都拉到函数作用域的顶部。
+
+需要注意的是，函数定义声明的提升优先级高于 var 变量的提升优先级，例如：
+
+```js
+var foo = "foo";
+function foo() {}
+console.log(typeof foo);
+// string
+```
+
+以上代码实际上等价于：
+
+```js
+function foo() {}
+var foo;
+foo = "foo";
+console.log(typeof foo);
+// string
+```
+
+3. **重复声明**
+
+此外，反复多次使用 var 声明同一个变量也不会报错：
 
 ```js
 function foo() {
@@ -1138,17 +1161,46 @@ function foo() {
 foo(); // 36
 ```
 
-### 3.3.2. let 声明
-
-let 跟 var 的作用差不多，但有着非常重要的区别。最明显的区别是，let 声明的范围是块作用域，而 var 声明的范围是函数作用域。
+这是因为，由于 var 声明提升，所有的 age 变量会被提升至函数作用域顶部，之后合并相同的变量声明，以上代码实际上等价于：
 
 ```js
-if (true) {
+function foo() {
+  var age;
+  age = 16;
+  age = 26;
+  age = 36;
+  console.log(age);
+}
+foo(); // 36
+```
+
+再来看一个例子：
+
+```js
+function foo() {
+  var age = 16;
+  var age;
+  var age = 26;
+  var age;
+  var age = 36;
+  console.log(age);
+}
+foo(); // 36
+```
+
+以上代码实际和上一个例子是等同的。
+
+### 3.3.2. let 声明
+
+let 跟 var 的作用差不多，但有着非常重要的区别。最明显的区别是，let 声明的范围是块级作用域，而 var 声明的范围是函数作用域。
+
+```js
+{
   var name = "Matt";
   console.log(name); // Matt
 }
 console.log(name); // Matt
-if (true) {
+{
   let age = 26;
   console.log(age); // 26
 }
@@ -1160,10 +1212,10 @@ console.log(age); // ReferenceError: age 没有定义
 let 也不允许同一个块作用域中出现冗余声明。这样会导致报错：
 
 ```js
-var name;
-var name;
+var age;
+var age;
 let age;
-let age; // SyntaxError；标识符age 已经声明过了
+let age; // SyntaxError；标识符name 已经声明过了
 ```
 
 当然，JavaScript 引擎会记录用于变量声明的标识符及其所在的块作用域，因此嵌套使用相同的标识符不会报错，而这是因为同一个块中没有重复声明：
@@ -1183,16 +1235,14 @@ if (true) {
 }
 ```
 
-对声明冗余报错不会因混用 let 和 var 而受影响。这两个关键字声明的并不是不同类型的变量，它们只是指出变量在相关作用域如何存在。
+对声明冗余报错不会因混用 let 和 var 而受影响。这两个关键字声明的并不是不同类型的变量，它们只是指出变量的作用域。
 
 ```js
-var name;
-let name; // SyntaxError
-let age;
-var age; // SyntaxError
+if (true) {
+  var name;
+}
+let name; // SyntaxError；标识符name 已经声明过了
 ```
-
-1. **暂时性死区**
 
 let 与 var 的另一个重要的区别，就是 let 声明的变量不会在作用域中被提升。
 
@@ -1206,83 +1256,60 @@ console.log(age); // ReferenceError：age 没有定义
 let age = 26;
 ```
 
-只要块级作用域内存在 let 命令，它所声明的变量就“绑定”（binding）这个区域，不再受外部的影响。
+1. **暂时性死区**
+
+ES6 规定，只要在一个块级作用域中存在 let 声明之前就访问该变量，就会报错，而不论这个变量是否在外层作用域中已经声明。let 变量声明和声明前使用该变量的语句之间形成的区域称为 **“暂时性死区”（temporal dead zone，简称 TDZ）**。
+
+来看下面的例子：
 
 ```js
-let tmp = 123;
+let foo = "foo";
 
-if (true) {
-  tmp = "abc"; // ReferenceError
-  let tmp;
+{
+  console.log(foo); // foo
 }
 ```
 
-上面代码中，存在全局变量 tmp，但是块级作用域内 let 又声明了一个局部变量 tmp，导致后者绑定这个块级作用域，所以在 let 声明变量前，对 tmp 赋值会报错。
-
-ES6 明确规定，如果区块中存在 let 和 const 命令，这个区块对这些命令声明的变量，从一开始就形成了封闭作用域。凡是在声明之前就使用这些变量，就会报错。
-
-总之，在代码块内，使用 let 命令声明变量之前，该变量都是不可用的。这在语法上，称为“暂时性死区”（temporal dead zone，简称 TDZ）。
+在这个例子中，变量 foo 已经在块作用域外声明过，因此在块作用域中可以访问 foo。但是如果在输出语句下面放上一个相同标识符的let 变量声明，就会报错：
 
 ```js
-if (true) {
-  // TDZ开始
-  tmp = "abc"; // ReferenceError
-  console.log(tmp); // ReferenceError
+let foo = "foo";
 
-  let tmp; // TDZ结束
-  console.log(tmp); // undefined
-
-  tmp = 123;
-  console.log(tmp); // 123
+{
+  console.log(foo); // ReferenceError: Cannot access 'foo' before initialization
+  let foo;
 }
 ```
 
-上面代码中，在 let 命令声明变量 tmp 之前，都属于变量 tmp 的“死区”。
+尽管这看起来有些愚蠢，但这样规定的目的就是防止开发者在声明之前就访问变量。
 
-“暂时性死区”也意味着 typeof 不再是一个百分之百安全的操作：
+暂时性死区内代码不会得到执行：
 
 ```js
-console.log(typeof something); // undefined
+let foo = "foo";
 
-console.log(typeof otherthing); // ReferenceError
+{
+  console.log(foo); // TDZ 开始
+  // ReferenceError: Cannot access 'foo' before initialization
+
+  console.log(bar);
+  let bar = "bar";
+
+  let foo; // TDZ结束
+}
+```
+
+“暂时性死区” 也意味着 typeof 不再是一个百分之百安全的操作：
+
+```js
+console.log(typeof something);  // OK // undefined
+
+console.log(typeof otherthing); // ReferenceError: Cannot access 'otherthing' before initialization
 let otherthing;
 ```
 
-在没有 let 之前，typeof 运算符是百分之百安全的，永远不会报错。现在这一点不成立了。这样的设计是为了让大家养成良好的编程习惯，变量一定要在声明之后使用，否则就报错。
+在没有 let 之前，typeof 运算符是百分之百安全的，永远不会报错。现在这一点也不成立了。
 
-有些“死区”比较隐蔽，不太容易发现。
-
-```js
-function bar(x = y, y = 2) {
-  return [x, y];
-}
-
-bar(); // 报错
-```
-
-上面代码中，调用 bar 函数之所以报错（某些实现可能不报错），是因为参数 x 默认值等于另一个参数 y，而此时 y 还没有声明，属于“死区”。如果 y 的默认值是 x，就不会报错，因为此时 x 已经声明了。
-
-```js
-function bar(x = 2, y = x) {
-  return [x, y];
-}
-bar(); // [2, 2]
-```
-
-另外，下面的代码也会报错，与 var 的行为不同。
-
-```js
-// 不报错
-var x = x;
-
-// 报错
-let x = x;
-// ReferenceError: x is not defined
-```
-
-上面代码报错，也是因为暂时性死区。使用 let 声明变量时，只要变量在还没有声明完成前使用，就会报错。上面这行就属于这个情况，在变量 x 的声明语句还没有执行完成前，就去取 x 的值，导致报错“x 未定义”。
-
-总之，暂时性死区的本质就是，只要一进入当前作用域，所要使用的变量就已经存在了，但是不可获取，只有等到声明变量的那一行代码出现，才可以获取和使用该变量
 
 2. **全局声明**
 
@@ -22493,3 +22520,26 @@ console.log(computedStyle.border); // "1px solid black"（在某些浏览器中�
 
 CSSStyleSheet 类型表示 CSS 样式表，包括使用`<link>`元素和通过`<style>`元素定义的样式表。注意，这两个元素本身分别是 HTMLLinkElement 和 HTMLStyleElement。CSSStyleSheet 类型是一个通用样式表类型，可以表示以任何方式在 HTML 中定义的样式表。另外，元素特定的类型允许修改 HTML 属性，而 CSSStyleSheet 类型的实例则是一个只读对象（只有一个属性例外）。
 
+CSSStyleSheet 类型继承 StyleSheet，后者可用作非 CSS 样式表的基类。以下是 CSSStyleSheet 从 StyleSheet 继承的属性。
+
+- disabled，布尔值，表示样式表是否被禁用了（这个属性是可读写的，因此将它设置为 true 会禁用样式表）。
+- href，如果是使用`<link>`包含的样式表，则返回样式表的 URL，否则返回 null。
+- media，样式表支持的媒体类型集合，这个集合有一个 length 属性和一个 item()方法，跟所有 DOM 集合一样。同样跟所有 DOM 集合一样，也可以使用中括号访问集合中特定的项。如果样式表可用于所有媒体，则返回空列表。
+- ownerNode，指向拥有当前样式表的节点，在 HTML 中要么是`<link>`元素要么是`<style>`元素（在 XML 中可以是处理指令）。如果当前样式表是通过@import 被包含在另一个样式表中，则这个属性值为 null。
+- parentStyleSheet，如果当前样式表是通过@import 被包含在另一个样式表中，则这个属性指向导入它的样式表。
+- title，ownerNode 的 title 属性。
+- type，字符串，表示样式表的类型。对 CSS 样式表来说，就是"text/css"。上述属性里除了 disabled，其他属性都是只读的。除了上面继承的属性，CSSStyleSheet 类型还支持以下属性和方法。
+- cssRules，当前样式表包含的样式规则的集合。
+- ownerRule，如果样式表是使用@import 导入的，则指向导入规则；否则为 null。
+- deleteRule(index)，在指定位置删除 cssRules 中的规则。
+- insertRule(rule, index)，在指定位置向 cssRules 中插入规则。
+
+document.styleSheets 表示文档中可用的样式表集合。这个集合的 length 属性保存着文档中样式表的数量，而每个样式表都可以使用中括号或 item()方法获取。来看这个例子：
+
+```js
+let sheet = null;
+for (let i = 0, len = document.styleSheets.length; i < len; i++) {
+  sheet = document.styleSheets[i];
+  console.log(sheet.href);
+}
+```
