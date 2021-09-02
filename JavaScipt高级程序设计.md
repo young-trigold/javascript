@@ -7285,6 +7285,22 @@ console.log(people.includes(person)); // false
 console.log(morePeople.includes(person)); // true
 ```
 
+**indexOf() 和 incudes() 的不同**
+
+indexOf()在搜索时会使用 === ，数组中存在 NaN 时，这就会产生意想不到的结果，例如：
+
+```js
+let NaNs = [NaN, NaN];
+console.log(NaNs.indexOF(NaN)); // -1
+```
+
+但是使用 includes() 就会避免这个问题，因为 includes() 在搜索时会使用 Object.is() 进行比较：
+
+```js
+let NaNs = [NaN, NaN];
+console.log(NaNs.includes(NaN)); // true
+```
+
 2. **断言函数**
 
 ECMAScript 也允许按照定义的断言函数搜索数组，每个索引都会调用这个函数。断言函数的返回值决定了相应索引的元素是否被认为匹配。
@@ -7388,31 +7404,122 @@ numbers.forEach((item, index, array) => {
 
 ECMAScript 为数组提供了两个归并方法：reduce()和 reduceRight()。这两个方法都会迭代数组的所有项，并在此基础上构建一个最终返回值。reduce()方法从数组第一项开始遍历到最后一项。而 reduceRight()从最后一项开始遍历至第一项。
 
-这两个方法都接收两个参数：对每一项都会运行的归并函数，以及可选的以之为归并起点的初始值。传给 reduce()和 reduceRight()的函数接收 4 个参数：上一个归并值、当前项、当前项的索引和数组本身。这个函数返回的任何值都会作为下一次调用同一个函数的第一个参数。如果没有给这两个方法传入可选的第二个参数（作为归并起点值），则第一次迭代将从数组的第二项开始，因此传给归并函数的第一个参数是数组的第一项，第二个参数是数组的第二项。
+1. **归并函数**
 
-可以使用 reduce()函数执行累加数组中所有数值的操作，比如：
+reduce() 方法必须传入一个 **归并函数(reducer)**。归并函数接收 4 个参数：
+
+1. previousValue。这个值表示每次执行时的上一个值，在归并函数第1次执行时，这个值就是数组的第1个值（如果没有提供 initialValue 见下）。
+2. currentValue。这个值表示每次执行时当前处理的值，在归并函数第1次执行时，这个值就是数组的第2个值（如果没有提供 initialValue 见下）。
+3. currentIndex。这个值表示当前处理值在数组中的索引。
+4. array。表示调用 reduce() 的数组本身。
+
+2. **初始值**
+
+此外，reduce() 方法可以选择性地传入一个 **初始值(initialValue)** ，当传入一个初始值时，第1次执行的 previousValue 为该初始值，currentValue 为数组的第1个值。
+
+初始值是出于安全性考虑。**这是因为如果数组为空且没有初始值，进行归并操作会抛出 TypeError。** 如果数组仅有一个元素且没有初始值，或者提供了初始值但数组为空，那么该唯一值将被返回，归并操作不会得到执行。
+
+推荐开发者在进行归并操作时提供初始值，这样就会避免报错。
+
+来看下面的例子：
 
 ```js
-let values = [1, 2, 3, 4, 5];
-let sum = values.reduce((prev, cur, index, array) => prev + cur);
+const maxReducer = (pre, cur) => Math.max(pre.x, cur.x);
+
+// reduce() 没有初始值
+[{ x: 2 }, { x: 22 }, { x: 42 }].reduce(maxReducer); // NaN
+[{ x: 2 }, { x: 22 }].reduce(maxReducer); // 22
+[{ x: 2 }].reduce(maxReducer); // { x: 2 }
+[].reduce(maxReducer); // TypeError
+```
+
+如果一开始就提供了初始值，就不会报错：
+
+```js
+[].reduce(maxReducer, -Infinity); // -Infinity
+```
+
+3. **数组累加**
+
+可以使用 reduce()函数便捷地累加数组中所有数值，比如：
+
+```js
+let integers = [1, 2, 3, 4, 5];
+let sum = integers.reduce((pre, cur) => pre + cur， 0);
 console.log(sum); // 15
 ```
 
 第一次执行归并函数时，prev 是 1，cur 是 2。第二次执行时，prev 是 3（1 + 2），cur 是 3（数组第三项）。如此递进，直到把所有项都遍历一次，最后返回归并结果。
 
-reduceRight()方法与之类似，只是方向相反。来看下面的例子：
+4. **打平数组**
+
+结合 reduce() 和 concat() 方法可以便捷地将二维数组打平为一维数组：
 
 ```js
-let values = [1, 2, 3, 4, 5];
-let sum = values.reduceRight(function (prev, cur, index, array) {
-  return prev + cur;
-});
-console.log(sum); // 15
+let arr = [1, [2, 3], 4, [5, 6]];
+let flattenedArr = arr.reduce((pre, cur) => pre.concat(cur), []);
+console.log(flattenedArr); // [ 1, 2, 3, 4, 5, 6 ]
 ```
 
-在这里，第一次调用归并函数时 prev 是 5，而 cur 是 4。当然，最终结果相同，因为归并操作都是简单的加法。
+在第一次执行时，previousValue 为 []，currentValue 为 1，[].concat(1) 结果为 `[1]`。第2次执行时，previousValue 为 `[1]`，currentValue 为 `[2,3]`，`[1].concat([2,3])` 结果为 `[1,2,3]`，以此类推。
 
-究竟是使用 reduce()还是 reduceRight()，只取决于遍历数组元素的方向。除此之外，这两个方法没什么区别。
+5. **数组计数**
+
+```js
+let letters = ["a", "b", "c", "c", "c", "d", "d"];
+
+let countedLetters = letters.reduce(function (countedLetters, letter) {
+  if (letter in countedLetters) {
+    countedLetters[letter]++;
+  } else {
+    countedLetters[letter] = 1;
+  }
+  return countedLetters;
+}, {});
+console.log(countedLetters);
+// { a: 1, b: 1, c: 3, d: 2 }
+```
+
+在第1次执行时，previousValue 为 {}，currentValue 为 "a"，letters 中没有 "a"，故把属性 a 的值设为 1，结果为 {a: 1}。同理可得出，第3次执行的结果为 {a: 1, b: 1, c: 1}。第4次执行时，由于 letters 中有 c 属性，因此 c属性的值自增。以此类推。
+
+6. **数组去重**
+
+```js
+let myArray = ["a", "b", "a", "b", "c", "e", "e", "c", "d", "d", "d", "d"];
+let uniqueArr = myArray.reduce(function (uniqueArr, cur) {
+  if (uniqueArr.indexOf(cur) === -1) {
+    uniqueArr.push(cur);
+  }
+  return uniqueArr;
+}, []);
+
+console.log(uniqueArr);
+// [ 'a', 'b', 'c', 'e', 'd' ]
+```
+
+当然这种方法对 NaN 就有问题了，这是因为 indexOf 在进行搜索的比较时会使用 ===，而 NaN === NaN 返回 false。来看下面的例子：
+
+```js
+let NaNs = [NaN, NaN];
+console.log(NaNs.indexOf(NaN)); // -1
+```
+
+尽管 NaNs 数组中有 2 个 NaN，但使用 indexOf() 进行搜索后，会得出-1，这表示 NaNs 中没有 NaN。
+
+此时，使用 includes() 就可以避免这个问题：
+
+```js
+let NaNs = [1,1,NaN, NaN];
+let uniqueNaNs = NaNs.reduce(
+  (pre, cur) => (pre.includes(cur) ? pre : [...pre, cur]),
+  []
+);
+console.log(uniqueNaNs); // [1, NaN]
+```
+
+在这个例子中，第1次执行时，previousValue 为 []，currentValue 为 1，previousValue 中不包含 1，因此结果为 `[1]`。第2次执行时，previousValue 为 `[1]`，currentValue 为 1，此时包含 1 ，因此结果返回 `[1]`，同样的，第4次执行完后，得到 [1, NaN]。
+
+注意：如果你正在使用一个可以兼容Set 和 Array.from() 的环境，你可以使用 `Array.from(new Set(array))` 来获得一个去重的数组。
 
 ## 6.3. 定型数组
 
@@ -10117,7 +10224,7 @@ Object.defineProperty(person, "name", {
 
 多数情况下，可能都不需要 Object.defineProperty()提供的这些强大的设置，但要理解 JavaScript 对象，就要理解这些概念。
 
-1. **访问器属性**
+2. **访问器属性**
 
 访问器属性不包含数据值。相反，它们包含一个获取（getter）函数和一个设置（setter）函数，不过这两个函数不是必需的。在读取访问器属性时，会调用获取函数，这个函数的责任就是返回一个有效的值。在写入访问器属性时，会调用设置函数并传入新值，这个函数必须决定对数据做出什么修改。访问器属性有 4 个特性描述它们的行为。
 
@@ -14563,7 +14670,7 @@ console.log(o1.o2.this[0] === window); // true
 
 在这个例子中，对象 o1 的 this 属性引用 this 值，而这个 this 值在全局上下文中指向 window。同样的，o2 的 this 值引用一个数组对象，这个数组的第一个元素为 this，但无论如何 this 值都在全局上下文中，所以都指向 window。
 
-this 在标准函数上下文（使用 function 关键字的函数）中的值是最有意思的部分。this 在标准函数上下文中的值取决于调用它的上下文对象。来看下面几个例子：
+this 在标准函数上下文（使用 function 关键字的函数）中的值是最有意思的部分。this 在标准函数上下文中的值取决于它的直接调用者。来看下面几个例子：
 
 ```js
 function getThis() {
@@ -14587,7 +14694,7 @@ console.log(getThisInStrict() === undefined); // true
 console.log(window.getThisInStrict() === window); // true
 ```
 
-最难理解的是，调用函数的方式决定了 this 的值，而不是函数本身的定义，接着上面定义过的 getThis()：
+调用函数的方式决定了 this 的值，而不是函数本身的定义，接着上面定义过的 getThis()：
 
 ```js
 console.log(getThis.prototype.constructor === getThis); // true
@@ -14597,7 +14704,7 @@ let constructor = getThis.prototype.constructor;
 console.log(constructor() === window); // true
 ```
 
-在这个例子中，getThis.prototype.constructor 指向函数本身，我们在第 8 章时已经知道，但调用 getThis.prototype.constructor 返回的却不是 window，而是 getThis.prototype 对象。
+在这个例子中，getThis.prototype.constructor 指向函数本身，我们在第 8 章时已经知道，但调用 getThis.prototype.constructor 返回的却不是 window，而是 getThis.prototype 对象。这是因为this指向函数的直接调用者，而不是间接调用者。
 
 下面的例子，我们已经遇到过：
 
@@ -14631,7 +14738,7 @@ function Person() {
 new Person();
 ```
 
-在箭头函数中，this 引用的是定义箭头函数的上下文，这点和标准函数不同。下面的例子演示了这一点。在对 sayColor()的两次调用中，this 引用的都是 window 对象，因为这个箭头函数是在 window 上下文中定义的：
+箭头函数中的 this 指向作用域外层的 this，这点和标准函数不同。下面的例子演示了这一点。在对 sayColor()的两次调用中，this 引用的都是 window 对象，因为这个箭头函数是在 window 上下文中定义的：
 
 ```js
 window.color = "red";
@@ -14731,8 +14838,7 @@ console.log(sayHi.length); // 0
 
 prototype 属性也许是 ECMAScript 核心中最有趣的部分。prototype 是保存引用类型所有实例方法的地方，这意味着 toString()、valueOf()等方法实际上都保存在 prototype 上，进而由所有实例共享。这个属性在自定义类型时特别重要。（相关内容已经在第 8 章详细介绍过了。）在 ECMAScript 5 中，prototype 属性是不可枚举的，因此使用 for-in 循环不会返回这个属性。
 
-函数还有两个方法：apply()和 call()。这两个方法都会以指定的 this 值来调用函数，即会设
-置调用函数时函数体内 this 对象的值。apply()方法接收两个参数：函数内 this 的值和一个参数数组。第二个参数可以是 Array 的实例，但也可以是 arguments 对象。来看下面的例子：
+函数还有两个方法：apply()和 call()。这两个方法都会以指定的 this 值来调用函数，即会设置调用函数时函数体内 this 对象的值。apply()方法接收两个参数：函数内 this 的值和一个参数数组。第二个参数可以是 Array 的实例，但也可以是 arguments 对象。来看下面的例子：
 
 ```js
 function sum(num1, num2) {
@@ -22639,3 +22745,4 @@ for (let i = 0, len = document.styleSheets.length; i < len; i++) {
   console.log(sheet.href);
 }
 ```
+
