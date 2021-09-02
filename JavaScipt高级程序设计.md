@@ -16483,6 +16483,23 @@ delayedResolve("p1 executor")
 // p4 executor（4 秒后）
 ```
 
+下面是一个“红绿灯”的期约连锁实现：
+
+```js
+const div = document.querySelector("#bg");
+const delayedTask = (func, delay) =>
+  new Promise((s) =>
+    setTimeout(() => {
+      func();
+      s();
+    }, delay)
+  );
+const changeColor = (str) => (div.style.backgroundColor = str);
+delayedTask(() => changeColor("green"), 3000)
+  .then(() => delayedTask(() => changeColor("red"), 1000))
+  .then(() => delayedTask(() => changeColor("yellow"), 2000));
+```
+
 每个后续的处理程序都会等待前一个期约解决，然后实例化一个新期约并返回它。这种结构可以简洁地将异步任务串行化，解决之前依赖回调的难题。假如这种情况下不使用期约，那么前面的代码可能就要这样写了：
 
 ```js
