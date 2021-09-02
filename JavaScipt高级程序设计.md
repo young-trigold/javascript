@@ -17299,7 +17299,7 @@ console.log(3);
 有了异步函数之后，就不一样了。一个简单的箭头函数就可以实现 sleep()：
 
 ```js
-let sleep = (time) => new Promise((r) => setTimeout(r, time));
+const sleep = (delay) => new Promise((r) => setTimeout(r, delay));
 async function foo() {
   const t0 = Date.now();
   await sleep(1500); // 暂停约1500 毫秒
