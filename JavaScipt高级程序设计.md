@@ -2118,7 +2118,40 @@ let found = true;
 let foundAsString = found.toString(); // 字符串"true"
 ```
 
-toString()方法可见于数值、布尔值、对象和字符串值。（没错，字符串值也有 toString()方法，该方法只是简单地返回自身的一个副本。）null 和 undefined 值没有 toString()方法。
+toString()方法可用于数值、布尔值、对象和字符串值。（没错，字符串值也有 toString()方法，该方法只是简单地返回自身的一个副本。）null 和 undefined 值没有 toString()方法。
+
+每个对象都有一个 toString() 方法，当该对象被表示为一个文本值时，或者一个对象以预期的字符串方式引用时自动调用。默认情况下，toString() 方法被每个 Object 对象继承。如果此方法在自定义对象中未被覆盖，toString() 返回 "[object type]"，其中 type 是对象的类型。以下代码说明了这一点：
+
+```js
+var o = new Object();
+o.toString(); // returns [object Object]
+```
+
+数组的 toString() 被重写，详见 6.2.7节。
+
+**使用 toString() 检测对象类型**
+
+可以通过 toString() 来获取每个对象的类型。为了每个对象都能通过 Object.prototype.toString() 来检测，需要以 Function.prototype.call() 或者 Function.prototype.apply() 的形式来调用，传递要检查的对象作为第一个参数，称为 thisArg。
+
+```js
+function getType(any) {
+  return Object.prototype.toString.call(any).slice(8, -1);
+}
+
+console.log(getType(undefined)); // Undefined
+console.log(getType(null)); // Null
+console.log(getType(true)); // Boolean
+console.log(getType(0)); // Number
+console.log(getType("")); // String
+console.log(getType(Math)); // Math
+console.log(getType(getType)); // Function
+console.log(getType({})); // Object
+console.log(getType([])); // Array
+console.log(getType(new Map())); // Map
+console.log(getType(new Set())); // Set
+```
+
+在这个例子中，getType 封装了 Object.prototype.toString() 便于获得对象的类型。
 
 多数情况下，toString()不接收任何参数。不过，在对数值调用这个方法时，toString()可以接收一个底数参数，即以什么底数来输出数值的字符串表示。默认情况下，toString()返回数值的十进制字符串表示。而通过传入参数，可以得到数值的二进制、八进制、十六进制，或者其他任何有效基数的字符串表示，比如：
 
