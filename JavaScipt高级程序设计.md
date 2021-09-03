@@ -14732,7 +14732,9 @@ console.log(factorial(5)); // 0
 
 另一个特殊的对象是 this。
 
-this 在全局上下文中，即在任何函数体的外部时，都指向全局对象，在浏览器宿主环境中就是 window。来看下面的例子：
+1. this 在全局上下文中，即在任何函数体的外部时，都指向全局对象，在浏览器宿主环境中就是 window。
+
+来看下面的例子：
 
 ```js
 let o1 = {
@@ -14748,7 +14750,11 @@ console.log(o1.o2.this[0] === window); // true
 
 在这个例子中，对象 o1 的 this 属性引用 this 值，而这个 this 值在全局上下文中指向 window。同样的，o2 的 this 值引用一个数组对象，这个数组的第一个元素为 this，但无论如何 this 值都在全局上下文中，所以都指向 window。
 
-this 在标准函数上下文（使用 function 关键字的函数）中的值是最有意思的部分。this 在标准函数上下文中的值取决于它的直接调用者。来看下面几个例子：
+this 在标准函数上下文（使用 function 关键字的函数）中的值是最有意思的部分。
+
+2. 在非严格模式下直接调用函数，则 this 指向全局对象。
+
+来看下面几个例子：
 
 ```js
 function getThis() {
@@ -14758,9 +14764,9 @@ function getThis() {
 console.log(getThis() === window); // true
 ```
 
-在这个例子中，getThis() 是一个函数声明，它返回 this 值。下面在全局上下文中调用了 getThis() 则它返回 window 对象。
+在这个例子中，getThis() 是一个函数声明，它返回 this 值。之后在全局上下文中调用了 getThis() 则它返回 window 对象。
 
-严格模式下，进入函数上下文而不指定 this 的值，则以 undefined 填充。
+3. 严格模式下直接调用函数，则 this 值为 undefined。
 
 ```js
 function getThisInStrict() {
@@ -14768,25 +14774,14 @@ function getThisInStrict() {
   return this;
 }
 console.log(getThisInStrict() === undefined); // true
-// 指定了 this 为 window
-console.log(window.getThisInStrict() === window); // true
 ```
 
-调用函数的方式决定了 this 的值，而不是函数本身的定义，接着上面定义过的 getThis()：
-
-```js
-console.log(getThis.prototype.constructor === getThis); // true
-console.log(getThis.prototype.constructor() === getThis.prototype); // true
-
-let constructor = getThis.prototype.constructor;
-console.log(constructor() === window); // true
-```
-
-在这个例子中，getThis.prototype.constructor 指向函数本身，我们在第 8 章时已经知道，但调用 getThis.prototype.constructor 返回的却不是 window，而是 getThis.prototype 对象。这是因为this指向函数的直接调用者，而不是间接调用者。
+4. 函数作为方法调用时，this 指向直接调用者，而非间接调用者：
 
 下面的例子，我们已经遇到过：
 
 ```js
+...
 let o = {};
 o.getThis = getThis;
 console.log(o.getThis() === o); // true
@@ -14794,19 +14789,20 @@ console.log(o.getThis() === o); // true
 
 调用对象 o 的 getThis 方法，则 this 返回 o 本身。
 
-在另一个函数上下文中的函数，这个函数的上下文中的 this 值指向全局对象 window：
+复杂的情况是通过间接方式调用函数：
 
 ```js
-function test() {
-  function getThis() {
-    return this;
-  }
-  return getThis();
-}
-console.log(test() === window); // true
+...
+console.log(getThis.prototype.constructor === getThis); // true
+console.log(getThis.prototype.constructor() === getThis.prototype); // true
+
+let constructor = getThis.prototype.constructor;
+console.log(constructor() === window); // true
 ```
 
-另外，我们知道使用 new 调用构造函数，则该构造函数中的 this 指向正在构建的对象：
+在这个例子中，getThis.prototype.constructor 返回 getThis 函数对象本身。在执行 getThis.prototype.constructor()，getThis 的直接调用者为 getThis.prototype，因此 this 指向 getThis.prototype。之后，将 getThis.prototype.constructor 赋给 constructor，但调用 constructor 是直接调用，直接调用函数，this 指向全局对象。
+
+5. 函数作为构造函数调用，this 指向正在构建的对象：
 
 ```js
 function Person() {
@@ -14816,7 +14812,9 @@ function Person() {
 new Person();
 ```
 
-箭头函数中的 this 指向作用域外层的 this，这点和标准函数不同。下面的例子演示了这一点。在对 sayColor()的两次调用中，this 引用的都是 window 对象，因为这个箭头函数是在 window 上下文中定义的：
+6. 箭头函数
+
+箭头函数没有自己的 this 值，它会从作用域的上一层继承 this：
 
 ```js
 window.color = "red";
@@ -14829,7 +14827,7 @@ o.sayColor = sayColor;
 o.sayColor(); // 'red'
 ```
 
-有读者知道，在事件回调或定时回调中调用某个函数时，this 值指向的并非想要的对象。此时将回调函数写成箭头函数就可以解决问题。这是因为箭头函数中的 this 会保留定义该函数时的上下文：
+有读者知道，在事件回调或定时回调中调用某个函数时，this 值指向的并非想要的对象。此时将回调函数写成箭头函数就可以解决问题：
 
 ```js
 function King() {
