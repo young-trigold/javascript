@@ -3014,6 +3014,7 @@ let age = 29;
 
 执行操作后，变量 age 的值变成了 28（从 29 减 1）。
 
+```// to-do: 09-06
 后缀版递增/递减操作符和前缀版在语句上的功能是相同的。
 
 ```js
@@ -3047,32 +3048,6 @@ console.log(age); // 29
 递增/递减操作符不仅限于操作数值类型的值。它在用于其他类型的值时，会先使用 Number() 转型函数，之后再使用上面的规则。
 
 请看示例：
-
-```js
-let s1 = "2";
-let s2 = "z";
-let b = false;
-let o = {
-  valueOf() {
-    return -1;
-  },
-};
-
-console.log(++s1); // 3
-console.log(s1); // 3
-console.log(typeof s1); // number
-
-console.log(++s2); // NaN
-console.log(s2); // NaN
-console.log(typeof s2); // number
-
-console.log(b++); // 0
-console.log(b); // 1
-console.log(typeof b); // number
-
-console.log(o--); // -1
-console.log(o); // -2
-console.log(typeof o); // number
 ```
 
 2. **正/负操作符**
@@ -22852,3 +22827,15 @@ for (let i = 0, len = document.styleSheets.length; i < len; i++) {
 document.styleSheets 返回的样式表可能会因浏览器而异。所有浏览器都会包含`<style>`元素和rel 属性设置为"stylesheet"的`<link>`元素。IE、Opera、Chrome 也包含rel 属性设置为"alternate stylesheet"的`<link>`元素。
 
 通过`<link>`或`<style>`元素也可以直接获取CSSStyleSheet 对象。DOM在这两个元素上暴露了 sheet 属性，其中包含对应的CSSStyleSheet 对象。
+
+1. **CSS 规则**
+
+CSSRule 类型表示样式表中的一条规则。这个类型也是一个通用基类，很多类型都继承它，但其中最常用的是表示样式信息的CSSStyleRule（其他CSS 规则还有@import、@font-face、@page 和@charset 等，不过这些规则很少需要使用脚本来操作）。以下是CSSStyleRule 对象上可用的属性。
+
+- cssText，返回整条规则的文本。这里的文本可能与样式表中实际的文本不一样，因为浏览器内部处理样式表的方式也不一样。Safari 始终会把所有字母都转换为小写。
+- parentRule，如果这条规则被其他规则（如@media）包含，则指向包含规则，否则就是null。
+- parentStyleSheet，包含当前规则的样式表。
+- selectorText，返回规则的选择符文本。这里的文本可能与样式表中实际的文本不一样，因为浏览器内部处理样式表的方式也不一样。这个属性在Firefox、Safari、Chrome 和IE 中是只读的，在Opera 中是可以修改的。
+- style，返回CSSStyleDeclaration 对象，可以设置和获取当前规则中的样式。
+- type，数值常量，表示规则类型。对于样式规则，它始终为1。
+
