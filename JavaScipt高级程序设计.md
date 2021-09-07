@@ -12101,7 +12101,41 @@ SubType.prototype.sayAge = function () {
 };
 ```
 
-这里只调用了一次 SuperType 构造函数，避免了 SubType.prototype 上不必要也用不到的属性，因此可以说这个例子的效率更高。而且，原型链仍然保持不变，因此 instanceof 操作符和 isPrototypeOf()方法正常有效。寄生式组合继承可以算是引用类型继承的最佳模式。
+这里只调用了一次 SuperType 构造函数，避免了 SubType.prototype 上不必要也用不到的属性，因此可以说这个例子的效率更高。
+
+下面使用 Object.create() 实现了寄生式组合继承：
+
+```js
+function Person(name) {
+  this.name = name;
+}
+Person.prototype.work = function () {
+  console.log("working...");
+};
+function Student(name, grade) {
+  Person.call(this, ...arguments);
+  this.grade = grade;
+}
+function enhanceWith(origin, func) {
+  return Object.create(origin, {
+    func: {
+      value: func,
+    },
+  });
+}
+function learn() {
+  console.log("learning...");
+}
+Student.prototype = enhanceWith(Person.prototype, learn);
+
+const stu1 = new Student("Trigold", "pro");
+stu1.work(); // working...
+stu1.grade = "fish";
+const stu2 = new Student("Nicholas", "pro");
+console.log(stu2.grade); // pro
+```
+
+而且，原型链仍然保持不变，因此 instanceof 操作符和 isPrototypeOf()方法正常有效。寄生式组合继承可以算是引用类型继承的最佳模式。
 
 ## 8.4. 类
 
