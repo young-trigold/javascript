@@ -2696,6 +2696,33 @@ console.log(b instanceof Baz); // false
 
 根据 ECMAScript 规范，这个符号作为一个属性表示“一个布尔值，如果是 true，则意味着对象应该用 Array.prototype.concat()打平其数组元素”。ES6 中的 Array.prototype.concat()方法会根据接收到的对象类型选择如何将一个类数组对象拼接成数组实例。覆盖 Symbol.isConcatSpreadable 的值可以修改这个行为。
 
+**类数组对象**
+
+类数组对象是一个具有类型数组特性的一种对象，具体来说，这个对象的属性必须是递增的整数值，而且必须实现了 length 属性。例如：
+
+```js
+const arrLikeObject = {
+  0: "foo",
+  1: "bar",
+  length: 2
+};
+```
+
+类数组对象可像数组一样通过索引访问元素，也可像数组一样通过 length 属性访问元素的数量：
+
+```js
+console.log(arrLikeObject[0]); // foo
+console.log(arrLikeObject.length); // 2
+```
+
+类数组对象可以用作数组的 concat() 方法的参数，可以用作 Array.from() 的方法的参数。
+
+但类数组对象并没有实现可迭代接口，因此类数组对象不可以使用扩展操作符，也没有迭代器方法。
+
+```js
+console.log([...arrLikeObject]); // TypeError: arrLikeObject is not iterable
+```
+
 数组对象默认情况下会被打平到已有的数组，false 或假值会导致整个对象被追加到数组末尾。类数组对象默认情况下会被追加到数组末尾，true 或真值会导致这个类数组对象被打平到数组实例。其他不是类数组对象的对象在 Symbol.isConcatSpreadable 被设置为 true 的情况下将被忽略。
 
 ```js
@@ -6773,7 +6800,7 @@ let values = [1, 2]; // 创建一个包含2 个元素的数组
 
 Array 构造函数还有两个 ES6 新增的用于创建数组的静态方法：from()和 of()。from()用于将类数组结构转换为数组实例，而 of()用于将一组参数转换为数组实例。
 
-Array.from()的第一个参数是一个类数组对象，即任何可迭代的结构，或者有一个 length 属性和可索引元素的结构。这种方式可用于很多场合：
+Array.from()的第一个参数是一个类数组对象，或任何可迭代对象。这种方式可用于很多场合：
 
 ```js
 // 字符串会被拆分为单字符数组
@@ -7326,7 +7353,7 @@ console.log(colors2); // ["red", "green", "blue", "yellow", "black", "brown"]
 
 这里先创建一个包含 3 个值的数组 colors。然后 colors 调用 concat()方法，传入字符串"yellow"和一个包含"black"和"brown"的数组。保存在 colors2 中的结果就是["red", "green", "blue","yellow", "black", "brown"]。原始数组 colors 保持不变。
 
-打平数组参数的行为可以重写，方法是在参数数组上指定一个特殊的符号：Symbol.isConcat-Spreadable。这个符号能够阻止 concat()打平参数数组。相反，把这个值设置为 true 可以强制打平类数组对象：
+打平数组参数的行为可以重写，方法是在参数数组上指定一个特殊的符号：Symbol.isConcatSpreadable。这个符号能够阻止 concat()打平参数数组。相反，把这个值设置为 true 可以强制打平类数组对象：
 
 ```js
 let colors = ["red", "green", "blue"];
@@ -14261,7 +14288,7 @@ ECMAScript 函数的参数跟大多数其他语言不同。ECMAScript 函数既�
 
 之所以会这样，主要是因为 ECMAScript 函数的参数在内部表现为一个数组。函数被调用时总会接收一个数组，但函数并不关心这个数组中包含什么。如果数组中什么也没有，那没问题；如果数组的元素超出了要求，那也没问题。事实上，在使用 function 关键字定义（非箭头）函数时，可以在函数内部访问 arguments 对象，从中取得传进来的每个参数值。
 
-arguments 对象是一个可迭代对象，它的属性为数值 0, 1, 2, ...。第一个参数对应的属性为 0，第 2 个参数对应的属性为 1，以此类推，而这些属性引用的就是对应参数的值。而要确定传进来多少个参数，可以访问 arguments.length 属性。
+arguments 对象既是一个类数组对像，又是一个可迭代对象。要确定传进来多少个参数，可以访问 arguments.length 属性。
 
 在下面的例子中，sayHi()函数的第一个参数叫 name：
 
@@ -14738,7 +14765,7 @@ console.log(data[0].name); // Zachary
 
 ### 10.9.1. arguments
 
-arguments 对象前面讨论过多次了，它是一个类数组对象，包含调用函数时传入的所有参数。这个对象只有以 function 关键字定义函数（相对于使用箭头语法创建函数）时才会有。虽然主要用于包含函数参数，但 arguments 对象其实还有一个 callee 属性，是一个指向 arguments 对象所在函数的指针。来看下面这个经典的阶乘函数：
+arguments 对象前面讨论过多次了，它是既是一个类数组对象，又是一个可迭代对象，包含调用函数时传入的所有参数。这个对象只有以 function 关键字定义函数（相对于使用箭头语法创建函数）时才会有。虽然主要用于包含函数参数，但 arguments 对象其实还有一个 callee 属性，是一个指向 arguments 对象所在函数的指针。来看下面这个经典的阶乘函数：
 
 ```js
 function factorial(num) {
