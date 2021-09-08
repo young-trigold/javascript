@@ -6247,7 +6247,17 @@ console.log(matches[0]); // "cat"
 console.log(pattern.lastIndex); // 0
 ```
 
-match()方法返回的数组与 RegExp 对象的 exec()方法返回的数组是一样的：第一个元素是与整个模式匹配的字符串，其余元素则是与表达式中的捕获组匹配的字符串（如果有的话）。
+如果正则表达式没有 g 标记，则match()方法返回的数组与 RegExp 对象的 exec()方法返回的数组是一样的：第一个元素是与整个模式匹配的字符串，其余元素则是与表达式中的捕获组匹配的字符串（如果有的话）。
+
+如果正则表达式有 g 标记，则match() 方法返回的数组为所有匹配的字符串，来看下面的例子：
+
+```js
+let text = "cat, bat, sat, fat";
+let pattern = /.at/g;
+
+let matches = text.match(pattern);
+console.log(matches); // [ 'cat', 'bat', 'sat', 'fat' ]
+```
 
 另一个查找模式的字符串方法是 search()。这个方法唯一的参数与 match()方法一样：正则表达式字符串或 RegExp 对象。这个方法返回模式第一个匹配的位置索引，如果没找到则返回-1。search()始终从字符串开头向后匹配模式。看下面的例子：
 
