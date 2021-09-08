@@ -3632,6 +3632,29 @@ const baz = undefined + [1] //"undefined1"
 const bar = {} + []; // "[Object Object]"
 ```
 
+在进行加法操作时，先观察两个操作数是否包含对象或字符串类型，如果是则对两个操作数使用 String() 转型，之后进行字符串的拼接。如果不包含则对两个操作数使用 Number() 转型，之后再进行数值运算。这个过程可以用JavaScript流程语句表示为：
+
+```js
+const result = a + b;
+
+function add(a, b) {
+  function testType(any) {
+    if (typeof any === "string" || typeof any === "object") {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  if (testType(a) && testType(b)) {
+    return String(a).concat(String(b));
+  } else {
+    return Number(a) + Number(b);
+  }
+}
+
+const resultExpected = add(a, b);
+```
+
 ECMAScript 中最常犯的一个错误，就是忽略加法操作中涉及的数据类型。比如下面这个例子：
 
 ```js
@@ -3729,6 +3752,22 @@ let result2 = 5 < 3; // false
   ```
 
   这里在比较字符串"23"和"3"时返回 true。因为两个操作数都是字符串，所以会逐个比较它们的字符编码（字符"2"的编码是 50，而字符"3"的编码是 51）。
+
+上述规则用JavaScript流程语句可以表示为：
+
+```js
+const result = a > b;
+
+function compare(a,b){
+  if(typeof a === "string" && typeof b === "string"){
+    return compareCharCode(a,b);
+  } else {
+    return (Number(a) - Number(b) > 0);
+  }
+}
+
+const resultExpected = compare(a,b);
+```
 
 ### 3.5.8. 相等操作符
 
