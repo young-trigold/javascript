@@ -7795,12 +7795,12 @@ console.log(NaNs.indexOf(NaN)); // -1
 此时，使用 includes() 就可以避免这个问题：
 
 ```js
-let NaNs = [1,1,NaN, NaN];
-let uniqueNaNs = NaNs.reduce(
+let arr = [1,1,NaN, NaN];
+let uniaueArr = arr.reduce(
   (pre, cur) => (pre.includes(cur) ? pre : [...pre, cur]),
   []
 );
-console.log(uniqueNaNs); // [1, NaN]
+console.log(uniaueArr); // [1, NaN]
 ```
 
 在这个例子中，第1次执行时，previousValue 为 []，currentValue 为 1，previousValue 中不包含 1，因此结果为 `[1]`。第2次执行时，previousValue 为 `[1]`，currentValue 为 1，此时包含 1 ，因此结果返回 `[1]`，同样的，第4次执行完后，得到 [1, NaN]。
@@ -12289,7 +12289,7 @@ function learn() {
   console.log("learning...");
 }
 Student.prototype = enhanceWith(Person.prototype, learn);
-
+Student.prototype.constructor = Student;
 const stu1 = new Student("Trigold", "pro");
 stu1.work(); // working...
 stu1.grade = "fish";
