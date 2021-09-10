@@ -14214,7 +14214,7 @@ const handler = {
     if (typeof prop === "number") {
       return Reflect.set(...arguments);
     } else {
-      throw new Error("类型不匹配！");
+      throw "类型不匹配！";
     }
   },
 };
@@ -14224,7 +14224,7 @@ const proxy = new Proxy(user, handler);
 proxy.age = 20;
 // OK
 proxy.age = "foo";
-// Error: 类型不匹配！
+// 类型不匹配！
 ```
 
 ### 9.3.4. 函数与构造函数参数验证
@@ -14232,7 +14232,7 @@ proxy.age = "foo";
 跟保护和验证对象属性类似，也可对函数和构造函数参数进行审查。比如，可以让函数只接收某种类型的值：
 
 ```js
-function median(...nums) {
+const getMedian = function (...nums) {
   const sortedNums = nums.sort((a, b) => a - b);
   const len = nums.length;
   if (len % 2) {
@@ -14240,20 +14240,27 @@ function median(...nums) {
   } else {
     return (sortedNums[len / 2 - 1] + sortedNums[len / 2]) / 2;
   }
-}
-const proxy = new Proxy(median, {
+};
+
+const handler = {
   apply(target, thisArg, argumentsList) {
-    for (const arg of argumentsList) {
-      if (typeof arg !== "number") {
-        throw "Non-number argument provided";
-      }
+    const typeMatched = argumentsList.every(
+      (argument) => typeof argument === "number"
+    );
+    if(typeMatched){
+        return Reflect.apply(...arguments);
+    } else{
+        throw "所有参数必须为数值！"
     }
-    return Reflect.apply(...arguments);
   },
-});
-console.log(proxy(4, 7, 1)); // 4
-console.log(proxy(4, "7", 1));
-// Error: Non-number argument provided
+};
+
+const proxy = new Proxy(getMedian, handler);
+
+console.log(proxy(4, 7, 1, 6));
+// 5
+console.log(proxy(4, "7", 1, 6));
+// 所有参数必须为数值！
 ```
 
 类似地，可以要求实例化时必须给构造函数传参：
@@ -14264,18 +14271,23 @@ class User {
     this.id_ = id;
   }
 }
-const proxy = new Proxy(User, {
-  construct(target, argumentsList, newTarget) {
-    if (argumentsList[0] === undefined) {
-      throw "User cannot be instantiated without id";
+
+const handler = {
+  construct(target, argumentsList) {
+    if (argumentsList.length === 0) {
+      throw "必须提供 id 参数！";
     } else {
       return Reflect.construct(...arguments);
     }
   },
-});
+};
+
+const proxy = new Proxy(User, handler);
+
 new proxy(1);
+// OK
 new proxy();
-// Error: User cannot be instantiated without id
+// 必须提供 id 参数！
 ```
 
 ### 9.3.5. 数据绑定与可观察对象
@@ -14285,33 +14297,47 @@ new proxy();
 比如，可以将被代理的类绑定到一个全局实例集合，让所有创建的实例都被添加到这个集合中：
 
 ```js
-const userList = [];
+const users = [];
+
 class User {
   constructor(name) {
     this.name_ = name;
   }
 }
-const proxy = new Proxy(User, {
-  construct() {
+
+const handler = {
+  construct(){
     const newUser = Reflect.construct(...arguments);
-    userList.push(newUser);
+    users.push(newUser);
     return newUser;
-  },
-});
+  }
+};
+
+const proxy = new Proxy(User, handler);
+
 new proxy("John");
 new proxy("Jacob");
 new proxy("Jingleheimerschmidt");
-console.log(userList); // [User {}, User {}, User{}]
+
+console.log(users);
+
+/* [
+    User { name_: 'John' },
+    User { name_: 'Jacob' },
+    User { name_: 'Jingleheimerschmidt' }
+] */
 ```
 
 另外，还可以把集合绑定到一个事件分派程序，每次插入新实例时都会发送消息：
 
 ```js
-const userList = [];
+const users = [];
+
 function emit(newValue) {
   console.log(newValue);
 }
-const proxy = new Proxy(userList, {
+
+const handler = {
   set(target, property, value, receiver) {
     const result = Reflect.set(...arguments);
     if (result) {
@@ -14319,11 +14345,16 @@ const proxy = new Proxy(userList, {
     }
     return result;
   },
-});
+};
+
+const proxy = new Proxy(users, handler);
+
 proxy.push("John");
 // John
+// 1
 proxy.push("Jacob");
 // Jacob
+// 2
 ```
 
 # 10. 函数
