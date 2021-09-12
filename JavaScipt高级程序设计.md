@@ -355,21 +355,21 @@ plan : 1 chapter/2 day
 
 JavaScript 因为互联网而生，紧跟着浏览器的出现而问世。回顾它的历史，就要从浏览器的历史讲起。
 
-1990年底，欧洲核能研究组织（CERN）科学家 Tim Berners-Lee，在全世界最大的电脑网络——互联网的基础上，发明了万维网（World Wide Web），从此可以在网上浏览网页文件。最早的网页只能在操作系统的终端里浏览，也就是说只能使用命令行操作，网页都是在字符窗口中显示，这当然非常不方便。
+1990 年底，欧洲核能研究组织（CERN）科学家 Tim Berners-Lee，在全世界最大的电脑网络——互联网的基础上，发明了万维网（World Wide Web），从此可以在网上浏览网页文件。最早的网页只能在操作系统的终端里浏览，也就是说只能使用命令行操作，网页都是在字符窗口中显示，这当然非常不方便。
 
-1992年底，美国国家超级电脑应用中心（NCSA）开始开发一个独立的浏览器，叫做 Mosaic。这是人类历史上第一个浏览器，从此网页可以在图形界面的窗口浏览。
+1992 年底，美国国家超级电脑应用中心（NCSA）开始开发一个独立的浏览器，叫做 Mosaic。这是人类历史上第一个浏览器，从此网页可以在图形界面的窗口浏览。
 
-1994年10月，NCSA 的一个主要程序员 Marc Andreessen 联合风险投资家 Jim Clark，成立了 Mosaic 通信公司（Mosaic Communications），不久后改名为 Netscape。这家公司的方向，就是在 Mosaic 的基础上，开发面向普通用户的新一代的浏览器 Netscape Navigator。
+1994 年 10 月，NCSA 的一个主要程序员 Marc Andreessen 联合风险投资家 Jim Clark，成立了 Mosaic 通信公司（Mosaic Communications），不久后改名为 Netscape。这家公司的方向，就是在 Mosaic 的基础上，开发面向普通用户的新一代的浏览器 Netscape Navigator。
 
-1994年12月，Navigator 发布了1.0版，市场份额一举超过90%。
+1994 年 12 月，Navigator 发布了 1.0 版，市场份额一举超过 90%。
 
 Netscape 公司很快发现，Navigator 浏览器需要一种可以嵌入网页的脚本语言，用来控制浏览器行为。当时，大多数用户使用 28.8kbit/s 的调制解调器上网，但网页变得越来越大、越来越复杂。为验证简单的表单而需要大量与服务器的往返通信成为用户的痛点。想象一下，你填写完表单，单击“提交”按钮，等 30 秒处理，然后看到一条消息，告诉你有一个必填字段没填。这就需要在网页中嵌入小程序，让浏览器检查每一栏是否都填写了。
 
 管理层对这种浏览器脚本语言的设想是：功能不需要太强，语法较为简单，容易学习和部署。那一年，正逢 Sun 公司的 Java 语言问世，市场推广活动非常成功。Netscape 公司决定与 Sun 公司合作，浏览器支持嵌入 Java 小程序（后来称为 Java applet）。但是，浏览器脚本语言是否就选用 Java，则存在争论。后来，还是决定不使用 Java，因为网页小程序不需要 Java 这么“重”的语法。但是，同时也决定脚本语言的语法要接近 Java，并且可以支持 Java 程序。这些设想直接排除了使用现存语言，比如 Perl、Python 和 TCL。
 
-1995年，Netscape 公司雇佣了程序员 Brendan Eich 开发这种网页脚本语言。[Brendan Eich](https://en.wikipedia.org/wiki/Brendan_Eich) 有很强的函数式编程背景，希望以 Scheme 语言（函数式语言鼻祖 LISP 语言的一种方言）为蓝本，实现这种新语言。
+1995 年，Netscape 公司雇佣了程序员 Brendan Eich 开发这种网页脚本语言。[Brendan Eich](https://en.wikipedia.org/wiki/Brendan_Eich) 有很强的函数式编程背景，希望以 Scheme 语言（函数式语言鼻祖 LISP 语言的一种方言）为蓝本，实现这种新语言。
 
-1995年5月，Brendan Eich 只用了10天，就设计完成了这种语言的第一版。它是一个大杂烩，语法有多个来源。
+1995 年 5 月，Brendan Eich 只用了 10 天，就设计完成了这种语言的第一版。它是一个大杂烩，语法有多个来源。
 
 - 基本语法：借鉴 C 语言和 Java 语言。
 - 数据结构：借鉴 Java 语言，包括将值分成原始值和对象两大类。
@@ -380,19 +380,19 @@ Netscape 公司很快发现，Navigator 浏览器需要一种可以嵌入网页�
 
 为了保持简单，这种脚本语言缺少一些关键的功能，比如块级作用域、模块、子类型（subtyping）等等，但是可以利用现有功能找出解决办法。这种功能的不足，直接导致了后来 JavaScript 的一个显著特点：对于其他语言，你需要学习语言的各种功能，而对于 JavaScript，你常常需要学习各种解决问题的模式。而且由于来源多样，从一开始就注定，JavaScript 的编程风格是函数式编程和面向对象编程的一种混合体。
 
-Netscape 公司的这种浏览器脚本语言，最初名字叫做 Mocha，1995年9月改为 LiveScript。12月，Netscape 公司与 Sun 公司（Java 语言的发明者和所有者）达成协议，后者允许将这种语言叫做 JavaScript。这样一来，Netscape 公司可以借助 Java 语言的声势，而 Sun 公司则将自己的影响力扩展到了浏览器。
+Netscape 公司的这种浏览器脚本语言，最初名字叫做 Mocha，1995 年 9 月改为 LiveScript。12 月，Netscape 公司与 Sun 公司（Java 语言的发明者和所有者）达成协议，后者允许将这种语言叫做 JavaScript。这样一来，Netscape 公司可以借助 Java 语言的声势，而 Sun 公司则将自己的影响力扩展到了浏览器。
 
 之所以起这个名字，并不是因为 JavaScript 本身与 Java 语言有多么深的关系（事实上，两者关系并不深，详见下节），而是因为 Netscape 公司已经决定，使用 Java 语言开发网络应用程序，JavaScript 可以像胶水一样，将各个部分连接起来。当然，后来的历史是 Java 语言的浏览器插件失败了，JavaScript 反而发扬光大。
 
-1995年12月4日，Netscape 公司与 Sun 公司联合发布了 JavaScript 语言，对外宣传 JavaScript 是 Java 的补充，属于轻量级的 Java，专门用来操作网页。
+1995 年 12 月 4 日，Netscape 公司与 Sun 公司联合发布了 JavaScript 语言，对外宣传 JavaScript 是 Java 的补充，属于轻量级的 Java，专门用来操作网页。
 
-1996年3月，Navigator 2.0 浏览器正式内置了 JavaScript 脚本语言。
+1996 年 3 月，Navigator 2.0 浏览器正式内置了 JavaScript 脚本语言。
 
 ### 1.1.2. JavaScript 与 Java 的关系
 
 这里专门说一下 JavaScript 和 Java 的关系。它们是两种不一样的语言，但是彼此存在联系。
 
-JavaScript 的基本语法和对象体系，是模仿 Java 而设计的。但是，JavaScript 没有采用 Java 的静态类型。正是因为 JavaScript 与 Java 有很大的相似性，所以这门语言才从一开始的 LiveScript 改名为 JavaScript。基本上，JavaScript 这个名字的原意是“很像Java的脚本语言”。
+JavaScript 的基本语法和对象体系，是模仿 Java 而设计的。但是，JavaScript 没有采用 Java 的静态类型。正是因为 JavaScript 与 Java 有很大的相似性，所以这门语言才从一开始的 LiveScript 改名为 JavaScript。基本上，JavaScript 这个名字的原意是“很像 Java 的脚本语言”。
 
 JavaScript 语言的函数是一种独立的数据类型，以及采用基于原型对象（prototype）的继承链。这是它与 Java 语法最大的两点区别。JavaScript 语法要比 Java 自由得多。
 
@@ -402,13 +402,13 @@ JavaScript 语言的函数是一种独立的数据类型，以及采用基于原
 
 ### 1.1.3. JavaScript 与 ECMAScript 的关系
 
-1996年8月，微软模仿 JavaScript 开发了一种相近的语言，取名为JScript（JavaScript 是 Netscape 的注册商标，微软不能用），首先内置于IE 3.0。Netscape 公司面临丧失浏览器脚本语言的主导权的局面。
+1996 年 8 月，微软模仿 JavaScript 开发了一种相近的语言，取名为 JScript（JavaScript 是 Netscape 的注册商标，微软不能用），首先内置于 IE 3.0。Netscape 公司面临丧失浏览器脚本语言的主导权的局面。
 
-1996年11月，Netscape 公司决定将 JavaScript 提交给国际标准化组织 ECMA（European Computer Manufacturers Association），希望 JavaScript 能够成为国际标准，以此抵抗微软。ECMA 的39号技术委员会（Technical Committee 39）负责制定和审核这个标准，成员由业内的大公司派出的工程师组成，目前共25个人。该委员会定期开会，所有的邮件讨论和会议记录，都是公开的。
+1996 年 11 月，Netscape 公司决定将 JavaScript 提交给国际标准化组织 ECMA（European Computer Manufacturers Association），希望 JavaScript 能够成为国际标准，以此抵抗微软。ECMA 的 39 号技术委员会（Technical Committee 39）负责制定和审核这个标准，成员由业内的大公司派出的工程师组成，目前共 25 个人。该委员会定期开会，所有的邮件讨论和会议记录，都是公开的。
 
-1997年7月，ECMA 组织发布262号标准文件（ECMA-262）的第一版，规定了浏览器脚本语言的标准，并将这种语言称为 ECMAScript。这个版本就是 ECMAScript 1.0 版。之所以不叫 JavaScript，一方面是由于商标的关系，Java 是 Sun 公司的商标，根据一份授权协议，只有 Netscape 公司可以合法地使用 JavaScript 这个名字，且 JavaScript 已经被 Netscape 公司注册为商标，另一方面也是想体现这门语言的制定者是 ECMA，不是 Netscape，这样有利于保证这门语言的开放性和中立性。因此，ECMAScript 和 JavaScript 的关系是，前者是后者的规格，后者是前者的一种实现。在日常场合，这两个词是可以互换的。
+1997 年 7 月，ECMA 组织发布 262 号标准文件（ECMA-262）的第一版，规定了浏览器脚本语言的标准，并将这种语言称为 ECMAScript。这个版本就是 ECMAScript 1.0 版。之所以不叫 JavaScript，一方面是由于商标的关系，Java 是 Sun 公司的商标，根据一份授权协议，只有 Netscape 公司可以合法地使用 JavaScript 这个名字，且 JavaScript 已经被 Netscape 公司注册为商标，另一方面也是想体现这门语言的制定者是 ECMA，不是 Netscape，这样有利于保证这门语言的开放性和中立性。因此，ECMAScript 和 JavaScript 的关系是，前者是后者的规格，后者是前者的一种实现。在日常场合，这两个词是可以互换的。
 
-ECMAScript 只用来标准化 JavaScript 这种语言的基本语法结构，与部署环境相关的标准都由其他标准规定，比如 DOM 的标准就是由 W3C组织（World Wide Web Consortium）制定的。
+ECMAScript 只用来标准化 JavaScript 这种语言的基本语法结构，与部署环境相关的标准都由其他标准规定，比如 DOM 的标准就是由 W3C 组织（World Wide Web Consortium）制定的。
 
 ECMA-262 标准后来也被另一个国际标准化组织 ISO（International Organization for Standardization）批准，标准号是 ISO-16262。
 
@@ -416,97 +416,97 @@ ECMA-262 标准后来也被另一个国际标准化组织 ISO（International Or
 
 JavaScript 伴随着互联网的发展一起发展。互联网周边技术的快速发展，刺激和推动了 JavaScript 语言的发展。下面，回顾一下 JavaScript 的周边应用发展。
 
-1996年，样式表标准 CSS 第一版发布。
+1996 年，样式表标准 CSS 第一版发布。
 
-1997年，DHTML（Dynamic HTML，动态 HTML）发布，允许动态改变网页内容。这标志着 DOM 模式（Document Object Model，文档对象模型）正式应用。
+1997 年，DHTML（Dynamic HTML，动态 HTML）发布，允许动态改变网页内容。这标志着 DOM 模式（Document Object Model，文档对象模型）正式应用。
 
-1998年，Netscape 公司开源了浏览器，这导致了 Mozilla 项目的诞生。几个月后，美国在线（AOL）宣布并购 Netscape。
+1998 年，Netscape 公司开源了浏览器，这导致了 Mozilla 项目的诞生。几个月后，美国在线（AOL）宣布并购 Netscape。
 
-1999年，IE 5部署了 XMLHttpRequest 接口，允许 JavaScript 发出 HTTP 请求，为后来大行其道的 Ajax 应用创造了条件。
+1999 年，IE 5 部署了 XMLHttpRequest 接口，允许 JavaScript 发出 HTTP 请求，为后来大行其道的 Ajax 应用创造了条件。
 
-2000年，KDE 项目重写了浏览器引擎 KHTML，为后来的 WebKit 和 Blink 引擎打下基础。这一年的10月23日，KDE 2.0发布，第一次将 KHTML 浏览器包括其中。
+2000 年，KDE 项目重写了浏览器引擎 KHTML，为后来的 WebKit 和 Blink 引擎打下基础。这一年的 10 月 23 日，KDE 2.0 发布，第一次将 KHTML 浏览器包括其中。
 
-2001年，微软公司时隔5年之后，发布了 IE 浏览器的下一个版本 Internet Explorer 6。这是当时最先进的浏览器，它后来统治了浏览器市场多年。
+2001 年，微软公司时隔 5 年之后，发布了 IE 浏览器的下一个版本 Internet Explorer 6。这是当时最先进的浏览器，它后来统治了浏览器市场多年。
 
-2001年，Douglas Crockford 提出了 JSON 格式，用于取代 XML 格式，进行服务器和网页之间的数据交换。JavaScript 可以原生支持这种格式，不需要额外部署代码。
+2001 年，Douglas Crockford 提出了 JSON 格式，用于取代 XML 格式，进行服务器和网页之间的数据交换。JavaScript 可以原生支持这种格式，不需要额外部署代码。
 
-2002年，Mozilla 项目发布了它的浏览器的第一版，后来起名为 Firefox。
+2002 年，Mozilla 项目发布了它的浏览器的第一版，后来起名为 Firefox。
 
-2003年，苹果公司发布了 Safari 浏览器的第一版。
+2003 年，苹果公司发布了 Safari 浏览器的第一版。
 
-2004年，Google 公司发布了 Gmail，促成了互联网应用程序（Web Application）这个概念的诞生。由于 Gmail 是在4月1日发布的，很多人起初以为这只是一个玩笑。
+2004 年，Google 公司发布了 Gmail，促成了互联网应用程序（Web Application）这个概念的诞生。由于 Gmail 是在 4 月 1 日发布的，很多人起初以为这只是一个玩笑。
 
-2004年，Dojo 框架诞生，为不同浏览器提供了同一接口，并为主要功能提供了便利的调用方法。这标志着 JavaScript 编程框架的时代开始来临。
+2004 年，Dojo 框架诞生，为不同浏览器提供了同一接口，并为主要功能提供了便利的调用方法。这标志着 JavaScript 编程框架的时代开始来临。
 
-2004年，WHATWG 组织成立，致力于加速 HTML 语言的标准化进程。
+2004 年，WHATWG 组织成立，致力于加速 HTML 语言的标准化进程。
 
-2005年，苹果公司在 KHTML 引擎基础上，建立了 WebKit 引擎。
+2005 年，苹果公司在 KHTML 引擎基础上，建立了 WebKit 引擎。
 
-2005年，Ajax 方法（Asynchronous JavaScript and XML）正式诞生，Jesse James Garrett 发明了这个词汇。它开始流行的标志是，2月份发布的 Google Maps 项目大量采用该方法。它几乎成了新一代网站的标准做法，促成了 Web 2.0时代的来临。
+2005 年，Ajax 方法（Asynchronous JavaScript and XML）正式诞生，Jesse James Garrett 发明了这个词汇。它开始流行的标志是，2 月份发布的 Google Maps 项目大量采用该方法。它几乎成了新一代网站的标准做法，促成了 Web 2.0 时代的来临。
 
-2005年，Apache 基金会发布了 CouchDB 数据库。这是一个基于 JSON 格式的数据库，可以用 JavaScript 函数定义视图和索引。它在本质上有别于传统的关系型数据库，标识着 NoSQL 类型的数据库诞生。
+2005 年，Apache 基金会发布了 CouchDB 数据库。这是一个基于 JSON 格式的数据库，可以用 JavaScript 函数定义视图和索引。它在本质上有别于传统的关系型数据库，标识着 NoSQL 类型的数据库诞生。
 
-2006年，jQuery 函数库诞生，作者为John Resig。jQuery 为操作网页 DOM 结构提供了非常强大易用的接口，成为了使用最广泛的函数库，并且让 JavaScript 语言的应用难度大大降低，推动了这种语言的流行。
+2006 年，jQuery 函数库诞生，作者为 John Resig。jQuery 为操作网页 DOM 结构提供了非常强大易用的接口，成为了使用最广泛的函数库，并且让 JavaScript 语言的应用难度大大降低，推动了这种语言的流行。
 
-2006年，微软公司发布 IE 7，标志重新开始启动浏览器的开发。
+2006 年，微软公司发布 IE 7，标志重新开始启动浏览器的开发。
 
-2006年，Google推出 Google Web Toolkit 项目（缩写为 GWT），提供 Java 编译成 JavaScript 的功能，开创了将其他语言转为 JavaScript 的先河。
+2006 年，Google 推出 Google Web Toolkit 项目（缩写为 GWT），提供 Java 编译成 JavaScript 的功能，开创了将其他语言转为 JavaScript 的先河。
 
-2007年，Webkit 引擎在 iPhone 手机中得到部署。它最初基于 KDE 项目，2003年苹果公司首先采用，2005年开源。这标志着 JavaScript 语言开始能在手机中使用了，意味着有可能写出在桌面电脑和手机中都能使用的程序。
+2007 年，Webkit 引擎在 iPhone 手机中得到部署。它最初基于 KDE 项目，2003 年苹果公司首先采用，2005 年开源。这标志着 JavaScript 语言开始能在手机中使用了，意味着有可能写出在桌面电脑和手机中都能使用的程序。
 
-2007年，Douglas Crockford 发表了名为《JavaScript: The good parts》的演讲，次年由 O'Reilly 出版社出版。这标志着软件行业开始严肃对待 JavaScript 语言，对它的语法开始重新认识。
+2007 年，Douglas Crockford 发表了名为《JavaScript: The good parts》的演讲，次年由 O'Reilly 出版社出版。这标志着软件行业开始严肃对待 JavaScript 语言，对它的语法开始重新认识。
 
-2008年，V8 编译器诞生。这是 Google 公司为 Chrome 浏览器而开发的，它的特点是让 JavaScript 的运行变得非常快。它提高了 JavaScript 的性能，推动了语法的改进和标准化，改变外界对 JavaScript 的不佳印象。同时，V8 是开源的，任何人想要一种快速的嵌入式脚本语言，都可以采用 V8，这拓展了 JavaScript 的应用领域。
+2008 年，V8 编译器诞生。这是 Google 公司为 Chrome 浏览器而开发的，它的特点是让 JavaScript 的运行变得非常快。它提高了 JavaScript 的性能，推动了语法的改进和标准化，改变外界对 JavaScript 的不佳印象。同时，V8 是开源的，任何人想要一种快速的嵌入式脚本语言，都可以采用 V8，这拓展了 JavaScript 的应用领域。
 
-2009年，Node.js 项目诞生，创始人为 Ryan Dahl，它标志着 JavaScript 可以用于服务器端编程，从此网站的前端和后端可以使用同一种语言开发。并且，Node.js 可以承受很大的并发流量，使得开发某些互联网大规模的实时应用变得容易。
+2009 年，Node.js 项目诞生，创始人为 Ryan Dahl，它标志着 JavaScript 可以用于服务器端编程，从此网站的前端和后端可以使用同一种语言开发。并且，Node.js 可以承受很大的并发流量，使得开发某些互联网大规模的实时应用变得容易。
 
-2009年，Jeremy Ashkenas 发布了 CoffeeScript 的最初版本。CoffeeScript 可以被转换为 JavaScript 运行，但是语法要比 JavaScript 简洁。这开启了其他语言转为 JavaScript 的风潮。
+2009 年，Jeremy Ashkenas 发布了 CoffeeScript 的最初版本。CoffeeScript 可以被转换为 JavaScript 运行，但是语法要比 JavaScript 简洁。这开启了其他语言转为 JavaScript 的风潮。
 
-2009年，PhoneGap 项目诞生，它将 HTML5 和 JavaScript 引入移动设备的应用程序开发，主要针对 iOS 和 Android 平台，使得 JavaScript 可以用于跨平台的应用程序开发。
+2009 年，PhoneGap 项目诞生，它将 HTML5 和 JavaScript 引入移动设备的应用程序开发，主要针对 iOS 和 Android 平台，使得 JavaScript 可以用于跨平台的应用程序开发。
 
 2009，Google 发布 Chrome OS，号称是以浏览器为基础发展成的操作系统，允许直接使用 JavaScript 编写应用程序。类似的项目还有 Mozilla 的 Firefox OS。
 
-2010年，三个重要的项目诞生，分别是 NPM、BackboneJS 和 RequireJS，标志着 JavaScript 进入模块化开发的时代。
+2010 年，三个重要的项目诞生，分别是 NPM、BackboneJS 和 RequireJS，标志着 JavaScript 进入模块化开发的时代。
 
-2011年，微软公司发布 Windows 8操作系统，将 JavaScript 作为应用程序的开发语言之一，直接提供系统支持。
+2011 年，微软公司发布 Windows 8 操作系统，将 JavaScript 作为应用程序的开发语言之一，直接提供系统支持。
 
-2011年，Google 发布了 Dart 语言，目的是为了结束 JavaScript 语言在浏览器中的垄断，提供更合理、更强大的语法和功能。Chromium浏览器有内置的 Dart 虚拟机，可以运行 Dart 程序，但 Dart 程序也可以被编译成 JavaScript 程序运行。
+2011 年，Google 发布了 Dart 语言，目的是为了结束 JavaScript 语言在浏览器中的垄断，提供更合理、更强大的语法和功能。Chromium 浏览器有内置的 Dart 虚拟机，可以运行 Dart 程序，但 Dart 程序也可以被编译成 JavaScript 程序运行。
 
-2011年，微软工程师Scott Hanselman提出，JavaScript 将是互联网的汇编语言。因为它无所不在，而且正在变得越来越快。其他语言的程序可以被转成 JavaScript 语言，然后在浏览器中运行。
+2011 年，微软工程师 Scott Hanselman 提出，JavaScript 将是互联网的汇编语言。因为它无所不在，而且正在变得越来越快。其他语言的程序可以被转成 JavaScript 语言，然后在浏览器中运行。
 
-2012年，单页面应用程序框架（single-page app framework）开始崛起，AngularJS 项目和 Ember 项目都发布了1.0版本。
+2012 年，单页面应用程序框架（single-page app framework）开始崛起，AngularJS 项目和 Ember 项目都发布了 1.0 版本。
 
-2012年，微软发布 TypeScript 语言。该语言被设计成 JavaScript 的超集，这意味着所有 JavaScript 程序，都可以不经修改地在 TypeScript 中运行。同时，TypeScript 添加了很多新的语法特性，主要目的是为了开发大型程序，然后还可以被编译成 JavaScript 运行。
+2012 年，微软发布 TypeScript 语言。该语言被设计成 JavaScript 的超集，这意味着所有 JavaScript 程序，都可以不经修改地在 TypeScript 中运行。同时，TypeScript 添加了很多新的语法特性，主要目的是为了开发大型程序，然后还可以被编译成 JavaScript 运行。
 
-2012年，Mozilla 基金会提出 asm.js 规格。asm.js 是 JavaScript 的一个子集，所有符合 asm.js 的程序都可以在浏览器中运行，它的特殊之处在于语法有严格限定，可以被快速编译成性能良好的机器码。这样做的目的，是为了给其他语言提供一个编译规范，使其可以被编译成高效的 JavaScript 代码。同时，Mozilla 基金会还发起了 Emscripten 项目，目标就是提供一个跨语言的编译器，能够将 LLVM 的位代码（bitcode）转为 JavaScript 代码，在浏览器中运行。因为大部分 LLVM 位代码都是从 C / C++ 语言生成的，这意味着 C / C++ 将可以在浏览器中运行。此外，Mozilla 旗下还有 LLJS （将 JavaScript 转为 C 代码）项目和 River Trail （一个用于多核心处理器的 ECMAScript 扩展）项目。目前，可以被编译成 JavaScript 的语言列表，共有将近40种语言。
+2012 年，Mozilla 基金会提出 asm.js 规格。asm.js 是 JavaScript 的一个子集，所有符合 asm.js 的程序都可以在浏览器中运行，它的特殊之处在于语法有严格限定，可以被快速编译成性能良好的机器码。这样做的目的，是为了给其他语言提供一个编译规范，使其可以被编译成高效的 JavaScript 代码。同时，Mozilla 基金会还发起了 Emscripten 项目，目标就是提供一个跨语言的编译器，能够将 LLVM 的位代码（bitcode）转为 JavaScript 代码，在浏览器中运行。因为大部分 LLVM 位代码都是从 C / C++ 语言生成的，这意味着 C / C++ 将可以在浏览器中运行。此外，Mozilla 旗下还有 LLJS （将 JavaScript 转为 C 代码）项目和 River Trail （一个用于多核心处理器的 ECMAScript 扩展）项目。目前，可以被编译成 JavaScript 的语言列表，共有将近 40 种语言。
 
-2013年，Mozilla 基金会发布手机操作系统 Firefox OS，该操作系统的整个用户界面都使用 JavaScript。
+2013 年，Mozilla 基金会发布手机操作系统 Firefox OS，该操作系统的整个用户界面都使用 JavaScript。
 
-2013年，ECMA 正式推出 JSON 的国际标准，这意味着 JSON 格式已经变得与 XML 格式一样重要和正式了。
+2013 年，ECMA 正式推出 JSON 的国际标准，这意味着 JSON 格式已经变得与 XML 格式一样重要和正式了。
 
-2013年5月，Facebook 发布 UI 框架库 React，引入了新的 JSX 语法，使得 UI 层可以用组件开发，同时引入了网页应用是状态机的概念。
+2013 年 5 月，Facebook 发布 UI 框架库 React，引入了新的 JSX 语法，使得 UI 层可以用组件开发，同时引入了网页应用是状态机的概念。
 
-2014年，微软推出 JavaScript 的 Windows 库 WinJS，标志微软公司全面支持 JavaScript 与 Windows 操作系统的融合。
+2014 年，微软推出 JavaScript 的 Windows 库 WinJS，标志微软公司全面支持 JavaScript 与 Windows 操作系统的融合。
 
-2014年11月，由于对 Joyent 公司垄断 Node 项目、以及该项目进展缓慢的不满，一部分核心开发者离开了 Node.js，创造了 io.js 项目，这是一个更开放、更新更频繁的 Node.js 版本，很短时间内就发布到了2.0版。三个月后，Joyent 公司宣布放弃对 Node 项目的控制，将其转交给新成立的开放性质的 Node 基金会。随后，io.js 项目宣布回归 Node，两个版本将合并。
+2014 年 11 月，由于对 Joyent 公司垄断 Node 项目、以及该项目进展缓慢的不满，一部分核心开发者离开了 Node.js，创造了 io.js 项目，这是一个更开放、更新更频繁的 Node.js 版本，很短时间内就发布到了 2.0 版。三个月后，Joyent 公司宣布放弃对 Node 项目的控制，将其转交给新成立的开放性质的 Node 基金会。随后，io.js 项目宣布回归 Node，两个版本将合并。
 
-2015年3月，Facebook 公司发布了 React Native 项目，将 React 框架移植到了手机端，可以用来开发手机 App。它会将 JavaScript 代码转为 iOS 平台的 Objective-C 代码，或者 Android 平台的 Java 代码，从而为 JavaScript 语言开发高性能的原生 App 打开了一条道路。
+2015 年 3 月，Facebook 公司发布了 React Native 项目，将 React 框架移植到了手机端，可以用来开发手机 App。它会将 JavaScript 代码转为 iOS 平台的 Objective-C 代码，或者 Android 平台的 Java 代码，从而为 JavaScript 语言开发高性能的原生 App 打开了一条道路。
 
-2015年4月，Angular 框架宣布，2.0 版将基于微软公司的TypeScript语言开发，这等于为 JavaScript 语言引入了强类型。
+2015 年 4 月，Angular 框架宣布，2.0 版将基于微软公司的 TypeScript 语言开发，这等于为 JavaScript 语言引入了强类型。
 
-2015年5月，Node 模块管理器 NPM 超越 CPAN，标志着 JavaScript 成为世界上软件模块最多的语言。
+2015 年 5 月，Node 模块管理器 NPM 超越 CPAN，标志着 JavaScript 成为世界上软件模块最多的语言。
 
-2015年5月，Google 公司的 Polymer 框架发布1.0版。该项目的目标是生产环境可以使用 WebComponent 组件，如果能够达到目标，Web 开发将进入一个全新的以组件为开发基础的阶段。
+2015 年 5 月，Google 公司的 Polymer 框架发布 1.0 版。该项目的目标是生产环境可以使用 WebComponent 组件，如果能够达到目标，Web 开发将进入一个全新的以组件为开发基础的阶段。
 
-2015年6月，ECMA 标准化组织正式批准了 ECMAScript 6 语言标准，定名为《ECMAScript 2015 标准》。JavaScript 语言正式进入了下一个阶段，成为一种企业级的、开发大规模应用的语言。这个标准从提出到批准，历时10年，而 JavaScript 语言从诞生至今也已经20年了。
+2015 年 6 月，ECMA 标准化组织正式批准了 ECMAScript 6 语言标准，定名为《ECMAScript 2015 标准》。JavaScript 语言正式进入了下一个阶段，成为一种企业级的、开发大规模应用的语言。这个标准从提出到批准，历时 10 年，而 JavaScript 语言从诞生至今也已经 20 年了。
 
-2015年6月，Mozilla 在 asm.js 的基础上发布 WebAssembly 项目。这是一种 JavaScript 引擎的中间码格式，全部都是二进制，类似于 Java 的字节码，有利于移动设备加载 JavaScript 脚本，执行速度提高了 20+ 倍。这意味着将来的软件，会发布 JavaScript 二进制包。
+2015 年 6 月，Mozilla 在 asm.js 的基础上发布 WebAssembly 项目。这是一种 JavaScript 引擎的中间码格式，全部都是二进制，类似于 Java 的字节码，有利于移动设备加载 JavaScript 脚本，执行速度提高了 20+ 倍。这意味着将来的软件，会发布 JavaScript 二进制包。
 
-2016年6月，《ECMAScript 2016 标准》发布。与前一年发布的版本相比，它只增加了两个较小的特性。
+2016 年 6 月，《ECMAScript 2016 标准》发布。与前一年发布的版本相比，它只增加了两个较小的特性。
 
-2017年6月，《ECMAScript 2017 标准》发布，正式引入了 async 函数，使得异步操作的写法出现了根本的变化。
+2017 年 6 月，《ECMAScript 2017 标准》发布，正式引入了 async 函数，使得异步操作的写法出现了根本的变化。
 
-2017年11月，所有主流浏览器全部支持 WebAssembly，这意味着任何语言都可以编译成 JavaScript，在浏览器运行。
+2017 年 11 月，所有主流浏览器全部支持 WebAssembly，这意味着任何语言都可以编译成 JavaScript，在浏览器运行。
 
 ## 1.2. JavaScript 实现
 
@@ -848,7 +848,7 @@ IE3 和 Netscape Navigator 3 提供了浏览器对象模型（BOM） API，用�
 
 ### 2.1.2. 推迟执行脚本
 
-HTML 4.01 为`<script>`元素定义了一个叫 defer 的属性。当浏览器解析到带有 defer 属性的脚本时，浏览器会并行地下载该脚本，并行的意思是它不会像正常脚本那样在下载时阻塞后面的HTML解析，当整个HTML文件解析完毕时，带有 defer 属性的脚本才会按照他们出现的顺序执行。
+HTML 4.01 为`<script>`元素定义了一个叫 defer 的属性。当浏览器解析到带有 defer 属性的脚本时，浏览器会并行地下载该脚本，并行的意思是它不会像正常脚本那样在下载时阻塞后面的 HTML 解析，当整个 HTML 文件解析完毕时，带有 defer 属性的脚本才会按照他们出现的顺序执行。
 
 ```html
 <!DOCTYPE html>
@@ -872,7 +872,7 @@ HTML 4.01 为`<script>`元素定义了一个叫 defer 的属性。当浏览器�
 
 ### 2.1.3. 异步执行脚本
 
-HTML5 为`<script>`元素定义了 async 属性。当浏览器解析到带有 async 属性的脚本时，浏览器会并行地下载该脚本，并行的意思是它不会像正常脚本那样在下载时阻塞后面的HTML解析，当该脚本下载完毕时，该脚本会被立即执行，这和 defer 不同，脚本执行时会阻塞后面的HTML解析。
+HTML5 为`<script>`元素定义了 async 属性。当浏览器解析到带有 async 属性的脚本时，浏览器会并行地下载该脚本，并行的意思是它不会像正常脚本那样在下载时阻塞后面的 HTML 解析，当该脚本下载完毕时，该脚本会被立即执行，这和 defer 不同，脚本执行时会阻塞后面的 HTML 解析。
 
 ```html
 <!DOCTYPE html>
@@ -1861,7 +1861,6 @@ while (i--) {
 
 ECMAScript 中最有意思的数据类型或许就是 Number 了。Number 类型使用 IEEE 754 格式表示整数和浮点值（在某些语言中也叫双精度(double)值）。不同的数值类型相应地也有不同的数值字面量格式。
 
-
 最基本的数值字面量格式是十进制整数，直接写出来即可：
 
 ```js
@@ -1921,23 +1920,23 @@ console.log(0.1 + 0.2 === 0.3); // false
 
 - **IEEE 754**
 
-IEEE二进制浮点数算术标准（IEEE 754）是20世纪80年代以来最广泛使用的浮点数运算标准，为许多CPU与浮点运算器所采用。这个标准定义了表示浮点数的格式（包括负零-0）与反常值（denormal number），一些特殊数值（（无穷（Inf）与非数值（NaN）），以及这些数值的“浮点数运算符”；它也指明了四种数值舍入规则和五种例外状况（包括例外发生的时机与处理方式）。
+IEEE 二进制浮点数算术标准（IEEE 754）是 20 世纪 80 年代以来最广泛使用的浮点数运算标准，为许多 CPU 与浮点运算器所采用。这个标准定义了表示浮点数的格式（包括负零-0）与反常值（denormal number），一些特殊数值（（无穷（Inf）与非数值（NaN）），以及这些数值的“浮点数运算符”；它也指明了四种数值舍入规则和五种例外状况（包括例外发生的时机与处理方式）。
 
-IEEE 754规定了四种表示浮点数值的方式：单精确度（32位）、双精确度（64位）、延伸单精确度（43比特以上，很少使用）与延伸双精确度（79比特以上，通常以80位实现）。只有32位模式有强制要求，其他都是选择性的。大部分编程语言都提供了IEEE浮点数格式与算术，但有些将其列为非必需的。例如，IEEE 754问世之前就有的C语言，现在包括了IEEE算术，但不算作强制要求（C语言的float通常是指IEEE单精确度，而double是指双精确度）。
+IEEE 754 规定了四种表示浮点数值的方式：单精确度（32 位）、双精确度（64 位）、延伸单精确度（43 比特以上，很少使用）与延伸双精确度（79 比特以上，通常以 80 位实现）。只有 32 位模式有强制要求，其他都是选择性的。大部分编程语言都提供了 IEEE 浮点数格式与算术，但有些将其列为非必需的。例如，IEEE 754 问世之前就有的 C 语言，现在包括了 IEEE 算术，但不算作强制要求（C 语言的 float 通常是指 IEEE 单精确度，而 double 是指双精确度）。
 
 - **双精度浮点数的存储**
 
-双精度浮点数使用64个比特存储。这64位比特从最高到低由1个符号位，11个指数位，52个尾数位组成。如下图所示：
+双精度浮点数使用 64 个比特存储。这 64 位比特从最高到低由 1 个符号位，11 个指数位，52 个尾数位组成。如下图所示：
 
 ![双精度浮点数的存储](illustrations/3-4-双精度浮点数的存储.png)
 
 - **符号位**
 
-正浮点数使用 0表示，负浮点数使用 1表示。
+正浮点数使用 0 表示，负浮点数使用 1 表示。
 
 - **指数位**
 
-首先将一个十进制小数转为一个二进制小数。十进制小数转换成二进制小数采用"乘2取整，顺序排列"法。具体做法是：用2乘十进制小数，可以得到积，将积的整数部分取出，再用2乘余下的小数 部分，又得到一个积，再将积的整数部分取出，如此进行，直到积中的小数部分为零，或者达到所要求的精度为止。
+首先将一个十进制小数转为一个二进制小数。十进制小数转换成二进制小数采用"乘 2 取整，顺序排列"法。具体做法是：用 2 乘十进制小数，可以得到积，将积的整数部分取出，再用 2 乘余下的小数 部分，又得到一个积，再将积的整数部分取出，如此进行，直到积中的小数部分为零，或者达到所要求的精度为止。
 
 然后把取出的整数部分按顺序排列起来，先取的整数作为二进制小数的高位有效位，后取的整数作为低位有效位。
 
@@ -1945,7 +1944,7 @@ IEEE 754规定了四种表示浮点数值的方式：单精确度（32位）、�
 
 ![3-4-十进制小数转二进制](illustrations/3-4-十进制小数转二进制.png)
 
-但有些十进制小数不能转为有限位数的二进制小数。所有小数部分不是 2^-n (n为整数)的十进制小数都不能转为有限的二进制小数。如 0.1，0.2。0.5，0.25则可以转为有限的二进制小数。
+但有些十进制小数不能转为有限位数的二进制小数。所有小数部分不是 2^-n (n 为整数)的十进制小数都不能转为有限的二进制小数。如 0.1，0.2。0.5，0.25 则可以转为有限的二进制小数。
 
 实际上，十进制小数 0.1 转为二进制小数为：
 
@@ -1953,7 +1952,7 @@ IEEE 754规定了四种表示浮点数值的方式：单精确度（32位）、�
 
 将十进制小数转为二进制小数后，再使用科学计数法，记为以下形式：
 
-2^-4 * 1.10011001100110011001100110011001100110011001100(1100)+
+2^-4 \* 1.10011001100110011001100110011001100110011001100(1100)+
 
 双精度浮点数规定，-4 + 1023 = 1019 再转为 11 位二进制数 01111111011 为指数位。
 
@@ -1961,11 +1960,11 @@ IEEE 754规定了四种表示浮点数值的方式：单精确度（32位）、�
 
 尾数位是最有意思的部分。
 
-上面提到，十进制小数0.1转为科学计数法的二进制小数，为：
+上面提到，十进制小数 0.1 转为科学计数法的二进制小数，为：
 
-2^-4 * 1.10011001100110011001100110011001100110011001100(1100)+
+2^-4 \* 1.10011001100110011001100110011001100110011001100(1100)+
 
-IEEE 754 规定，为了最大限度提高精确度，可以要求尾数规范化，把尾数处理到大于等于1而小于2的区间内，便可省去前述的“1”。将这个式子中的 1.10011001100110011001100110011001100110011001100(1100)+ 去掉 "1." 后再舍入的52位数字称为尾数。（尾数若是超过 52 位，会判断第 53 位，若是 1 则进 1，若是 0 则舍去。）
+IEEE 754 规定，为了最大限度提高精确度，可以要求尾数规范化，把尾数处理到大于等于 1 而小于 2 的区间内，便可省去前述的“1”。将这个式子中的 1.10011001100110011001100110011001100110011001100(1100)+ 去掉 "1." 后再舍入的 52 位数字称为尾数。（尾数若是超过 52 位，会判断第 53 位，若是 1 则进 1，若是 0 则舍去。）
 
 首先去掉 "1."，为：
 
@@ -1975,7 +1974,7 @@ IEEE 754 规定，为了最大限度提高精确度，可以要求尾数规范�
 
 100110011001100110011001100110011001100110011001100>>1<<100(1100)+
 
-但注意到第52位后面的数字为100。于是这个数字舍入后变为：
+但注意到第 52 位后面的数字为 100。于是这个数字舍入后变为：
 
 1001100110011001100110011001100110011001100110011010
 
@@ -1987,7 +1986,7 @@ IEEE 754 规定，为了最大限度提高精确度，可以要求尾数规范�
 
 JavaScript 里关于数字的运算，都是先转为二进制，再转成二进制的科学计数法进行存储，再取出存储值转为二级制，最后进行运算。而在先存储再取出值的过程中，就可能丢失精度。
 
-0.1和0.2存储后转为二进制的形式为：
+0.1 和 0.2 存储后转为二进制的形式为：
 
 0.0001 1001 1001 1001 1001 1001 1001 1001 1001 1001 1001 1001 1001 1010 +
 
@@ -1995,19 +1994,19 @@ JavaScript 里关于数字的运算，都是先转为二进制，再转成二进
 
 0.0100 1100 1100 1100 1100 1100 1100 1100 1100 1100 1100 1100 1100 111
 
-计算结果转换为十进制，正好是0.30000000000000004。
+计算结果转换为十进制，正好是 0.30000000000000004。
 
 - **Number.EPSILON**
 
-ES6 在Number对象上面，新增一个极小的常量Number.EPSILON。根据规格，它表示 1 与大于 1 的最小浮点数之间的差。
+ES6 在 Number 对象上面，新增一个极小的常量 Number.EPSILON。根据规格，它表示 1 与大于 1 的最小浮点数之间的差。
 
-1 的二进制科学计算法表示为：1.00...00 * 20，其中尾数位为 52 个 0。 比 1 大的最小浮点数为：1.00...01 * 20，其中尾数位为 51 个 0 和 1 个 1。
+1 的二进制科学计算法表示为：1.00...00 _ 20，其中尾数位为 52 个 0。 比 1 大的最小浮点数为：1.00...01 _ 20，其中尾数位为 51 个 0 和 1 个 1。
 
 因此，Number.EPSILON = (1 + 2^-52) - 1 = 2^-52
 
 即 IEEE 754 双精度浮点数在转为十进制时，最小精度为 2^-52，即 2.220446049250313e-16。
 
-利用Number.EPSILON是最小精度这个特征，可以验证两个浮点数的相等性：
+利用 Number.EPSILON 是最小精度这个特征，可以验证两个浮点数的相等性：
 
 ```js
 function equals(d1, d2) {
@@ -2016,7 +2015,6 @@ function equals(d1, d2) {
 const result = 0.1 + 0.2;
 equals(result, 0.3); // true
 ```
-
 
 2. **值的范围**
 
@@ -2108,8 +2106,8 @@ let un; // NaN
 - 字符串，应用以下规则：
 
   - 如果是空字符串（不包含字符），则返回 0。
-  - 如果字符串包含数值字符，包括数值字符前面带加、减号的情况，则转换为一个十进制数值。(忽略前面的0)
-  - 如果字符串包含有效的浮点值格式，如"1.1"，则会转换为相应的浮点值（同样，忽略前面的0）。
+  - 如果字符串包含数值字符，包括数值字符前面带加、减号的情况，则转换为一个十进制数值。(忽略前面的 0)
+  - 如果字符串包含有效的浮点值格式，如"1.1"，则会转换为相应的浮点值（同样，忽略前面的 0）。
   - 如果字符串包含有效的十六进制格式，如"0xf"，则会转换为与该十六进制值对应的十进制整数值。
   - 如果字符串包含除上述情况之外的其他字符，则返回 NaN。
 
@@ -2129,15 +2127,15 @@ const otherStr3 = "foo"; // NaN
 
 - 对象，应用以下规则：
 
-  1. 调用对象自身的valueOf()方法，如果返回原始类型的值，则直接对该值应用上述规则，不再进行后续步骤。
+  1. 调用对象自身的 valueOf()方法，如果返回原始类型的值，则直接对该值应用上述规则，不再进行后续步骤。
 
-  注意：JavaScript调用valueOf方法将对象转换为原始值。你很少需要自己调用valueOf方法；当遇到要预期的原始值的对象时，JavaScript会自动调用它。默认情况下，valueOf方法由Object后面的每个对象继承。每个内置的核心对象都会覆盖此方法以返回适当的值。如果对象没有原始值，则valueOf将返回对象本身。JavaScript的许多内置对象都重写了该函数，以实现更适合自身的功能需要。因此，不同类型对象的valueOf()方法的返回值和返回值类型均可能不同。
+  注意：JavaScript 调用 valueOf 方法将对象转换为原始值。你很少需要自己调用 valueOf 方法；当遇到要预期的原始值的对象时，JavaScript 会自动调用它。默认情况下，valueOf 方法由 Object 后面的每个对象继承。每个内置的核心对象都会覆盖此方法以返回适当的值。如果对象没有原始值，则 valueOf 将返回对象本身。JavaScript 的许多内置对象都重写了该函数，以实现更适合自身的功能需要。因此，不同类型对象的 valueOf()方法的返回值和返回值类型均可能不同。
 
   valueOf() 默认应用以下规则：
 
-    - 调用对象为 Date 的实例，则返回一个数字，这个数字表示从 1970 年 1 月 1 日午夜开始计的毫秒数 UTC。
-    - 调用对象为原始值包装类型的实例，则返回对应的原始值。
-    - 调用对象为其他对象，则返回对象本身。
+  - 调用对象为 Date 的实例，则返回一个数字，这个数字表示从 1970 年 1 月 1 日午夜开始计的毫秒数 UTC。
+  - 调用对象为原始值包装类型的实例，则返回对应的原始值。
+  - 调用对象为其他对象，则返回对象本身。
 
   来看下面的例子：
 
@@ -2147,46 +2145,46 @@ const otherStr3 = "foo"; // NaN
   const strO = new String("foo"); // NaN
   ```
 
-  2. 如果valueOf()方法返回对象，则调用对象自身的toString()方法。如果toString()方法返回原始类型的值，则直接对该值使用上述规则，不再进行后续步骤。
+  2. 如果 valueOf()方法返回对象，则调用对象自身的 toString()方法。如果 toString()方法返回原始类型的值，则直接对该值使用上述规则，不再进行后续步骤。
 
-    - 数组的 valueOf() 方法返回数组本身，继续应用 toString() 方法，默认返回每个元素的 toString() 结果并以逗号连接的字符串。（具体见6.2.7节）之后再应用字符串的转换规则。
+  - 数组的 valueOf() 方法返回数组本身，继续应用 toString() 方法，默认返回每个元素的 toString() 结果并以逗号连接的字符串。（具体见 6.2.7 节）之后再应用字符串的转换规则。
 
-    来看下面的例子：
+  来看下面的例子：
 
-    ```js
-    // emptyArr.valueOf() 返回数组本身，继续应用 emptyArr.toString()，空数组返回空字符串 ""，因此为 0。
-    const emptyArr = []; // 0
+  ```js
+  // emptyArr.valueOf() 返回数组本身，继续应用 emptyArr.toString()，空数组返回空字符串 ""，因此为 0。
+  const emptyArr = []; // 0
 
-    // oneEleArr.valueOf() 返回数组本身，继续应用 oneEleArr.toString()，单个元素数组返回第一个元素 toString() 的结果，在这个例子中就是 "1"，因此结果为 1。
-    const oneEleArr = ["1"]; // 1
+  // oneEleArr.valueOf() 返回数组本身，继续应用 oneEleArr.toString()，单个元素数组返回第一个元素 toString() 的结果，在这个例子中就是 "1"，因此结果为 1。
+  const oneEleArr = ["1"]; // 1
 
-    // moreEleArr.valueOf() 返回数组本身，继续应用 moreEleArr.toString()，返回 "1,2"，因此结果为 NaN。
-    const moreEleArr = [1, 2]; // NaN
-    ```
+  // moreEleArr.valueOf() 返回数组本身，继续应用 moreEleArr.toString()，返回 "1,2"，因此结果为 NaN。
+  const moreEleArr = [1, 2]; // NaN
+  ```
 
-   - 对象的 valueOf() 方法返回对象本身，继续应用 toString() 方法，返回字符串 "[Object Object]"，之后再应用字符串的转换规则，因此结果为 NaN。对于不同的对象有不同的 toString() 结果，但正则表达式，Math对象，函数，映射，集合的默认数字转换结果都是 NaN。
+  - 对象的 valueOf() 方法返回对象本身，继续应用 toString() 方法，返回字符串 "[Object Object]"，之后再应用字符串的转换规则，因此结果为 NaN。对于不同的对象有不同的 toString() 结果，但正则表达式，Math 对象，函数，映射，集合的默认数字转换结果都是 NaN。
 
-    来看下面的例子：
+  来看下面的例子：
 
-    ```js
-    const o = {}; // NaN
-    const regexp = /e/g; // NaN
-    const math = Math; // NaN
-    const func = ()=>{}; // NaN
-    const map = new Map(); // NaN
-    const set = new Set(); //NaN
-    ```
+  ```js
+  const o = {}; // NaN
+  const regexp = /e/g; // NaN
+  const math = Math; // NaN
+  const func = () => {}; // NaN
+  const map = new Map(); // NaN
+  const set = new Set(); //NaN
+  ```
 
-  3. 如果toString()方法返回的是对象，则报错。
+  3. 如果 toString()方法返回的是对象，则报错。
 
-    如果重写了继承的 toString() 方法使得一个对象调用该方法返回一个对象，那么在这种情况下，数字转换就会报错。
+  如果重写了继承的 toString() 方法使得一个对象调用该方法返回一个对象，那么在这种情况下，数字转换就会报错。
 
-    ```js
-    const foo = {
-      toString: ()=> new Object()
-    };
-    // TypeError: Cannot convert object to primitive value
-    ```
+  ```js
+  const foo = {
+    toString: () => new Object(),
+  };
+  // TypeError: Cannot convert object to primitive value
+  ```
 
 考虑到用 Number()函数转换字符串时相对复杂且有点反常规，通常在需要得到整数时可以优先使用 parseInt()函数。parseInt()函数更专注于字符串是否包含数值模式。字符串最前面的空格会被忽略，从第一个非空格字符开始转换。如果第一个字符不是数值字符、加号或减号，parseInt()立即返回 NaN。这意味着空字符串也会返回 NaN（这一点跟 Number()不一样，它返回 0）。如果第一个字符是数值字符、加号或减号，则继续依次检测每个字符，直到字符串末尾，或碰到非数值字符。比如，"1234blue"会被转换为 1234，因为"blue"会被完全忽略。类似地，"22.5"会被转换为 22，因为小数点不是有效的整数字符。
 
@@ -2269,10 +2267,10 @@ let firstName = 'Nicholas"; // 语法错误：开头和结尾的引号必须是�
 | \b     | 退格                                                                                             |
 | \r     | 回车                                                                                             |
 | \f     | 换页                                                                                             |
-| `\\`    | 反斜杠（\）                                                                                      |
-| `\'`    | 单引号（'），在字符串以单引号标示时使用，例如`'He said, \'hey.\''`                               |
-| `\"`    | 双引号（"），在字符串以双引号标示时使用，例如`"He said, \"hey.\""`                             |
-| \\\`   | 反引号（\`），在字符串以反引号标示时使用，例如 \`He said, \\\`hey.\\\``                        |
+| `\\`   | 反斜杠（\）                                                                                      |
+| `\'`   | 单引号（'），在字符串以单引号标示时使用，例如`'He said, \'hey.\''`                               |
+| `\"`   | 双引号（"），在字符串以双引号标示时使用，例如`"He said, \"hey.\""`                               |
+| \\\`   | 反引号（\`），在字符串以反引号标示时使用，例如 \`He said, \\\`hey.\\\``                          |
 | \xnn   | 以十六进制编码 nn 表示的字符（其中 n 是十六进制数字 0~F），例如\x41 等于"A"                      |
 | \unnnn | 以十六进制编码 nnnn 表示的 Unicode 字符（其中 n 是十六进制数字 0~F），例如\u03a3 等于希腊字符"Σ" |
 
@@ -2323,7 +2321,7 @@ var o = new Object();
 o.toString(); // returns [object Object]
 ```
 
-数组的 toString() 被重写，详见 6.2.7节。
+数组的 toString() 被重写，详见 6.2.7 节。
 
 **使用 toString() 检测对象类型**
 
@@ -2894,7 +2892,7 @@ console.log(b instanceof Baz); // false
 const arrLikeObject = {
   0: "foo",
   1: "bar",
-  length: 2
+  length: 2,
 };
 ```
 
@@ -3281,8 +3279,8 @@ const arrNum = +arr; // 1
 const arrNumIncre = ++arr; // 2
 
 let o = {
-    toString: ()=>-1 
-}
+  toString: () => -1,
+};
 console.log(++o); // 0
 console.log(typeof o); // number
 ```
@@ -3615,10 +3613,10 @@ let result = true && false;
 | false        | true         | false |
 | false        | false        | false |
 
-逻辑与操作符可用于任何类型的操作数，不限于布尔值。对于通用类型的逻辑与操作，首先对2个操作数使用 Boolean() 转型函数，然后执行以下规则：
+逻辑与操作符可用于任何类型的操作数，不限于布尔值。对于通用类型的逻辑与操作，首先对 2 个操作数使用 Boolean() 转型函数，然后执行以下规则：
 
-- 如果两个操作数转换结果都是 true，则返回第2个操作数。
-- 如果两个操作数转换结果都是 false，则返回第1个操作数。
+- 如果两个操作数转换结果都是 true，则返回第 2 个操作数。
+- 如果两个操作数转换结果都是 false，则返回第 1 个操作数。
 - 如果一个操作数转换结果是 false，另一个操作数转换结果是 true，则返回转型结果为 false 的那个操作数。
 
 来看下面的例子：
@@ -3664,10 +3662,10 @@ let result = true || false;
 | false        | true         | true  |
 | false        | false        | false |
 
-逻辑或操作符可用于任何类型的操作数，不限于布尔值。对于通用类型的逻辑或操作，首先对2个操作数使用 Boolean() 转型函数，然后执行以下规则：
+逻辑或操作符可用于任何类型的操作数，不限于布尔值。对于通用类型的逻辑或操作，首先对 2 个操作数使用 Boolean() 转型函数，然后执行以下规则：
 
-- 如果两个操作数转换结果都是 true，则返回第1个操作数。
-- 如果两个操作数转换结果都是 false，则返回第2个操作数。
+- 如果两个操作数转换结果都是 true，则返回第 1 个操作数。
+- 如果两个操作数转换结果都是 false，则返回第 2 个操作数。
 - 如果一个操作数转换结果是 false，另一个操作数转换结果是 true，则返回转型结果为 true 的那个操作数。
 
 来看下面的例子：
@@ -3796,12 +3794,12 @@ let result = 1 + 2;
 
 - 如果两个操作数都是数值，加法操作符执行加法运算并根据如下规则返回结果：
 
-   - 如果有任一操作数是 NaN，则返回 NaN；
-   - 如果 Infinity 加任何非 -Infinity 值，则返回 Infinity；否则返回 NaN。
-   - 如果是-Infinity 加-Infinity，则返回-Infinity；
-   - 如果是+0 加+0，则返回+0；
-   - 如果是-0 加+0，则返回+0；
-   - 如果是-0 加-0，则返回-0。
+  - 如果有任一操作数是 NaN，则返回 NaN；
+  - 如果 Infinity 加任何非 -Infinity 值，则返回 Infinity；否则返回 NaN。
+  - 如果是-Infinity 加-Infinity，则返回-Infinity；
+  - 如果是+0 加+0，则返回+0；
+  - 如果是-0 加+0，则返回+0；
+  - 如果是-0 加-0，则返回-0。
 
 - 如果两个操作数中都没有字符串和对象，则先对两个操作数都使用 Number() 进行转型，之后再执行上述规则。
 
@@ -3818,11 +3816,11 @@ const nan = 0 + undefined; // NaN
 
 ```js
 const foo = NaN + "5"; // "NaN5"
-const baz = undefined + [1] //"undefined1"
+const baz = undefined + [1]; //"undefined1"
 const bar = {} + []; // "[Object Object]"
 ```
 
-在进行加法操作时，先观察两个操作数是否包含对象或字符串类型，如果是则对两个操作数使用 String() 转型，之后进行字符串的拼接。如果不包含则对两个操作数使用 Number() 转型，之后再进行数值运算。这个过程可以用JavaScript流程语句表示为：
+在进行加法操作时，先观察两个操作数是否包含对象或字符串类型，如果是则对两个操作数使用 String() 转型，之后进行字符串的拼接。如果不包含则对两个操作数使用 Number() 转型，之后再进行数值运算。这个过程可以用 JavaScript 流程语句表示为：
 
 ```js
 const result = a + b;
@@ -3905,6 +3903,7 @@ let result2 = 5 < 3; // false
 与 ECMAScript 中的其他操作符一样，在将它们应用到不同数据类型时也会发生类型转换和其他行为。
 
 - 如果两个操作数不都是字符串，则把操作数使用 Number() 转换为数值，执行数值比较。数值比较有以下规则：
+
   - NaN 和其他数值的比较结果都是 false。
   - Infinity 大于等于所有数值。
   - -Infinity 小于等于所有数值。
@@ -3922,7 +3921,7 @@ let result2 = 5 < 3; // false
   ```
 
 - 如果操作数都是字符串，则逐个比较字符串中对应字符的编码。
-  
+
   在使用关系操作符比较两个字符串时，会发生一个有趣的现象。很多人认为小于意味着“字母顺序靠前”，而大于意味着“字母顺序靠后”，实际上不是这么回事。对字符串而言，关系操作符会比较字符串中对应字符的编码，而这些编码是数值。比较完之后，会返回布尔值。问题的关键在于，大写字母的编码都小于小写字母的编码，因此以下这种情况就会发生：
 
   ```js
@@ -3943,20 +3942,20 @@ let result2 = 5 < 3; // false
 
   这里在比较字符串"23"和"3"时返回 true。因为两个操作数都是字符串，所以会逐个比较它们的字符编码（字符"2"的编码是 50，而字符"3"的编码是 51）。
 
-上述规则用JavaScript流程语句可以表示为：
+上述规则用 JavaScript 流程语句可以表示为：
 
 ```js
 const result = a > b;
 
-function compare(a,b){
-  if(typeof a === "string" && typeof b === "string"){
-    return compareCharCode(a,b);
+function compare(a, b) {
+  if (typeof a === "string" && typeof b === "string") {
+    return compareCharCode(a, b);
   } else {
-    return (Number(a) - Number(b) > 0);
+    return Number(a) - Number(b) > 0;
   }
 }
 
-const resultExpected = compare(a,b);
+const resultExpected = compare(a, b);
 ```
 
 ### 3.5.8. 相等操作符
@@ -3970,7 +3969,7 @@ ECMAScript 中的等于操作符用两个等于号（==）表示，如果操作�
 在转换操作数的类型时，相等和不相等操作符遵循如下规则：
 
 - null 和 undefined 不进行类型转换，且规定 null 和 undefined 相等。
-- NaN和其他任何值不相等，甚至和其本身也不相等。
+- NaN 和其他任何值不相等，甚至和其本身也不相等。
 - 如果任一操作数是数值或布尔值，则将两个操作数转换为数值后再进行数值比较。
 - 如果一个操作数是字符串，另一个是对象，则将该对象转为字符串后再进行字符串的比较。
 
@@ -4060,7 +4059,7 @@ console.log(foo); // 0
 console.log(i); // 1
 ```
 
-在这个例子中，有些人可能会认为最后输出的i为 2，其实是 1。
+在这个例子中，有些人可能会认为最后输出的 i 为 2，其实是 1。
 
 ### 3.5.10. 赋值操作符
 
@@ -6116,7 +6115,7 @@ console.log(tempAlphabet);
 ] */
 ```
 
-中文字符中基本汉字的范围是 0x4E00("一") 到 0x9FA5("龥")。一共20902字。
+中文字符中基本汉字的范围是 0x4E00("一") 到 0x9FA5("龥")。一共 20902 字。
 
 这个对应关系在扩展到 Unicode 增补字符平面时就不成立了。问题很简单，即 16 位只能唯一表示 65 536 个字符。这对于大多数语言字符集是足够了，在 Unicode 中称为 **基本多语言平面(BMP)**。为了表示更多的字符，Unicode 采用了一个策略，即每个字符使用另外 16 位去选择一个增补平面。这种每个字符使用两个 16 位码元的策略称为 **代理对**。
 
@@ -6458,9 +6457,9 @@ console.log(matches[0]); // "cat"
 console.log(pattern.lastIndex); // 0
 ```
 
-如果正则表达式没有 g 标记，则match()方法返回的数组与 RegExp 对象的 exec()方法返回的数组是一样的：第一个元素是与整个模式匹配的字符串，其余元素则是与表达式中的捕获组匹配的字符串（如果有的话）。
+如果正则表达式没有 g 标记，则 match()方法返回的数组与 RegExp 对象的 exec()方法返回的数组是一样的：第一个元素是与整个模式匹配的字符串，其余元素则是与表达式中的捕获组匹配的字符串（如果有的话）。
 
-如果正则表达式有 g 标记，则match() 方法返回的数组为所有匹配的字符串，来看下面的例子：
+如果正则表达式有 g 标记，则 match() 方法返回的数组为所有匹配的字符串，来看下面的例子：
 
 ```js
 let text = "cat, bat, sat, fat";
@@ -7350,7 +7349,7 @@ console.log(zeroes); // [0, 0, 0, 4, 4]
 
 ```js
 let ints,
-reset = () => ints = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  reset = () => (ints = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
 reset();
 // 从ints 中复制索引0 开始的内容，插入到索引5 开始的位置
 // 在源索引或目标索引到达数组边界时停止
@@ -7374,19 +7373,19 @@ reset();
 // 支持负索引值，与fill()相对于数组末尾计算正向索引的过程是一样的
 ints.copyWithin(-4, -7, -3);
 console.log(ints); // [0, 1, 2, 3, 4, 5, 3, 4, 5, 6]
-copyWithin()
+copyWithin();
 ```
 
 静默忽略超出数组边界、零长度及方向相反的索引范围：
 
 ```js
 let ints,
-reset = () => ints = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  reset = () => (ints = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
 reset();
 // 索引过低，忽略
 ints.copyWithin(1, -15, -12);
 console.log(ints); // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-reset()
+reset();
 // 索引过高，忽略
 ints.copyWithin(1, 12, 15);
 console.log(ints); // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -7396,7 +7395,7 @@ ints.copyWithin(2, 4, 2);
 console.log(ints); // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 reset();
 // 索引部分可用，复制、填充可用部分
-ints.copyWithin(4, 7, 10)
+ints.copyWithin(4, 7, 10);
 console.log(ints); // [0, 1, 2, 3, 7, 8, 9, 7, 8, 9];
 ```
 
@@ -7815,18 +7814,18 @@ numbers.forEach((item, index, array) => {
 
 ECMAScript 为数组提供了两个归并方法：reduce()和 reduceRight()。这两个方法都会迭代数组的所有项，并在此基础上构建一个最终返回值。reduce()方法从数组第一项开始遍历到最后一项。而 reduceRight()从最后一项开始遍历至第一项。
 
-1. **归并函数**
+- **归并函数**
 
 reduce() 方法必须传入一个 **归并函数(reducer)**。归并函数接收 4 个参数：
 
-1. previousValue。这个值表示每次执行时的上一个值，在归并函数第1次执行时，这个值就是数组的第1个值（如果没有提供 initialValue 见下）。
-2. currentValue。这个值表示每次执行时当前处理的值，在归并函数第1次执行时，这个值就是数组的第2个值（如果没有提供 initialValue 见下）。
+1. previousValue。这个值表示每次执行时的上一个值，在归并函数第 1 次执行时，这个值就是数组的第 1 个值（如果没有提供 initialValue 见下）。
+2. currentValue。这个值表示每次执行时当前处理的值，在归并函数第 1 次执行时，这个值就是数组的第 2 个值（如果没有提供 initialValue 见下）。
 3. currentIndex。这个值表示当前处理值在数组中的索引。
 4. array。表示调用 reduce() 的数组本身。
 
-2. **初始值**
+- **初始值**
 
-此外，reduce() 方法可以选择性地传入一个 **初始值(initialValue)** ，当传入一个初始值时，第1次执行的 previousValue 为该初始值，currentValue 为数组的第1个值。
+此外，reduce() 方法可以选择性地传入一个 **初始值(initialValue)** ，当传入一个初始值时，第 1 次执行的 previousValue 为该初始值，currentValue 为数组的第 1 个值。
 
 初始值是出于安全性考虑。**这是因为如果数组为空且没有初始值，进行归并操作会抛出 TypeError。** 如果数组仅有一个元素且没有初始值，或者提供了初始值但数组为空，那么该唯一值将被返回，归并操作不会得到执行。
 
@@ -7850,7 +7849,7 @@ const maxReducer = (pre, cur) => Math.max(pre.x, cur.x);
 [].reduce(maxReducer, -Infinity); // -Infinity
 ```
 
-3. **数组累加**
+- **数组累加**
 
 可以使用 reduce()函数便捷地累加数组中所有数值，比如：
 
@@ -7862,7 +7861,7 @@ console.log(sum); // 15
 
 第一次执行归并函数时，prev 是 1，cur 是 2。第二次执行时，prev 是 3（1 + 2），cur 是 3（数组第三项）。如此递进，直到把所有项都遍历一次，最后返回归并结果。
 
-4. **打平数组**
+- **打平数组**
 
 结合 reduce() 和 concat() 方法可以便捷地将二维数组打平为一维数组：
 
@@ -7872,9 +7871,9 @@ let flattenedArr = arr.reduce((pre, cur) => pre.concat(cur), []);
 console.log(flattenedArr); // [ 1, 2, 3, 4, 5, 6 ]
 ```
 
-在第一次执行时，previousValue 为 []，currentValue 为 1，[].concat(1) 结果为 `[1]`。第2次执行时，previousValue 为 `[1]`，currentValue 为 `[2,3]`，`[1].concat([2,3])` 结果为 `[1,2,3]`，以此类推。
+在第一次执行时，previousValue 为 []，currentValue 为 1，[].concat(1) 结果为 `[1]`。第 2 次执行时，previousValue 为 `[1]`，currentValue 为 `[2,3]`，`[1].concat([2,3])` 结果为 `[1,2,3]`，以此类推。
 
-5. **数组计数**
+- **数组计数**
 
 ```js
 let letters = ["a", "b", "c", "c", "c", "d", "d"];
@@ -7891,9 +7890,9 @@ console.log(countedLetters);
 // { a: 1, b: 1, c: 3, d: 2 }
 ```
 
-在第1次执行时，previousValue 为 {}，currentValue 为 "a"，letters 中没有 "a"，故把属性 a 的值设为 1，结果为 {a: 1}。同理可得出，第3次执行的结果为 {a: 1, b: 1, c: 1}。第4次执行时，由于 letters 中有 c 属性，因此 c属性的值自增。以此类推。
+在第 1 次执行时，previousValue 为 {}，currentValue 为 "a"，letters 中没有 "a"，故把属性 a 的值设为 1，结果为 {a: 1}。同理可得出，第 3 次执行的结果为 {a: 1, b: 1, c: 1}。第 4 次执行时，由于 letters 中有 c 属性，因此 c 属性的值自增。以此类推。
 
-6. **数组去重**
+- **数组去重**
 
 ```js
 let myArray = ["a", "b", "a", "b", "c", "e", "e", "c", "d", "d", "d", "d"];
@@ -7920,7 +7919,7 @@ console.log(NaNs.indexOf(NaN)); // -1
 此时，使用 includes() 就可以避免这个问题：
 
 ```js
-let arr = [1,1,NaN, NaN];
+let arr = [1, 1, NaN, NaN];
 let uniaueArr = arr.reduce(
   (pre, cur) => (pre.includes(cur) ? pre : [...pre, cur]),
   []
@@ -7928,9 +7927,9 @@ let uniaueArr = arr.reduce(
 console.log(uniaueArr); // [1, NaN]
 ```
 
-在这个例子中，第1次执行时，previousValue 为 []，currentValue 为 1，previousValue 中不包含 1，因此结果为 `[1]`。第2次执行时，previousValue 为 `[1]`，currentValue 为 1，此时包含 1 ，因此结果返回 `[1]`，同样的，第4次执行完后，得到 [1, NaN]。
+在这个例子中，第 1 次执行时，previousValue 为 []，currentValue 为 1，previousValue 中不包含 1，因此结果为 `[1]`。第 2 次执行时，previousValue 为 `[1]`，currentValue 为 1，此时包含 1 ，因此结果返回 `[1]`，同样的，第 4 次执行完后，得到 [1, NaN]。
 
-注意：如果你正在使用一个可以兼容Set 和 Array.from() 的环境，你可以使用 `Array.from(new Set(array))` 来获得一个去重的数组。
+注意：如果你正在使用一个可以兼容 Set 和 Array.from() 的环境，你可以使用 `Array.from(new Set(array))` 来获得一个去重的数组。
 
 ## 6.3. 定型数组
 
@@ -10600,7 +10599,7 @@ Object.defineProperty(person, "name", {
 
 因此，虽然可以对同一个属性多次调用 Object.defineProperty()，但在把 configurable 设置为 false 之后就会受限制了。
 
-在调用Object.defineProperty()时，configurable、enumerable 和writable 的值如果不指定，则都默认为false。多数情况下，可能都不需要Object.defineProperty()提供的这些强大的设置，但要理解JavaScript 对象，就要理解这些概念。
+在调用 Object.defineProperty()时，configurable、enumerable 和 writable 的值如果不指定，则都默认为 false。多数情况下，可能都不需要 Object.defineProperty()提供的这些强大的设置，但要理解 JavaScript 对象，就要理解这些概念。
 
 2. **访问器属性**
 
@@ -14247,10 +14246,10 @@ const handler = {
     const typeMatched = argumentsList.every(
       (argument) => typeof argument === "number"
     );
-    if(typeMatched){
-        return Reflect.apply(...arguments);
-    } else{
-        throw "所有参数必须为数值！"
+    if (typeMatched) {
+      return Reflect.apply(...arguments);
+    } else {
+      throw "所有参数必须为数值！";
     }
   },
 };
@@ -14306,11 +14305,11 @@ class User {
 }
 
 const handler = {
-  construct(){
+  construct() {
     const newUser = Reflect.construct(...arguments);
     users.push(newUser);
     return newUser;
-  }
+  },
 };
 
 const proxy = new Proxy(User, handler);
@@ -14464,6 +14463,12 @@ setName(value);
 console.log(value.name); // "Matt"
 // 无效的写法：
 let multiply = (a, b) => return a * b;
+```
+
+如果要返回一个对象字面量，就要加上括号：
+
+```js
+(params) => ({ foo: bar });
 ```
 
 箭头函数虽然语法简洁，但也有很多场合不适用。箭头函数不能使用 arguments、super 和 new.target，也不能用作构造函数。此外，箭头函数也没有 prototype 属性。
@@ -15039,9 +15044,11 @@ console.log(factorial(5)); // 0
 
 ### 10.9.2. this
 
-另一个特殊的对象是 this。
+另一个特殊的对象是 this。this 的值取决于多种因素。
 
-1. this 在全局上下文中，即在任何函数体的外部时，都指向全局对象，在浏览器宿主环境中就是 window。
+- **全局上下文**
+
+this 在全局上下文中，即在任何函数体的外部时，都指向全局对象，在浏览器宿主环境中就是 window。
 
 来看下面的例子：
 
@@ -15059,9 +15066,11 @@ console.log(o1.o2.this[0] === window); // true
 
 在这个例子中，对象 o1 的 this 属性引用 this 值，而这个 this 值在全局上下文中指向 window。同样的，o2 的 this 值引用一个数组对象，这个数组的第一个元素为 this，但无论如何 this 值都在全局上下文中，所以都指向 window。
 
-this 在标准函数上下文（使用 function 关键字的函数）中的值是最有意思的部分。
+- **标准函数上下文**
 
-2. 在非严格模式下直接调用函数，则 this 指向全局对象。
+this 出现在标准函数上下文中，此时的 this 取决于函数调用的方式。
+
+1. 在非严格模式下直接调用标准函数，则其内部的 this 指向全局对象。
 
 来看下面几个例子：
 
@@ -15069,39 +15078,89 @@ this 在标准函数上下文（使用 function 关键字的函数）中的值�
 function getThis() {
   return this;
 }
-// 相当于 window.getThis()
 console.log(getThis() === window); // true
 ```
 
-在这个例子中，getThis() 是一个函数声明，它返回 this 值。之后在全局上下文中调用了 getThis() 则它返回 window 对象。
+在这个例子中，getThis 是一个函数声明，它返回内部的 this 值。之后在全局上下文中直接调用了 getThis，它返回了全局对象。
 
-3. 严格模式下直接调用函数，则 this 值为 undefined。
+非严格模式下直接调用标准函数，其内部的 this 值指向全局对象，而不论调用的上下文：
+
+```js
+function foo() {
+  function getThis() {
+    console.log(this === window); // true
+  }
+  getThis();
+}
+foo();
+```
+
+在这个例子中，getThis 在函数 foo 的上下文中直接调用，但不论是在全局上下文还是函数上下文中，非严格模式下直接调用标准函数，其内部的 this 都指向全局对象。
+
+2. 严格模式下直接调用标准函数，则其内部的 this 为 undefined。
+
+来看下面几个例子：
 
 ```js
 function getThisInStrict() {
   "use strict";
   return this;
 }
+console.log(getThisInStrict() === window); // false
 console.log(getThisInStrict() === undefined); // true
 ```
 
-4. 函数作为方法调用时，this 指向直接调用者，而非间接调用者：
+在这个例子中，函数 getThisInStrict 的作用域内使用了严格模式。之后，在全局上下文中调用了 getThisInStrict，它内部的 this 为 undefined 而不是全局对象。
 
-下面的例子，我们已经遇到过：
+同样的，严格模式下直接调用标准函数，其内部的 this 为 undefined，而不论调用的上下文。
+
+3. 标准函数作为方法调用时，this 指向直接调用者，而非间接调用者。
+
+来看下面几个例子：
 
 ```js
-...
-let o = {};
+function getThis() {
+  return this;
+}
+
+let o = {
+  name: "o",
+};
+
 o.getThis = getThis;
-console.log(o.getThis() === o); // true
+console.log(o.getThis().name); // o
 ```
 
-调用对象 o 的 getThis 方法，则 this 返回 o 本身。
+在这个例子中，getThis 作为 o 的方法在全局上下文中调用。getThis 内部的 this 指向 o。
+
+这个规则不受严格模式和调用方法时的上下文影响：
+
+```js
+"use strict";
+
+function getThis() {
+  return this;
+}
+
+function foo() {
+  const o = {
+    name: "o",
+  };
+  o.getThis = getThis;
+  console.log(o.getThis().name); // o
+}
+foo();
+```
+
+在这个例子中，全局使用了严格模式。之后在函数 foo 上下文中，getThis 作为 o 的方法被调用。其内部的 this 指向 o。
 
 复杂的情况是通过间接方式调用函数：
 
 ```js
-...
+function getThis() {
+  return this;
+}
+
 console.log(getThis.prototype.constructor === getThis); // true
 console.log(getThis.prototype.constructor() === getThis.prototype); // true
 
@@ -15109,9 +15168,9 @@ let constructor = getThis.prototype.constructor;
 console.log(constructor() === window); // true
 ```
 
-在这个例子中，getThis.prototype.constructor 返回 getThis 函数对象本身。在执行 getThis.prototype.constructor()，getThis 的直接调用者为 getThis.prototype，因此 this 指向 getThis.prototype。之后，将 getThis.prototype.constructor 赋给 constructor，但调用 constructor 是直接调用，直接调用函数，this 指向全局对象。
+在这个例子中，getThis.prototype.constructor 返回 getThis 函数对象本身。在执行 getThis.prototype.constructor()时，getThis 的直接调用者为 getThis.prototype，因此 this 指向 getThis.prototype。之后，将 getThis.prototype.constructor 赋给 constructor，并直接调用，因此 this 指向全局对象。
 
-5. 函数作为构造函数调用，this 指向正在构建的对象：
+4. 标准函数作为构造函数调用，this 指向正在构建的对象：
 
 ```js
 function Person() {
@@ -15121,20 +15180,61 @@ function Person() {
 new Person();
 ```
 
-6. 箭头函数
+在这个例子中，Person 作为构造方法调用，this 指向被构建的对象，因此 `this instanceOf Person` 为 true。
 
-箭头函数没有自己的 this 值，它会从作用域的上一层继承 this：
+- **箭头函数**
+
+箭头函数的 this 行为和标准函数的截然不同。
+
+1. 箭头函数在全局上下文中，则其 this 绑定全局对象，且严格模式和方法调用对该 this 没有影响。
+
+来看下面几个例子：
 
 ```js
-window.color = "red";
-let o = {
-  color: "blue",
+const getThisInArrowFunc = () => {
+  "use strict";
+  return this;
 };
-let sayColor = () => console.log(this.color);
-sayColor(); // 'red'
-o.sayColor = sayColor;
-o.sayColor(); // 'red'
+
+console.log(getThisInArrowFunc() === window); // true
 ```
+
+在这个例子中，getThisInArrowFunc 位于全局上下文，其内部使用了严格模式，但这不影响 this 的值。this 依旧绑定全局对象。
+
+```js
+var name = "window";
+const o1 = {
+  name: "o1",
+  o2: {
+    name: "o2",
+    getThis: () => this,
+  },
+};
+console.log(o1.o2.getThis().name); // window
+```
+
+在这个例子中，getThis 作为 o2 的方法被 o1 间接在全局上下文中调用，但不论是否作为方法被调用，getThis 都在全局上下文中，因此其内部的 this 还是绑定全局对象。
+
+2. 箭头函数在函数上下文中，则其 this 绑定紧邻的外层函数的 this。
+
+```js
+var name = "window";
+function foo() {
+  const o1 = {
+    name: "o1",
+    o2: {
+      name: "o2",
+      getThis: () => this,
+    },
+  };
+  console.log(o1.o2.getThis().name); // window
+}
+foo();
+```
+
+在这个例子中，箭头函数 getThis 在 foo 函数的上下文中。这里 foo 在非严格模式下直接调用，所以函数 foo 的 this 指向全局对象，箭头函数绑定了该值。
+
+当然，如过外层的函数 foo 以方法调用，则该箭头函数内部的 this 就绑定 foo 的直接调用者。
 
 有读者知道，在事件回调或定时回调中调用某个函数时，this 值指向的并非想要的对象。此时将回调函数写成箭头函数就可以解决问题：
 
@@ -23131,18 +23231,17 @@ for (let i = 0, len = document.styleSheets.length; i < len; i++) {
 }
 ```
 
-document.styleSheets 返回的样式表可能会因浏览器而异。所有浏览器都会包含`<style>`元素和rel 属性设置为"stylesheet"的`<link>`元素。IE、Opera、Chrome 也包含rel 属性设置为"alternate stylesheet"的`<link>`元素。
+document.styleSheets 返回的样式表可能会因浏览器而异。所有浏览器都会包含`<style>`元素和 rel 属性设置为"stylesheet"的`<link>`元素。IE、Opera、Chrome 也包含 rel 属性设置为"alternate stylesheet"的`<link>`元素。
 
-通过`<link>`或`<style>`元素也可以直接获取CSSStyleSheet 对象。DOM在这两个元素上暴露了 sheet 属性，其中包含对应的CSSStyleSheet 对象。
+通过`<link>`或`<style>`元素也可以直接获取 CSSStyleSheet 对象。DOM 在这两个元素上暴露了 sheet 属性，其中包含对应的 CSSStyleSheet 对象。
 
 1. **CSS 规则**
 
-CSSRule 类型表示样式表中的一条规则。这个类型也是一个通用基类，很多类型都继承它，但其中最常用的是表示样式信息的CSSStyleRule（其他CSS 规则还有@import、@font-face、@page 和@charset 等，不过这些规则很少需要使用脚本来操作）。以下是CSSStyleRule 对象上可用的属性。
+CSSRule 类型表示样式表中的一条规则。这个类型也是一个通用基类，很多类型都继承它，但其中最常用的是表示样式信息的 CSSStyleRule（其他 CSS 规则还有@import、@font-face、@page 和@charset 等，不过这些规则很少需要使用脚本来操作）。以下是 CSSStyleRule 对象上可用的属性。
 
 - cssText，返回整条规则的文本。这里的文本可能与样式表中实际的文本不一样，因为浏览器内部处理样式表的方式也不一样。Safari 始终会把所有字母都转换为小写。
-- parentRule，如果这条规则被其他规则（如@media）包含，则指向包含规则，否则就是null。
+- parentRule，如果这条规则被其他规则（如@media）包含，则指向包含规则，否则就是 null。
 - parentStyleSheet，包含当前规则的样式表。
-- selectorText，返回规则的选择符文本。这里的文本可能与样式表中实际的文本不一样，因为浏览器内部处理样式表的方式也不一样。这个属性在Firefox、Safari、Chrome 和IE 中是只读的，在Opera 中是可以修改的。
-- style，返回CSSStyleDeclaration 对象，可以设置和获取当前规则中的样式。
-- type，数值常量，表示规则类型。对于样式规则，它始终为1。
-
+- selectorText，返回规则的选择符文本。这里的文本可能与样式表中实际的文本不一样，因为浏览器内部处理样式表的方式也不一样。这个属性在 Firefox、Safari、Chrome 和 IE 中是只读的，在 Opera 中是可以修改的。
+- style，返回 CSSStyleDeclaration 对象，可以设置和获取当前规则中的样式。
+- type，数值常量，表示规则类型。对于样式规则，它始终为 1。
