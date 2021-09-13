@@ -229,6 +229,8 @@ plan : 1 chapter/2 day
     - [10.9.3. caller](#1093-caller)
     - [10.9.4. new.target](#1094-newtarget)
   - [10.10. 函数属性和方法](#1010-函数属性和方法)
+    - [10.10.1. 函数属性](#10101-函数属性)
+    - [10.10.2. 函数方法](#10102-函数方法)
   - [10.11. 函数表达式](#1011-函数表达式)
   - [10.12. 递归](#1012-递归)
   - [10.13. 尾调用优化](#1013-尾调用优化)
@@ -14420,7 +14422,7 @@ console.log(arrowSum(5, 8)); // 13
 console.log(functionExpressionSum(5, 8)); // 13
 ```
 
-箭头函数简洁的语法非常适合嵌入函数的场景：
+箭头函数表达式的语法比函数表达式更简洁，更适用于那些本来需要匿名函数的地方：
 
 ```js
 let ints = [1, 2, 3];
@@ -14471,7 +14473,22 @@ let multiply = (a, b) => return a * b;
 (params) => ({ foo: bar });
 ```
 
-箭头函数虽然语法简洁，但也有很多场合不适用。箭头函数不能使用 arguments、super 和 new.target，也不能用作构造函数。此外，箭头函数也没有 prototype 属性。
+箭头函数虽然语法简洁，但也有很多场合不适用。箭头函数没有自己的this，arguments，super，new.target 以及 prototype。当然它也不能用作构造函数。
+
+来看下面这个例子：
+
+```js
+const arrowFunc = ()=>{
+ console.log(arguments); // ReferenceError: arguments is not defined
+ console.log(new.target); // SyntaxError: new.target expression is not allowed here
+};
+
+arrowFunc();
+
+console.log(arrowFunc.prototype); // undefined
+```
+
+在箭头函数内部没有 arguments，不能使用 new.target，当然也不能用作构造函数。箭头函数的 prototype 返回 undefined。
 
 ## 10.2. 函数名
 
@@ -14503,7 +14520,7 @@ console.log((() => {}).name); //（空字符串）
 console.log(new Function().name); // anonymous
 ```
 
-如果函数是一个获取函数、设置函数，或者使用 bind()实例化，那么标识符前面会加上一个前缀：
+如果函数是一个获取函数、设置函数，或者使用了 bind()，那么标识符前面会加上一个前缀：
 
 ```js
 function foo() {}
@@ -14520,6 +14537,23 @@ let dog = {
 let propertyDescriptor = Object.getOwnPropertyDescriptor(dog, "age");
 console.log(propertyDescriptor.get.name); // get age
 console.log(propertyDescriptor.set.name); // set age
+```
+
+如果使用符号作为方法名称，则使用空参数符号的方法名称返回空字符串，有描述符的符号作为方法名称返回 `[描述符]`，使用内置常用符号作为方法名称返回 `[内置常用符号]`，如 `[Symbol.iterator]`。
+
+```js
+const emptySymbol = Symbol();
+const fooSymbol = Symbol("foo");
+
+const o = {
+  [emptySymbol](){},
+  [fooSymbol](){},
+  [Symbol.iterator]() {},
+};
+
+console.log(o[emptySymbol].name); // (空字符串)
+console.log(o[fooSymbol].name); // [foo]
+console.log(o[Symbol.iterator].name); // [Symbol.iterator]
 ```
 
 ## 10.3. 理解参数
@@ -15289,39 +15323,67 @@ outer();
 
 ECMAScript 中的函数始终可以作为构造函数实例化一个新对象，也可以作为普通函数被调用。ECMAScript 6 新增了检测函数是否使用 new 关键字调用的 new.target 属性。如果函数是正常调用的，则 new.target 的值是 undefined；如果是使用 new 关键字调用的，则 new.target 将引用被调用的构造函数。
 
+来看这个例子：
+
 ```js
-function King() {
-  if (!new.target) {
-    throw 'King must be instantiated using "new"';
+function foo() {
+  const funcName = arguments.callee.name;
+  if (new.target) {
+    throw `函数${funcName}不能用作构造函数！`;
+  } else {
+    console.log(`函数${funcName}用为非构造函数！`);
   }
-  console.log('King instantiated using "new"');
 }
-new King(); // King instantiated using "new"
-King(); // Error: King must be instantiated using "new"
+
+new foo();
+foo();
 ```
+
+在这个例子中，函数 foo 的名字使用 `arguments.callee.name` 取得，如果foo用作构造函数，则 new.target 指向构造函数本身，为非空对象，则抛出错误。如果foo没有用作构造函数，则 new.target 为 undefined，正常执行。
 
 ## 10.10. 函数属性和方法
 
-前面提到过，ECMAScript 中的函数是对象，因此有属性和方法。每个函数都有两个属性：length 和 prototype。其中，length 属性保存函数定义的命名参数的个数，如下例所示：
+### 10.10.1. 函数属性
+
+1. **prototype**
+
+prototype 属性也许是 ECMAScript 核心中最有趣的部分。prototype 是保存引用类型所有实例方法的地方，这意味着 toString()、valueOf()等方法实际上都保存在 prototype 上，进而由所有实例共享。这个属性在自定义类型时特别重要。（相关内容已经在第 8 章详细介绍过了。）这个属性的特性在ES6中为 writable: true, enumerable: false, configurable: false。因此可写入，不可枚举，不可配置。
+
+2. **name**
+
+name 属性我们在函数名一节已经讨论过，它的特性为 writable: false, enumerable: false, configurable: true
+。因此只读，不可枚举，但可配置。
+
+3. **length**
+
+length 属性表示函数的命名参数的个数，它区别于 arguments.length ：这个值一般情况下是函数实际传入的参数个数。
+
+length 的特性为 writable: false, enumerable: false, configurable: true。因此只读，不可枚举，但可配置。
+
+来看下面这个例子：
 
 ```js
-function sayName(name) {
-  console.log(name);
-}
-function sum(num1, num2) {
-  return num1 + num2;
-}
-function sayHi() {
-  console.log("hi");
-}
-console.log(sayName.length); // 1
-console.log(sum.length); // 2
-console.log(sayHi.length); // 0
+console.log(Function.length); // 1
+console.log(function () {}.length); // 0
+console.log(function (a) {}.length); // 1
+console.log(function (a, b) {}.length); // 2
 ```
 
-以上代码定义了 3 个函数，每个函数的命名参数个数都不一样。sayName()函数有 1 个命名参数，所以其 length 属性为 1。类似地，sum()函数有两个命名参数，所以其 length 属性是 2。而 sayHi()没有命名参数，其 length 属性为 0。
+函数的构造函数 Function 本身也是一个函数，它的 length 返回 1。如果没有一个函数没有命名参数则返回 0。
 
-prototype 属性也许是 ECMAScript 核心中最有趣的部分。prototype 是保存引用类型所有实例方法的地方，这意味着 toString()、valueOf()等方法实际上都保存在 prototype 上，进而由所有实例共享。这个属性在自定义类型时特别重要。（相关内容已经在第 8 章详细介绍过了。）在 ECMAScript 5 中，prototype 属性是不可枚举的，因此使用 for-in 循环不会返回这个属性。
+需要注意的是：
+
+- 收集参数不计入数量。
+- 命名参数的计数在第一个有默认参数值的命名参数前停止。
+
+如下所示：
+
+```js
+console.log(function (a,b, ...args) {}.length); // 2
+console.log(function (a, b = 1, c) {}.length); // 1
+```
+
+### 10.10.2. 函数方法
 
 函数还有两个方法：apply()和 call()。这两个方法都会以指定的 this 值来调用函数，即会设置调用函数时函数体内 this 对象的值。apply()方法接收两个参数：函数内 this 的值和一个参数数组。第二个参数可以是 Array 的实例，但也可以是 arguments 对象。来看下面的例子：
 
