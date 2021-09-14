@@ -15463,7 +15463,9 @@ sum.apply(null, arr); // 6
 
 - bind(thisArg, arg1, arg2, ...)
 
+bind() 方法用于返回一个固定this的函数。它接收的参数中，thisArg 的含义及处理和 call() 的一致，其余参数被称为预置参数。
 
+来看这个例子：
 
 ```js
 const o = { name: "o" };
@@ -15477,26 +15479,87 @@ showThis = showThis.bind(o);
 showThis(); // o
 ```
 
-对于箭头函数调用以上 3 种方法，实际上箭头函数会忽略传进去的 this 参数，例如：
+在这个例子中，showThis 被重写为 this 固定于 o 上的函数。在被直接调用时，如果没有 bind()，则它内部的 this 就是全局对象，会输出 undefined，但这里输出了 o。显然this的固定起了效果。
+
+1. bind() 的 this 固定效果是一次性的，意思就是已经 bind 过的函数不能再 bind 一次，而且对已经bind过的函数调用 call() 或 apply() 方法没有影响。
+
+来看这个例子：
 
 ```js
-const arrFn = () => console.log(this); // window
-let o = { id: "o" };
-arrFn.apply(o); // window
-arrFn.call(o); // window
-let arrFnBindO = arrFn.bind(o);
-arrFnBindO(o); // window
+var name = "window";
+const o = { name: "o" };
 
-const normalFn = function () {
-  console.log(this);
-}; // window
-normalFn.apply(o); // { id: 'o' }
-normalFn.call(o); // { id: 'o' }
-let normalFnBindO = normalFn.bind(o);
-normalFnBindO(window); // { id: 'o' }
+function showThis() {
+  console.log(this.name);
+}
+
+showThis = showThis.bind(o);
+
+showThis = showThis.bind(this);
+
+showThis(); // o
+showThis.call(this); // o
+showThis.apply(this); // o
 ```
 
-在这个例子中，arrFn 的 this 始终指向全局上下文的 window，而标准函数 normalFn 则不同。
+在这个例子中，虽然 showThis 在固定 this 为 o后，再次被固定为全局对象，但bind的效果是一次性的，因此输出不是
+window，而是 o。
+
+2. 预置参数会自动插入传入的参数前面。
+
+来看下面的例子：
+
+```js
+function sum() {
+  console.log(...arguments);
+  return [...arguments].reduce((pre, cur) => pre + cur, 0);
+}
+
+sum = sum.bind(null, 1, 2, 3);
+
+console.log(sum());
+// 1 2 3
+// 6
+
+console.log(sum(4));
+// 1 2 3 4
+// 10
+```
+
+在这个例子中，sum 函数返回参数相加的结果。之后 sum 被重写为具有预置 1，2，3 参数的函数。这就表示在调用时，这些预置参数会自动插入传入的参数前面。因此，sum() 返回 6，而 sum(4)返回 10。
+
+需要注意的是，如果你使用预置参数就要意识到你传入的参数并不是实际的参数。
+
+```js
+function introduce(name, age, job) {
+  console.log(`My name is ${name}, I am ${age}, and I work as a ${job}.`);
+}
+
+introduce = introduce.bind(null, "Trigold", "20", "Web Engineer");
+
+introduce();
+// My name is Trigold, I am 20, and I work as a Web Engineer.
+introduce("Greg", "30", "doctor");
+// My name is Trigold, I am 20, and I work as a Web Engineer.
+```
+
+- 箭头函数
+
+对于箭头函数调用以上 3 种方法，实际上箭头函数会忽略传进去的 this 参数，这就是为什么我们在箭头函数的 this 规则中说箭头函数的 this “绑定” 了什么。
+
+来看下面的例子：
+
+```js
+var name = "window";
+let showThis = ()=>console.log(this.name);
+const o = { name: "o" };
+showThis.call(o); // window
+showThis.apply(o); // window
+showThis = showThis.bind(o);
+showThis(); // window
+```
+
+- 其他函数方法
 
 对函数而言，继承的方法 toLocaleString()和 toString()始终返回函数的代码。返回代码的具体格式因浏览器而异。有的返回源代码，包含注释，而有的只返回代码的内部形式，会删除注释，甚至代码可能被解释器修改过。由于这些差异，因此不能在重要功能中依赖这些方法返回的值，而只应在调试中使用它们。继承的方法 valueOf()返回函数本身。
 
