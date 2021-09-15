@@ -1,8 +1,8 @@
 ```json
 item : JavaScript 高级程序设计
 priority: 2
-span : 2 months
-plan : 1 chapter/2 day
+span : 3 months
+plan : 1 chapter/3 day
 ```
 
 **目录：**
@@ -15648,8 +15648,7 @@ function createComparisonFunction(propertyName) {
 }
 ```
 
-这里的 createComparisonFunction()函数返回一个匿名函数，这个匿名函数要么被赋值给一个
-变量，要么可以直接调用。但在 createComparisonFunction()内部，那个函数是匿名的。任何时候，只要函数被当作值来使用，它就是一个函数表达式。本章后面会介绍，这并不是使用函数表达式的唯一方式。
+这里的 createComparisonFunction()函数返回一个匿名函数，这个匿名函数要么被赋值给一个变量，要么可以直接调用。但在 createComparisonFunction()内部，那个函数是匿名的。任何时候，只要函数被当作值来使用，它就是一个函数表达式。本章后面会介绍，这并不是使用函数表达式的唯一方式。
 
 ## 10.12. 递归
 
@@ -15673,9 +15672,7 @@ factorial = null;
 console.log(anotherFactorial(4)); // 报错
 ```
 
-这里把 factorial()函数保存在了另一个变量 anotherFactorial 中，然后将 factorial 设置
-为 null，于是只保留了一个对原始函数的引用。而在调用 anotherFactorial()时，要递归调用
-factorial()，但因为它已经不是函数了，所以会出错。在写递归函数时使用 arguments.callee 可以避免这个问题。
+这里把 factorial()函数保存在了另一个变量 anotherFactorial 中，然后将 factorial 设置为 null，于是只保留了一个对原始函数的引用。而在调用 anotherFactorial()时，要递归调用factorial()，但因为它已经不是函数了，所以会出错。在写递归函数时使用 arguments.callee 可以避免这个问题。
 
 arguments.callee 就是一个指向正在执行的函数的指针，因此可以在函数内部递归调用，如下所示：
 
@@ -15689,10 +15686,9 @@ function factorial(num) {
 }
 ```
 
-像这里加粗的这一行一样，把函数名称替换成 arguments.callee，可以确保无论通过什么变量
-调用这个函数都不会出问题。因此在编写递归函数时，arguments.callee 是引用当前函数的首选。
+像这里加粗的这一行一样，把函数名称替换成 arguments.callee，可以确保无论通过什么变量调用这个函数都不会出问题。因此在编写递归函数时，arguments.callee 是引用当前函数的首选。
 
-不过，在严格模式下运行的代码是不能访问 arguments.callee 的，因为访问会出错。此时，可以使用命名函数表达式（named function expression）达到目的。比如：
+不过，在严格模式下运行的代码是不能访问 arguments.callee 的，因为访问会出错。此时，可以使用 **命名函数表达式(named function expression)** 达到目的。比如：
 
 ```js
 const factorial = function f(num) {
@@ -15724,7 +15720,9 @@ function outerFunction() {
 (4) 执行 innerFunction 函数体，计算其返回值。
 (5) 将返回值传回 outerFunction，然后 outerFunction 再返回值。
 (6) 将栈帧弹出栈外。
+
 在 ES6 优化之后，执行这个例子会在内存中发生如下操作。
+
 (1) 执行到 outerFunction 函数体，第一个栈帧被推到栈上。
 (2) 执行 outerFunction 函数体，到达 return 语句。为求值返回语句，必须先求值 innerFunction。
 (3) 引擎发现把第一个栈帧弹出栈外也没问题，因为 innerFunction 的返回值也是 outerFunction 的返回值。
@@ -15750,19 +15748,23 @@ function outerFunction() {
 
 ```js
 "use strict";
+
 // 无优化：尾调用没有返回
 function outerFunction() {
   innerFunction();
 }
+
 // 无优化：尾调用没有直接返回
 function outerFunction() {
   let innerFunctionResult = innerFunction();
   return innerFunctionResult;
 }
+
 // 无优化：尾调用返回后必须转型为字符串
 function outerFunction() {
   return innerFunction().toString();
 }
+
 // 无优化：尾调用是一个闭包
 function outerFunction() {
   let foo = "bar";
@@ -15777,10 +15779,12 @@ function outerFunction() {
 
 ```js
 "use strict";
+
 // 有优化：栈帧销毁前执行参数计算
 function outerFunction(a, b) {
   return innerFunction(a + b);
 }
+
 // 有优化：初始返回值不涉及栈帧
 function outerFunction(a, b) {
   if (a < b) {
@@ -15788,6 +15792,7 @@ function outerFunction(a, b) {
   }
   return innerFunction(a + b);
 }
+
 // 有优化：两个内部函数都在尾部
 function outerFunction(condition) {
   return condition ? innerFunctionA() : innerFunctionB();
@@ -15796,9 +15801,7 @@ function outerFunction(condition) {
 
 差异化尾调用和递归尾调用是容易让人混淆的地方。无论是递归尾调用还是非递归尾调用，都可以应用优化。引擎并不区分尾调用中调用的是函数自身还是其他函数。不过，这个优化在递归场景下的效果是最明显的，因为递归代码最容易在栈内存中迅速产生大量栈帧。
 
-注意 之所以要求严格模式，主要因为在非严格模式下函数调用中允许使用 f.arguments
-和 f.caller，而它们都会引用外部函数的栈帧。显然，这意味着不能应用优化了。因此
-尾调用优化要求必须在严格模式下有效，以防止引用这些属性。
+注意 之所以要求严格模式，主要因为在非严格模式下函数调用中允许使用 f.arguments和 f.caller，而它们都会引用外部函数的栈帧。显然，这意味着不能应用优化了。因此尾调用优化要求必须在严格模式下有效，以防止引用这些属性。
 
 ### 10.13.2. 尾调用优化的代码
 
@@ -15820,8 +15823,7 @@ console.log(fib(5)); // 5
 console.log(fib(6)); // 8
 ```
 
-显然这个函数不符合尾调用优化的条件，因为返回语句中有一个相加的操作。结果，fib(n)的栈
-帧数的内存复杂度是 O(2n)。因此，即使这么一个简单的调用也可以给浏览器带来麻烦：
+显然这个函数不符合尾调用优化的条件，因为返回语句中有一个相加的操作。结果，fib(n)的栈帧数的内存复杂度是 O(2n)。因此，即使这么一个简单的调用也可以给浏览器带来麻烦：
 
 ```js
 fib(1000);
@@ -15848,7 +15850,7 @@ function fibImpl(a, b, n) {
 
 ## 10.14. 闭包
 
-匿名函数经常被人误认为是 **闭包（closure）**。闭包指的是那些引用了另一个函数作用域中变量的函数，通常是在嵌套函数中实现的。比如，下面是之前展示的 createComparisonFunction()函数：
+匿名函数经常被人误认为是 **闭包(closure)**。闭包指的是那些引用了另一个函数作用域中变量的函数，通常是在嵌套函数中实现的。比如，下面是之前展示的 createComparisonFunction()函数：
 
 ```js
 function createComparisonFunction(propertyName) {
@@ -15975,8 +15977,7 @@ object.getIdentity(); // 'My Object'
 (object.getIdentity = object.getIdentity)(); // 'The Window'
 ```
 
-第一行调用 object.getIdentity()是正常调用，会返回"My Object"，因为 this.identity 就是 object.identity。第二行在调用时把 object.getIdentity 放在了括号里。虽然加了括号之后看起来是对一个函数的引用，但 this 值并没有变。这是因为按照规范，object.getIdentity 和
-(object.getIdentity)是相等的。第三行执行了一次赋值，然后再调用赋值后的结果。因为赋值表达式的值是函数本身，this 值不再与任何对象绑定，所以返回的是"The Window"。
+第一行调用 object.getIdentity()是正常调用，会返回"My Object"，因为 this.identity 就是 object.identity。第二行在调用时把 object.getIdentity 放在了括号里。虽然加了括号之后看起来是对一个函数的引用，但 this 值并没有变。这是因为按照规范，object.getIdentity 和(object.getIdentity)是相等的。第三行执行了一次赋值，然后再调用赋值后的结果。因为赋值表达式的值是函数本身，this 值不再与任何对象绑定，所以返回的是"The Window"。
 
 一般情况下，不大可能像第二行和第三行这样调用对象上的方法。但通过这个例子，我们可以知道，即使语法稍有不同，也可能影响 this 的值。
 
@@ -15991,8 +15992,7 @@ function assignHandler() {
 }
 ```
 
-以上代码创建了一个闭包，即 element 元素的事件处理程序（事件处理程序将在第 13 章讨论）。而这个处理程序又创建了一个循环引用。匿名函数引用着 assignHandler()的活动对象，阻止了对 element 的引用计数归零。只要这个匿名函数存在，element 的引用计数就至少等于 1。也就是说，
-内存不会被回收。其实只要这个例子稍加修改，就可以避免这种情况，比如：
+以上代码创建了一个闭包，即 element 元素的事件处理程序（事件处理程序将在第 13 章讨论）。而这个处理程序又创建了一个循环引用。匿名函数引用着 assignHandler()的活动对象，阻止了对 element 的引用计数归零。只要这个匿名函数存在，element 的引用计数就至少等于 1。也就是说，内存不会被回收。其实只要这个例子稍加修改，就可以避免这种情况，比如：
 
 ```js
 function assignHandler() {
@@ -16003,12 +16003,11 @@ function assignHandler() {
 }
 ```
 
-在这个修改后的版本中，闭包改为引用一个保存着 element.id 的变量 id，从而消除了循环引用。不过，光有这一步还不足以解决内存问题。因为闭包还是会引用包含函数的活动对象，而其中包含 element。即使闭包没有直接引用 element，包含函数的活动对象上还是保存着对它的引用。因此，必
-须再把 element 设置为 null。这样就解除了对这个 COM 对象的引用，其引用计数也会减少，从而确保其内存可以在适当的时候被回收。
+在这个修改后的版本中，闭包改为引用一个保存着 element.id 的变量 id，从而消除了循环引用。不过，光有这一步还不足以解决内存问题。因为闭包还是会引用包含函数的活动对象，而其中包含 element。即使闭包没有直接引用 element，包含函数的活动对象上还是保存着对它的引用。因此，必须再把 element 设置为 null。这样就解除了对这个 COM 对象的引用，其引用计数也会减少，从而确保其内存可以在适当的时候被回收。
 
 ## 10.15. 立即调用的函数表达式
 
-立即调用的匿名函数又被称作 **立即调用的函数表达式（IIFE，Immediately Invoked Function Expression）**。它类似于函数声明，但由于被包含在括号中，所以会被解释为函数表达式。紧跟在第一组括号后面的第二组括号会立即调用前面的函数表达式。下面是一个简单的例子：
+立即调用的匿名函数又被称作 **立即调用的函数表达式(IIFE，Immediately Invoked Function Expression)**。它类似于函数声明，但由于被包含在括号中，所以会被解释为函数表达式。紧跟在第一组括号后面的第二组括号会立即调用前面的函数表达式。下面是一个简单的例子：
 
 ```js
 (function () {
