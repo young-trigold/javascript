@@ -155,7 +155,7 @@ plan : 1 chapter/3 day
     - [7.3.2. 通过 yield 中断执行](#732-通过-yield-中断执行)
     - [7.3.3. 生成器作为默认迭代器](#733-生成器作为默认迭代器)
     - [7.3.4. 提前终止迭代器](#734-提前终止迭代器)
-- [8. 对象、类与面向对象编程](#8-对象类与面向对象编程)
+- [8. 对象，继承与类](#8-对象继承与类)
   - [8.1. 理解对象](#81-理解对象)
     - [8.1.1. 属性的类型](#811-属性的类型)
     - [8.1.2. 定义多个属性](#812-定义多个属性)
@@ -182,17 +182,17 @@ plan : 1 chapter/3 day
     - [8.4.2. 类构造函数](#842-类构造函数)
     - [8.4.3. 实例，原型和类成员](#843-实例原型和类成员)
     - [8.4.4. 继承](#844-继承)
-- [9. 代理与映像](#9-代理与映像)
+- [9. 代理与反射](#9-代理与反射)
   - [9.1. 代理基础](#91-代理基础)
     - [9.1.1. 创建空代理](#911-创建空代理)
     - [9.1.2. 定义捕获器](#912-定义捕获器)
-    - [9.1.3. 捕获器参数和映像 API](#913-捕获器参数和映像-api)
+    - [9.1.3. 捕获器参数和反射 API](#913-捕获器参数和反射-api)
     - [9.1.4. 捕获器不变式](#914-捕获器不变式)
     - [9.1.5. 可撤销代理](#915-可撤销代理)
-    - [9.1.6. 使用映像 API](#916-使用映像-api)
+    - [9.1.6. 使用反射 API](#916-使用反射-api)
     - [9.1.7. 代理另一个代理](#917-代理另一个代理)
     - [9.1.8. 代理的问题与不足](#918-代理的问题与不足)
-  - [9.2. 代理捕获器与映像方法](#92-代理捕获器与映像方法)
+  - [9.2. 代理捕获器与反射方法](#92-代理捕获器与反射方法)
     - [9.2.1. get()](#921-get)
     - [9.2.2. set()](#922-set)
     - [9.2.3. has()](#923-has)
@@ -550,7 +550,7 @@ ECMA-262 第 4 版是对这门语言的一次彻底修订。作为对 JavaScript
 
 ECMAScript 3.1 变成了 ECMA-262 的第 5 版，于 2009 年 12 月 3 日正式发布。第 5 版致力于厘清第 3 版存在的歧义，也增加了新功能。新功能包括原生的解析和序列化 JSON 数据的 JSON 对象、方便继承和高级属性定义的方法，以及新的增强 ECMAScript 引擎解释和执行代码能力的严格模式。第 5 版在 2011 年 6 月发布了一个维护性修订版，这个修订版只更正了规范中的错误，并未增加任何新的语言或库特性。
 
-ECMA-262 第 6 版，俗称 ES6、ES2015 或 ES Harmony（和谐版），于 2015 年 6 月发布。这一版包含了大概这个规范有史以来最重要的一批增强特性。ES6 正式支持了类、模块、迭代器、生成器、箭头函数、期约、映像、代理和众多新的数据类型。
+ECMA-262 第 6 版，俗称 ES6、ES2015 或 ES Harmony（和谐版），于 2015 年 6 月发布。这一版包含了大概这个规范有史以来最重要的一批增强特性。ES6 正式支持了类、模块、迭代器、生成器、箭头函数、期约、反射、代理和众多新的数据类型。
 
 ECMA-262 第 7 版，也称为 ES7 或 ES2016，于 2016 年 6 月发布。这次修订只包含少量语法层面的增强，如 Array.prototype.includes 和指数操作符。
 
@@ -10485,7 +10485,7 @@ console.log(g.next()); // { done: false, value: 3}
 
 注意 如果生成器对象还没有开始执行，那么调用 throw()抛出的错误不会在函数内部被捕获，因为这相当于在函数块外部抛出了错误。
 
-# 8. 对象、类与面向对象编程
+# 8. 对象，继承与类
 
 本章内容
 
@@ -10494,7 +10494,7 @@ console.log(g.next()); // { done: false, value: 3}
 - 理解继承
 - 理解类
 
-ECMA-262 将对象定义为一组属性的无序集合。严格来说，这意味着对象就是一组没有特定顺序的值。对象的每个属性或方法都由一个名称来标识，这个名称映像到一个值。正因为如此（以及其他还未讨论的原因），可以把 ECMAScript 的对象想象成一张散列表，其中的内容就是一组名/值对，值可以是数据或者函数。
+ECMA-262 将对象定义为一组属性的无序集合。严格来说，这意味着对象就是一组没有特定顺序的值。对象的每个属性或方法都由一个名称来标识，这个名称反射到一个值。正因为如此（以及其他还未讨论的原因），可以把 ECMAScript 的对象想象成一张散列表，其中的内容就是一组名/值对，值可以是数据或者函数。
 
 ## 8.1. 理解对象
 
@@ -13267,19 +13267,19 @@ b.baz(); // baz
 
 注意 很多 JavaScript 框架（特别是 React）已经抛弃混入模式，转向了组合模式（把方法提取到独立的类和辅助对象中，然后把它们组合起来，但不使用继承）。这反映了那个众所周知的软件设计原则：“组合胜过继承（composition over inheritance）。”这个设计原则被很多人遵循，在代码设计中能提供极大的灵活性。
 
-# 9. 代理与映像
+# 9. 代理与反射
 
 本章内容
 
 - 代理基础
-- 代理捕获器与映像方法
+- 代理捕获器与反射方法
 - 代理模式
 
-ECMAScript 6 新增的代理和映像为开发者提供了拦截并向基本操作嵌入额外行为的能力。具体地说，可以给目标对象定义一个关联的代理对象，而这个代理对象可以作为抽象的目标对象来使用。在对目标对象的各种操作影响目标对象之前，可以在代理对象中对这些操作加以控制。
+ECMAScript 6 新增的代理和反射为开发者提供了拦截并向基本操作嵌入额外行为的能力。具体地说，可以给目标对象定义一个关联的代理对象，而这个代理对象可以作为抽象的目标对象来使用。在对目标对象的各种操作影响目标对象之前，可以在代理对象中对这些操作加以控制。
 
 对刚刚接触这个主题的开发者而言，代理是一个比较模糊的概念，而且还夹杂着很多新术语。其实只要看几个例子，就很容易理解了。
 
-注意 在 ES6 之前，ECMAScript 中并没有类似代理的特性。由于代理是一种新的基础性语言能力，很多转译程序都不能把代理行为转换为之前的 ECMAScript 代码，因为代理的行为实际上是无可替代的。为此，代理和映像只在百分之百支持它们的平台上有用。可以检测代理是否存在，不存在则提供后备代码。不过这会导致代码冗余，因此并不推荐。
+注意 在 ES6 之前，ECMAScript 中并没有类似代理的特性。由于代理是一种新的基础性语言能力，很多转译程序都不能把代理行为转换为之前的 ECMAScript 代码，因为代理的行为实际上是无可替代的。为此，代理和反射只在百分之百支持它们的平台上有用。可以检测代理是否存在，不存在则提供后备代码。不过这会导致代码冗余，因此并不推荐。
 
 ## 9.1. 代理基础
 
@@ -13370,7 +13370,7 @@ console.log(Object.create(target)["foo"]); // bar
 console.log(Object.create(proxy)["foo"]); // handler override
 ```
 
-### 9.1.3. 捕获器参数和映像 API
+### 9.1.3. 捕获器参数和反射 API
 
 所有捕获器都可以访问相应的参数，基于这些参数可以重建被捕获方法的原始行为。比如，get()捕获器会接收到目标对象、要查询的属性和代理对象三个参数。
 
@@ -13410,7 +13410,7 @@ console.log(target.foo); // bar
 
 所有捕获器都可以基于自己的参数重建原始操作，但并非所有捕获器行为都像 get()那么简单。因此，通过手动写码如法炮制的想法是不现实的。实际上，开发者并不需要手动重建原始行为，而是可以通过调用全局 Reflect 对象上（封装了原始行为）的同名方法来轻松重建。
 
-处理程序对象中所有可以捕获的方法都有对应的映像（Reflect）API 方法。这些方法与捕获器拦截的方法具有相同的名称和函数签名，而且也具有与被拦截方法相同的行为。因此，使用映像 API 也可以像下面这样定义出空代理对象：
+处理程序对象中所有可以捕获的方法都有对应的反射（Reflect）API 方法。这些方法与捕获器拦截的方法具有相同的名称和函数签名，而且也具有与被拦截方法相同的行为。因此，使用反射 API 也可以像下面这样定义出空代理对象：
 
 ```js
 const target = {
@@ -13440,7 +13440,7 @@ console.log(proxy.foo); // bar
 console.log(target.foo); // bar
 ```
 
-事实上，如果真想创建一个可以捕获所有方法，然后将每个方法转发给对应映像 API 的空代理，那么甚至不需要定义处理程序对象：
+事实上，如果真想创建一个可以捕获所有方法，然后将每个方法转发给对应反射 API 的空代理，那么甚至不需要定义处理程序对象：
 
 ```js
 const target = {
@@ -13451,7 +13451,7 @@ console.log(proxy.foo); // bar
 console.log(target.foo); // bar
 ```
 
-映像 API 为开发者准备好了样板代码，在此基础上开发者可以用最少的代码修改捕获的方法。比如，下面的代码在某个属性被访问时，会对返回的值进行一番修饰：
+反射 API 为开发者准备好了样板代码，在此基础上开发者可以用最少的代码修改捕获的方法。比如，下面的代码在某个属性被访问时，会对返回的值进行一番修饰：
 
 ```js
 const target = {
@@ -13520,22 +13520,22 @@ revoke();
 console.log(proxy.foo); // TypeError
 ```
 
-### 9.1.6. 使用映像 API
+### 9.1.6. 使用反射 API
 
-某些情况下应该优先使用映像 API，这是有一些理由的。
+某些情况下应该优先使用反射 API，这是有一些理由的。
 
-1. **映像 API 与对象 API**
+1. **反射 API 与对象 API**
 
-在使用映像 API 时，要记住：
+在使用反射 API 时，要记住：
 
-(1) 映像 API 并不限于捕获处理程序；
-(2) 大多数映像 API 方法在 Object 类型上有对应的方法。
+(1) 反射 API 并不限于捕获处理程序；
+(2) 大多数反射 API 方法在 Object 类型上有对应的方法。
 
-通常，Object 上的方法适用于通用程序，而映像方法适用于细粒度的对象控制与操作。
+通常，Object 上的方法适用于通用程序，而反射方法适用于细粒度的对象控制与操作。
 
 2. **状态标记**
 
-很多映像方法返回称作“状态标记”的布尔值，表示意图执行的操作是否成功。有时候，状态标记比那些返回修改后的对象或者抛出错误（取决于方法）的映像 API 方法更有用。例如，可以使用映像 API 对下面的代码进行重构：
+很多反射方法返回称作“状态标记”的布尔值，表示意图执行的操作是否成功。有时候，状态标记比那些返回修改后的对象或者抛出错误（取决于方法）的反射 API 方法更有用。例如，可以使用反射 API 对下面的代码进行重构：
 
 ```js
 // 初始代码
@@ -13548,7 +13548,7 @@ try {
 }
 ```
 
-在定义新属性时如果发生问题，Reflect.defineProperty()会返回 false，而不是抛出错误。因此使用这个映像方法可以这样重构上面的代码：
+在定义新属性时如果发生问题，Reflect.defineProperty()会返回 false，而不是抛出错误。因此使用这个反射方法可以这样重构上面的代码：
 
 ```js
 // 重构后的代码
@@ -13560,7 +13560,7 @@ if (Reflect.defineProperty(o, "foo", { value: "bar" })) {
 }
 ```
 
-以下映像方法都会提供状态标记：
+以下反射方法都会提供状态标记：
 
 - Reflect.defineProperty()
 - Reflect.preventExtensions()
@@ -13570,7 +13570,7 @@ if (Reflect.defineProperty(o, "foo", { value: "bar" })) {
 
 3. **用一等函数替代操作符**
 
-以下映像方法提供只有通过操作符才能完成的操作：
+以下反射方法提供只有通过操作符才能完成的操作：
 
 - Reflect.get()：可以替代对象属性访问操作符。
 - Reflect.set()：可以替代=赋值操作符。
@@ -13594,7 +13594,7 @@ Reflect.apply(myFunc, thisVal, argumentsList);
 
 ### 9.1.7. 代理另一个代理
 
-代理可以拦截映像 API 的操作，而这意味着完全可以创建一个代理，通过它去代理另一个代理。这样就可以在一个目标对象之上构建多层拦截网：
+代理可以拦截反射 API 的操作，而这意味着完全可以创建一个代理，通过它去代理另一个代理。这样就可以在一个目标对象之上构建多层拦截网：
 
 ```js
 const target = {
@@ -13686,17 +13686,17 @@ console.log(proxy instanceof Date); // true
 proxy.getDate(); // TypeError: 'this' is not a Date object
 ```
 
-## 9.2. 代理捕获器与映像方法
+## 9.2. 代理捕获器与反射方法
 
-代理可以捕获 13 种不同的基本操作。这些操作有各自不同的映像 API 方法、参数、关联 ECMAScript 操作和不变式。
+代理可以捕获 13 种不同的基本操作。这些操作有各自不同的反射 API 方法、参数、关联 ECMAScript 操作和不变式。
 
 正如前面示例所展示的，有几种不同的 JavaScript 操作会调用同一个捕获器处理程序。不过，对于在代理对象上执行的任何一种操作，只会有一个捕获处理程序被调用。不会存在重复捕获的情况。
 
-只要在代理上调用，所有捕获器都会拦截它们对应的映像 API 操作。
+只要在代理上调用，所有捕获器都会拦截它们对应的反射 API 操作。
 
 ### 9.2.1. get()
 
-get()捕获器会在获取属性值的操作中被调用。对应的映像 API 方法为 Reflect.get()。
+get()捕获器会在获取属性值的操作中被调用。对应的反射 API 方法为 Reflect.get()。
 
 ```js
 const myTarget = {};
@@ -13731,7 +13731,7 @@ proxy.foo;
 
 ### 9.2.2. set()
 
-set()捕获器会在设置属性值的操作中被调用。对应的映像 API 方法为 Reflect.set()。
+set()捕获器会在设置属性值的操作中被调用。对应的反射 API 方法为 Reflect.set()。
 
 ```js
 const myTarget = {};
@@ -13768,7 +13768,7 @@ proxy.foo = "bar";
 
 ### 9.2.3. has()
 
-has()捕获器会在 in 操作符中被调用。对应的映像 API 方法为 Reflect.has()。
+has()捕获器会在 in 操作符中被调用。对应的反射 API 方法为 Reflect.has()。
 
 ```js
 const myTarget = {};
@@ -13802,7 +13802,7 @@ const proxy = new Proxy(myTarget, {
 
 ### 9.2.4. defineProperty()
 
-defineProperty()捕获器会在 Object.defineProperty()中被调用。对应的映像 API 方法为 Reflect.defineProperty()。
+defineProperty()捕获器会在 Object.defineProperty()中被调用。对应的反射 API 方法为 Reflect.defineProperty()。
 
 ```js
 const myTarget = {};
@@ -13837,7 +13837,7 @@ Object.defineProperty(proxy, "foo", { value: "bar" });
 
 ### 9.2.5. getOwnPropertyDescriptor()
 
-getOwnPropertyDescriptor()捕获器会在 Object.getOwnPropertyDescriptor()中被调用。对应的映像 API 方法为 Reflect.getOwnPropertyDescriptor()。
+getOwnPropertyDescriptor()捕获器会在 Object.getOwnPropertyDescriptor()中被调用。对应的反射 API 方法为 Reflect.getOwnPropertyDescriptor()。
 
 ```js
 const myTarget = {};
@@ -13872,7 +13872,7 @@ Object.getOwnPropertyDescriptor(proxy, "foo");
 
 ### 9.2.6. deleteProperty()
 
-deleteProperty()捕获器会在 delete 操作符中被调用。对应的映像 API 方法为 Reflect.deleteProperty()。
+deleteProperty()捕获器会在 delete 操作符中被调用。对应的反射 API 方法为 Reflect.deleteProperty()。
 
 ```js
 const myTarget = {};
@@ -13904,7 +13904,7 @@ delete proxy.foo;
 
 ### 9.2.7. ownKeys()
 
-ownKeys()捕获器会在 Object.keys()及类似方法中被调用。对应的映像 API 方法为 Reflect.ownKeys()。
+ownKeys()捕获器会在 Object.keys()及类似方法中被调用。对应的反射 API 方法为 Reflect.ownKeys()。
 
 ```js
 const myTarget = {};
@@ -13937,7 +13937,7 @@ Object.keys(proxy);
 
 ### 9.2.8. getPrototypeOf()
 
-getPrototypeOf()捕获器会在 Object.getPrototypeOf()中被调用。对应的映像 API 方法为 Reflect.getPrototypeOf()。
+getPrototypeOf()捕获器会在 Object.getPrototypeOf()中被调用。对应的反射 API 方法为 Reflect.getPrototypeOf()。
 
 ```js
 const myTarget = {};
@@ -13970,7 +13970,7 @@ Object.getPrototypeOf(proxy);
 
 ### 9.2.9. setPrototypeOf()
 
-setPrototypeOf()捕获器会在 Object.setPrototypeOf()中被调用。对应的映像 API 方法为 Reflect.setPrototypeOf()。
+setPrototypeOf()捕获器会在 Object.setPrototypeOf()中被调用。对应的反射 API 方法为 Reflect.setPrototypeOf()。
 
 ```js
 const myTarget = {};
@@ -14030,7 +14030,7 @@ Object.isExtensible(proxy);
 
 ### 9.2.11. preventExtensions()
 
-preventExtensions()捕获器会在 Object.preventExtensions()中被调用。对应的映像 API 方法为 Reflect.preventExtensions()。
+preventExtensions()捕获器会在 Object.preventExtensions()中被调用。对应的反射 API 方法为 Reflect.preventExtensions()。
 
 ```js
 const myTarget = {};
@@ -14061,7 +14061,7 @@ Object.preventExtensions(proxy);
 
 ### 9.2.12. apply()
 
-apply()捕获器会在调用函数时中被调用。对应的映像 API 方法为 Reflect.apply()。
+apply()捕获器会在调用函数时中被调用。对应的反射 API 方法为 Reflect.apply()。
 
 ```js
 const myTarget = () => {};
@@ -14095,7 +14095,7 @@ proxy();
 
 ### 9.2.13. construct()
 
-construct()捕获器会在 new 操作符中被调用。对应的映像 API 方法为 Reflect.construct()。
+construct()捕获器会在 new 操作符中被调用。对应的反射 API 方法为 Reflect.construct()。
 
 ```js
 const myTarget = function () {};
