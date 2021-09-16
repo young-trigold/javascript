@@ -10,8 +10,8 @@ plan : 1 chapter/3 day
 - [1. 什么是 JavaScript](#1-什么是-javascript)
   - [1.1. 历史回顾](#11-历史回顾)
     - [1.1.1. 诞生](#111-诞生)
-    - [1.1.2. JavaScript 与 Java 的关系](#112-javascript-与-java-的关系)
-    - [1.1.3. JavaScript 与 ECMAScript 的关系](#113-javascript-与-ecmascript-的关系)
+    - [1.1.2. JavaScript 与 Java](#112-javascript-与-java)
+    - [1.1.3. JavaScript 与 ECMAScript](#113-javascript-与-ecmascript)
     - [1.1.4. 周边大事记](#114-周边大事记)
   - [1.2. JavaScript 实现](#12-javascript-实现)
     - [1.2.1. ECMAScript](#121-ecmascript)
@@ -394,7 +394,7 @@ Netscape 公司的这种浏览器脚本语言，最初名字叫做 Mocha，1995 
 
 1996 年 3 月，Navigator 2.0 浏览器正式内置了 JavaScript 脚本语言。
 
-### 1.1.2. JavaScript 与 Java 的关系
+### 1.1.2. JavaScript 与 Java
 
 这里专门说一下 JavaScript 和 Java 的关系。它们是两种不一样的语言，但是彼此存在联系。
 
@@ -406,7 +406,7 @@ JavaScript 语言的函数是一种独立的数据类型，以及采用基于原
 
 总之，JavaScript 的原始设计目标是一种小型的、简单的动态语言，与 Java 有足够的相似性，使得使用者（尤其是 Java 程序员）可以快速上手。
 
-### 1.1.3. JavaScript 与 ECMAScript 的关系
+### 1.1.3. JavaScript 与 ECMAScript
 
 1996 年 8 月，微软模仿 JavaScript 开发了一种相近的语言，取名为 JScript（JavaScript 是 Netscape 的注册商标，微软不能用），首先内置于 IE 3.0。Netscape 公司面临丧失浏览器脚本语言的主导权的局面。
 
