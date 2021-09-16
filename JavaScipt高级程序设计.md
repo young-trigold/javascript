@@ -227,12 +227,12 @@ plan : 1 chapter/3 day
   - [10.4. 函数内部](#104-函数内部)
     - [10.4.1. arguments](#1041-arguments)
     - [10.4.2. this](#1042-this)
-    - [10.4.3. caller](#1043-caller)
     - [10.4.4. new.target](#1044-newtarget)
   - [10.5. 函数属性](#105-函数属性)
     - [10.5.1. name](#1051-name)
     - [10.5.2. length](#1052-length)
-    - [10.5.3. 其他属性](#1053-其他属性)
+    - [10.5.3. caller](#1053-caller)
+    - [10.5.4. 其他属性](#1054-其他属性)
   - [10.6. 函数方法](#106-函数方法)
     - [10.6.1. call()](#1061-call)
     - [10.6.2. apply()](#1062-apply)
@@ -1267,25 +1267,6 @@ foo(); // undefined
 ```
 
 这就是所谓的“提升”（hoist），也就是把所有变量声明都拉到函数作用域的顶部。
-
-需要注意的是，函数定义声明的提升优先级高于 var 变量的提升优先级，例如：
-
-```js
-var foo = "foo";
-function foo() {}
-console.log(typeof foo);
-// string
-```
-
-以上代码实际上等价于：
-
-```js
-function foo() {}
-var foo;
-foo = "foo";
-console.log(typeof foo);
-// string
-```
 
 3. **重复声明**
 
@@ -14401,6 +14382,25 @@ function sum(num1, num2) {
 
 以上代码可以正常运行，因为函数声明会在任何代码执行之前先被读取并添加到执行上下文。这个过程叫作 **函数声明提升(function declaration hoisting)**。在执行代码时，JavaScript 引擎会先执行一遍扫描，把发现的函数声明提升到源代码树的顶部。因此即使函数定义出现在调用它们的代码之后，引擎也会把函数声明提升到顶部。
 
+需要注意的是，函数定义声明的提升优先级高于 var 变量的提升优先级，例如：
+
+```js
+var foo = "foo";
+function foo() {}
+console.log(typeof foo);
+// string
+```
+
+以上代码实际上等价于：
+
+```js
+function foo() {}
+var foo;
+foo = "foo";
+console.log(typeof foo);
+// string
+```
+
 ### 10.1.2. 函数表达式
 
 另一种定义函数的语法是函数表达式。函数表达式与函数声明几乎是等价的：
@@ -14477,7 +14477,7 @@ function createComparisonFunction(propertyName) {
 }
 ```
 
-这里的 createComparisonFunction()函数返回一个匿名函数，这个匿名函数要么被赋值给一个变量，要么可以直接调用。但在 createComparisonFunction()内部，那个函数是匿名的。任何时候，只要函数被当作值来使用，它就是一个函数表达式。本章后面会介绍，这并不是使用函数表达式的唯一方式。
+这里的 createComparisonFunction()函数返回一个匿名函数，这个匿名函数要么被赋值给一个变量，要么可以直接调用。但在 createComparisonFunction()内部，那个函数是匿名的。任何时候，只要函数被当作值来使用，它就是一个函数表达式。
 
 **命名函数表达式**
 
@@ -14533,7 +14533,7 @@ const factorial = function f(num) {
 
 ### 10.1.3. 箭头函数
 
-还有一种定义函数的方式与函数表达式很像，叫作“箭头函数”（arrow function），如下所示：
+还有一种定义函数的方式与函数表达式很像，叫作 **箭头函数(arrow function)** ，如下所示：
 
 ```js
 let sum = (num1, num2) => {
@@ -15138,7 +15138,7 @@ console.log(factorial(5)); // 0
 
 另一个特殊的对象是 this。this 的值取决于多种因素。
 
-- **全局上下文**
+1. **全局上下文**
 
 this 在全局上下文中，即在任何函数体的外部时，都指向全局对象，在浏览器宿主环境中就是 window。
 
@@ -15158,11 +15158,11 @@ console.log(o1.o2.this[0] === window); // true
 
 在这个例子中，对象 o1 的 this 属性引用 this 值，而这个 this 值在全局上下文中指向 window。同样的，o2 的 this 值引用一个数组对象，这个数组的第一个元素为 this，但无论如何 this 值都在全局上下文中，所以都指向 window。
 
-- **标准函数上下文**
+2. **标准函数上下文**
 
 this 出现在标准函数上下文中，此时的 this 取决于函数调用的方式。
 
-1. 在非严格模式下直接调用标准函数，则其内部的 this 指向全局对象。
+- 在非严格模式下直接调用标准函数，则其内部的 this 指向全局对象。
 
 来看下面几个例子：
 
@@ -15189,7 +15189,7 @@ foo();
 
 在这个例子中，getThis 在函数 foo 的上下文中直接调用，但不论是在全局上下文还是函数上下文中，非严格模式下直接调用标准函数，其内部的 this 都指向全局对象。
 
-2. 严格模式下直接调用标准函数，则其内部的 this 为 undefined。
+- 严格模式下直接调用标准函数，则其内部的 this 为 undefined。
 
 来看下面几个例子：
 
@@ -15206,7 +15206,7 @@ console.log(getThisInStrict() === undefined); // true
 
 同样的，严格模式下直接调用标准函数，其内部的 this 为 undefined，而不论调用的上下文。
 
-3. 标准函数作为方法调用时，this 指向直接调用者，而非间接调用者。
+- 标准函数作为方法调用时，this 指向直接调用者，而非间接调用者。
 
 来看下面几个例子：
 
@@ -15262,7 +15262,7 @@ console.log(constructor() === window); // true
 
 在这个例子中，getThis.prototype.constructor 返回 getThis 函数对象本身。在执行 getThis.prototype.constructor()时，getThis 的直接调用者为 getThis.prototype，因此 this 指向 getThis.prototype。之后，将 getThis.prototype.constructor 赋给 constructor，并直接调用，因此 this 指向全局对象。
 
-4. 标准函数作为构造函数调用，this 指向正在构建的对象：
+- 标准函数作为构造函数调用，this 指向正在构建的对象：
 
 ```js
 function Person() {
@@ -15274,11 +15274,11 @@ new Person();
 
 在这个例子中，Person 作为构造方法调用，this 指向被构建的对象，因此 `this instanceOf Person` 为 true。
 
-- **箭头函数**
+3. **箭头函数**
 
 箭头函数的 this 行为和标准函数的截然不同。
 
-1. 箭头函数在全局上下文中，则其 this 绑定全局对象，且严格模式和方法调用对该 this 没有影响。
+- 箭头函数在全局上下文中，则其 this 绑定全局对象，且严格模式和方法调用对该 this 没有影响。
 
 来看下面几个例子：
 
@@ -15307,7 +15307,7 @@ console.log(o1.o2.getThis().name); // window
 
 在这个例子中，getThis 作为 o2 的方法被 o1 间接在全局上下文中调用，但不论是否作为方法被调用，getThis 都在全局上下文中，因此其内部的 this 还是绑定全局对象。
 
-2. 箭头函数在函数上下文中，则其 this 绑定紧邻的外层函数的 this。
+- 箭头函数在函数上下文中，则其 this 绑定紧邻的外层函数的 this。
 
 ```js
 var name = "window";
@@ -15346,36 +15346,6 @@ function Queen() {
 new King(); // Henry
 new Queen(); // undefined
 ```
-
-### 10.4.3. caller
-
-ECMAScript 5 也会给函数对象上添加一个属性：caller。虽然 ECMAScript 3 中并没有定义，但所有浏览器除了早期版本的 Opera 都支持这个属性。这个属性引用的是调用当前函数的函数，或者如果是在全局作用域中调用的则为 null。比如：
-
-```js
-function outer() {
-  inner();
-}
-function inner() {
-  console.log(inner.caller);
-}
-outer();
-```
-
-以上代码会显示 outer()函数的源代码。这是因为 ourter()调用了 inner()，inner.caller 指向 outer()。如果要降低耦合度，则可以通过 arguments.callee.caller 来引用同样的值：
-
-```js
-function outer() {
-  inner();
-}
-function inner() {
-  console.log(arguments.callee.caller);
-}
-outer();
-```
-
-在严格模式下访问 arguments.callee 会报错。ECMAScript 5 也定义了 arguments.caller，但在严格模式下访问它会报错，在非严格模式下则始终是 undefined。这是为了分清 arguments.caller 和函数的 caller 而故意为之的。而作为对这门语言的安全防护，这些改动也让第三方代码无法检测同一上下文中运行的其他代码。
-
-严格模式下还有一个限制，就是不能给函数的 caller 属性赋值，否则会导致错误。
 
 ### 10.4.4. new.target
 
@@ -15481,7 +15451,37 @@ console.log(function (a, b, ...args) {}.length); // 2
 console.log(function (a, b = 1, c) {}.length); // 1
 ```
 
-### 10.5.3. 其他属性
+### 10.5.3. caller
+
+ECMAScript 5 也会给函数对象上添加一个属性：caller。虽然 ECMAScript 3 中并没有定义，但所有浏览器除了早期版本的 Opera 都支持这个属性。这个属性引用的是调用当前函数的函数，或者如果是在全局作用域中调用的则为 null。比如：
+
+```js
+function outer() {
+  inner();
+}
+function inner() {
+  console.log(inner.caller);
+}
+outer();
+```
+
+以上代码会显示 outer()函数的源代码。这是因为 ourter()调用了 inner()，inner.caller 指向 outer()。如果要降低耦合度，则可以通过 arguments.callee.caller 来引用同样的值：
+
+```js
+function outer() {
+  inner();
+}
+function inner() {
+  console.log(arguments.callee.caller);
+}
+outer();
+```
+
+在严格模式下访问 arguments.callee 会报错。ECMAScript 5 也定义了 arguments.caller，但在严格模式下访问它会报错，在非严格模式下则始终是 undefined。这是为了分清 arguments.caller 和函数的 caller 而故意为之的。而作为对这门语言的安全防护，这些改动也让第三方代码无法检测同一上下文中运行的其他代码。
+
+严格模式下还有一个限制，就是不能给函数的 caller 属性赋值，否则会导致错误。
+
+### 10.5.4. 其他属性
 
 prototype 属性也许是 ECMAScript 核心中最有趣的部分。prototype 是保存引用类型所有实例方法的地方，这意味着 toString()、valueOf()等方法实际上都保存在 prototype 上，进而由所有实例共享。这个属性在自定义类型时特别重要。（相关内容已经在第 8 章详细介绍过了。）这个属性的特性在 ES6 中为 writable: true, enumerable: false, configurable: false。因此可写入，不可枚举，不可配置。
 
@@ -15493,19 +15493,19 @@ prototype 属性也许是 ECMAScript 核心中最有趣的部分。prototype 是
 
 在标准函数上下文中，有以下规则：
 
-1. 非严格模式下直接调用函数，则其内部的 this 指向全局对象。
-2. 严格模式下直接调用函数，则其内部的 this 为 undefined。
-3. 函数作为方法调用，其内部的 this 指向直接调用者，而非间接调用者。
-4. 函数作为构造函数调用，其内部的 this 指向被构建的对象。
+- 非严格模式下直接调用函数，则其内部的 this 指向全局对象。
+- 严格模式下直接调用函数，则其内部的 this 为 undefined。
+- 函数作为方法调用，其内部的 this 指向直接调用者，而非间接调用者。
+- 函数作为构造函数调用，其内部的 this 指向被构建的对象。
 
 在箭头函数中，有以下规则：
 
-1. 箭头函数在全局上下文中，则其 this 绑定全局对象。
-2. 箭头函数在函数上下文中，则其 this 绑定紧邻的外层函数的 this 值。
+- 箭头函数在全局上下文中，则其 this 绑定全局对象。
+- 箭头函数在函数上下文中，则其 this 绑定紧邻的外层函数的 this 值。
 
 ### 10.6.1. call()
 
-call() 的第一个参数 thisArg 是可选的，它指定在 function 函数运行时使用的 this 值。后面的 arg1, arg2, ... 是指定的参数。call() 方法在标准函数上使用时，有以下规则：
+call(thisArg, arg1, arg2, ...) 的第一个参数 thisArg 是可选的，它指定在 function 函数运行时使用的 this 值。后面的 arg1, arg2, ... 是指定的参数。call() 方法在标准函数上使用时，有以下规则：
 
 1. 不指定 thisArg，相当于不调用 call()。
 
@@ -15542,7 +15542,7 @@ showThis.call(null); // null
 
 ### 10.6.2. apply()
 
-apply() 方法和 call()方法除了 thisArg 后跟的参数不同，其他都相同。apply() 方法要求传入的参数为数组对象或类数组对象。
+apply(thisArg, [args]) 方法和 call()方法除了 thisArg 后跟的参数不同，其他都相同。apply() 方法要求传入的参数为数组对象或类数组对象。
 
 ```js
 function sum() {
@@ -15565,7 +15565,7 @@ sum.apply(null, arr); // 6
 
 ### 10.6.3. bind()
 
-bind() 方法用于返回一个固定 this 的函数。它接收的参数中，thisArg 的含义及处理和 call() 的一致，其余参数被称为预置参数。
+bind(thisArg, arg1, arg2, ...) 方法用于返回一个固定 this 的函数。它接收的参数中，thisArg 的含义及处理和 call() 的一致，其余参数被称为预置参数。
 
 来看这个例子：
 
@@ -15645,7 +15645,7 @@ introduce("Greg", "30", "doctor");
 // My name is Trigold, I am 20, and I work as a Web Engineer.
 ```
 
-- 箭头函数
+**箭头函数**
 
 对于箭头函数调用以上 3 种方法，实际上箭头函数会忽略传进去的 this 参数，这就是为什么我们在箭头函数的 this 规则中说箭头函数的 this “绑定” 了什么。
 
