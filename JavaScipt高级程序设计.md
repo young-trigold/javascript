@@ -87,14 +87,14 @@ plan : 1 chapter/3 day
     - [4.3.4. 内存管理](#434-内存管理)
 - [5. 基本引用类型](#5-基本引用类型)
   - [5.1. Date](#51-date)
-    - [5.1.1. 继承的方法](#511-继承的方法)
-    - [5.1.2. 格式化方法](#512-格式化方法)
-    - [5.1.3. 组件方法](#513-组件方法)
+    - [5.1.1. Date 静态方法](#511-date-静态方法)
+    - [5.1.2. 继承方法](#512-继承方法)
+    - [5.1.3. 格式化方法](#513-格式化方法)
+    - [5.1.4. 组件方法](#514-组件方法)
   - [5.2. RegExp](#52-regexp)
-    - [5.2.1. RegExp 实例属性](#521-regexp-实例属性)
-    - [5.2.2. RegExp 实例方法](#522-regexp-实例方法)
-    - [5.2.3. RegExp 构造函数属性](#523-regexp-构造函数属性)
-    - [5.2.4. 模式局限](#524-模式局限)
+    - [5.2.1. RegExp 静态方法](#521-regexp-静态方法)
+    - [5.2.2. RegExp 实例属性](#522-regexp-实例属性)
+    - [5.2.3. RegExp 实例方法](#523-regexp-实例方法)
   - [5.3. 原始值包装类型](#53-原始值包装类型)
     - [5.3.1. Boolean](#531-boolean)
     - [5.3.2. Number](#532-number)
@@ -104,6 +104,10 @@ plan : 1 chapter/3 day
     - [5.4.2. Math](#542-math)
 - [6. 集合引用类型](#6-集合引用类型)
   - [6.1. Object](#61-object)
+    - [6.1.1. 创建对象](#611-创建对象)
+    - [6.1.2. 读取属性](#612-读取属性)
+    - [6.1.3. Object 静态方法](#613-object-静态方法)
+    - [6.1.4. 实例方法](#614-实例方法)
   - [6.2. Array](#62-array)
     - [6.2.1. 创建数组](#621-创建数组)
     - [6.2.2. 数组空位](#622-数组空位)
@@ -2305,39 +2309,6 @@ let foundAsString = found.toString(); // 字符串"true"
 
 toString()方法可用于数值、布尔值、对象和字符串值。（没错，字符串值也有 toString()方法，该方法只是简单地返回自身的一个副本。）null 和 undefined 值没有 toString()方法。
 
-每个对象都有一个 toString() 方法，当该对象被表示为一个文本值时，或者一个对象以预期的字符串方式引用时自动调用。默认情况下，toString() 方法被每个 Object 对象继承。如果此方法在自定义对象中未被覆盖，toString() 返回 "[object type]"，其中 type 是对象的类型。以下代码说明了这一点：
-
-```js
-var o = new Object();
-o.toString(); // returns [object Object]
-```
-
-数组的 toString() 被重写，详见 6.2.7 节。
-
-**使用 toString() 检测对象类型**
-
-可以通过 toString() 来获取每个对象的类型。为了每个对象都能通过 Object.prototype.toString() 来检测，需要以 Function.prototype.call() 或者 Function.prototype.apply() 的形式来调用，传递要检查的对象作为第一个参数，称为 thisArg。
-
-```js
-function getType(any) {
-  return Object.prototype.toString.call(any).slice(8, -1);
-}
-
-console.log(getType(undefined)); // Undefined
-console.log(getType(null)); // Null
-console.log(getType(true)); // Boolean
-console.log(getType(0)); // Number
-console.log(getType("")); // String
-console.log(getType(Math)); // Math
-console.log(getType(getType)); // Function
-console.log(getType({})); // Object
-console.log(getType([])); // Array
-console.log(getType(new Map())); // Map
-console.log(getType(new Set())); // Set
-```
-
-在这个例子中，getType 封装了 Object.prototype.toString() 便于获得对象的类型。
-
 多数情况下，toString()不接收任何参数。不过，在对数值调用这个方法时，toString()可以接收一个底数参数，即以什么底数来输出数值的字符串表示。默认情况下，toString()返回数值的十进制字符串表示。而通过传入参数，可以得到数值的二进制、八进制、十六进制，或者其他任何有效基数的字符串表示，比如：
 
 ```js
@@ -3173,11 +3144,13 @@ let s = new Set();
 console.log(s); // Set(0) {}
 console.log(s.toString()); // [object Set]
 console.log(s[Symbol.toStringTag]); // Set
+
 class Foo {}
 let foo = new Foo();
 console.log(foo); // Foo {}
 console.log(foo.toString()); // [object Object]
 console.log(foo[Symbol.toStringTag]); // undefined
+
 class Bar {
   constructor() {
     this[Symbol.toStringTag] = "Bar";
@@ -3191,7 +3164,7 @@ console.log(bar[Symbol.toStringTag]); // Bar
 
 ## 3.5. 操作符
 
-ECMA-262 描述了一组可用于操作数据值的操作符，包括数学操作符（如加、减）、位操作符、关系操作符和相等操作符等。ECMAScript 中的操作符是独特的，因为它们可用于各种值，包括字符串、数值、布尔值，甚至还有对象。在应用给对象时，操作符通常会调用 valueOf()和/或 toString()方法来取得可以计算的值。
+ECMA-262 描述了一组可用于操作数据值的操作符，包括数学操作符（如加、减）、位操作符、关系操作符和相等操作符等。ECMAScript 中的操作符是独特的，因为它们可用于各种值，包括字符串、数值、布尔值，甚至还有对象。在应用给对象时，操作符通常会调用 valueOf()和 toString()方法来取得可以计算的值。
 
 ### 3.5.1. 一元操作符
 
@@ -3286,7 +3259,7 @@ num = +num;
 console.log(num); // 25
 ```
 
-如果将正号应用到非数值，则会执行与使用 Number()转型函数一样的类型转换：布尔值 false 和 true 转换为 0 和 1，字符串根据特殊规则进行解析，对象会调用它们的 valueOf()和/或 toString()方法以得到可以转换的值。
+如果将正号应用到非数值，则会执行与使用 Number()转型函数一样的类型转换。
 
 下面的例子演示了正号在应用到不同数据类型时的行为：
 
@@ -5351,7 +5324,11 @@ ECMAScript 的 Date 类型参考了 Java 早期版本中的 java.util.Date。为
 let now = new Date();
 ```
 
-在不给 Date 构造函数传参数的情况下，创建的对象将保存当前日期和时间。要基于其他日期和时间创建日期对象，必须传入其毫秒表示（UNIX 纪元 1970 年 1 月 1 日午夜之后的毫秒数）。ECMAScript 为此提供了两个辅助方法：Date.parse()和 Date.UTC()。
+在不给 Date 构造函数传参数的情况下，创建的对象将保存当前日期和时间。要基于其他日期和时间创建日期对象，必须传入其毫秒表示（UNIX 纪元 1970 年 1 月 1 日午夜之后的毫秒数）。
+
+### 5.1.1. Date 静态方法
+
+ECMAScript 为此提供了两个辅助方法：Date.parse()和 Date.UTC()。
 
 Date.parse()方法接收一个表示日期的字符串参数，尝试将这个字符串转换为表示该日期的毫秒数。ECMA-262 第 5 版定义了 Date.parse()应该支持的日期格式，填充了第 3 版遗留的空白。所有实现都必须支持下列日期格式：
 
@@ -5415,7 +5392,7 @@ let stop = Date.now(),
   result = stop - start;
 ```
 
-### 5.1.1. 继承的方法
+### 5.1.2. 继承方法
 
 与其他类型一样，Date 类型重写了 toLocaleString()、toString()和 valueOf()方法。但与其他类型不同，重写后这些方法的返回值不一样。Date 类型的 toLocaleString()方法返回与浏览器运行的本地环境一致的日期和时间。这通常意味着格式中包含针对时间的 AM（上午）或 PM（下午），但不包含时区信息（具体格式可能因浏览器而不同）。toString()方法通常返回带时区信息的日期和时间，而时间也是以 24 小时制（0~23）表示的。下面给出了 toLocaleString()和 toString()返回的 2019 年 2 月 1 日零点的示例（地区为"en-US"的 PST，即 Pacific Standard Time，太平洋标准时间）：
 
@@ -5436,7 +5413,7 @@ console.log(date1 > date2); // false
 
 日期 2019 年 1 月 1 日在 2019 年 2 月 1 日之前，所以说前者小于后者没问题。因为 2019 年 1 月 1 日的毫秒表示小于 2019 年 2 月 1 日的毫秒表示，所以用小于号比较这两个日期时会返回 true。这也是确保日期先后的一个简单方式。
 
-### 5.1.2. 格式化方法
+### 5.1.3. 格式化方法
 
 Date 类型有几个专门用于格式化日期的方法，它们都会返回字符串：
 
@@ -5450,7 +5427,7 @@ Date 类型有几个专门用于格式化日期的方法，它们都会返回字
 
 注意 还有一个方法叫 toGMTString()，这个方法跟 toUTCString()是一样的，目的是为了向后兼容。不过，规范建议新代码使用 toUTCString()。
 
-### 5.1.3. 组件方法
+### 5.1.4. 组件方法
 
 Date 类型剩下的方法（见下表）直接涉及取得或设置日期值的特定部分。注意表中“UTC 日期”，指的是没有时区偏移（将日期转换为 GMT）时的日期。
 
@@ -5586,7 +5563,75 @@ const re3 = new RegExp(re1, "i");
 console.log(re3); // "/cat/i"
 ```
 
-### 5.2.1. RegExp 实例属性
+### 5.2.1. RegExp 静态方法
+
+RegExp 构造函数本身也有几个属性。（在其他语言中，这种属性被称为静态属性。）这些属性适用于作用域中的所有正则表达式，而且会根据最后执行的正则表达式操作而变化。这些属性还有一个特点，就是可以通过两种不同的方式访问它们。换句话说，每个属性都有一个全名和一个简写。下表列出了 RegExp 构造函数的属性。
+
+| 全 名        | 简 写                                        | 说 明 |
+| ------------ | -------------------------------------------- | ----- |
+| input        | $\_ 最后搜索的字符串（非标准特性）           |
+| lastMatch    | $& 最后匹配的文本                            |
+| lastParen    | $+ 最后匹配的捕获组（非标准特性）            |
+| leftContext  | $` input 字符串中出现在 lastMatch 前面的文本 |
+| rightContext | $' input 字符串中出现在 lastMatch 后面的文本 |
+
+通过这些属性可以提取出与 exec()和 test()执行的操作相关的信息。来看下面的例子：
+
+```js
+let text = "this has been a short summer";
+let pattern = /(.)hort/g;
+
+if (pattern.test(text)) {
+  console.log(RegExp.input); // this has been a short summer
+  console.log(RegExp.leftContext); // this has been a
+  console.log(RegExp.rightContext); // summer
+  console.log(RegExp.lastMatch); // short
+  console.log(RegExp.lastParen); // s
+}
+```
+
+以上代码创建了一个模式，用于搜索任何后跟"hort"的字符，并把第一个字符放在了捕获组中。不同属性包含的内容如下。
+
+- input 属性中包含原始的字符串。
+- leftConext 属性包含原始字符串中"short"之前的内容，rightContext 属性包含"short"之后的内容。
+- lastMatch 属性包含匹配整个正则表达式的上一个字符串，即"short"。
+- lastParen 属性包含捕获组的上一次匹配，即"s"。
+
+这些属性名也可以替换成简写形式，只不过要使用中括号语法来访问，如下面的例子所示，因为大多数简写形式都不是合法的 ECMAScript 标识符：
+
+```js
+let text = "this has been a short summer";
+let pattern = /(.)hort/g;
+
+/*
+ * 注意：Opera 不支持简写属性名
+ * IE 不支持多行匹配
+ */
+if (pattern.test(text)) {
+  console.log(RegExp.$_); // this has been a short summer
+  console.log(RegExp["$`"]); // this has been a
+  console.log(RegExp["$'"]); // summer
+  console.log(RegExp["$&"]); // short
+  console.log(RegExp["$+"]); // s
+}
+```
+
+RegExp 还有其他几个构造函数属性，可以存储最多 9 个捕获组的匹配项。这些属性通过 RegExp.$1~RegExp.$9 来访问，分别包含第 1~9 个捕获组的匹配项。在调用 exec()或 test()时，这些属性就会被填充，然后就可以像下面这样使用它们：
+
+```js
+let text = "this has been a short summer";
+let pattern = /(..)or(.)/g;
+if (pattern.test(text)) {
+  console.log(RegExp.$1); // sh
+  console.log(RegExp.$2); // t
+}
+```
+
+在这个例子中，模式包含两个捕获组。调用 test()搜索字符串之后，因为找到了匹配项所以返回 true，而且可以打印出通过 RegExp 构造函数的$1 和$2 属性取得的两个捕获组匹配的内容。
+
+注意 RegExp 构造函数的所有属性都没有任何 Web 标准出处，因此不要在生产环境中使用它们。
+
+### 5.2.2. RegExp 实例属性
 
 每个 RegExp 实例都有下列属性，提供有关模式的各方面信息。
 
@@ -5624,7 +5669,7 @@ console.log(pattern2.flags); // "i"
 
 注意，虽然第一个模式是通过字面量创建的，第二个模式是通过 RegExp 构造函数创建的，但两个模式的 source 和 flags 属性是相同的。source 和 flags 属性返回的是规范化之后可以在字面量中使用的形式。
 
-### 5.2.2. RegExp 实例方法
+### 5.2.3. RegExp 实例方法
 
 RegExp 实例的主要方法是 exec()，主要用于配合捕获组使用。这个方法只接收一个参数，即要应用模式的字符串。如果找到了匹配项，则返回包含第一个匹配信息的数组；如果没找到匹配项，则返回 null。返回的数组虽然是 Array 的实例，但包含两个额外的属性：index 和 input。index 是字符串中匹配模式的起始位置，input 是要查找的字符串。这个数组的第一个元素是匹配整个模式的字符串，其他元素是与表达式中的捕获组匹配的字符串。如果模式中没有捕获组，则数组只包含一个元素。来看下面的例子：
 
@@ -5732,87 +5777,6 @@ console.log(pattern.toLocaleString()); // /\[bc\]at/gi
 这里的模式是通过 RegExp 构造函数创建的，但 toLocaleString()和 toString()返回的都是其字面量的形式。
 
 注意 正则表达式的 valueOf()方法返回正则表达式本身。
-
-### 5.2.3. RegExp 构造函数属性
-
-RegExp 构造函数本身也有几个属性。（在其他语言中，这种属性被称为静态属性。）这些属性适用于作用域中的所有正则表达式，而且会根据最后执行的正则表达式操作而变化。这些属性还有一个特点，就是可以通过两种不同的方式访问它们。换句话说，每个属性都有一个全名和一个简写。下表列出了 RegExp 构造函数的属性。
-
-| 全 名        | 简 写                                        | 说 明 |
-| ------------ | -------------------------------------------- | ----- |
-| input        | $\_ 最后搜索的字符串（非标准特性）           |
-| lastMatch    | $& 最后匹配的文本                            |
-| lastParen    | $+ 最后匹配的捕获组（非标准特性）            |
-| leftContext  | $` input 字符串中出现在 lastMatch 前面的文本 |
-| rightContext | $' input 字符串中出现在 lastMatch 后面的文本 |
-
-通过这些属性可以提取出与 exec()和 test()执行的操作相关的信息。来看下面的例子：
-
-```js
-let text = "this has been a short summer";
-let pattern = /(.)hort/g;
-
-if (pattern.test(text)) {
-  console.log(RegExp.input); // this has been a short summer
-  console.log(RegExp.leftContext); // this has been a
-  console.log(RegExp.rightContext); // summer
-  console.log(RegExp.lastMatch); // short
-  console.log(RegExp.lastParen); // s
-}
-```
-
-以上代码创建了一个模式，用于搜索任何后跟"hort"的字符，并把第一个字符放在了捕获组中。不同属性包含的内容如下。
-
-- input 属性中包含原始的字符串。
-- leftConext 属性包含原始字符串中"short"之前的内容，rightContext 属性包含"short"之后的内容。
-- lastMatch 属性包含匹配整个正则表达式的上一个字符串，即"short"。
-- lastParen 属性包含捕获组的上一次匹配，即"s"。
-
-这些属性名也可以替换成简写形式，只不过要使用中括号语法来访问，如下面的例子所示，因为大多数简写形式都不是合法的 ECMAScript 标识符：
-
-```js
-let text = "this has been a short summer";
-let pattern = /(.)hort/g;
-
-/*
- * 注意：Opera 不支持简写属性名
- * IE 不支持多行匹配
- */
-if (pattern.test(text)) {
-  console.log(RegExp.$_); // this has been a short summer
-  console.log(RegExp["$`"]); // this has been a
-  console.log(RegExp["$'"]); // summer
-  console.log(RegExp["$&"]); // short
-  console.log(RegExp["$+"]); // s
-}
-```
-
-RegExp 还有其他几个构造函数属性，可以存储最多 9 个捕获组的匹配项。这些属性通过 RegExp.$1~RegExp.$9 来访问，分别包含第 1~9 个捕获组的匹配项。在调用 exec()或 test()时，这些属性就会被填充，然后就可以像下面这样使用它们：
-
-```js
-let text = "this has been a short summer";
-let pattern = /(..)or(.)/g;
-if (pattern.test(text)) {
-  console.log(RegExp.$1); // sh
-  console.log(RegExp.$2); // t
-}
-```
-
-在这个例子中，模式包含两个捕获组。调用 test()搜索字符串之后，因为找到了匹配项所以返回 true，而且可以打印出通过 RegExp 构造函数的$1 和$2 属性取得的两个捕获组匹配的内容。
-
-注意 RegExp 构造函数的所有属性都没有任何 Web 标准出处，因此不要在生产环境中使用它们。
-
-### 5.2.4. 模式局限
-
-虽然 ECMAScript 对正则表达式的支持有了长足的进步，但仍然缺少 Perl 语言中的一些高级特性。下列特性目前还没有得到 ECMAScript 的支持（想要了解更多信息，可以参考 Regular-Expressions.info 网站）：
-
-- \A 和\Z 锚（分别匹配字符串的开始和末尾）
-- 联合及交叉类
-- 原子组
-- x（忽略空格）匹配模式
-- 条件式匹配
-- 正则表达式注释
-
-虽然还有这些局限，但 ECMAScript 的正则表达式已经非常强大，可以用于大多数模式匹配任务。
 
 ## 5.3. 原始值包装类型
 
@@ -6895,6 +6859,8 @@ Math 对象还有很多涉及各种简单或高阶数运算的方法。讨论每
 
 到目前为止，大多数引用值的示例使用的是 Object 类型。Object 是 ECMAScript 中最常用的类型之一。虽然 Object 的实例没有多少功能，但很适合存储和在应用程序间交换数据。
 
+### 6.1.1. 创建对象
+
 ```js
 let person = new Object();
 person.name = "Nicholas";
@@ -6962,6 +6928,8 @@ displayInfo({
 
 注意 这种模式非常适合函数有大量可选参数的情况。一般来说，命名参数更直观，但在可选参数过多的时候就显得笨拙了。最好的方式是对必选参数使用命名参数，再通过一个对象字面量来封装多个可选参数。
 
+### 6.1.2. 读取属性
+
 虽然属性一般是通过点语法来存取的，这也是面向对象语言的惯例，但也可以使用中括号来存取属性。在使用中括号时，要在括号内使用属性名的字符串形式，比如：
 
 ```js
@@ -6986,7 +6954,335 @@ person["first name"] = "Nicholas";
 
 通常，点语法是首选的属性存取方式，除非访问属性时必须使用变量。
 
-注意 第 8 章将更全面、深入地介绍 Object 类型。
+### 6.1.3. Object 静态方法
+
+Object 构造函数上定义了 Object.freeze()，Object.isFrozen()，Object.preventExtensions()，Object.isExtensible()，Object.seal()，Object.isSealed() 静态方法。其他静态方法在第 8 章会详细讨论。
+
+1. Object.freeze() 和 Object.isFrozen()
+
+Object.freeze() 方法可以冻结一个对象。一个被冻结的对象再也不能被修改；冻结了一个对象则不能向这个对象添加新的属性，不能删除已有属性，不能修改该对象已有属性的可枚举性、可配置性、可写性，以及不能修改已有属性的值。也不能将值属性改为访问器属性。该方法返回冻结后的对象。
+
+来看下面的例子：
+
+```js
+const o = {
+  foo: "foo",
+};
+o.bar = "bar";
+console.log(o.bar); // "bar"
+```
+
+在这个例子中，对象 o 用 const 进行声明。但 const 对与引用值的不可改变效果是不理想的。我们依然可以给对象添加或是修改属性。但是将该对象冻结之后，就不一样了：
+
+```js
+const o = {
+  foo: "foo",
+};
+Object.freeze(o);
+o.bar = "bar";
+console.log(o.bar); // undefined
+```
+
+在这个例子中，将对象 o 冻结后，再给 o 添加属性会静默失败。在严格模式下会报 TypeError。
+
+```js
+"use strict";
+const o = {
+  foo: "foo",
+};
+Object.freeze(o);
+o.bar = "bar";
+// TypeError: Cannot add property bar, object is not extensible
+```
+
+也不能修改对象已有属性的值（属性为原始值类型时，下文会详细介绍。）：
+
+```js
+"use strict";
+const o = {
+  foo: "foo",
+};
+Object.freeze(o);
+o.foo = "bar";
+// TypeError: Cannot assign to read only property 'foo' of object '#<Object>'
+```
+
+删掉一个已有属性当然也是不可能的：
+
+```js
+"use strict";
+const o = {
+  foo: "foo",
+};
+Object.freeze(o);
+delete o.foo;
+// TypeError: Cannot delete property 'foo' of #<Object>
+```
+
+哪怕使用 Object.defineProperty() 也是不行的：
+
+```js
+"use strict";
+const o = {
+  foo: "foo",
+};
+Object.freeze(o);
+Object.defineProperty(o, "foo", {
+  value: "bar",
+});
+// TypeError: Cannot redefine property: foo
+```
+
+需要注意的是，这种冻结是“浅冻结”：
+
+```js
+const o = {
+  foo: {},
+};
+Object.freeze(o);
+o.foo.test = "success";
+console.log(o.foo.test); // "success"
+```
+
+Object.isFrozen() 用来判断一个对象是否处于被冻结状态。需要注意的是：当 Object.isFrozen() 传入一个非对象时，也返回 true。
+
+```js
+const o = {};
+console.log(Object.isFrozen(o)); // false
+Object.freeze(o);
+console.log(Object.isFrozen(o)); // true
+console.log(Object.isFrozen(null)); // true
+```
+
+2. Object.preventExtensions() 和 Object.isExtensible()
+
+Object.preventExtensions()方法让一个对象变得不可扩展，也就是永远不能再添加新的属性。
+
+来看下面的例子：
+
+```js
+const o = {};
+Object.preventExtensions(o);
+o.foo = "foo";
+console.log(o.foo); // undefined
+```
+
+在这个例子中，将对象 o 变得不可扩展后，添加新的属性会静默失败，严格模式下会报错。
+
+Object.isExtensible()用于检测一个对象是否处于可扩展状态。需要注意的是：当 Object.isExtensible() 传入一个非对象时，也返回 false。
+
+```js
+const o = {};
+console.log(Object.isExtensible(o)); // true
+Object.preventExtensions(o);
+console.log(Object.isExtensible(o)); // false
+console.log(Object.isExtensible(null)); // false
+```
+
+3. Object.seal() 和 Object.isSealed()
+
+Object.seal() 方法用于封闭一个对象，这意味着对象不能添加新属性，删除已有属性，不能修改该对象已有属性的可枚举性、可配置性。不可将对象的值属性改为访问器属性。该方法返回封闭后的对象。
+
+来看下面的例子：
+
+```js
+const o = {
+  foo: "foo",
+};
+Object.seal(o);
+o.foo = "bar";
+console.log(o.foo); // bar
+```
+
+Object.isSealed()用以检测一个对象是否处于被封闭状态。需要注意的是：当 Object.isSealed() 传入一个非对象时，也返回 true
+
+```js
+const o = {
+  foo: "foo",
+};
+console.log(Object.isSealed(o)); // false
+Object.seal(o);
+console.log(Object.isSealed(o)); // true
+console.log(Object.isSealed(null)); // true
+```
+
+下表总结了以上 3 种方法的特性区别：
+
+| 方法                | 特性         |
+| ------------------- | ------------ |
+| freeze()            | 只能读属性   |
+| preventExtensions() | 不能增添属性 |
+| seal()              | 只能读写属性 |
+
+### 6.1.4. 实例方法
+
+Object 实例继承了 Object 原型上的 3 个方法：valueOf()，toString()，toLocaleString()。Object 实例继承的其他
+方法将在第 8 章再详细讨论。
+
+1. valueOf()
+
+Object 实例的 valueOf() 方法返回其本身。Date 引用类型，原始值包装类型重写了 valueOf() 方法。
+
+2. toString()
+
+Object 实例的 toString() 方法定义在 Object 的原型上，对象实例调用 toString() 会默认返回 `[object Object]`。
+
+来看下面的例子：
+
+```js
+const o = {};
+const strOfO = o.toString();
+console.log(strOfO); // [object Object]
+```
+
+由于 Object 位于原型链的高层，因此所有引用类型都能继承该方法。其中，Date，RegExp，原始值包装类型以及数组的原型重写了该方法，所以在这些引用类型的实例上调用 toString() 不返回 `[object Object]`。
+
+来看下面的例子：
+
+```js
+const date = new Date();
+console.log(date.toString()); // "Fri Sep 17 2021 21:45:38 GMT+0800 (中国标准时间)"
+const regexp = new RegExp("foo");
+console.log(regexp.toString()); // "/foo/"
+const t = true;
+console.log(t.toString()); // "true"
+const zero = 0;
+console.log(zero.toString()); // "0"
+const str = "str";
+console.log(str.toString()); // "str"
+```
+
+Gobal 对象，Math 对象，映射，集合，弱映射，弱集合，（或者是自定义的引用类型）没有重写 toString() 方法，在这些引用类型或其实例上调用该方法时，会先查找对象的 `[Symbol.toStringTag]` 属性，如果有该属性就生成对应的字符串 `[object type]`，否则返回 `[object Object]`。
+
+来看下面的例子：
+
+```js
+const toStringAtObjectProto = Object.prototype.toString;
+
+const global = this;
+console.log(global.toString === toStringAtObjectProto); // true
+console.log(global[Symbol.toStringTag]); // undefined
+console.log(global.toString()); // "[object Object]"
+
+const math = Math;
+console.log(math.toString === toStringAtObjectProto); // true
+console.log(math[Symbol.toStringTag]); // "Math"
+console.log(math.toString()); // "[object Math]"
+
+const map = new Map();
+console.log(map.toString === toStringAtObjectProto); // true
+console.log(map[Symbol.toStringTag]); // "Map"
+console.log(map.toString()); // "[object Map]"
+
+const set = new Set();
+console.log(set.toString === toStringAtObjectProto); // true
+console.log(set[Symbol.toStringTag]); // "Set"
+console.log(set.toString()); // "[object Set]"
+```
+
+但如果在没有 `[Symbol.toStringTag]` 属性的对象上调用 Object.prototype.toString()，JavaScript 引擎会为我们识别出类型标签，利用这种方法可以巧妙地判断一个值的类型。
+
+```js
+function getType(any) {
+  return Object.prototype.toString.call(any).slice(8, -1);
+}
+
+console.log(getType(undefined)); // "Undefined"
+console.log(getType(null)); // "Null"
+console.log(getType(true)); // "Boolean"
+console.log(getType(0)); // "Number"
+console.log(getType("")); // "String"
+console.log(getType(Symbol())); // "Symbol"
+console.log(getType(new Date())); // "Date"
+console.log(getType(new RegExp(""))); // "RegExp"
+console.log(getType(Math)); // "Math"
+console.log(getType(getType)); // "Function"
+console.log(getType(function* () {})); // "GeneratorFunction"
+console.log(getType(Reflect)); // "Reflect"
+console.log(getType(new Error())); // "Error"
+console.log(getType({})); // "Object"
+console.log(getType([])); // "Array"
+console.log(getType(new Map())); // "Map"
+console.log(getType(new WeakMap())); // "WeakMap"
+console.log(getType(new Set())); // "Set"
+console.log(getType(new WeakSet())); // "WeakSet"
+console.log(getType(async function () {})); // "AsyncFunction"
+console.log(getType(Promise.resolve())); // "Promise"
+```
+
+3. toLocaleString()
+
+toLocaleString() 方法返回一个该对象的字符串表示。此方法被派生对象继承，为了特定语言环境的目的（locale-specific purposes）而重载使用。
+
+toLocaleString() 默认情况下和 toString() 的效果相同。但数字，日期，以及数组重写了该方法。
+
+- Number.prototype.toLocaleString(locales, options)
+
+toLocaleString() 方法返回这个数字在特定语言环境下的表示字符串。新的 locales 和 options 参数让应用程序可以指定要进行格式转换的语言，并且定制函数的行为。在旧的实现中，会忽略 locales 和 options 参数，使用的语言环境和返回的字符串的形式完全取决于实现方式。详细 API 请参见[MDN](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString)。
+
+这里来看一些例子：
+
+```js
+const float = 1024.1234;
+
+float.toLocaleString("zh-CN");
+// "1,024.123"
+
+float.toLocaleString("zh-Hans-CN-u-nu-hanidec");
+// "一,〇二四.一二三"
+
+float.toLocaleString("de-DE");
+// "1.024,123"
+
+float.toLocaleString("ar-EG");
+// "١٬٠٢٤٫١٢٣"
+
+const number = 1024;
+
+number.toLocaleString("zh-CN", { style: "decimal" });
+// "1,024"
+
+number.toLocaleString("zh-CN", { style: "currency", currency: "CNY" });
+// "￥1,024.00"
+
+number.toLocaleString("zh-CN", { style: "percent" });
+// "102,400%"
+
+number.toLocaleString("zh-CN", {
+  style: "currency",
+  currency: "CNY",
+  currencyDisplay: "symbol",
+});
+// "￥1,024.00"
+
+number.toLocaleString("zh-CN", {
+  style: "currency",
+  currency: "CNY",
+  currencyDisplay: "code",
+});
+// "CNY 1,024.00"
+
+number.toLocaleString("zh-CN", {
+  style: "currency",
+  currency: "CNY",
+  currencyDisplay: "name",
+});
+// "1,024.00人民币"
+```
+
+- Date.prototype.toLocaleString(locales, options)
+
+同样地，这里来看一些例子：
+
+```js
+const date = new Date();
+
+console.log(date.toLocaleString("zh-CN", { dateStyle: "full" }));
+// "2021年9月17日星期五"
+
+console.log(date.toLocaleString("zh-CN", { timeStyle: "full" }));
+// "中国标准时间 下午11:05:44"
+```
 
 ## 6.2. Array
 
