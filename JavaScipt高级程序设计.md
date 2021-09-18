@@ -68,7 +68,7 @@ plan : 1 chapter/3 day
     - [3.6.6. for-of 语句](#366-for-of-语句)
     - [3.6.7. for-in 语句](#367-for-in-语句)
     - [3.6.8. label 语句](#368-label-语句)
-    - [3.6.9. break 和 continue 语句](#369-break-和-continue-语句)
+    - [3.6.9. break 与 continue 语句](#369-break-与-continue-语句)
     - [3.6.10. with 语句](#3610-with-语句)
   - [3.7. 函数](#37-函数)
 - [4. 变量，作用域与内存](#4-变量作用域与内存)
@@ -4376,9 +4376,9 @@ start: for (let i = 0; i < count; i++) {
 
 在这个例子中，start 是一个标签，可以在后面通过 break 或 continue 语句引用。标签语句的典型应用场景是嵌套循环。
 
-### 3.6.9. break 和 continue 语句
+### 3.6.9. break 与 continue 语句
 
-break 和 continue 语句为执行循环代码提供了更严格的控制手段。其中，break 语句用于立即退出循环，强制执行循环后的下一条语句。而 continue 语句也用于立即退出循环，但会再次从循环顶部开始执行。下面看一个例子：
+break 与 continue 语句为执行循环代码提供了更严格的控制手段。其中，break 语句用于立即退出循环，强制执行循环后的下一条语句。而 continue 语句也用于立即退出循环，但会再次从循环顶部开始执行。下面看一个例子：
 
 ```js
 let num = 0;
