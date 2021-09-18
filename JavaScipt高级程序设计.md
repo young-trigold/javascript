@@ -130,8 +130,8 @@ plan : 1 chapter/3 day
     - [6.3.4. 定型数组](#634-定型数组)
   - [6.4. Map](#64-map)
     - [6.4.1. 基本 API](#641-基本-api)
-    - [6.4.2. 顺序与迭代](#642-顺序与迭代)
-    - [6.4.3. 选择 Object 还是 Map](#643-选择-object-还是-map)
+    - [6.4.2. 迭代](#642-迭代)
+    - [6.4.3. Object 还是 Map](#643-object-还是-map)
   - [6.5. WeakMap](#65-weakmap)
     - [6.5.1. 基本 API](#651-基本-api)
     - [6.5.2. 弱键](#652-弱键)
@@ -139,7 +139,7 @@ plan : 1 chapter/3 day
     - [6.5.4. 使用弱映射](#654-使用弱映射)
   - [6.6. Set](#66-set)
     - [6.6.1. 基本 API](#661-基本-api)
-    - [6.6.2. 顺序与迭代](#662-顺序与迭代)
+    - [6.6.2. 迭代](#662-迭代)
     - [6.6.3. 定义正式集合操作](#663-定义正式集合操作)
   - [6.7. WeakSet](#67-weakset)
     - [6.7.1. 基本 API](#671-基本-api)
@@ -8739,7 +8739,7 @@ console.log(m.get(nz)); // bar
 
 注意 SameValueZero 是 ECMAScript 规范新增的相等性比较算法。关于 ECMAScript 的相等性比较，可以参考 MDN 文档中的文章“Equality Comparisons and Sameness”
 
-### 6.4.2. 顺序与迭代
+### 6.4.2. 迭代
 
 与 Object 类型的一个主要差异是，Map 实例会维护键值对的插入顺序，因此可以根据插入顺序执行迭代操作。
 
@@ -8836,7 +8836,7 @@ for (let key of m.keys()) {
 console.log(keyObj); // {id: "newKey"}
 ```
 
-### 6.4.3. 选择 Object 还是 Map
+### 6.4.3. Object 还是 Map
 
 对于多数 Web 开发任务来说，选择 Object 还是 Map 只是个人偏好问题，影响不大。不过，对于在乎内存和性能的开发者来说，对象和映射之间确实存在显著的差别。
 
@@ -9155,7 +9155,7 @@ console.log(s.delete("foo")); // true
 console.log(s.delete("foo")); // false
 ```
 
-### 6.6.2. 顺序与迭代
+### 6.6.2. 迭代
 
 Set 会维护值插入时的顺序，因此支持按顺序迭代。
 
