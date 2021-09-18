@@ -10744,7 +10744,7 @@ console.log(g.next()); // { done: false, value: 3}
 本章内容
 
 - 深入对象
-- 创建对象的方式
+- 理解原型
 - 继承的方式
 - 类 API
 
