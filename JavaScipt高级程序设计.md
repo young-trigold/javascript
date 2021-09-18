@@ -5890,6 +5890,58 @@ console.log(num.toString(10)); // "10"
 console.log(num.toString(16)); // "a"
 ```
 
+toLocaleString(locales, options) 方法返回这个数字在特定语言环境下的表示字符串。新的 locales 和 options 参数让应用程序可以指定要进行格式转换的语言，并且定制函数的行为。在旧的实现中，会忽略 locales 和 options 参数，使用的语言环境和返回的字符串的形式完全取决于实现方式。详细 API 请参见[MDN](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString)。
+
+这里来看一些例子：
+
+```js
+const float = 1024.1234;
+
+float.toLocaleString("zh-CN");
+// "1,024.123"
+
+float.toLocaleString("zh-Hans-CN-u-nu-hanidec");
+// "一,〇二四.一二三"
+
+float.toLocaleString("de-DE");
+// "1.024,123"
+
+float.toLocaleString("ar-EG");
+// "١٬٠٢٤٫١٢٣"
+
+const number = 1024;
+
+number.toLocaleString("zh-CN", { style: "decimal" });
+// "1,024"
+
+number.toLocaleString("zh-CN", { style: "currency", currency: "CNY" });
+// "￥1,024.00"
+
+number.toLocaleString("zh-CN", { style: "percent" });
+// "102,400%"
+
+number.toLocaleString("zh-CN", {
+  style: "currency",
+  currency: "CNY",
+  currencyDisplay: "symbol",
+});
+// "￥1,024.00"
+
+number.toLocaleString("zh-CN", {
+  style: "currency",
+  currency: "CNY",
+  currencyDisplay: "code",
+});
+// "CNY 1,024.00"
+
+number.toLocaleString("zh-CN", {
+  style: "currency",
+  currency: "CNY",
+  currencyDisplay: "name",
+});
+// "1,024.00人民币"
+```
+
 除了继承的方法，Number 类型还提供了几个用于将数值格式化为字符串的方法。
 
 toFixed()方法返回包含指定小数点位数的数值字符串，如：
@@ -7215,74 +7267,6 @@ console.log(getType(Promise.resolve())); // "Promise"
 toLocaleString() 方法返回一个该对象的字符串表示。此方法被派生对象继承，为了特定语言环境的目的（locale-specific purposes）而重载使用。
 
 toLocaleString() 默认情况下和 toString() 的效果相同。但数字，日期，以及数组重写了该方法。
-
-- Number.prototype.toLocaleString(locales, options)
-
-toLocaleString() 方法返回这个数字在特定语言环境下的表示字符串。新的 locales 和 options 参数让应用程序可以指定要进行格式转换的语言，并且定制函数的行为。在旧的实现中，会忽略 locales 和 options 参数，使用的语言环境和返回的字符串的形式完全取决于实现方式。详细 API 请参见[MDN](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString)。
-
-这里来看一些例子：
-
-```js
-const float = 1024.1234;
-
-float.toLocaleString("zh-CN");
-// "1,024.123"
-
-float.toLocaleString("zh-Hans-CN-u-nu-hanidec");
-// "一,〇二四.一二三"
-
-float.toLocaleString("de-DE");
-// "1.024,123"
-
-float.toLocaleString("ar-EG");
-// "١٬٠٢٤٫١٢٣"
-
-const number = 1024;
-
-number.toLocaleString("zh-CN", { style: "decimal" });
-// "1,024"
-
-number.toLocaleString("zh-CN", { style: "currency", currency: "CNY" });
-// "￥1,024.00"
-
-number.toLocaleString("zh-CN", { style: "percent" });
-// "102,400%"
-
-number.toLocaleString("zh-CN", {
-  style: "currency",
-  currency: "CNY",
-  currencyDisplay: "symbol",
-});
-// "￥1,024.00"
-
-number.toLocaleString("zh-CN", {
-  style: "currency",
-  currency: "CNY",
-  currencyDisplay: "code",
-});
-// "CNY 1,024.00"
-
-number.toLocaleString("zh-CN", {
-  style: "currency",
-  currency: "CNY",
-  currencyDisplay: "name",
-});
-// "1,024.00人民币"
-```
-
-- Date.prototype.toLocaleString(locales, options)
-
-同样地，这里来看一些例子：
-
-```js
-const date = new Date();
-
-console.log(date.toLocaleString("zh-CN", { dateStyle: "full" }));
-// "2021年9月17日星期五"
-
-console.log(date.toLocaleString("zh-CN", { timeStyle: "full" }));
-// "中国标准时间 下午11:05:44"
-```
 
 ## 6.2. Array
 
