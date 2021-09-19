@@ -2062,10 +2062,10 @@ console.log(Number.isNaN(true)); // false
 
 Number()函数基于如下规则执行转换。
 
-- 布尔值，true 转换为 1，false 转换为 0。
-- 数值，直接返回。
-- null，返回 0。
-- undefined，返回 NaN。
+- undefined 返回 NaN，null 返回 0
+- true 返回 1，false 返回 0
+- 数值直接返回
+- 符号类型不能转换为数值
 
 来看下面的例子：
 
@@ -2079,7 +2079,7 @@ let un; // NaN
 
 - 字符串，应用以下规则：
 
-  - 如果是空字符串（不包含字符），则返回 0。
+  - 如果是空字符串，则返回 0。
   - 如果字符串包含数值字符，包括数值字符前面带加、减号的情况，则转换为一个十进制数值。(忽略前面的 0)
   - 如果字符串包含有效的浮点值格式，如"1.1"，则会转换为相应的浮点值（同样，忽略前面的 0）。
   - 如果字符串包含有效的十六进制格式，如"0xf"，则会转换为与该十六进制值对应的十进制整数值。
@@ -2136,7 +2136,7 @@ const otherStr3 = "foo"; // NaN
   const moreEleArr = [1, 2]; // NaN
   ```
 
-  - 对象的 valueOf() 方法返回对象本身，继续应用 toString() 方法，返回字符串 "[Object Object]"，之后再应用字符串的转换规则，因此结果为 NaN。对于不同的对象有不同的 toString() 结果，但正则表达式，Math 对象，函数，映射，集合的默认数字转换结果都是 NaN。
+  - 对象的 valueOf() 方法返回对象本身，继续应用 toString() 方法，返回字符串 "[Object Object]"，之后再应用字符串的转换规则，因此结果为 NaN。对于不同的对象有不同的 toString() 结果，但正则表达式，Math 对象，函数，映射，集合的默认数值转换结果都是 NaN。
 
   来看下面的例子：
 
@@ -2286,7 +2286,7 @@ let found = true;
 let foundAsString = found.toString(); // 字符串"true"
 ```
 
-toString()方法可用于数值、布尔值、对象和字符串值。（没错，字符串值也有 toString()方法，该方法只是简单地返回自身的一个副本。）null 和 undefined 值没有 toString()方法。
+toString()方法可用于数值、布尔值、对象和字符串值。（没错，字符串值也有 toString()方法，该方法只是简单地返回自身的一个副本。）null 和 undefined 以及符号没有 toString()方法。
 
 多数情况下，toString()不接收任何参数。不过，在对数值调用这个方法时，toString()可以接收一个底数参数，即以什么底数来输出数值的字符串表示。默认情况下，toString()返回数值的十进制字符串表示。而通过传入参数，可以得到数值的二进制、八进制、十六进制，或者其他任何有效基数的字符串表示，比如：
 
@@ -2301,29 +2301,26 @@ console.log(num.toString(16)); // "a"
 
 这个例子展示了传入底数参数时，toString()输出的字符串值也会随之改变。数值 10 可以输出为任意数值格式。注意，默认情况下（不传参数）的输出与传入参数 10 得到的结果相同。
 
-如果你不确定一个值是不是 null 或 undefined，可以使用 String()转型函数，它始终会返回表示相应类型值的字符串。String()函数遵循如下规则。
+可以使用 String()转型函数对任何值进行字符串转换，它始终会返回表示相应类型值的字符串。String()函数遵循如下规则。
 
-- 如果值有 toString()方法，则调用该方法（不传参数）并返回结果。
 - 如果值是 null，返回"null"。
 - 如果值是 undefined，返回"undefined"。
+- 如果值是 Symbol 类型，则返回对应的符号表示。
+- 如果值有 toString() 方法，则调用该方法并返回结果。
 
 下面看几个例子：
 
 ```js
-let value1 = 10;
-let value2 = true;
-let value3 = null;
-let value4;
+const nullValue = null;
+const undef;
+const symbol = Symbol();
 
-console.log(String(value1)); // "10"
-console.log(String(value2)); // "true"
-console.log(String(value3)); // "null"
-console.log(String(value4)); // "undefined"
+console.log(String(nullValue)); // "null"
+console.log(String(undef)); // "undefined"
+console.log(String(symbol)); // "Symbol()"
 ```
 
-这里展示了将 4 个值转换为字符串的情况：一个数值、一个布尔值、一个 null 和一个 undefined。数值和布尔值的转换结果与调用 toString()相同。因为 null 和 undefined 没有 toString()方法，所以 String()方法就直接返回了这两个值的字面量文本。
-
-4. **模板字面量**
+1. **模板字面量**
 
 ECMAScript 6 新增了使用模板字面量定义字符串的能力。与使用单引号或双引号不同，模板字面量保留换行字符，可以跨行定义字符串：
 
@@ -3332,28 +3329,7 @@ const baz = undefined + [1]; //"undefined1"
 const bar = {} + []; // "[Object Object]"
 ```
 
-在进行加法操作时，先观察两个操作数是否包含对象或字符串类型，如果是则对两个操作数使用 String() 转型，之后进行字符串的拼接。如果不包含则对两个操作数使用 Number() 转型，之后再进行数值运算。这个过程可以用 JavaScript 流程语句表示为：
-
-```js
-const result = a + b;
-
-function add(a, b) {
-  function testType(any) {
-    if (typeof any === "string" || typeof any === "object") {
-      return true;
-    } else {
-      return false;
-    }
-  }
-  if (testType(a) && testType(b)) {
-    return String(a).concat(String(b));
-  } else {
-    return Number(a) + Number(b);
-  }
-}
-
-const resultExpected = add(a, b);
-```
+在进行加法操作时，先观察两个操作数是否包含对象或字符串类型，如果是则对两个操作数使用 String() 转型，之后进行字符串的拼接。如果不包含则对两个操作数使用 Number() 转型，之后再进行数值运算。
 
 ECMAScript 中最常犯的一个错误，就是忽略加法操作中涉及的数据类型。比如下面这个例子：
 
@@ -3845,24 +3821,6 @@ let result2 = 5 < 3; // false
 
 与 ECMAScript 中的其他操作符一样，在将它们应用到不同数据类型时也会发生类型转换和其他行为。
 
-- 如果两个操作数不都是字符串，则把操作数使用 Number() 转换为数值，执行数值比较。数值比较有以下规则：
-
-  - NaN 和其他数值的比较结果都是 false。
-  - Infinity 大于等于所有数值。
-  - -Infinity 小于等于所有数值。
-
-  来看下面的例子：
-
-  ```js
-  const f1 = NaN >= NaN; // false
-  const f2 = NaN <= NaN; // false
-  const t1 = Infinity >= Number.MAX_VALUE; // true
-  const t2 = -Infinity <= -Number.MIN_VALUE; // true
-  const t1 = true > null; // true
-  const t2 = [1] < "2"; // true
-  const nan = {} >= {}; // false
-  ```
-
 - 如果操作数都是字符串，则逐个比较字符串中对应字符的编码。
 
   在使用关系操作符比较两个字符串时，会发生一个有趣的现象。很多人认为小于意味着“字母顺序靠前”，而大于意味着“字母顺序靠后”，实际上不是这么回事。对字符串而言，关系操作符会比较字符串中对应字符的编码，而这些编码是数值。比较完之后，会返回布尔值。问题的关键在于，大写字母的编码都小于小写字母的编码，因此以下这种情况就会发生：
@@ -3885,21 +3843,37 @@ let result2 = 5 < 3; // false
 
   这里在比较字符串"23"和"3"时返回 true。因为两个操作数都是字符串，所以会逐个比较它们的字符编码（字符"2"的编码是 50，而字符"3"的编码是 51）。
 
-上述规则用 JavaScript 流程语句可以表示为：
+- 否则，如果两个操作数中都没有对象，则将两个操作数使用 Number() 转为数值再进行数值比较，数值比较有以下规则：
+  - NaN和任何数值比较，结果都为 flase
+  - Infinity大于等于任何数值
+  - -Infinity小于等于任何数值
+
+  来看下面的例子：
+
+  ```js
+  console.log("1" > null); // true
+  console.log(undefined >= undefined); // false
+  console.log(true > false); // true
+  ```
+- 否则，在对象上调用 valueOf()，如果可以获得原始值，再进行上述步骤。
+
+例如：
 
 ```js
-const result = a > b;
-
-function compare(a, b) {
-  if (typeof a === "string" && typeof b === "string") {
-    return compareCharCode(a, b);
-  } else {
-    return Number(a) - Number(b) > 0;
-  }
-}
-
-const resultExpected = compare(a, b);
+console.log(new Date() > 0); // true
+console.log(new Boolean(true) > false); // true
 ```
+
+- 否则，在对象上调用 toString()，如果可以获得原始值，再进行上述步骤。
+
+例如：
+
+```js
+console.log("b" > ["a"]); // true
+console.log(1 > [0]); // true
+```
+
+- 否则，报错。
 
 ### 3.5.8. 相等操作符
 
