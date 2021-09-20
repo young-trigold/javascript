@@ -11229,7 +11229,7 @@ Object.defineProperties(book, {
 
 4. **读取属性特性**
 
-使用 Object.getOwnPropertyDescriptor()方法可以取得指定属性的属性描述符。这个方法接收两个参数：属性所在的对象和要取得其描述符的属性名。返回值是一个对象，对于访问器属性包含 configurable、enumerable、get 和 set 属性，对于数据属性包含 configurable、enumerable、writable 和 value 属性。比如：
+使用 Object.getOwnPropertyDescriptor() 方法可以取得指定属性的属性描述符。这个方法接收两个参数：属性所在的对象和要取得其描述符的属性名。返回值是一个对象，对于访问器属性包含 configurable、enumerable、get 和 set 属性，对于数据属性包含 configurable、enumerable、writable 和 value 属性。比如：
 
 ```js
 let book = {};
@@ -11870,7 +11870,7 @@ console.log(person1.friends === person2.friends); // true
 
 无论何时，只要创建一个函数，就会按照特定的规则为这个函数创建一个 prototype 属性（指向原型对象）。默认情况下，所有原型对象自动获得一个名为 constructor 的属性，指回与之关联的构造函数。对前面的例子而言，Person.prototype.constructor 指向 Person。然后，因构造函数而异，可能会给原型对象添加其他属性和方法。
 
-在自定义构造函数时，原型对象默认只会获得 constructor 属性，其他的所有方法都继承自 Object。每次调用构造函数创建一个新实例，这个实例的内部`[[Prototype]]`指针就会被赋值为构造函数的原型对象。脚本中没有访问这个`[[Prototype]]`特性的标准方式，但 Firefox、Safari 和 Chrome 会在每个对象上暴露**proto**属性，通过这个属性可以访问对象的原型。在其他实现中，这个特性完全被隐藏了。关键在于理解这一点：实例与构造函数原型之间有直接的联系，但实例与构造函数之间没有。
+在自定义构造函数时，原型对象默认只会获得 constructor 属性，其他的所有方法都继承自 Object。每次调用构造函数创建一个新实例，这个实例的内部`[[Prototype]]`指针就会被赋值为构造函数的原型对象。脚本中没有访问这个`[[Prototype]]`特性的标准方式，但 Firefox、Safari 和 Chrome 会在每个对象上暴露`__proto__`属性，通过这个属性可以访问对象的原型。在其他实现中，这个特性完全被隐藏了。关键在于理解这一点：实例与构造函数原型之间有直接的联系，但实例与构造函数之间没有。
 
 这种关系不好可视化，但可以通过下面的代码来理解原型的行为：
 
@@ -12563,39 +12563,7 @@ SubType.prototype.sayAge = function () {
 
 这里只调用了一次 SuperType 构造函数，避免了 SubType.prototype 上不必要也用不到的属性，因此可以说这个例子的效率更高。
 
-下面使用 Object.create() 实现了寄生式组合继承：
-
-```js
-function Person(name) {
-  this.name = name;
-}
-Person.prototype.work = function () {
-  console.log("working...");
-};
-function Student(name, grade) {
-  Person.call(this, ...arguments);
-  this.grade = grade;
-}
-function enhanceWith(origin, func) {
-  return Object.create(origin, {
-    func: {
-      value: func,
-    },
-  });
-}
-function learn() {
-  console.log("learning...");
-}
-Student.prototype = enhanceWith(Person.prototype, learn);
-Student.prototype.constructor = Student;
-const stu1 = new Student("Trigold", "pro");
-stu1.work(); // working...
-stu1.grade = "fish";
-const stu2 = new Student("Nicholas", "pro");
-console.log(stu2.grade); // pro
-```
-
-而且，原型链仍然保持不变，因此 instanceof 操作符和 isPrototypeOf()方法正常有效。寄生式组合继承可以算是引用类型继承的最佳模式。
+而且，原型链仍然保持不变，因此 instanceof 操作符和 isPrototypeOf() 方法正常有效。寄生式组合继承可以算是引用类型继承的最佳模式。
 
 ## 8.4. 类
 
