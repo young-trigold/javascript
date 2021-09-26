@@ -3843,9 +3843,10 @@ let result2 = 5 < 3; // false
   这里在比较字符串"23"和"3"时返回 true。因为两个操作数都是字符串，所以会逐个比较它们的字符编码（字符"2"的编码是 50，而字符"3"的编码是 51）。
 
 - 否则，如果两个操作数中都没有对象，则将两个操作数使用 Number() 转为数值再进行数值比较，数值比较有以下规则：
-  - NaN和任何数值比较，结果都为 flase
-  - Infinity大于等于任何数值
-  - -Infinity小于等于任何数值
+
+  - NaN 和任何数值比较，结果都为 flase
+  - Infinity 大于等于任何数值
+  - -Infinity 小于等于任何数值
 
   来看下面的例子：
 
@@ -3854,6 +3855,7 @@ let result2 = 5 < 3; // false
   console.log(undefined >= undefined); // false
   console.log(true > false); // true
   ```
+
 - 否则，在对象上调用 valueOf()，如果可以获得原始值，再进行上述步骤。
 
 例如：
@@ -7884,6 +7886,125 @@ for (const [idx, element] of a.entries()) {
 注意 虽然这些方法是 ES6 规范定义的，但在 2017 年底的时候仍有浏览器没有实现它们。
 
 ### 6.2.12. 归并方法
+
+ECMAScript 为数组提供了两个归并方法：reduce()和 reduceRight()。这两个方法都会迭代数组的所有项，并在此基础上构建一个最终返回值。reduce()方法从数组第一项开始遍历到最后一项。而 reduceRight()从最后一项开始遍历至第一项。
+
+- **归并函数**
+
+reduce() 方法必须传入一个 **归并函数(reducer)**。归并函数接收 4 个参数：
+
+1. previousValue。这个值表示每次执行时的上一个值，在归并函数第 1 次执行时，这个值就是数组的第 1 个值（如果没有提供 initialValue 见下）。
+2. currentValue。这个值表示每次执行时当前处理的值，在归并函数第 1 次执行时，这个值就是数组的第 2 个值（如果没有提供 initialValue 见下）。
+3. currentIndex。这个值表示当前处理值在数组中的索引。
+4. array。表示调用 reduce() 的数组本身。
+
+- **初始值**
+
+此外，reduce() 方法可以选择性地传入一个 **初始值(initialValue)** ，当传入一个初始值时，第 1 次执行的 previousValue 为该初始值，currentValue 为数组的第 1 个值。
+
+初始值是出于安全性考虑。**这是因为如果数组为空且没有初始值，进行归并操作会抛出 TypeError。** 如果数组仅有一个元素且没有初始值，或者提供了初始值但数组为空，那么该唯一值将被返回，归并操作不会得到执行。
+
+推荐开发者在进行归并操作时提供初始值，这样就会避免报错。
+
+来看下面的例子：
+
+```js
+const maxReducer = (pre, cur) => Math.max(pre.x, cur.x);
+
+// reduce() 没有初始值
+[{ x: 2 }, { x: 22 }, { x: 42 }].reduce(maxReducer); // NaN
+[{ x: 2 }, { x: 22 }].reduce(maxReducer); // 22
+[{ x: 2 }].reduce(maxReducer); // { x: 2 }
+[].reduce(maxReducer); // TypeError
+```
+
+如果一开始就提供了初始值，就不会报错：
+
+```js
+[].reduce(maxReducer, -Infinity); // -Infinity
+```
+
+- **数组累加**
+
+可以使用 reduce()函数便捷地累加数组中所有数值，比如：
+
+```js
+let integers = [1, 2, 3, 4, 5];
+let sum = integers.reduce((pre, cur) => pre + cur， 0);
+console.log(sum); // 15
+```
+
+第一次执行归并函数时，prev 是 1，cur 是 2。第二次执行时，prev 是 3（1 + 2），cur 是 3（数组第三项）。如此递进，直到把所有项都遍历一次，最后返回归并结果。
+
+- **打平数组**
+
+结合 reduce() 和 concat() 方法可以便捷地将二维数组打平为一维数组：
+
+```js
+let arr = [1, [2, 3], 4, [5, 6]];
+let flattenedArr = arr.reduce((pre, cur) => pre.concat(cur), []);
+console.log(flattenedArr); // [ 1, 2, 3, 4, 5, 6 ]
+```
+
+在第一次执行时，previousValue 为 []，currentValue 为 1，[].concat(1) 结果为 `[1]`。第 2 次执行时，previousValue 为 `[1]`，currentValue 为 `[2,3]`，`[1].concat([2,3])` 结果为 `[1,2,3]`，以此类推。
+
+- **数组计数**
+
+```js
+let letters = ["a", "b", "c", "c", "c", "d", "d"];
+
+let countedLetters = letters.reduce(function (countedLetters, letter) {
+  if (letter in countedLetters) {
+    countedLetters[letter]++;
+  } else {
+    countedLetters[letter] = 1;
+  }
+  return countedLetters;
+}, {});
+console.log(countedLetters);
+// { a: 1, b: 1, c: 3, d: 2 }
+```
+
+在第 1 次执行时，previousValue 为 {}，currentValue 为 "a"，letters 中没有 "a"，故把属性 a 的值设为 1，结果为 {a: 1}。同理可得出，第 3 次执行的结果为 {a: 1, b: 1, c: 1}。第 4 次执行时，由于 letters 中有 c 属性，因此 c 属性的值自增。以此类推。
+
+- **数组去重**
+
+```js
+let myArray = ["a", "b", "a", "b", "c", "e", "e", "c", "d", "d", "d", "d"];
+let uniqueArr = myArray.reduce(function (uniqueArr, cur) {
+  if (uniqueArr.indexOf(cur) === -1) {
+    uniqueArr.push(cur);
+  }
+  return uniqueArr;
+}, []);
+
+console.log(uniqueArr);
+// [ 'a', 'b', 'c', 'e', 'd' ]
+```
+
+当然这种方法对 NaN 就有问题了，这是因为 indexOf 在进行搜索的比较时会使用 ===，而 NaN === NaN 返回 false。来看下面的例子：
+
+```js
+let NaNs = [NaN, NaN];
+console.log(NaNs.indexOf(NaN)); // -1
+```
+
+尽管 NaNs 数组中有 2 个 NaN，但使用 indexOf() 进行搜索后，会得出-1，这表示 NaNs 中没有 NaN。
+
+此时，使用 includes() 就可以避免这个问题：
+
+```js
+let arr = [1, 1, NaN, NaN];
+let uniaueArr = arr.reduce(
+  (pre, cur) => (pre.includes(cur) ? pre : [...pre, cur]),
+  []
+);
+console.log(uniaueArr); // [1, NaN]
+```
+
+在这个例子中，第 1 次执行时，previousValue 为 []，currentValue 为 1，previousValue 中不包含 1，因此结果为 `[1]`。第 2 次执行时，previousValue 为 `[1]`，currentValue 为 1，此时包含 1 ，因此结果返回 `[1]`，同样的，第 4 次执行完后，得到 [1, NaN]。
+
+注意：如果你正在使用一个可以兼容 Set 和 Array.from() 的环境，你可以使用 `Array.from(new Set(array))` 来获得一个去重的数组。
 
 ### 6.2.13. 复制与填充方法
 
@@ -16256,7 +16377,7 @@ function MyObject() {
 }
 ```
 
-这个模式是把所有私有变量和私有函数都定义在构造函数中。然后，再创建一个能够访问这些私有成员的特权方法。这样做之所以可行，是因为定义在构造函数中的特权方法其实是一个闭包，它具有访问构造函数中定义的所有变量和函数的能力。在这个例子中，变量 privateVariable 和函数privateFunction()只能通过 publicMethod()方法来访问。在创建 MyObject 的实例后，没有办法直接访问 privateVariable 和 privateFunction()，唯一的办法是使用 publicMethod()。
+这个模式是把所有私有变量和私有函数都定义在构造函数中。然后，再创建一个能够访问这些私有成员的特权方法。这样做之所以可行，是因为定义在构造函数中的特权方法其实是一个闭包，它具有访问构造函数中定义的所有变量和函数的能力。在这个例子中，变量 privateVariable 和函数 privateFunction()只能通过 publicMethod()方法来访问。在创建 MyObject 的实例后，没有办法直接访问 privateVariable 和 privateFunction()，唯一的办法是使用 publicMethod()。
 
 如下面的例子所示，可以定义私有变量和特权方法，以隐藏不能被直接修改的数据：
 
@@ -16275,7 +16396,7 @@ person.setName("Greg");
 console.log(person.getName()); // 'Greg'
 ```
 
-这段代码中的构造函数定义了两个特权方法：getName()和 setName()。每个方法都可以构造函数外部调用，并通过它们来读写私有的 name 变量。在 Person 构造函数外部，没有别的办法访问 name。因为两个方法都定义在构造函数内部，所以它们都是能够通过作用域链访问 name 的闭包。私有变量name 对每个 Person 实例而言都是独一无二的，因为每次调用构造函数都会重新创建一套变量和方法。不过这样也有个问题：必须通过构造函数来实现这种隔离。正如第 8 章所讨论的，构造函数模式的缺点是每个实例都会重新创建一遍新方法。使用静态私有变量实现特权方法可以避免这个问题。
+这段代码中的构造函数定义了两个特权方法：getName()和 setName()。每个方法都可以构造函数外部调用，并通过它们来读写私有的 name 变量。在 Person 构造函数外部，没有别的办法访问 name。因为两个方法都定义在构造函数内部，所以它们都是能够通过作用域链访问 name 的闭包。私有变量 name 对每个 Person 实例而言都是独一无二的，因为每次调用构造函数都会重新创建一套变量和方法。不过这样也有个问题：必须通过构造函数来实现这种隔离。正如第 8 章所讨论的，构造函数模式的缺点是每个实例都会重新创建一遍新方法。使用静态私有变量实现特权方法可以避免这个问题。
 
 ### 10.10.1. 静态私有变量
 
