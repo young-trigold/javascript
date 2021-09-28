@@ -7354,34 +7354,34 @@ console.log(set[Symbol.toStringTag]); // 'Set'
 console.log(set.toString()); // '[object Set]'
 ```
 
-但如果在没有 `[Symbol.toStringTag]` 属性的对象上调用 Object.prototype.toString()，JavaScript 引擎会为我们识别出类型标签，利用这种方法可以巧妙地判断一个值的类型。
+但如果在没有 `[Symbol.toStringTag]` 属性的对象上调用 Object.prototype.toString()，JavaScript 引擎会为我们识别出类型标签：
 
 ```js
-function getType(any) {
+function getTag(any) {
   return Object.prototype.toString.call(any).slice(8, -1);
 }
 
-console.log(getType(undefined)); // 'Undefined'
-console.log(getType(null)); // 'Null'
-console.log(getType(true)); // 'Boolean'
-console.log(getType(0)); // 'Number'
-console.log(getType('')); // 'String'
-console.log(getType(Symbol())); // 'Symbol'
-console.log(getType(new Date())); // 'Date'
-console.log(getType(new RegExp(''))); // 'RegExp'
-console.log(getType(Math)); // 'Math'
-console.log(getType(getType)); // 'Function'
-console.log(getType(function* () {})); // 'GeneratorFunction'
-console.log(getType(Reflect)); // 'Reflect'
-console.log(getType(new Error())); // 'Error'
-console.log(getType({})); // 'Object'
-console.log(getType([])); // 'Array'
-console.log(getType(new Map())); // 'Map'
-console.log(getType(new WeakMap())); // 'WeakMap'
-console.log(getType(new Set())); // 'Set'
-console.log(getType(new WeakSet())); // 'WeakSet'
-console.log(getType(async function () {})); // 'AsyncFunction'
-console.log(getType(Promise.resolve())); // 'Promise'
+console.log(getTag(undefined)); // 'Undefined'
+console.log(getTag(null)); // 'Null'
+console.log(getTag(true)); // 'Boolean'
+console.log(getTag(0)); // 'Number'
+console.log(getTag('')); // 'String'
+console.log(getTag(Symbol())); // 'Symbol'
+console.log(getTag(new Date())); // 'Date'
+console.log(getTag(new RegExp(''))); // 'RegExp'
+console.log(getTag(Math)); // 'Math'
+console.log(getTag(getTag)); // 'Function'
+console.log(getTag(function* () {})); // 'GeneratorFunction'
+console.log(getTag(Reflect)); // 'Reflect'
+console.log(getTag(new Error())); // 'Error'
+console.log(getTag({})); // 'Object'
+console.log(getTag([])); // 'Array'
+console.log(getTag(new Map())); // 'Map'
+console.log(getTag(new WeakMap())); // 'WeakMap'
+console.log(getTag(new Set())); // 'Set'
+console.log(getTag(new WeakSet())); // 'WeakSet'
+console.log(getTag(async function () {})); // 'AsyncFunction'
+console.log(getTag(Promise.resolve())); // 'Promise'
 ```
 
 3. toLocaleString()
@@ -14850,17 +14850,6 @@ const factorial = function f(num) {
 ```
 
 这里创建了一个命名函数表达式 f()，然后将它赋值给了变量 factorial。即使把函数赋值给另一个变量，函数表达式的名称 f 也不变，因此递归调用不会有问题。这个模式在严格模式和非严格模式下都可以使用。
-
-命名函数表达式的名字效果等同于局部变量，因此这样创建不会报错，事实上这是推荐的一种创建函数的方式：
-
-```js
-const foo = function foo(){
-  console.log('test');
-}
-
-foo();
-// 'test'
-```
 
 ### 10.1.3. 箭头函数
 
