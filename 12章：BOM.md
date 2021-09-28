@@ -1,4 +1,5 @@
 **目录：**
+
 - [12. BOM](#12-bom)
   - [12.1. window](#121-window)
     - [12.1.1. window 与 Gobal](#1211-window-与-gobal)
@@ -87,11 +88,11 @@ window.open()方法可以用于导航到指定 URL，也可以用于打开新浏
 如果 window.open()的第二个参数是一个已经存在的窗口或窗格（frame）的名字，则会在对应的窗口或窗格中打开 URL。下面是一个例子：
 
 ```js
-// 与<a href="http://www.google.com" target="topFrame"/>相同
-window.open("http://www.google.com/", "topFrame");
+// 与<a href='http://www.google.com' target='topFrame'/>相同
+window.open('http://www.google.com/', 'topFrame');
 ```
 
-执行这行代码的结果就如同用户点击了一个 href 属性为"http://www.google.com"，target 属性为"topFrame"的链接。如果有一个窗口名叫"topFrame"，则这个窗口就会打开这个 URL；否则就会打开一个新窗口并将其命名为"topFrame"。第二个参数也可以是一个特殊的窗口名，比如\_self、\_parent、\_top 或\_blank。
+执行这行代码的结果就如同用户点击了一个 href 属性为'http://www.google.com'，target 属性为'topFrame'的链接。如果有一个窗口名叫'topFrame'，则这个窗口就会打开这个 URL；否则就会打开一个新窗口并将其命名为'topFrame'。第二个参数也可以是一个特殊的窗口名，比如\_self、\_parent、\_top 或\_blank。
 
 1. **弹出窗口**
 
@@ -101,15 +102,15 @@ window.open("http://www.google.com/", "topFrame");
 
 | 设 置      | 值          | 说 明                                                                                                |
 | ---------- | ----------- | ---------------------------------------------------------------------------------------------------- |
-| fullscreen | "yes"或"no" | 表示新窗口是否最大化。仅限 IE 支持                                                                   |
+| fullscreen | 'yes'或'no' | 表示新窗口是否最大化。仅限 IE 支持                                                                   |
 | height     | 数值        | 新窗口高度。这个值不能小于 100                                                                       |
 | left       | 数值        | 新窗口的 x 轴坐标。这个值不能是负值                                                                  |
-| location   | "yes"或"no" | 表示是否显示地址栏。不同浏览器的默认值也不一样。在设置为"no"时，地址栏可能隐藏或禁用（取决于浏览器） |
-| Menubar    | "yes"或"no" | 表示是否显示菜单栏。默认为"no"                                                                       |
-| resizable  | "yes"或"no" | 表示是否可以拖动改变新窗口大小。默认为"no"                                                           |
-| scrollbars | "yes"或"no" | 表示是否可以在内容过长时滚动。默认为"no"                                                             |
-| status     | "yes"或"no" | 表示是否显示状态栏。不同浏览器的默认值也不一样                                                       |
-| toolbar    | "yes"或"no" | 表示是否显示工具栏。默认为"no"                                                                       |
+| location   | 'yes'或'no' | 表示是否显示地址栏。不同浏览器的默认值也不一样。在设置为'no'时，地址栏可能隐藏或禁用（取决于浏览器） |
+| Menubar    | 'yes'或'no' | 表示是否显示菜单栏。默认为'no'                                                                       |
+| resizable  | 'yes'或'no' | 表示是否可以拖动改变新窗口大小。默认为'no'                                                           |
+| scrollbars | 'yes'或'no' | 表示是否可以在内容过长时滚动。默认为'no'                                                             |
+| status     | 'yes'或'no' | 表示是否显示状态栏。不同浏览器的默认值也不一样                                                       |
+| toolbar    | 'yes'或'no' | 表示是否显示工具栏。默认为'no'                                                                       |
 | top        | 数值        | 新窗口的 y 轴坐标。这个值不能是负值                                                                  |
 | width      | 数值        | 新窗口的宽度。这个值不能小于 100                                                                     |
 
@@ -117,9 +118,9 @@ window.open("http://www.google.com/", "topFrame");
 
 ```js
 window.open(
-  "http://www.google.com/",
-  "googleWindow",
-  "height=400,width=400,top=10,left=10,resizable=yes"
+  'http://www.google.com/',
+  'googleWindow',
+  'height=400,width=400,top=10,left=10,resizable=yes'
 );
 ```
 
@@ -129,9 +130,9 @@ window.open()方法返回一个对新建窗口的引用。这个对象与普通 
 
 ```js
 let googleWin = window.open(
-  "http://www.google.com/",
-  "googleWindow",
-  "height=400,width=400,top=10,left=10,resizable=yes"
+  'http://www.google.com/',
+  'googleWindow',
+  'height=400,width=400,top=10,left=10,resizable=yes'
 );
 // 缩放
 googleWin.resizeTo(500, 500);
@@ -156,9 +157,9 @@ alert(googleWin.closed); // true
 
 ```js
 let googleWin = window.open(
-  "http://www.google.com/",
-  "googleWindow",
-  "height=400,width=400,top=10,left=10,resizable=yes"
+  'http://www.google.com/',
+  'googleWindow',
+  'height=400,width=400,top=10,left=10,resizable=yes'
 );
 alert(googleWin.opener === window); // true
 ```
@@ -169,9 +170,9 @@ alert(googleWin.opener === window); // true
 
 ```js
 let googleWin = window.open(
-  "http://www.google.com/",
-  "googleWindow",
-  "height=400,width=400,top=10,left=10,resizable=yes"
+  'http://www.google.com/',
+  'googleWindow',
+  'height=400,width=400,top=10,left=10,resizable=yes'
 );
 googleWin.opener = null;
 ```
@@ -191,9 +192,9 @@ IE 的早期版本实现针对弹窗的多重安全限制，包括不允许创�
 所有现代浏览器都内置了屏蔽弹窗的程序，因此大多数意料之外的弹窗都会被屏蔽。在浏览器屏蔽弹窗时，可能会发生一些事。如果浏览器内置的弹窗屏蔽程序阻止了弹窗，那么 window.open()很可能会返回 null。此时，只要检查这个方法的返回值就可以知道弹窗是否被屏蔽了，比如：
 
 ```js
-let googleWin = window.open("http://www.google.com/", "_blank");
+let googleWin = window.open('http://www.google.com/', '_blank');
 if (googleWin == null) {
-  alert("The popup was blocked!");
+  alert('The popup was blocked!');
 }
 ```
 
@@ -202,7 +203,7 @@ if (googleWin == null) {
 ```js
 let blocked = false;
 try {
-  let googleWin = window.open("http://www.google.com/", "_blank");
+  let googleWin = window.open('http://www.google.com/', '_blank');
   if (googleWin == null) {
     blocked = true;
   }
@@ -210,7 +211,7 @@ try {
   blocked = true;
 }
 if (blocked) {
-  alert("The popup was blocked!");
+  alert('The popup was blocked!');
 }
 ```
 
@@ -254,8 +255,8 @@ document.documentElement.clientWidth 和 document.documentElement.clientHeight �
 ```js
 let pageWidth = window.innerWidth,
   pageHeight = window.innerHeight;
-if (typeof pageWidth != "number") {
-  if (document.compatMode == "CSS1Compat") {
+if (typeof pageWidth != 'number') {
+  if (document.compatMode == 'CSS1Compat') {
     pageWidth = document.documentElement.clientWidth;
     pageHeight = document.documentElement.clientHeight;
   } else {
@@ -312,13 +313,13 @@ window.scrollTo(100, 100);
 window.scrollTo({
   left: 100,
   top: 100,
-  behavior: "auto",
+  behavior: 'auto',
 });
 // 平滑滚动
 window.scrollTo({
   left: 100,
   top: 100,
-  behavior: "smooth",
+  behavior: 'smooth',
 });
 ```
 
@@ -330,7 +331,7 @@ setTimeout()方法通常接收两个参数：要执行的代码和在执行回�
 
 ```js
 // 在1 秒后显示警告框
-setTimeout(() => alert("Hello world!"), 1000);
+setTimeout(() => alert('Hello world!'), 1000);
 ```
 
 第二个参数是要等待的毫秒数，而不是要执行代码的确切时间。JavaScript 是单线程的，所以每次只能执行一段代码。为了调度不同代码的执行，JavaScript 维护了一个任务队列。其中的任务会按照添加到队列的先后顺序执行。setTimeout()的第二个参数只是告诉 JavaScript 引擎在指定的毫秒数过后把任务添加到这个队列。如果队列是空的，则会立即执行该代码。如果队列不是空的，则代码必须等待前面的任务执行完才能执行。
@@ -339,7 +340,7 @@ setTimeout(() => alert("Hello world!"), 1000);
 
 ```js
 // 设置超时任务
-let timeoutId = setTimeout(() => alert("Hello world!"), 1000);
+let timeoutId = setTimeout(() => alert('Hello world!'), 1000);
 // 取消超时任务
 clearTimeout(timeoutId);
 ```
@@ -351,7 +352,7 @@ clearTimeout(timeoutId);
 setInterval()与 setTimeout()的使用方法类似，只不过指定的任务会每隔指定时间就执行一次，直到取消循环定时或者页面卸载。setInterval()同样可以接收两个参数：要执行的代码（字符串或函数），以及把下一次执行定时代码的任务添加到队列要等待的时间（毫秒）。下面是一个例子：
 
 ```js
-setInterval(() => alert("Hello world!"), 10000);
+setInterval(() => alert('Hello world!'), 10000);
 ```
 
 注意 这里的关键点是，第二个参数，也就是间隔时间，指的是向队列添加新任务之前等待的时间。比如，调用 setInterval()的时间为 01:00:00，间隔时间为 3000 毫秒。这意味着 01:00:03 时，浏览器会把任务添加到执行队列。浏览器不关心这个任务什么时候执行或者执行要花多长时间。因此，到了 01:00:06，它会再向队列中添加一个任务。由此可看出，执行时间短、非阻塞的回调函数比较适合 setInterval()。
@@ -368,7 +369,7 @@ let incrementNumber = function () {
   // 如果达到最大值，则取消所有未执行的任务
   if (num == max) {
     clearInterval(intervalId);
-    alert("Done");
+    alert('Done');
   }
 };
 intervalId = setInterval(incrementNumber, 500);
@@ -385,7 +386,7 @@ let incrementNumber = function () {
   if (num < max) {
     setTimeout(incrementNumber, 500);
   } else {
-    alert("Done");
+    alert('Done');
   }
 };
 setTimeout(incrementNumber, 500);
@@ -407,23 +408,23 @@ alert()方法在本书示例中经常用到。它接收一个要显示给用户�
 要知道用户单击了 OK 按钮还是 Cancel 按钮，可以判断 confirm()方法的返回值：true 表示单击了 OK 按钮，false 表示单击了 Cancel 按钮或者通过单击某一角上的 X 图标关闭了确认框。确认框的典型用法如下所示：
 
 ```js
-if (confirm("Are you sure?")) {
-  alert("I'm so glad you're sure!");
+if (confirm('Are you sure?')) {
+  alert('I'm so glad you're sure!');
 } else {
-  alert("I'm sorry to hear you're not sure.");
+  alert('I'm sorry to hear you're not sure.');
 }
 ```
 
-在这个例子中，第一行代码向用户显示了确认框，也就是 if 语句的条件。如果用户单击了 OK 按钮，则会弹出警告框显示"I'm so glad you're sure!"。如果单击了 Cancel，则会显示"I'm sorry tohear you're not sure."。确认框通常用于让用户确认执行某个操作，比如删除邮件等。因为这种对话框会完全打断正在浏览网页的用户，所以应该在必要时再使用。
+在这个例子中，第一行代码向用户显示了确认框，也就是 if 语句的条件。如果用户单击了 OK 按钮，则会弹出警告框显示'I'm so glad you're sure!'。如果单击了 Cancel，则会显示'I'm sorry tohear you're not sure.'。确认框通常用于让用户确认执行某个操作，比如删除邮件等。因为这种对话框会完全打断正在浏览网页的用户，所以应该在必要时再使用。
 
 最后一种对话框是提示框，通过调用 prompt()方法来显示。提示框的用途是提示用户输入消息。除了 OK 和 Cancel 按钮，提示框还会显示一个文本框，让用户输入内容。prompt()方法接收两个参数：要显示给用户的文本，以及文本框的默认值（可以是空字符串）。
 
 如果用户单击了 OK 按钮，则 prompt()会返回文本框中的值。如果用户单击了 Cancel 按钮，或者对话框被关闭，则 prompt()会返回 null。下面是一个例子：
 
 ```js
-let result = prompt("What is your name? ", "");
+let result = prompt('What is your name? ', '');
 if (result !== null) {
-  alert("Welcome, " + result);
+  alert('Welcome, ' + result);
 }
 ```
 
@@ -452,77 +453,108 @@ location 是最有用的 BOM 对象之一，提供了当前窗口中加载文档
 
 | 属 性             | 值                                                         | 说 明                                                        |
 | ----------------- | ---------------------------------------------------------- | ------------------------------------------------------------ |
-| location.hash     | "#contents"                                                | URL 散列值（井号后跟零或多个字符），如果没有则为空字符串     |
-| location.host     | "www.wrox.com:80"                                          | 服务器名及端口号                                             |
-| location.hostname | "www.wrox.com"                                             | 服务器名                                                     |
-| location.href     | "http://www.google.com:80/WileyCDA/?q=javascript#contents" | 当前加载页面的完整 URL。location 的 toString()方法返回这个值 |
-| location.pathname | "/WileyCDA/"                                               | URL 中的路径和（或）文件名                                   |
-| location.port     | "80"                                                       | 请求的端口。如果 URL 中没有端口，则返回空字符串              |
-| location.protocol | "http:"                                                    | 页面使用的协议。通常是"http:"或"https:"                      |
-| location.search   | "?q=javascript"                                            | URL 的查询字符串。这个字符串以问号开头                       |
-| location.username | "foouser"                                                  | 域名前指定的用户名                                           |
-| location.password | "barpassword"                                              | 域名前指定的密码                                             |
-| location.origin   | "http://www.google.com"                                    | URL 的源地址。只读                                           |
+| location.hash     | '#contents'                                                | URL 散列值（井号后跟零或多个字符），如果没有则为空字符串     |
+| location.host     | 'www.wrox.com:80'                                          | 服务器名及端口号                                             |
+| location.hostname | 'www.wrox.com'                                             | 服务器名                                                     |
+| location.href     | 'http://www.google.com:80/WileyCDA/?q=javascript#contents' | 当前加载页面的完整 URL。location 的 toString()方法返回这个值 |
+| location.pathname | '/WileyCDA/'                                               | URL 中的路径和（或）文件名                                   |
+| location.port     | '80'                                                       | 请求的端口。如果 URL 中没有端口，则返回空字符串              |
+| location.protocol | 'http:'                                                    | 页面使用的协议。通常是'http:'或'https:'                      |
+| location.search   | '?q=javascript'                                            | URL 的查询字符串。这个字符串以问号开头                       |
+| location.username | 'foouser'                                                  | 域名前指定的用户名                                           |
+| location.password | 'barpassword'                                              | 域名前指定的密码                                             |
+| location.origin   | 'http://www.google.com'                                    | URL 的源地址。只读                                           |
 
 ### 12.2.1. 查询字符串
 
 location 的多数信息都可以通过上面的属性获取。但是 URL 中的查询字符串并不容易使用。虽然 location.search 返回了从问号开始直到 URL 末尾的所有内容，但没有办法逐个访问每个查询参数。下面的函数解析了查询字符串，并返回一个以每个查询参数为属性的对象：
 
 ```js
-let getQueryStringArgs = function () {
+const getQueryArgs = function getQueryArgs() {
   // 取得没有开头问号的查询字符串
-  let qs = location.search.length > 0 ? location.search.substring(1) : "",
-    // 保存数据的对象
-    args = {};
-  // 把每个参数添加到args 对象
-  for (let item of qs.split("&").map((kv) => kv.split("="))) {
-    let name = decodeURIComponent(item[0]),
-      value = decodeURIComponent(item[1]);
-    if (name.length) {
-      args[name] = value;
+  const querys = location.search.length > 0 ? location.search.slice(1) : '';
+
+  // 保存结果
+  let args = {};
+
+  // 把每个参数添加到 args 对象
+  for (const pair of querys.split('&')) {
+    const key = decodeURIComponent(pair.split('=')[0]);
+    const value = decodeURIComponent(pair.split('=')[1]);
+
+    if (key.length) {
+      args[key] = value;
     }
   }
+
   return args;
 };
 ```
 
-这个函数首先删除了查询字符串开头的问号，当然前提是 location.search 必须有内容。解析后的参数将被保存到 args 对象，这个对象以字面量形式创建。接着，先把查询字符串按照&分割成数组，每个元素的形式为 name=value。for 循环迭代这个数组，将每一个元素按照=分割成数组，这个数组第一项是参数名，第二项是参数值。参数名和参数值在使用 decodeURIComponent()解码后（这是因为查询字符串通常是被编码后的格式）分别保存在 name 和 value 变量中。最后，name 作为属性而 value 作为该属性的值被添加到 args 对象。这个函数可以像下面这样使用：
+这个函数首先删除了查询字符串开头的问号，当然前提是 location.search 必须有内容。解析后的参数将被保存到 args 对象，这个对象以字面量形式创建。接着，先把查询字符串按照&分割成数组，每个元素的形式为 name=value。for 循环迭代这个数组，将每一个元素按照=分割成数组，这个数组第一项是参数名，第二项是参数值。参数名和参数值在使用 decodeURIComponent()解码后（这是因为查询字符串通常是被编码后的格式）分别保存在 key 和 value 变量中。最后，key 作为属性而 value 作为该属性的值被添加到 args 对象。
+
+不过，如果键名有重复，这种方法并不适用，例如，查询字符串为 `'?key=1&key=2&value=3'`。所以，我们此时用数组来存储。
 
 ```js
-// 假设查询字符串为?q=javascript&num=10
-let args = getQueryStringArgs();
-alert(args["q"]); // "javascript"
-alert(args["num"]); // "10"
+const getQueryMap = function getQueryMap() {
+  // '?key=1&key=2&value=3'
+  const queryStr = location.search.length > 0 ? location.search.slice(1) : '';
+  const pairStrs = queryStr.split('&');
+
+  const queryMap = pairStrs.reduce((map, pairStr) => {
+    const key = decodeURIComponent(pairStr.split('=')[0]);
+    const value = decodeURIComponent(pairStr.split('=')[1]);
+
+    if (map.has(key)) {
+      map.set(key, Array.from(map.get(key)).concat(value));
+    } else {
+      map.set(key, value);
+    }
+
+    return map;
+  }, new Map());
+
+  return queryMap;
+};
+
+console.log(getQueryMap());
+// Map(2) { 'key' => [ '1', '2' ], 'value' => '3' }
 ```
 
-现在，查询字符串中的每个参数都是返回对象的一个属性，这样使用起来就方便了。
+现在，查询字符串中的每个参数都是一个键，这样使用起来就方便了：
+
+```js
+const queryMap = getQueryMap();
+console.log(queryMap['key']); // ['1', '2']
+console.log(queryMap['value']); // '3'
+```
 
 **URLSearchParams**
 
 URLSearchParams 提供了一组标准 API 方法，通过它们可以检查和修改查询字符串。给 URLSearchParams 构造函数传入一个查询字符串，就可以创建一个实例。这个实例上暴露了 get()、set()和 delete()等方法，可以对查询字符串执行相应操作。下面来看一个例子：
 
 ```js
-let qs = "?q=javascript&num=10";
+let qs = '?q=javascript&num=10';
 let searchParams = new URLSearchParams(qs);
-alert(searchParams.toString()); // " q=javascript&num=10"
-searchParams.has("num"); // true
-searchParams.get("num"); // 10
-searchParams.set("page", "3");
-alert(searchParams.toString()); // " q=javascript&num=10&page=3"
-searchParams.delete("q");
-alert(searchParams.toString()); // " num=10&page=3"
+alert(searchParams.toString()); // ' q=javascript&num=10'
+searchParams.has('num'); // true
+searchParams.get('num'); // 10
+searchParams.set('page', '3');
+alert(searchParams.toString()); // ' q=javascript&num=10&page=3'
+searchParams.delete('q');
+alert(searchParams.toString()); // ' num=10&page=3'
 ```
 
 大多数支持 URLSearchParams 的浏览器也支持将 URLSearchParams 的实例用作可迭代对象：
 
 ```js
-let qs = "?q=javascript&num=10";
+let qs = '?q=javascript&num=10';
 let searchParams = new URLSearchParams(qs);
 for (let param of searchParams) {
   console.log(param);
 }
-// ["q", "javascript"]
-// ["num", "10"]
+// ['q', 'javascript']
+// ['num', '10']
 ```
 
 ### 12.2.2. 操作地址
@@ -530,14 +562,14 @@ for (let param of searchParams) {
 可以通过修改 location 对象修改浏览器的地址。首先，最常见的是使用 assign()方法并传入一个 URL，如下所示：
 
 ```js
-location.assign("http://www.google.com/");
+location.assign('http://www.google.com/');
 ```
 
 这行代码会立即启动导航到新 URL 的操作，同时在浏览器历史记录中增加一条记录。如果给 location.href 或 window.location 设置一个 URL，也会以同一个 URL 值调用 assign()方法。比如，下面两行代码都会执行与显式调用 assign()一样的操作：
 
 ```js
-window.location = "http://www.google.com/";
-location.href = "http://www.google.com/";
+window.location = 'http://www.google.com/';
+location.href = 'http://www.google.com/';
 ```
 
 在这 3 种修改浏览器地址的方法中，设置 location.href 是最常见的。
@@ -547,13 +579,13 @@ location.href = "http://www.google.com/";
 ```js
 // 假设当前URL 为http://www.google.com/WileyCDA/
 // 把URL 修改为http://www.google.com/WileyCDA/#section1
-location.hash = "#section1";
+location.hash = '#section1';
 // 把URL 修改为http://www.google.com/WileyCDA/?q=javascript
-location.search = "?q=javascript";
+location.search = '?q=javascript';
 // 把URL 修改为http://www.somewhere.com/WileyCDA/
-location.hostname = "www.somewhere.com";
+location.hostname = 'www.somewhere.com';
 // 把URL 修改为http://www.somewhere.com/mydir/
-location.pathname = "mydir";
+location.pathname = 'mydir';
 // 把URL 修改为http://www.somewhere.com:8080/WileyCDA/
 location.port = 8080;
 ```
@@ -574,7 +606,7 @@ location.port = 8080;
   <body>
     <p>Enjoy this page for a second, because you won't be coming back here.</p>
     <script>
-      setTimeout(() => location.replace("http://www.google.com/"), 1000);
+      setTimeout(() => location.replace('http://www.google.com/'), 1000);
     </script>
   </body>
 </html>
@@ -604,7 +636,7 @@ navigator 对象实现了 NavigatorID 、NavigatorLanguage 、NavigatorOnLine �
 | 属性/方法                     | 说 明                                                                   |
 | ----------------------------- | ----------------------------------------------------------------------- |
 | activeVrDisplays              | 返回数组，包含 ispresenting 属性为 true 的 VRDisplay 实例               |
-| appCodeName                   | 即使在非 Mozilla 浏览器中也会返回"Mozilla"                              |
+| appCodeName                   | 即使在非 Mozilla 浏览器中也会返回'Mozilla'                              |
 | appName                       | 浏览器全名                                                              |
 | appVersion                    | 浏览器版本。通常与实际的浏览器版本不一致                                |
 | battery                       | 返回暴露 Battery Status API 的 BatteryManager 对象                      |
@@ -631,7 +663,7 @@ navigator 对象实现了 NavigatorID 、NavigatorLanguage 、NavigatorOnLine �
 | permissions                   | 返回暴露 Permissions API 的 Permissions 对象                            |
 | platform                      | 返回浏览器运行的系统平台                                                |
 | plugins                       | 返回浏览器安装的插件数组。在 IE 中，这个数组包含页面中所有`<embed>`元素 |
-| product                       | 返回产品名称（通常是"Gecko"）                                           |
+| product                       | 返回产品名称（通常是'Gecko'）                                           |
 | productSub                    | 返回产品的额外信息（通常是 Gecko 的版本）                               |
 | registerProtocolHandler()     | 将一个网站注册为特定协议的处理程序                                      |
 | requestMediaKeySystemAccess() | 返回一个期约，解决为 MediaKeySystemAccess 对象                          |
@@ -670,12 +702,12 @@ let hasPlugin = function (name) {
   return false;
 };
 // 检测Flash
-alert(hasPlugin("Flash"));
+alert(hasPlugin('Flash'));
 // 检测QuickTime
-alert(hasPlugin("QuickTime"));
+alert(hasPlugin('QuickTime'));
 ```
 
-这个 hasPlugin()方法接收一个参数，即待检测插件的名称。第一步是把插件名称转换为小写形式，以便于比较。然后，遍历 plugins 数组，通过 indexOf()方法检测每个 name 属性，看传入的名称是不是存在于某个数组中。比较的字符串全部小写，可以避免大小写问题。传入的参数应该尽可能独一无二，以避免混淆。像"Flash"、"QuickTime"这样的字符串就可以避免混淆。这个方法可以在 Firefox、Safari、Opera 和 Chrome 中检测插件。
+这个 hasPlugin()方法接收一个参数，即待检测插件的名称。第一步是把插件名称转换为小写形式，以便于比较。然后，遍历 plugins 数组，通过 indexOf()方法检测每个 name 属性，看传入的名称是不是存在于某个数组中。比较的字符串全部小写，可以避免大小写问题。传入的参数应该尽可能独一无二，以避免混淆。像'Flash'、'QuickTime'这样的字符串就可以避免混淆。这个方法可以在 Firefox、Safari、Opera 和 Chrome 中检测插件。
 
 注意 plugins 数组中的每个插件对象还有一个 MimeType 对象，可以通过中括号访问。每个 MimeType 对象有 4 个属性：description 描述 MIME 类型，enabledPlugin 是指向插件对象的指针，suffixes 是该 MIME 类型对应扩展名的逗号分隔的字符串，type 是完整的 MIME 类型字符串。
 
@@ -683,7 +715,7 @@ IE11 的 window.navigator 对象开始支持 plugins 和 mimeTypes 属性。这�
 
 **旧版本 IE 中的插件检测**
 
-IE10 及更低版本中检测插件的问题比较多，因为这些浏览器不支持 Netscape 式的插件。在这些 IE 中检测插件要使用专有的 ActiveXObject，并尝试实例化特定的插件。IE 中的插件是实现为 COM 对象的，由唯一的字符串标识。因此，要检测某个插件就必须知道其 COM 标识符。例如，Flash 的标识符是"ShockwaveFlash.ShockwaveFlash"。知道了这个信息后，就可以像这样检测 IE 中是否安装了 Flash：
+IE10 及更低版本中检测插件的问题比较多，因为这些浏览器不支持 Netscape 式的插件。在这些 IE 中检测插件要使用专有的 ActiveXObject，并尝试实例化特定的插件。IE 中的插件是实现为 COM 对象的，由唯一的字符串标识。因此，要检测某个插件就必须知道其 COM 标识符。例如，Flash 的标识符是'ShockwaveFlash.ShockwaveFlash'。知道了这个信息后，就可以像这样检测 IE 中是否安装了 Flash：
 
 ```js
 // 在旧版本IE 中检测插件
@@ -696,9 +728,9 @@ function hasIEPlugin(name) {
   }
 }
 // 检测Flash
-alert(hasIEPlugin("ShockwaveFlash.ShockwaveFlash"));
+alert(hasIEPlugin('ShockwaveFlash.ShockwaveFlash'));
 // 检测QuickTime
-alert(hasIEPlugin("QuickTime.QuickTime"));
+alert(hasIEPlugin('QuickTime.QuickTime'));
 ```
 
 在这个例子中，hasIEPlugin()函数接收一个 DOM 标识符参数。为检测插件，这个函数会使用传入的标识符创建一个新 ActiveXObject 实例。相应代码封装在一个 try/catch 语句中，因此如果创建的插件不存在则会抛出错误。如果创建成功则返回 true，如果失败则在 catch 块中返回 false。上
@@ -709,17 +741,17 @@ alert(hasIEPlugin("QuickTime.QuickTime"));
 ```js
 // 在所有浏览器中检测Flash
 function hasFlash() {
-  var result = hasPlugin("Flash");
+  var result = hasPlugin('Flash');
   if (!result) {
-    result = hasIEPlugin("ShockwaveFlash.ShockwaveFlash");
+    result = hasIEPlugin('ShockwaveFlash.ShockwaveFlash');
   }
   return result;
 }
 // 在所有浏览器中检测QuickTime
 function hasQuickTime() {
-  var result = hasPlugin("QuickTime");
+  var result = hasPlugin('QuickTime');
   if (!result) {
-    result = hasIEPlugin("QuickTime.QuickTime");
+    result = hasIEPlugin('QuickTime.QuickTime');
   }
   return result;
 }
@@ -737,17 +769,17 @@ alert(hasQuickTime());
 
 现代浏览器支持 navigator 上的（在 HTML5 中定义的）registerProtocolHandler()方法。这个方法可以把一个网站注册为处理某种特定类型信息应用程序。随着在线 RSS 阅读器和电子邮件客户端的流行，可以借助这个方法将 Web 应用程序注册为像桌面软件一样的默认应用程序。
 
-要使用 registerProtocolHandler()方法，必须传入 3 个参数：要处理的协议（如"mailto"或"ftp"）、处理该协议的 URL，以及应用名称。比如，要把一个 Web 应用程序注册为默认邮件客户端，可以这样做：
+要使用 registerProtocolHandler()方法，必须传入 3 个参数：要处理的协议（如'mailto'或'ftp'）、处理该协议的 URL，以及应用名称。比如，要把一个 Web 应用程序注册为默认邮件客户端，可以这样做：
 
 ```js
 navigator.registerProtocolHandler(
-  "mailto",
-  "http://www.somemailclient.com?cmd=%s",
-  "Some Mail Client"
+  'mailto',
+  'http://www.somemailclient.com?cmd=%s',
+  'Some Mail Client'
 );
 ```
 
-这个例子为"mailto"协议注册了一个处理程序，这样邮件地址就可以通过指定的 Web 应用程序打开。注意，第二个参数是负责处理请求的 URL，%s 表示原始的请求。
+这个例子为'mailto'协议注册了一个处理程序，这样邮件地址就可以通过指定的 Web 应用程序打开。注意，第二个参数是负责处理请求的 URL，%s 表示原始的请求。
 
 ## 12.4. screen
 
@@ -788,9 +820,9 @@ history.go(2);
 
 ```js
 // 导航到最近的wrox.com 页面
-history.go("google.com");
+history.go('google.com');
 // 导航到最近的nczonline.net 页面
-history.go("nczonline.net");
+history.go('nczonline.net');
 ```
 
 go()有两个简写方法：back()和 forward()。顾名思义，这两个方法模拟了浏览器的后退按钮和前进按钮：
@@ -822,8 +854,8 @@ history 对象增加了方便的状态管理特性。
 hashchange 会在页面 URL 的散列变化时被触发，开发者可以在此时执行某些操作。而状态管理 API 则可以让开发者改变浏览器 URL 而不会加载新页面。为此，可以使用 history.pushState()方法。这个方法接收 3 个参数：一个 state 对象、一个新状态的标题和一个（可选的）相对 URL。例如：
 
 ```js
-let stateObject = { foo: "bar" };
-history.pushState(stateObject, "My title", "baz.html");
+let stateObject = { foo: 'bar' };
+history.pushState(stateObject, 'My title', 'baz.html');
 ```
 
 pushState()方法执行后，状态信息就会被推到历史记录中，浏览器地址栏也会改变以反映新的相对 URL。除了这些变化之外，即使 location.href 返回的是地址栏中的内容，浏览器页不会向服务器发送请求。第二个参数并未被当前实现所使用，因此既可以传一个空字符串也可以传一个短标题。第一个参数应该包含正确初始化页面状态所必需的信息。为防止滥用，这个状态的对象大小是有限制的，通常在 500KB ～ 1MB 以内。
@@ -831,7 +863,7 @@ pushState()方法执行后，状态信息就会被推到历史记录中，浏览
 因为 pushState()会创建新的历史记录，所以也会相应地启用“后退”按钮。此时单击“后退”按钮，就会触发 window 对象上的 popstate 事件。popstate 事件的事件对象有一个 state 属性，其中包含通过 pushState()第一个参数传入的 state 对象：
 
 ```js
-window.addEventListener("popstate", (event) => {
+window.addEventListener('popstate', (event) => {
   let state = event.state;
   if (state) {
     // 第一个页面加载时状态是null
@@ -845,7 +877,7 @@ window.addEventListener("popstate", (event) => {
 可以通过 history.state 获取当前的状态对象，也可以使用 replaceState()并传入与 pushState()同样的前两个参数来更新状态。更新状态不会创建新历史记录，只会覆盖当前状态：
 
 ```js
-history.replaceState({ newFoo: "newBar" }, "New title");
+history.replaceState({ newFoo: 'newBar' }, 'New title');
 ```
 
 传给 pushState()和 replaceState()的 state 对象应该只包含可以被序列化的信息。因此，DOM 元素之类并不适合放到状态对象里保存。

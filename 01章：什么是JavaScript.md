@@ -1,4 +1,5 @@
 **目录：**
+
 - [1. 什么是 JavaScript](#1-什么是-javascript)
   - [1.1. 历史回顾](#11-历史回顾)
     - [1.1.1. 诞生](#111-诞生)
@@ -188,9 +189,9 @@ JavaScript 伴随着互联网的发展一起发展。互联网周边技术的快
 
 虽然 JavaScript 和 ECMAScript 基本上是同义词，但 JavaScript 远远不限于 ECMA-262 所定义的那样。完整的 JavaScript 实现包含以下几个部分（见下图）：
 
-- **核心（ECMAScript）**
-- **文档对象模型（DOM）**
-- **浏览器对象模型（BOM）**
+- **核心(ECMAScript)**
+- **文档对象模型(DOM)**
+- **浏览器对象模型(BOM)**
 
 ![1-1-JavaScript组成](illustrations/1-1-JavaScript组成.png)
 

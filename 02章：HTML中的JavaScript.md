@@ -27,12 +27,12 @@
 
 - async：可选。表示应该立即开始下载脚本，但不能阻止其他页面动作，比如下载资源或等待其他脚本加载。只对外部脚本文件有效。
 - charset：可选。使用 src 属性指定的代码字符集。这个属性很少使用，因为大多数浏览器不在乎它的值。
-- crossorigin：可选。配置相关请求的 CORS（跨源资源共享）设置。默认不使用 CORS。crossorigin= "anonymous" 配置文件请求不必设置凭据标志。crossorigin="use-credentials"设置凭据标志，意味着出站请求会包含凭据。
+- crossorigin：可选。配置相关请求的 CORS（跨源资源共享）设置。默认不使用 CORS。crossorigin= 'anonymous' 配置文件请求不必设置凭据标志。crossorigin='use-credentials'设置凭据标志，意味着出站请求会包含凭据。
 - defer：可选。表示脚本可以延迟到文档完全被解析和显示之后再执行。只对外部脚本文件有效。在 IE7 及更早的版本中，对行内脚本也可以指定这个属性。
 - integrity：可选。允许比对接收到的资源和指定的加密签名以验证子资源完整性（SRI， Subresource Integrity）。如果接收到的资源的签名与这个属性指定的签名不匹配，则页面会报错，脚本不会执行。这个属性可以用于确保内容分发网络（CDN，Content Delivery Network）不会提供恶意内容。
-- language：废弃。最初用于表示代码块中的脚本语言（如"JavaScript"、"JavaScript 1.2"或"VBScript"）。大多数浏览器都会忽略这个属性，不应该再使用它。
+- language：废弃。最初用于表示代码块中的脚本语言（如'JavaScript'、'JavaScript 1.2'或'VBScript'）。大多数浏览器都会忽略这个属性，不应该再使用它。
 - src：可选。表示包含要执行的代码的外部文件。
-- type：可选。代替 language，表示代码块中脚本语言的内容类型（也称 MIME 类型）。按照惯例，这个值始终都是"text/javascript"，尽管"text/javascript"和"text/ecmascript" 都已经废弃了。JavaScript 文件的 MIME 类型通常是"application/x-javascript"，不过给 type 属性这个值有可能导致脚本被忽略。在非 IE 的浏览器中有效的其他值还有"application/javascript"和"application/ecmascript"。如果这个值是 module，则代码会被当成 ES6 模块，而且只有这时候代码中才能出现 import 和 export 关键字。
+- type：可选。代替 language，表示代码块中脚本语言的内容类型（也称 MIME 类型）。按照惯例，这个值始终都是'text/javascript'，尽管'text/javascript'和'text/ecmascript' 都已经废弃了。JavaScript 文件的 MIME 类型通常是'application/x-javascript'，不过给 type 属性这个值有可能导致脚本被忽略。在非 IE 的浏览器中有效的其他值还有'application/javascript'和'application/ecmascript'。如果这个值是 module，则代码会被当成 ES6 模块，而且只有这时候代码中才能出现 import 和 export 关键字。
 
 使用 `<script>` 的方式有两种：通过它直接在网页中嵌入 JavaScript 代码，以及通过它在网页中包含外部 JavaScript 文件。
 
@@ -41,7 +41,7 @@
 ```html
 <script>
   function sayHi() {
-    console.log("Hi!");
+    console.log('Hi!');
   }
 </script>
 ```
@@ -53,7 +53,7 @@
 ```html
 <script>
   function sayScript() {
-    console.log("</script>");
+    console.log('</script>');
   }
 </script>
 ```
@@ -63,7 +63,7 @@
 ```html
 <script>
   function sayScript() {
-    console.log("<\/script>");
+    console.log('<\/script>');
   }
 </script>
 ```
@@ -73,13 +73,13 @@
 要包含外部文件中的 JavaScript，就必须使用 src 属性。这个属性的值是一个 URL，指向包含 JavaScript 代码的文件，比如：
 
 ```html
-<script src="example.js"></script>
+<script src='example.js'></script>
 ```
 
 这个例子在页面中加载了一个名为 example.js 的外部文件。文件本身只需包含要放在`<script>`的起始及结束标签中间的 JavaScript 代码。与解释行内 JavaScript 一样，在解释外部 JavaScript 文件时，页面也会阻塞。（阻塞时间也包含下载文件的时间。）在 XHTML 文档中，可以忽略结束标签，比如：
 
 ```html
-<script src="example.js" />
+<script src='example.js' />
 ```
 
 以上语法不能在 HTML 文件中使用，因为它是无效的 HTML，有些浏览器不能正常处理，比如 IE。
@@ -89,7 +89,7 @@
 `<script>`元素的一个最为强大、同时也备受争议的特性是，它可以包含来自外部域的 JavaScript 文件。跟`<img>`元素很像，`<script>`元素的 src 属性可以是一个完整的 URL，而且这个 URL 指向的资源可以跟包含它的 HTML 页面不在同一个域中，比如这个例子：
 
 ```html
-<script src="http://www.somewhere.com/afile.js"></script>
+<script src='http://www.somewhere.com/afile.js'></script>
 ```
 
 浏览器在解析这个资源时，会向 src 属性指定的路径发送一个 GET 请求，以取得相应资源，假定是一个 JavaScript 文件。这个初始的请求不受浏览器同源策略限制，但返回并被执行的 JavaScript 则受限制。当然，这个请求仍然受父页面 HTTP/HTTPS 协议的限制。
@@ -107,8 +107,8 @@
 <html>
   <head>
     <title>Example HTML Page</title>
-    <script src="example1.js"></script>
-    <script src="example2.js"></script>
+    <script src='example1.js'></script>
+    <script src='example2.js'></script>
   </head>
   <body>
     <!-- 这里是页面内容 -->
@@ -126,8 +126,8 @@
   </head>
   <body>
     <!-- 这里是页面内容 -->
-    <script src="example1.js"></script>
-    <script src="example2.js"></script>
+    <script src='example1.js'></script>
+    <script src='example2.js'></script>
   </body>
 </html>
 ```
@@ -143,8 +143,8 @@ HTML 4.01 为`<script>`元素定义了一个叫 defer 的属性。当浏览器�
 <html>
   <head>
     <title>Example HTML Page</title>
-    <script defer src="example1.js"></script>
-    <script defer src="example2.js"></script>
+    <script defer src='example1.js'></script>
+    <script defer src='example2.js'></script>
   </head>
   <body>
     <!-- 这里是页面内容 -->
@@ -167,8 +167,8 @@ HTML5 为`<script>`元素定义了 async 属性。当浏览器解析到带有 as
 <html>
   <head>
     <title>Example HTML Page</title>
-    <script async src="example1.js"></script>
-    <script async src="example2.js"></script>
+    <script async src='example1.js'></script>
+    <script async src='example2.js'></script>
   </head>
   <body>
     <!-- 这里是页面内容 -->
@@ -189,16 +189,16 @@ HTML5 为`<script>`元素定义了 async 属性。当浏览器解析到带有 as
 除了`<script>`标签，还有其他方式可以加载脚本。因为 JavaScript 可以使用 DOM API，所以通过向 DOM 中动态添加 script 元素同样可以加载指定的脚本。只要创建一个 script 元素并将其添加到 DOM 即可。
 
 ```js
-let script = document.createElement("script");
-script.src = "gibberish.js";
+let script = document.createElement('script');
+script.src = 'gibberish.js';
 document.head.appendChild(script);
 ```
 
 当然，在把 HTML 元素添加到 DOM 且执行到这段代码之前不会发送请求。默认情况下，以这种方式创建的`<script>`元素是以异步方式加载的，相当于添加了 async 属性。不过这样做可能会有问题，因为所有浏览器都支持 createElement()方法，但不是所有浏览器都支持 async 属性。因此，如果要统一动态脚本的加载行为，可以明确将其设置为同步加载：
 
 ```js
-let script = document.createElement("script");
-script.src = "gibberish.js";
+let script = document.createElement('script');
+script.src = 'gibberish.js';
 script.async = false;
 document.head.appendChild(script);
 ```
@@ -206,7 +206,7 @@ document.head.appendChild(script);
 以这种方式获取的资源对浏览器预加载器是不可见的。这会严重影响它们在资源获取队列中的优先级。根据应用程序的工作方式以及怎么使用，这种方式可能会严重影响性能。要想让预加载器知道这些动态请求文件的存在，可以在文档头部显式声明它们：
 
 ```html
-<link rel="preload" href="gibberish.js" />
+<link rel='preload' href='gibberish.js' />
 ```
 
 ## 2.2. 行内脚本与外部脚本
@@ -222,20 +222,20 @@ document.head.appendChild(script);
 比如，第一个页面包含如下脚本：
 
 ```html
-<script src="mainA.js"></script>
-<script src="component1.js"></script>
-<script src="component2.js"></script>
-<script src="component3.js"></script>
+<script src='mainA.js'></script>
+<script src='component1.js'></script>
+<script src='component2.js'></script>
+<script src='component3.js'></script>
 ...
 ```
 
 后续页面可能包含如下脚本：
 
 ```html
-<script src="mainB.js"></script>
-<script src="component3.js"></script>
-<script src="component4.js"></script>
-<script src="component5.js"></script>
+<script src='mainB.js'></script>
+<script src='component3.js'></script>
+<script src='component4.js'></script>
+<script src='component5.js'></script>
 ...
 ```
 
@@ -257,9 +257,9 @@ IE 初次支持文档模式切换以后，其他浏览器也跟着实现了。�
 
 ```html
 <!-- HTML 4.01 Strict -->
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01//EN' 'http://www.w3.org/TR/html4/strict.dtd'>
 <!-- XHTML 1.0 Strict -->
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
 <!-- HTML5 -->
 <!DOCTYPE html>
 ```
@@ -268,13 +268,13 @@ IE 初次支持文档模式切换以后，其他浏览器也跟着实现了。�
 
 ```html
 <!-- HTML 4.01 Transitional -->
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>
 <!-- HTML 4.01 Frameset -->
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
+<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01 Frameset//EN' 'http://www.w3.org/TR/html4/frameset.dtd'>
 <!-- XHTML 1.0 Transitional -->
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
 <!-- XHTML 1.0 Frameset -->
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Frameset//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd'>
 ```
 
 准标准模式与标准模式非常接近，很少需要区分。人们在说到“标准模式”时，可能指其中任何一个。而对文档模式的检测（本书后面会讨论）也不会区分它们。本书后面所说的标准模式，指的就是除混杂模式以外的模式。
@@ -297,8 +297,8 @@ IE 初次支持文档模式切换以后，其他浏览器也跟着实现了。�
 <html>
   <head>
     <title>Example HTML Page</title>
-    <script defer="defer" src="example1.js"></script>
-    <script defer="defer" src="example2.js"></script>
+    <script defer='defer' src='example1.js'></script>
+    <script defer='defer' src='example2.js'></script>
   </head>
   <body>
     <noscript>

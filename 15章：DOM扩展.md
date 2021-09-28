@@ -1,4 +1,5 @@
 **目录：**
+
 - [15. DOM 扩展](#15-dom-扩展)
   - [15.1. Slector API](#151-slector-api)
     - [15.1.1. querySelector()](#1511-queryselector)
@@ -47,13 +48,13 @@ querySelector()方法接收 CSS 选择符参数，返回匹配该模式的第一
 
 ```js
 // 取得<body>元素
-let body = document.querySelector("body");
-// 取得ID 为"myDiv"的元素
-let myDiv = document.querySelector("#myDiv");
-// 取得类名为"selected"的第一个元素
-let selected = document.querySelector(".selected");
-// 取得类名为"button"的图片
-let img = document.body.querySelector("img.button");
+let body = document.querySelector('body');
+// 取得ID 为'myDiv'的元素
+let myDiv = document.querySelector('#myDiv');
+// 取得类名为'selected'的第一个元素
+let selected = document.querySelector('.selected');
+// 取得类名为'button'的图片
+let img = document.body.querySelector('img.button');
 ```
 
 在 Document 上使用 querySelector()方法时，会从文档元素开始搜索；在 Element 上使用 querySelector()方法时，则只会从当前元素的后代中查询。
@@ -71,27 +72,27 @@ querySelectorAll()方法跟 querySelector()一样，也接收一个用于查询�
 与 querySelector()一样，querySelectorAll()也可以在 Document、DocumentFragment 和 Element 类型上使用。下面是几个例子：
 
 ```js
-// 取得ID 为"myDiv"的<div>元素中的所有<em>元素
-let ems = document.getElementById("myDiv").querySelectorAll("em");
-// 取得所有类名中包含"selected"的元素
-let selecteds = document.querySelectorAll(".selected");
+// 取得ID 为'myDiv'的<div>元素中的所有<em>元素
+let ems = document.getElementById('myDiv').querySelectorAll('em');
+// 取得所有类名中包含'selected'的元素
+let selecteds = document.querySelectorAll('.selected');
 // 取得所有是<p>元素子元素的<strong>元素
-let strongs = document.querySelectorAll("p strong");
+let strongs = document.querySelectorAll('p strong');
 ```
 
 返回的 NodeList 对象可以通过 for-of 循环、item()方法或中括号语法取得个别元素。比如：
 
 ```js
-let strongElements = document.querySelectorAll("p strong");
+let strongElements = document.querySelectorAll('p strong');
 // 以下3 个循环的效果一样
 for (let strong of strongElements) {
-  strong.className = "important";
+  strong.className = 'important';
 }
 for (let i = 0; i < strongElements.length; ++i) {
-  strongElements.item(i).className = "important";
+  strongElements.item(i).className = 'important';
 }
 for (let i = 0; i < strongElements.length; ++i) {
-  strongElements[i].className = "important";
+  strongElements[i].className = 'important';
 }
 ```
 
@@ -102,7 +103,7 @@ for (let i = 0; i < strongElements.length; ++i) {
 matches()方法（在规范草案中称为 matchesSelector()）接收一个 CSS 选择符参数，如果元素匹配则该选择符返回 true，否则返回 false。例如：
 
 ```js
-if (document.body.matches("body.page1")) {
+if (document.body.matches('body.page1')) {
   // true
 }
 ```
@@ -128,7 +129,7 @@ Element Traversal API 为 DOM 元素添加了 5 个属性：
 举个例子，过去要以跨浏览器方式遍历特定元素的所有子元素，代码大致是这样写的：
 
 ```js
-let parentElement = document.getElementById("parent");
+let parentElement = document.getElementById('parent');
 let currentChildNode = parentElement.firstChild;
 // 没有子元素，firstChild 返回null，跳过循环
 while (currentChildNode) {
@@ -146,7 +147,7 @@ while (currentChildNode) {
 使用 Element Traversal 属性之后，以上代码可以简化如下：
 
 ```js
-let parentElement = document.getElementById("parent");
+let parentElement = document.getElementById('parent');
 let currentChildElement = parentElement.firstElementChild;
 // 没有子元素，firstElementChild 返回null，跳过循环
 while (currentChildElement) {
@@ -180,13 +181,13 @@ getElementsByClassName()是 HTML5 新增的最受欢迎的一个方法，暴露�
 getElementsByClassName()方法接收一个参数，即包含一个或多个类名的字符串，返回类名中包含相应类的元素的 NodeList。如果提供了多个类名，则顺序无关紧要。下面是几个示例：
 
 ```js
-// 取得所有类名中包含"username"和"current"元素
+// 取得所有类名中包含'username'和'current'元素
 // 这两个类名的顺序无关紧要
-let allCurrentUsernames = document.getElementsByClassName("username current");
-// 取得ID 为"myDiv"的元素子树中所有包含"selected"类的元素
+let allCurrentUsernames = document.getElementsByClassName('username current');
+// 取得ID 为'myDiv'的元素子树中所有包含'selected'类的元素
 let selected = document
-  .getElementById("myDiv")
-  .getElementsByClassName("selected");
+  .getElementById('myDiv')
+  .getElementsByClassName('selected');
 ```
 
 这个方法只会返回以调用它的对象为根元素的子树中所有匹配的元素。在 document 上调用 getElementsByClassName()返回文档中所有匹配的元素，而在特定元素上调用 getElementsByClassName()则返回该元素后代中匹配的元素。
@@ -200,14 +201,14 @@ IE9 及以上版本，以及所有现代浏览器都支持 getElementsByClassNam
 要操作类名，可以通过 className 属性实现添加、删除和替换。但 className 是一个字符串，所以每次操作之后都需要重新设置这个值才能生效，即使只改动了部分字符串也一样。以下面的 HTML 代码为例：
 
 ```html
-<div class="bd user disabled">...</div>
+<div class='bd user disabled'>...</div>
 ```
 
 这个`<div>`元素有 3 个类名。要想删除其中一个，就得先把 className 拆开，删除不想要的那个，再把包含剩余类的字符串设置回去。比如：
 
 ```js
-// 要删除"user"类
-let targetClass = "user";
+// 要删除'user'类
+let targetClass = 'user';
 // 把类名拆成数组
 let classNames = div.className.split(/\s+/);
 // 找到要删除类名的索引
@@ -217,10 +218,10 @@ if (idx > -1) {
   classNames.splice(i, 1);
 }
 // 重新设置类名
-div.className = classNames.join(" ");
+div.className = classNames.join(' ');
 ```
 
-这就是从`<div>`元素的类名中删除"user"类要写的代码。替换类名和检测类名也要涉及同样的算法。添加类名只涉及字符串拼接，但必须先检查一下以确保不会重复添加相同的类名。很多 JavaScript 库为这些操作实现了便利方法。
+这就是从`<div>`元素的类名中删除'user'类要写的代码。替换类名和检测类名也要涉及同样的算法。添加类名只涉及字符串拼接，但必须先检查一下以确保不会重复添加相同的类名。很多 JavaScript 库为这些操作实现了便利方法。
 
 HTML5 通过给所有元素增加 classList 属性为这些操作提供了更简单也更安全的实现方式。classList 是一个新的集合类型 DOMTokenList 的实例。与其他 DOM 集合类型一样，DOMTokenList 也有 length 属性表示自己包含多少项，也可以通过 item()或中括号取得个别的元素。此外，DOMTokenList 还增加了以下方法。
 
@@ -232,20 +233,20 @@ HTML5 通过给所有元素增加 classList 属性为这些操作提供了更简
 这样以来，前面的例子中那么多行代码就可以简化成下面的一行：
 
 ```js
-div.classList.remove("user");
+div.classList.remove('user');
 ```
 
 这行代码可以在不影响其他类名的情况下完成删除。其他方法同样极大地简化了操作类名的复杂性，如下面的例子所示：
 
 ```js
-// 删除"disabled"类
-div.classList.remove("disabled");
-// 添加"current"类
-div.classList.add("current");
-// 切换"user"类
-div.classList.toggle("user");
+// 删除'disabled'类
+div.classList.remove('disabled');
+// 添加'current'类
+div.classList.add('current');
+// 切换'user'类
+div.classList.toggle('user');
 // 检测类名
-if (div.classList.contains("bd") && !div.classList.contains("disabled")){
+if (div.classList.contains('bd') && !div.classList.contains('disabled')){
 // 执行操作
 )
 // 迭代类名
@@ -261,7 +262,7 @@ doStuff(class);
 HTML5 增加了辅助 DOM 焦点管理的功能。首先是 document.activeElement，始终包含当前拥有焦点的 DOM 元素。页面加载时，可以通过用户输入（按 Tab 键或代码中使用 focus()方法）让某个元素自动获得焦点。例如：
 
 ```js
-let button = document.getElementById("myButton");
+let button = document.getElementById('myButton');
 button.focus();
 console.log(document.activeElement === button); // true
 ```
@@ -271,7 +272,7 @@ console.log(document.activeElement === button); // true
 其次是 document.hasFocus()方法，该方法返回布尔值，表示文档是否拥有焦点：
 
 ```js
-let button = document.getElementById("myButton");
+let button = document.getElementById('myButton');
 button.focus();
 console.log(document.hasFocus()); // true
 ```
@@ -294,20 +295,20 @@ readyState 是 IE4 最早添加到 document 对象上的属性，后来其他浏
 实际开发中，最好是把 document.readState 当成一个指示器，以判断文档是否加载完毕。在这个属性得到广泛支持以前，通常要依赖 onload 事件处理程序设置一个标记，表示文档加载完了。这个属性的基本用法如下：
 
 ```js
-if (document.readyState == "complete") {
+if (document.readyState == 'complete') {
   // 执行操作
 }
 ```
 
 2. **compatMode 属性**
 
-自从 IE6 提供了以标准或混杂模式渲染页面的能力之后，检测页面渲染模式成为一个必要的需求。IE 为 document 添加了 compatMode 属性，这个属性唯一的任务是指示浏览器当前处于什么渲染模式。如下面的例子所示，标准模式下 document.compatMode 的值是"CSS1Compat"，而在混杂模式下，document.compatMode 的值是"BackCompat"：
+自从 IE6 提供了以标准或混杂模式渲染页面的能力之后，检测页面渲染模式成为一个必要的需求。IE 为 document 添加了 compatMode 属性，这个属性唯一的任务是指示浏览器当前处于什么渲染模式。如下面的例子所示，标准模式下 document.compatMode 的值是'CSS1Compat'，而在混杂模式下，document.compatMode 的值是'BackCompat'：
 
 ```js
-if (document.compatMode == "CSS1Compat") {
-  console.log("Standards mode");
+if (document.compatMode == 'CSS1Compat') {
+  console.log('Standards mode');
 } else {
-  console.log("Quirks mode");
+  console.log('Quirks mode');
 }
 ```
 
@@ -323,11 +324,11 @@ let head = document.head;
 
 ### 15.3.4. 字符集属性
 
-HTML5 增加了几个与文档字符集有关的新属性。其中，characterSet 属性表示文档实际使用的字符集，也可以用来指定新字符集。这个属性的默认值是"UTF-16"，但可以通过`<meta>`元素或响应头，以及新增的 characterSeet 属性来修改。下面是一个例子：
+HTML5 增加了几个与文档字符集有关的新属性。其中，characterSet 属性表示文档实际使用的字符集，也可以用来指定新字符集。这个属性的默认值是'UTF-16'，但可以通过`<meta>`元素或响应头，以及新增的 characterSeet 属性来修改。下面是一个例子：
 
 ```js
-console.log(document.characterSet); // "UTF-16"
-document.characterSet = "UTF-8";
+console.log(document.characterSet); // 'UTF-16'
+document.characterSet = 'UTF-8';
 ```
 
 ### 15.3.5. 自定义数据属性
@@ -335,21 +336,21 @@ document.characterSet = "UTF-8";
 HTML5 允许给元素指定非标准的属性，但要使用前缀 data-以便告诉浏览器，这些属性既不包含与渲染有关的信息，也不包含元素的语义信息。除了前缀，自定义属性对命名是没有限制的，data-后面跟什么都可以。下面是一个例子：
 
 ```html
-<div id="myDiv" data-appId="12345" data-myname="Nicholas"></div>
+<div id='myDiv' data-appId='12345' data-myname='Nicholas'></div>
 ```
 
 定义了自定义数据属性后，可以通过元素的 dataset 属性来访问。dataset 属性是一个 DOMStringMap 的实例，包含一组键/值对映射。元素的每个 data-name 属性在 dataset 中都可以通过 data-后面的字符串作为键来访问（例如，属性 data-myname、data-myName 可以通过 myname 访问，但要注意 data-my-name、data-My-Name 要通过 myName 来访问）。下面是一个使用自定义数据属性的例子：
 
 ```js
 // 本例中使用的方法仅用于示范
-let div = document.getElementById("myDiv");
+let div = document.getElementById('myDiv');
 // 取得自定义数据属性的值
 let appId = div.dataset.appId;
 let myName = div.dataset.myname;
 // 设置自定义数据属性的值
 div.dataset.appId = 23456;
-div.dataset.myname = "Michael";
-// 有"myname"吗？
+div.dataset.myname = 'Michael';
+// 有'myname'吗？
 if (div.dataset.myname) {
   console.log(`Hello, ${div.dataset.myname}`);
 }
@@ -366,7 +367,7 @@ DOM 虽然已经为操纵节点提供了很多 API，但向文档中一次性插
 在读取 innerHTML 属性时，会返回元素所有后代的 HTML 字符串，包括元素、注释和文本节点。而在写入 innerHTML 时，则会根据提供的字符串值以新的 DOM 子树替代元素中原来包含的所有节点。比如下面的 HTML 代码：
 
 ```html
-<div id="content">
+<div id='content'>
   <p>This is a <strong>paragraph</strong> with a list following it.</p>
   <ul>
     <li>Item 1</li>
@@ -393,19 +394,19 @@ DOM 虽然已经为操纵节点提供了很多 API，但向文档中一次性插
 如下所示：
 
 ```js
-div.innerHTML = "Hello world!";
+div.innerHTML = 'Hello world!';
 ```
 
 因为浏览器会解析设置的值，所以给 innerHTML 设置包含 HTML 的字符串时，结果会大不一样。来看下面的例子：
 
 ```js
-div.innerHTML = 'Hello & welcome, <b>"reader"!</b>';
+div.innerHTML = 'Hello & welcome, <b>'reader'!</b>';
 ```
 
 这个操作的结果相当于：
 
 ```html
-<div id="content">Hello &amp; welcome, <b>&quot;reader&quot;!</b></div>
+<div id='content'>Hello &amp; welcome, <b>&quot;reader&quot;!</b></div>
 ```
 
 设置完 innerHTML，马上就可以像访问其他节点一样访问这些新节点。
@@ -418,17 +419,17 @@ div.innerHTML = 'Hello & welcome, <b>"reader"!</b>';
 
 ```js
 // 行不通
-div.innerHTML = "<script defer>console.log('hi');</script>";
+div.innerHTML = '<script defer>console.log('hi');</script>';
 ```
 
 在这个例子中，innerHTML 字符串以一个非受控元素开始，因此整个字符串都会被清空。为了达到目的，必须在`<script>`前面加上一个受控元素，例如文本节点或没有结束标签的元素（如`<input>`）。因此，下面的代码就是可行的：
 
 ```js
 // 以下都可行
-div.innerHTML = "_<script defer>console.log('hi');<\/script>";
-div.innerHTML = "<div>&nbsp;</div><script defer>console.log('hi');<\/script>";
-div.innerHTML = "<input type=\"hidden\"><script defer>console.
-log('hi');<\/script>";
+div.innerHTML = '_<script defer>console.log('hi');<\/script>';
+div.innerHTML = '<div>&nbsp;</div><script defer>console.log('hi');<\/script>';
+div.innerHTML = '<input type=\'hidden\'><script defer>console.
+log('hi');<\/script>';
 ```
 
 第一行会在`<script>`元素前面插入一个文本节点。为了不影响页面排版，可能稍后需要删掉这个文本节点。第二行与之类似，使用了包含空格的`<div>`元素。空`<div>`是不行的，必须包含一点内容，以强制创建一个文本节点。同样，这个`<div>`元素可能也需要事后删除，以免影响页面外观。第三行使用了一个隐藏的`<input>`字段来达成同样的目的。因为这个字段不影响页面布局，所以应该是最理想的方案。
@@ -436,14 +437,14 @@ log('hi');<\/script>";
 在 IE 中，通过 innerHTML 插入`<style>`也会有类似的问题。多数浏览器支持使用 innerHTML 插入`<style>`元素：
 
 ```js
-div.innerHTML = '<style type="text/css">body {background-color: red; }</style>';
+div.innerHTML = '<style type='text/css'>body {background-color: red; }</style>';
 ```
 
 但在 IE8 及之前的版本中，`<style>`也被认为是非受控元素，所以必须前置一个受控元素：
 
 ```js
 div.innerHTML =
-  '_<style type="text/css">body {background-color: red; }</style>';
+  '_<style type='text/css'>body {background-color: red; }</style>';
 div.removeChild(div.firstChild);
 ```
 
@@ -454,7 +455,7 @@ div.removeChild(div.firstChild);
 读取 outerHTML 属性时，会返回调用它的元素（及所有后代元素）的 HTML 字符串。在写入 outerHTML 属性时，调用它的元素会被传入的 HTML 字符串经解释之后生成的 DOM 子树取代。比如下面的 HTML 代码：
 
 ```html
-<div id="content">
+<div id='content'>
   <p>This is a <strong>paragraph</strong> with a list following it.</p>
   <ul>
     <li>Item 1</li>
@@ -469,14 +470,14 @@ div.removeChild(div.firstChild);
 如果使用 outerHTML 设置 HTML，比如：
 
 ```js
-div.outerHTML = "<p>This is a paragraph.</p>";
+div.outerHTML = '<p>This is a paragraph.</p>';
 ```
 
 则会得到与执行以下脚本相同的结果：`
 
 ```js
-let p = document.createElement("p");
-p.appendChild(document.createTextNode("This is a paragraph."));
+let p = document.createElement('p');
+p.appendChild(document.createTextNode('This is a paragraph.'));
 div.parentNode.replaceChild(p, div);
 ```
 
@@ -486,46 +487,46 @@ div.parentNode.replaceChild(p, div);
 
 关于插入标签的最后两个新增方法是 insertAdjacentHTML()和 insertAdjacentText()。这两个方法最早源自 IE，它们都接收两个参数：要插入标记的位置和要插入的 HTML 或文本。第一个参数必须是下列值中的一个：
 
-- "beforebegin"，插入当前元素前面，作为前一个同胞节点；
-- "afterbegin"，插入当前元素内部，作为新的子节点或放在第一个子节点前面；
-- "beforeend"，插入当前元素内部，作为新的子节点或放在最后一个子节点后面；
-- "afterend"，插入当前元素后面，作为下一个同胞节点。
+- 'beforebegin'，插入当前元素前面，作为前一个同胞节点；
+- 'afterbegin'，插入当前元素内部，作为新的子节点或放在第一个子节点前面；
+- 'beforeend'，插入当前元素内部，作为新的子节点或放在最后一个子节点后面；
+- 'afterend'，插入当前元素后面，作为下一个同胞节点。
 
 注意这几个值是不区分大小写的。第二个参数会作为 HTML 字符串解析（与 innerHTML 和 outerHTML 相同）或者作为纯文本解析（与 innerText 和 outerText 相同）。如果是 HTML，则会在解析出错时抛出错误。下面展示了基本用法：
 
 ```js
 // 作为前一个同胞节点插入
-element.insertAdjacentHTML("beforebegin", "<p>Hello world!</p>");
-element.insertAdjacentText("beforebegin", "Hello world!");
+element.insertAdjacentHTML('beforebegin', '<p>Hello world!</p>');
+element.insertAdjacentText('beforebegin', 'Hello world!');
 // 作为第一个子节点插入
-element.insertAdjacentHTML("afterbegin", "<p>Hello world!</p>");
-element.insertAdjacentText("afterbegin", "Hello world!");
+element.insertAdjacentHTML('afterbegin', '<p>Hello world!</p>');
+element.insertAdjacentText('afterbegin', 'Hello world!');
 // 作为最后一个子节点插入
-element.insertAdjacentHTML("beforeend", "<p>Hello world!</p>");
-element.insertAdjacentText("beforeend", "Hello world!");
+element.insertAdjacentHTML('beforeend', '<p>Hello world!</p>');
+element.insertAdjacentText('beforeend', 'Hello world!');
 // 作为下一个同胞节点插入
-element.insertAdjacentHTML("afterend", "<p>Hello world!</p>");
-element.insertAdjacentText("afterend", "Hello world!");
+element.insertAdjacentHTML('afterend', '<p>Hello world!</p>');
+element.insertAdjacentText('afterend', 'Hello world!');
 ```
 
 5. **内存与性能问题**
 
 使用本节介绍的方法替换子节点可能在浏览器（特别是 IE）中导致内存问题。比如，如果被移除的子树元素中之前有关联的事件处理程序或其他 JavaScript 对象（作为元素的属性），那它们之间的绑定关系会滞留在内存中。如果这种替换操作频繁发生，页面的内存占用就会持续攀升。在使用 innerHTML、outerHTML 和 insertAdjacentHTML()之前，最好手动删除要被替换的元素上关联的事件处理程序和 JavaScript 对象。
 
-使用这些属性当然有其方便之处，特别是 innerHTML。一般来讲，插入大量的新 HTML 使用 innerHTML 比使用多次 DOM 操作创建节点再插入来得更便捷。这是因为 HTML 解析器会解析设置给 innerHTML（或 outerHTML）的值。解析器在浏览器中是底层代码（通常是 C++代码），比 JavaScript快得多。不过，HTML 解析器的构建与解构也不是没有代价，因此最好限制使用 innerHTML 和 outerHTML 的次数。比如，下面的代码使用 innerHTML 创建了一些列表项：
+使用这些属性当然有其方便之处，特别是 innerHTML。一般来讲，插入大量的新 HTML 使用 innerHTML 比使用多次 DOM 操作创建节点再插入来得更便捷。这是因为 HTML 解析器会解析设置给 innerHTML（或 outerHTML）的值。解析器在浏览器中是底层代码（通常是 C++代码），比 JavaScript 快得多。不过，HTML 解析器的构建与解构也不是没有代价，因此最好限制使用 innerHTML 和 outerHTML 的次数。比如，下面的代码使用 innerHTML 创建了一些列表项：
 
 ```js
 for (let value of values) {
-  ul.innerHTML += "<li>${value}</li>"; // 别这样做！
+  ul.innerHTML += '<li>${value}</li>'; // 别这样做！
 }
 ```
 
 这段代码效率低，因为每次迭代都要设置一次 innerHTML。不仅如此，每次循环还要先读取 innerHTML，也就是说循环一次要访问两次 innerHTML。为此，最好通过循环先构建一个独立的字符串，最后再一次性把生成的字符串赋值给 innerHTML，比如：
 
 ```js
-let itemsHtml = "";
+let itemsHtml = '';
 for (let value of values) {
-  itemsHtml += "<li>${value}</li>";
+  itemsHtml += '<li>${value}</li>';
 }
 ul.innerHTML = itemsHtml;
 ```
@@ -533,7 +534,7 @@ ul.innerHTML = itemsHtml;
 这样修改之后效率就高多了，因为只有对 innerHTML 的一次赋值。当然，像下面这样一行代码也可以搞定：
 
 ```js
-ul.innerHTML = values.map((value) => "<li>${value}</li>").join("");
+ul.innerHTML = values.map((value) => '<li>${value}</li>').join('');
 ```
 
 6. **跨站点脚本**
@@ -552,9 +553,9 @@ scrollIntoView()方法存在于所有 HTML 元素上，可以滚动浏览器窗�
   - true：窗口滚动后元素的顶部与视口顶部对齐。
   - false：窗口滚动后元素的底部与视口底部对齐。
 - scrollIntoViewOptions 是一个选项对象。
-  - behavior：定义过渡动画，可取的值为"smooth"和"auto"，默认为"auto"。
-  - block：定义垂直方向的对齐，可取的值为"start"、"center"、"end"和"nearest"，默认为 "start"。
-  - inline：定义水平方向的对齐，可取的值为"start"、"center"、"end"和"nearest"，默认为 "nearest"。
+  - behavior：定义过渡动画，可取的值为'smooth'和'auto'，默认为'auto'。
+  - block：定义垂直方向的对齐，可取的值为'start'、'center'、'end'和'nearest'，默认为 'start'。
+  - inline：定义水平方向的对齐，可取的值为'start'、'center'、'end'和'nearest'，默认为 'nearest'。
 - 不传参数等同于 alignToTop 为 true。
 
 来看几个例子：
@@ -564,9 +565,9 @@ scrollIntoView()方法存在于所有 HTML 元素上，可以滚动浏览器窗�
 document.forms[0].scrollIntoView();
 // 同上
 document.forms[0].scrollIntoView(true);
-document.forms[0].scrollIntoView({ block: "start" });
+document.forms[0].scrollIntoView({ block: 'start' });
 // 尝试将元素平滑地滚入视口
-document.forms[0].scrollIntoView({ behavior: "smooth", block: "start" });
+document.forms[0].scrollIntoView({ behavior: 'smooth', block: 'start' });
 ```
 
 这个方法可以用来在页面上发生某个事件时引起用户关注。把焦点设置到一个元素上也会导致浏览器将元素滚动到可见位置。
@@ -628,7 +629,7 @@ HTML5 将 IE 发明的 innerHTML 和 outerHTML 纳入了标准，但还有两个
 innerText 属性对应元素中包含的所有文本内容，无论文本在子树中哪个层级。在用于读取值时，innerText 会按照深度优先的顺序将子树中所有文本节点的值拼接起来。在用于写入值时，innerText 会移除元素的所有后代并插入一个包含该值的文本节点。来看下面的 HTML 代码：
 
 ```html
-<div id="content">
+<div id='content'>
   <p>This is a <strong>paragraph</strong> with a list following it.</p>
   <ul>
     <li>Item 1</li>
@@ -652,25 +653,25 @@ Item 3
 下面再看一个使用 innerText 设置`<div>`元素内容的例子：
 
 ```js
-div.innerText = "Hello world!";
+div.innerText = 'Hello world!';
 ```
 
 执行这行代码后，HTML 页面中的这个`<div>`元素实际上会变成这个样子：
 
 ```html
-<div id="content">Hello world!</div>
+<div id='content'>Hello world!</div>
 ```
 
 设置 innerText 会移除元素之前所有的后代节点，完全改变 DOM 子树。此外，设置 innerText 也会编码出现在字符串中的 HTML 语法字符（小于号、大于号、引号及和号）。下面是一个例子：
 
 ```js
-div.innerText = 'Hello & welcome, <b>"reader"!</b>';
+div.innerText = 'Hello & welcome, <b>'reader'!</b>';
 ```
 
 执行之后的结果如下：
 
 ```html
-<div id="content">
+<div id='content'>
   Hello &amp; welcome, &lt;b&gt;&quot;reader&quot;!&lt;/b&gt;
 </div>
 ```
@@ -690,13 +691,13 @@ div.innerText = div.innerText;
 outerText 与 innerText 是类似的，只不过作用范围包含调用它的节点。要读取文本值时，outerText 与 innerText 实际上会返回同样的内容。但在写入文本值时，outerText 就大不相同了。写入文本值时，outerText 不止会移除所有后代节点，而是会替换整个元素。比如：
 
 ```js
-div.outerText = "Hello world!";
+div.outerText = 'Hello world!';
 ```
 
 这行代码的执行效果就相当于以下两行代码：
 
 ```js
-let text = document.createTextNode("Hello world!");
+let text = document.createTextNode('Hello world!');
 div.parentNode.replaceChild(text, div);
 ```
 

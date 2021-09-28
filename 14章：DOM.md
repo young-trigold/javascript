@@ -1,4 +1,5 @@
 **目录：**
+
 - [14. DOM](#14-dom)
   - [14.1. 理解节点](#141-理解节点)
     - [14.1.1. Node 类型](#1411-node-类型)
@@ -81,7 +82,7 @@ DOM Level 1 描述了名为 Node 的接口，这个接口是所有 DOM 节点类
 
 ```js
 if (someNode.nodeType == Node.ELEMENT_NODE) {
-  alert("Node is an element.");
+  alert('Node is an element.');
 }
 ```
 
@@ -125,9 +126,9 @@ let arrayOfNodes = [...someNode.childNodes];
 
 ```js
 if (someNode.nextSibling === null) {
-  alert("Last node in the parent's childNodes list.");
+  alert('Last node in the parent's childNodes list.');
 } else if (someNode.previousSibling === null) {
-  alert("First node in the parent's childNodes list.");
+  alert('First node in the parent's childNodes list.');
 }
 ```
 
@@ -237,7 +238,7 @@ alert(shallowList.childNodes.length); // 0
 Document 类型是 JavaScript 中表示文档节点的类型。在浏览器中，文档对象 document 是 HTMLDocument 的实例（HTMLDocument 继承 Document），表示整个 HTML 页面。document 是 window 对象的属性，因此是一个全局对象。Document 类型的节点有以下特征：
 
 - nodeType 等于 9；
-- nodeName 值为"#document"；
+- nodeName 值为'#document'；
 - nodeValue 值为 null；
 - parentNode 值为 null；
 - ownerDocument 值为 null；
@@ -299,7 +300,7 @@ document 作为 HTMLDocument 的实例，还有一些标准 Document 对象上�
 // 读取文档标题
 let originalTitle = document.title;
 // 修改文档标题
-document.title = "New page title";
+document.title = 'New page title';
 ```
 
 接下来要介绍的 3 个属性是 URL、domain 和 referrer。其中，URL 包含当前页面的完整 URL（地址栏中的 URL），domain 包含页面的域名，而 referrer 包含链接到当前页面的那个页面的 URL。如果当前页面没有来源，则 referrer 属性包含空字符串。所有这些信息都可以在请求的 HTTP 头部信息中获取，只是在 JavaScript 中通过这几个属性暴露出来而已，如下面的例子所示：
@@ -315,22 +316,22 @@ let referrer = document.referrer;
 
 URL 跟域名是相关的。比如，如果 document.URL 是http://www.google.com/something，则document.domain 就是www.google.com。
 
-在这些属性中，只有 domain 属性是可以设置的。出于安全考虑，给 domain 属性设置的值是有限制的。如果 URL 包含子域名如 topics.google.com，则可以将 domain 设置为"google.com"（URL 包含“www”时也一样，比如www.google.com）。不能给这个属性设置URL 中不包含的值，比如：
+在这些属性中，只有 domain 属性是可以设置的。出于安全考虑，给 domain 属性设置的值是有限制的。如果 URL 包含子域名如 topics.google.com，则可以将 domain 设置为'google.com'（URL 包含“www”时也一样，比如www.google.com）。不能给这个属性设置URL 中不包含的值，比如：
 
 ```js
 // 页面来自topics.google.com
-document.domain = "google.com"; // 成功
-document.domain = "baidu.com"; // 出错！
+document.domain = 'google.com'; // 成功
+document.domain = 'baidu.com'; // 出错！
 ```
 
 当页面中包含来自某个不同子域的窗格（`<frame>`）或内嵌窗格（`<iframe>`）时，设置 document.domain 是有用的。因为跨源通信存在安全隐患，所以不同子域的页面间无法通过 JavaScript 通信。此时，在每个页面上把 document.domain 设置为相同的值，这些页面就可以访问对方的 JavaScript 对象了。比如，一个加载自www.google.com 的页面中包含一个内嵌窗格，其中的页面加载自 topics.google.com。这两个页面的 document.domain 包含不同的字符串，内部和外部页面相互之间不能访问对方的 JavaScript 对象。如果每个页面都把 document.domain 设置为 google.com，那这两个页面之间就可以通信了。
 
-浏览器对 domain 属性还有一个限制， 即这个属性一旦放松就不能再收紧。比如， 把 document.domain 设置为"google.com"之后，就不能再将其设置回"topics.google.com"，后者会导致错误，比如：
+浏览器对 domain 属性还有一个限制， 即这个属性一旦放松就不能再收紧。比如， 把 document.domain 设置为'google.com'之后，就不能再将其设置回'topics.google.com'，后者会导致错误，比如：
 
 ```js
 // 页面来自topics.google.com
-document.domain = "google.com"; // 放松，成功
-document.domain = "topics.google.com"; // 收紧，错误！
+document.domain = 'google.com'; // 放松，成功
+document.domain = 'topics.google.com'; // 收紧，错误！
 ```
 
 3. **定位元素**
@@ -340,19 +341,19 @@ document.domain = "topics.google.com"; // 收紧，错误！
 getElementById()方法接收一个参数，即要获取元素的 ID，如果找到了则返回这个元素，如果没找到则返回 null。参数 ID 必须跟元素在页面中的 id 属性值完全匹配，包括大小写。比如页面中有以下元素：
 
 ```html
-<div id="myDiv">Some text</div>
+<div id='myDiv'>Some text</div>
 ```
 
 可以使用如下代码取得这个元素：
 
 ```js
-let div = document.getElementById("myDiv"); // 取得对这个<div>元素的引用
+let div = document.getElementById('myDiv'); // 取得对这个<div>元素的引用
 ```
 
 但参数大小写不匹配会返回 null：
 
 ```js
-let div = document.getElementById("mydiv"); // null
+let div = document.getElementById('mydiv'); // null
 ```
 
 如果页面中存在多个具有相同 ID 的元素，则 getElementById()返回在文档中出现的第一个元素。
@@ -361,7 +362,7 @@ getElementsByTagName()是另一个常用来获取元素引用的方法。这个�
 例如，下面的代码会取得页面中所有的`<img>`元素并返回包含它们的 HTMLCollection：
 
 ```js
-let images = document.getElementsByTagName("img");
+let images = document.getElementsByTagName('img');
 ```
 
 这里把返回的 HTMLCollection 对象保存在了变量 images 中。与 NodeList 对象一样，也可以使用中括号或 item()方法从 HTMLCollection 取得特定的元素。而取得元素的数量同样可以通过 length 属性得知，如下所示：
@@ -375,19 +376,19 @@ alert(images.item(0).src); // 同上
 HTMLCollection 对象还有一个额外的方法 namedItem()，可通过标签的 name 属性取得某一项的引用。例如，假设页面中包含如下的`<img>`元素：
 
 ```html
-<img src="myimage.gif" name="myImage" />
+<img src='myimage.gif' name='myImage' />
 ```
 
 那么也可以像这样从 images 中取得对这个`<img>`元素的引用：
 
 ```js
-let myImage = images.namedItem("myImage");
+let myImage = images.namedItem('myImage');
 ```
 
 这样，HTMLCollection 就提供了除索引之外的另一种获取列表项的方式，从而为取得元素提供了便利。对于 name 属性的元素，还可以直接使用中括号来获取，如下面的例子所示：
 
 ```js
-let myImage = images["myImage"];
+let myImage = images['myImage'];
 ```
 
 对 HTMLCollection 对象而言，中括号既可以接收数值索引，也可以接收字符串索引。而在后台，数值索引会调用 item()，字符串索引会调用 namedItem()。
@@ -395,7 +396,7 @@ let myImage = images["myImage"];
 要取得文档中的所有元素，可以给 getElementsByTagName()传入*。在 JavaScript 和 CSS 中，*一般被认为是匹配一切的字符。来看下面的例子：
 
 ```
-let allElements = document.getElementsByTagName("*");
+let allElements = document.getElementsByTagName('*');
 ```
 
 这行代码可以返回包含页面中所有元素的 HTMLCollection 对象，顺序就是它们在页面中出现的顺序。因此第一项是`<html>`元素，第二项是`<head>`元素，以此类推。
@@ -409,25 +410,25 @@ HTMLDocument 类型上定义的获取元素的第三个方法是 getElementsByNa
   <legend>Which color do you prefer?</legend>
   <ul>
     <li>
-      <input type="radio" value="red" name="color" id="colorRed" />
-      <label for="colorRed">Red</label>
+      <input type='radio' value='red' name='color' id='colorRed' />
+      <label for='colorRed'>Red</label>
     </li>
     <li>
-      <input type="radio" value="green" name="color" id="colorGreen" />
-      <label for="colorGreen">Green</label>
+      <input type='radio' value='green' name='color' id='colorGreen' />
+      <label for='colorGreen'>Green</label>
     </li>
     <li>
-      <input type="radio" value="blue" name="color" id="colorBlue" />
-      <label for="colorBlue">Blue</label>
+      <input type='radio' value='blue' name='color' id='colorBlue' />
+      <label for='colorBlue'>Blue</label>
     </li>
   </ul>
 </fieldset>
 ```
 
-这里所有的单选按钮都有名为"color"的 name 属性，但它们的 ID 都不一样。这是因为 ID 是为了匹配对应的`<label>`元素，而 name 相同是为了保证只将三个中的一个值发送给服务器。然后就可以像下面这样取得所有单选按钮：
+这里所有的单选按钮都有名为'color'的 name 属性，但它们的 ID 都不一样。这是因为 ID 是为了匹配对应的`<label>`元素，而 name 相同是为了保证只将三个中的一个值发送给服务器。然后就可以像下面这样取得所有单选按钮：
 
 ```js
-let radios = document.getElementsByName("color");
+let radios = document.getElementsByName('color');
 ```
 
 与 getElementsByTagName()一样，getElementsByName()方法也返回 HTMLCollection。不过在这种情况下，namedItem()方法只会取得第一项（因为所有项的 name 属性都一样）。
@@ -437,8 +438,8 @@ let radios = document.getElementsByName("color");
 document 对象上还暴露了几个特殊集合，这些集合也都是 HTMLCollection 的实例。这些集合是访问文档中公共部分的快捷方式，列举如下。
 
 - document.anchors 包含文档中所有带 name 属性的`<a>`元素。
-- document.forms 包含文档中所有`<form>`元素（与 document.getElementsByTagName("form")返回的结果相同）。
-- document.images 包含文档中所有`<img>`元素（与 document.getElementsByTagName("img")返回的结果相同）。
+- document.forms 包含文档中所有`<form>`元素（与 document.getElementsByTagName('form')返回的结果相同）。
+- document.images 包含文档中所有`<img>`元素（与 document.getElementsByTagName('img')返回的结果相同）。
 - document.links 包含文档中所有带 href 属性的`<a>`元素。
 
 这些特殊集合始终存在于 HTMLDocument 对象上，而且与所有 HTMLCollection 对象一样，其内容也会实时更新以符合当前文档的内容。
@@ -449,7 +450,7 @@ document 对象上还暴露了几个特殊集合，这些集合也都是 HTMLCol
 收两个参数：特性名称和 DOM 版本。如果浏览器支持指定的特性和版本，则 hasFeature()方法返回 true，如下面的例子所示：
 
 ```js
-let hasXmlDom = document.implementation.hasFeature("XML", "1.0");
+let hasXmlDom = document.implementation.hasFeature('XML', '1.0');
 ```
 
 可以使用 hasFeature()方法测试的特性及版本如下表所列。
@@ -491,8 +492,8 @@ document 对象有一个古老的能力，即向网页输出流中写入内容�
   <body>
     <p>
       The current date and time is:
-      <script type="text/javascript">
-        document.write("<strong>" + new Date().toString() + "</strong>");
+      <script type='text/javascript'>
+        document.write('<strong>' + new Date().toString() + '</strong>');
       </script>
     </p>
   </body>
@@ -501,7 +502,7 @@ document 对象有一个古老的能力，即向网页输出流中写入内容�
 
 这个例子会在页面加载过程中输出当前日期和时间。日期放在了`<strong>`元素中，如同它们之前就包含在 HTML 页面中一样。这意味着会创建一个 DOM 元素，以后也可以访问。通过 write()和 writeln()输出的任何 HTML 都会以这种方式来处理。
 
-write()和 writeln()方法经常用于动态包含外部资源，如 JavaScript 文件。在包含 JavaScript 文件时，记住不能像下面的例子中这样直接包含字符串"`</script>`"，因为这个字符串会被解释为脚本块的结尾，导致后面的代码不能执行：
+write()和 writeln()方法经常用于动态包含外部资源，如 JavaScript 文件。在包含 JavaScript 文件时，记住不能像下面的例子中这样直接包含字符串'`</script>`'，因为这个字符串会被解释为脚本块的结尾，导致后面的代码不能执行：
 
 ```html
 <html>
@@ -509,15 +510,15 @@ write()和 writeln()方法经常用于动态包含外部资源，如 JavaScript 
   <title>document.write() Example</title>
 </head>
 <body>
-<script type="text/javascript">
-document.write("<script type=\"text/javascript\" src=\"file.js\">" +
-"</script>");
+<script type='text/javascript'>
+document.write('<script type=\'text/javascript\' src=\'file.js\'>' +
+'</script>');
 </script>
 </body>
 </html>
 ```
 
-虽然这样写看起来没错，但输出之后的"`</script>`"会匹配最外层的`<script>`标签，导致页面中显示出");。为避免出现这个问题，需要对前面的例子稍加修改：
+虽然这样写看起来没错，但输出之后的'`</script>`'会匹配最外层的`<script>`标签，导致页面中显示出');。为避免出现这个问题，需要对前面的例子稍加修改：
 
 ```html
 <html>
@@ -525,16 +526,16 @@ document.write("<script type=\"text/javascript\" src=\"file.js\">" +
     <title>document.write() Example</title>
   </head>
   <body>
-    <script type="text/javascript">
+    <script type='text/javascript'>
       document.write(
-        '<script type="text/javascript" src="file.js">' + "<\/script>"
+        '<script type='text/javascript' src='file.js'>' + '<\/script>'
       );
     </script>
   </body>
 </html>
 ```
 
-这里的字符串"<\/script>"不会再匹配最外层的`<script>`标签，因此不会在页面中输出额外内容。
+这里的字符串'<\/script>'不会再匹配最外层的`<script>`标签，因此不会在页面中输出额外内容。
 
 前面的例子展示了在页面渲染期间通过 document.write()向文档中输出内容。如果是在页面加载完之后再调用 document.write()，则输出的内容会重写整个页面，如下面的例子所示：
 
@@ -548,16 +549,16 @@ document.write("<script type=\"text/javascript\" src=\"file.js\">" +
       This is some content that you won't get to see because it will be
       overwritten.
     </p>
-    <script type="text/javascript">
+    <script type='text/javascript'>
       window.onload = function () {
-        document.write("Hello world!");
+        document.write('Hello world!');
       };
     </script>
   </body>
 </html>
 ```
 
-这个例子使用了 window.onload 事件处理程序，将调用 document.write()的函数推迟到页面加载完毕后执行。执行之后，字符串"Hello world!"会重写整个页面内容。
+这个例子使用了 window.onload 事件处理程序，将调用 document.write()的函数推迟到页面加载完毕后执行。执行之后，字符串'Hello world!'会重写整个页面内容。
 
 open()和 close()方法分别用于打开和关闭网页输出流。在调用 write()和 writeln()时，这两个方法都不是必需的。
 
@@ -576,25 +577,25 @@ open()和 close()方法分别用于打开和关闭网页输出流。在调用 wr
 可以通过 nodeName 或 tagName 属性来获取元素的标签名。这两个属性返回同样的值（添加后一个属性明显是为了不让人误会）。比如有下面的元素：
 
 ```html
-<div id="myDiv"></div>
+<div id='myDiv'></div>
 ```
 
 可以像这样取得这个元素的标签名：
 
 ```js
-const myDiv = document.getElementById("myDiv");
+const myDiv = document.getElementById('myDiv');
 console.log(myDiv.nodeName); // DIV
 console.log(myDIv.tagName); // DIV
 ```
 
-例子中的元素标签名为 div，ID 为"myDiv"。注意，div.tagName 实际上返回的是"DIV"而不是"div"。在 HTML 中，元素标签名始终以全大写表示；在 XML（包括 XHTML）中，标签名始终与源代码中的大小写一致。如果不确定脚本是在 HTML 文档还是 XML 文档中运行，最好将标签名转换为小写形式，以便于比较：
+例子中的元素标签名为 div，ID 为'myDiv'。注意，div.tagName 实际上返回的是'DIV'而不是'div'。在 HTML 中，元素标签名始终以全大写表示；在 XML（包括 XHTML）中，标签名始终与源代码中的大小写一致。如果不确定脚本是在 HTML 文档还是 XML 文档中运行，最好将标签名转换为小写形式，以便于比较：
 
 ```js
-if (element.tagName === "div") {
+if (element.tagName === 'div') {
   // 不要这样做，可能出错！
   // do something here
 }
-if (element.tagName.toLowerCase() === "div") {
+if (element.tagName.toLowerCase() === 'div') {
   // 推荐，适用于所有文档
   // 做点什么
 }
@@ -609,34 +610,34 @@ if (element.tagName.toLowerCase() === "div") {
 - id，元素在文档中的唯一标识符；
 - title，包含元素的额外信息，通常以提示条形式展示；
 - lang，元素内容的语言代码（很少用）；
-- dir，语言的书写方向（"ltr"表示从左到右，"rtl"表示从右到左，同样很少用）；
+- dir，语言的书写方向（'ltr'表示从左到右，'rtl'表示从右到左，同样很少用）；
 - className，相当于 class 属性，用于指定元素的 CSS 类（因为 class 是 ECMAScript 关键字，所以不能直接用这个名字）。
 
 所有这些都可以用来获取对应的属性值，也可以用来修改相应的值。比如有下面的 HTML 元素：
 
 ```html
-<div id="myDiv" class="bd" title="Body text" lang="en" dir="ltr"></div>
+<div id='myDiv' class='bd' title='Body text' lang='en' dir='ltr'></div>
 ```
 
 这个元素中的所有属性都可以使用下列 JavaScript 代码读取：
 
 ```js
-let div = document.getElementById("myDiv");
-console.log(div.id); // "myDiv"
-console.log(div.className); // "bd"
-console.log(div.title); // "Body text"
-console.log(div.lang); // "en"
-console.log(div.dir); // "ltr"
+let div = document.getElementById('myDiv');
+console.log(div.id); // 'myDiv'
+console.log(div.className); // 'bd'
+console.log(div.title); // 'Body text'
+console.log(div.lang); // 'en'
+console.log(div.dir); // 'ltr'
 ```
 
 而且，可以使用下列代码修改元素的属性：
 
 ```js
-div.id = "someOtherId";
-div.className = "ft";
-div.title = "Some other text";
-div.lang = "fr";
-div.dir = "rtl";
+div.id = 'someOtherId';
+div.className = 'ft';
+div.title = 'Some other text';
+div.lang = 'fr';
+div.dir = 'rtl';
 ```
 
 并非所有这些属性的修改都会对页面产生影响。比如，把 id 或 lang 改成其他值对用户是不可见的（假设没有基于这两个属性应用 CSS 样式），而修改 title 属性则只会在鼠标移到这个元素上时才会反映出来。修改 dir 会导致页面文本立即向左或向右对齐。修改 className 会立即反映应用到新类名的 CSS 样式（如果定义了不同的样式）。
@@ -699,34 +700,34 @@ div.dir = "rtl";
 每个元素都有零个或多个属性，通常用于为元素或其内容附加更多信息。与属性相关的 DOM 方法主要有 3 个：getAttribute()、setAttribute()和 removeAttribute()。这些方法主要用于操纵属性，包括在 HTMLElement 类型上定义的属性。下面看一个例子：
 
 ```js
-let div = document.getElementById("myDiv");
-console.log(div.getAttribute("id")); // "myDiv"
-console.log(div.getAttribute("class")); // "bd"
-console.log(div.getAttribute("title")); // "Body text"
-console.log(div.getAttribute("lang")); // "en"
-console.log(div.getAttribute("dir")); // "ltr"
+let div = document.getElementById('myDiv');
+console.log(div.getAttribute('id')); // 'myDiv'
+console.log(div.getAttribute('class')); // 'bd'
+console.log(div.getAttribute('title')); // 'Body text'
+console.log(div.getAttribute('lang')); // 'en'
+console.log(div.getAttribute('dir')); // 'ltr'
 ```
 
-注意传给 getAttribute()的属性名与它们实际的属性名是一样的，因此这里要传"class"而非"className"（className 是作为对象属性时才那么拼写的）。如果给定的属性不存在，则 getAttribute()返回 null。
+注意传给 getAttribute()的属性名与它们实际的属性名是一样的，因此这里要传'class'而非'className'（className 是作为对象属性时才那么拼写的）。如果给定的属性不存在，则 getAttribute()返回 null。
 
 getAttribute()方法也能取得不是 HTML 语言正式属性的自定义属性的值。比如下面的元素：
 
 ```html
-<div id="myDiv" my_special_attribute="hello!"></div>
+<div id='myDiv' my_special_attribute='hello!'></div>
 ```
 
-这个元素有一个自定义属性 my_special_attribute，值为"hello!"。可以像其他属性一样使用 getAttribute()取得这个属性的值：
+这个元素有一个自定义属性 my_special_attribute，值为'hello!'。可以像其他属性一样使用 getAttribute()取得这个属性的值：
 
 ```js
-let value = div.getAttribute("my_special_attribute");
+let value = div.getAttribute('my_special_attribute');
 ```
 
-注意，属性名不区分大小写，因此"ID"和"id"被认为是同一个属性。另外，根据 HTML5 规范的要求，自定义属性名应该前缀 data-以方便验证。
+注意，属性名不区分大小写，因此'ID'和'id'被认为是同一个属性。另外，根据 HTML5 规范的要求，自定义属性名应该前缀 data-以方便验证。
 
 元素的所有属性也可以通过相应 DOM 元素对象的属性来取得。当然，这包括 HTMLElement 上定义的直接映射对应属性的 5 个属性，还有所有公认（非自定义）的属性也会被添加为 DOM 对象的属性。比如下面的例子：
 
 ```html
-<div id="myDiv" align="left" my_special_attribute="hello"></div>
+<div id='myDiv' align='left' my_special_attribute='hello'></div>
 ```
 
 因为 id 和 align 在 HTML 中是`<div>`元素公认的属性，所以 DOM 对象上也会有这两个属性。但 my_special_attribute 是自定义属性，因此不会成为 DOM 对象的属性。
@@ -742,35 +743,35 @@ let value = div.getAttribute("my_special_attribute");
 与 getAttribute()配套的方法是 setAttribute()，这个方法接收两个参数：要设置的属性名和属性的值。如果属性已经存在，则 setAttribute()会以指定的值替换原来的值；如果属性不存在，则 setAttribute()会以指定的值创建该属性。下面看一个例子：
 
 ```js
-div.setAttribute("id", "someOtherId");
-div.setAttribute("class", "ft");
-div.setAttribute("title", "Some other text");
-div.setAttribute("lang", "fr");
-div.setAttribute("dir", "rtl");
+div.setAttribute('id', 'someOtherId');
+div.setAttribute('class', 'ft');
+div.setAttribute('title', 'Some other text');
+div.setAttribute('lang', 'fr');
+div.setAttribute('dir', 'rtl');
 ```
 
-setAttribute()适用于 HTML 属性，也适用于自定义属性。另外，使用 setAttribute()方法设置的属性名会规范为小写形式，因此"ID"会变成"id"。
+setAttribute()适用于 HTML 属性，也适用于自定义属性。另外，使用 setAttribute()方法设置的属性名会规范为小写形式，因此'ID'会变成'id'。
 
 因为元素属性也是 DOM 对象属性，所以直接给 DOM 对象的属性赋值也可以设置元素属性的值，如下所示：
 
 ```js
-div.id = "someOtherId";
-div.align = "left";
+div.id = 'someOtherId';
+div.align = 'left';
 ```
 
 注意，在 DOM 对象上添加自定义属性，如下面的例子所示，不会自动让它变成元素的属性：
 
 ```js
-div.mycolor = "red";
-console.log(div.getAttribute("mycolor")); // null（IE 除外）
+div.mycolor = 'red';
+console.log(div.getAttribute('mycolor')); // null（IE 除外）
 ```
 
-这个例子添加了一个自定义属性 mycolor 并将其值设置为"red"。在多数浏览器中，这个属性不会自动变成元素属性。因此调用 getAttribute()取得 mycolor 的值会返回 null。
+这个例子添加了一个自定义属性 mycolor 并将其值设置为'red'。在多数浏览器中，这个属性不会自动变成元素属性。因此调用 getAttribute()取得 mycolor 的值会返回 null。
 
 最后一个方法 removeAttribute()用于从元素中删除属性。这样不单单是清除属性的值，而是会把整个属性完全从元素中去掉，如下所示：
 
 ```js
-div.removeAttribute("class");
+div.removeAttribute('class');
 ```
 
 这个方法用得并不多，但在序列化 DOM 元素时可以通过它控制要包含的属性。
@@ -787,25 +788,25 @@ Element 类型是唯一使用 attributes 属性的 DOM 节点类型。attributes
 attributes 属性中的每个节点的 nodeName 是对应属性的名字，nodeValue 是属性的值。比如，要取得元素 id 属性的值，可以使用以下代码：
 
 ```js
-let id = element.attributes.getNamedItem("id").nodeValue;
+let id = element.attributes.getNamedItem('id').nodeValue;
 ```
 
 下面是使用中括号访问属性的简写形式：
 
 ```js
-let id = element.attributes["id"].nodeValue;
+let id = element.attributes['id'].nodeValue;
 ```
 
 同样，也可以用这种语法设置属性的值，即先取得属性节点，再将其 nodeValue 设置为新值，如下所示：
 
 ```js
-element.attributes["id"].nodeValue = "someOtherId";
+element.attributes['id'].nodeValue = 'someOtherId';
 ```
 
 removeNamedItem()方法与元素上的 removeAttribute()方法类似，也是删除指定名字的属性。下面的例子展示了这两个方法唯一的不同之处，就是 removeNamedItem()返回表示被删除属性的 Attr 节点：
 
 ```js
-let oldAttr = element.attributes.removeNamedItem("id");
+let oldAttr = element.attributes.removeNamedItem('id');
 ```
 
 setNamedItem()方法很少使用，它接收一个属性节点，然后给元素添加一个新属性，如下所示：
@@ -816,16 +817,16 @@ element.attributes.setNamedItem(newAttr);
 
 一般来说，因为使用起来更简便，通常开发者更喜欢使用 getAttribute()、removeAttribute()和 setAttribute()方法，而不是刚刚介绍的 NamedNodeMap 对象的方法。
 
-attributes 属性最有用的场景是需要迭代元素上所有属性的时候。这时候往往是要把 DOM 结构序列化为 XML 或 HTML 字符串。比如，以下代码能够迭代一个元素上的所有属性并以 attribute1="value1" attribute2="value2"的形式生成格式化字符串：
+attributes 属性最有用的场景是需要迭代元素上所有属性的时候。这时候往往是要把 DOM 结构序列化为 XML 或 HTML 字符串。比如，以下代码能够迭代一个元素上的所有属性并以 attribute1='value1' attribute2='value2'的形式生成格式化字符串：
 
 ```js
 function outputAttributes(element) {
   let pairs = [];
   for (let i = 0, len = element.attributes.length; i < len; ++i) {
     const attribute = element.attributes[i];
-    pairs.push(`${attribute.nodeName}="${attribute.nodeValue}"`);
+    pairs.push(`${attribute.nodeName}='${attribute.nodeValue}'`);
   }
-  return pairs.join(" ");
+  return pairs.join(' ');
 }
 ```
 
@@ -836,14 +837,14 @@ function outputAttributes(element) {
 可以使用 document.createElement()方法创建新元素。这个方法接收一个参数，即要创建元素的标签名。在 HTML 文档中，标签名是不区分大小写的，而 XML 文档（包括 XHTML）是区分大小写的。要创建`<div>`元素，可以使用下面的代码：
 
 ```js
-let div = document.createElement("div");
+let div = document.createElement('div');
 ```
 
 使用 createElement()方法创建新元素的同时也会将其 ownerDocument 属性设置为 document。此时，可以再为其添加属性、添加更多子元素。比如：
 
 ```js
-div.id = "myNewDiv";
-div.className = "box";
+div.id = 'myNewDiv';
+div.className = 'box';
 ```
 
 在新元素上设置这些属性只会附加信息。因为这个元素还没有添加到文档树，所以不会影响浏览器显示。要把元素添加到文档树，可以使用 appendChild()、insertBefore()或 replaceChild()。比如，以下代码会把刚才创建的元素添加到文档的`<body>`元素中：
@@ -859,7 +860,7 @@ document.body.appendChild(div);
 元素可以拥有任意多个子元素和后代元素，因为元素本身也可以是其他元素的子元素。childNodes 属性包含元素所有的子节点，这些子节点可能是其他元素、文本节点、注释或处理指令。不同浏览器在识别这些节点时的表现有明显不同。比如下面的代码：
 
 ```html
-<ul id="myList">
+<ul id='myList'>
   <li>Item 1</li>
   <li>Item 2</li>
   <li>Item 3</li>
@@ -869,7 +870,7 @@ document.body.appendChild(div);
 在解析以上代码时，`<ul>`元素会包含 7 个子元素，其中 3 个是`<li>`元素，还有 4 个 Text 节点（表示`<li>`元素周围的空格）。如果把元素之间的空格删掉，变成下面这样，则所有浏览器都会返回同样数量的子节点：
 
 ```html
-<ul id="myList">
+<ul id='myList'>
   <li>Item 1</li>
   <li>Item 2</li>
   <li>Item 3</li>
@@ -891,8 +892,8 @@ for (let i = 0, len = element.childNodes.length; i < len; ++i) {
 要取得某个元素的子节点和其他后代节点，可以使用元素的 getElementsByTagName()方法。在元素上调用这个方法与在文档上调用是一样的，只不过搜索范围限制在当前元素之内，即只会返回当前元素的后代。对于本节前面`<ul>`的例子，可以像下面这样取得其所有的`<li>`元素：
 
 ```js
-let ul = document.getElementById("myList");
-let items = ul.getElementsByTagName("li");
+let ul = document.getElementById('myList');
+let items = ul.getElementsByTagName('li');
 ```
 
 这里例子中的`<ul>`元素只有一级子节点，如果它包含更多层级，则所有层级中的`<li>`元素都会返回。
@@ -902,7 +903,7 @@ let items = ul.getElementsByTagName("li");
 Text 节点由 Text 类型表示，包含按字面解释的纯文本，也可能包含转义后的 HTML 字符，但不含 HTML 代码。Text 类型的节点具有以下特征：
 
 - nodeType 等于 3；
-- nodeName 值为"#text"；
+- nodeName 值为'#text'；
 - nodeValue 值为节点中包含的文本；
 - parentNode 值为 Element 对象；
 - 不支持子节点。
@@ -932,7 +933,7 @@ Text 节点中包含的文本可以通过 nodeValue 属性访问，也可以通�
 <div>Hello World!</div>
 ```
 
-示例中的第一个`<div>`元素中不包含内容，因此不会产生文本节点。只要开始标签和结束标签之间有内容，就会创建一个文本节点，因此第二个`<div>`元素会有一个文本节点的子节点，虽然它只包含空格。这个文本节点的 nodeValue 就是一个空格。第三个`<div>`元素也有一个文本节点的子节点，其 nodeValue 的值为"Hello World!"。下列代码可以用来访问这个文本节点：
+示例中的第一个`<div>`元素中不包含内容，因此不会产生文本节点。只要开始标签和结束标签之间有内容，就会创建一个文本节点，因此第二个`<div>`元素会有一个文本节点的子节点，虽然它只包含空格。这个文本节点的 nodeValue 就是一个空格。第三个`<div>`元素也有一个文本节点的子节点，其 nodeValue 的值为'Hello World!'。下列代码可以用来访问这个文本节点：
 
 ```js
 let textNode = div.firstChild; // 或div.childNodes[0]
@@ -941,14 +942,14 @@ let textNode = div.firstChild; // 或div.childNodes[0]
 取得文本节点的引用后，可以像这样来修改它：
 
 ```js
-div.firstChild.nodeValue = "Some other message";
+div.firstChild.nodeValue = 'Some other message';
 ```
 
 只要节点在当前的文档树中，这样的修改就会马上反映出来。修改文本节点还有一点要注意，就是 HTML 或 XML 代码（取决于文档类型）会被转换成实体编码，即小于号、大于号或引号会被转义，如下所示：
 
 ```js
-// 输出为"Some &lt;strong&gt;other&lt;/strong&gt; message"
-div.firstChild.nodeValue = "Some <strong>other</strong> message";
+// 输出为'Some &lt;strong&gt;other&lt;/strong&gt; message'
+div.firstChild.nodeValue = 'Some <strong>other</strong> message';
 ```
 
 这实际上是在将 HTML 字符串插入 DOM 文档前进行编码的有效方式。
@@ -958,29 +959,29 @@ div.firstChild.nodeValue = "Some <strong>other</strong> message";
 document.createTextNode()可以用来创建新文本节点，它接收一个参数，即要插入节点的文本。跟设置已有文本节点的值一样，这些要插入的文本也会应用 HTML 或 XML 编码，如下面的例子所示：
 
 ```js
-let textNode = document.createTextNode("<strong>Hello</strong> world!");
+let textNode = document.createTextNode('<strong>Hello</strong> world!');
 ```
 
 创建新文本节点后，其 ownerDocument 属性会被设置为 document。但在把这个节点添加到文档树之前，我们不会在浏览器中看到它。以下代码创建了一个`<div>`元素并给它添加了一段文本消息：
 
 ```js
-let element = document.createElement("div");
-element.className = "message";
-let textNode = document.createTextNode("Hello world!");
+let element = document.createElement('div');
+element.className = 'message';
+let textNode = document.createTextNode('Hello world!');
 element.appendChild(textNode);
 document.body.appendChild(element);
 ```
 
-这个例子首先创建了一个`<div>`元素并给它添加了值为"message"的 class 属性，然后又创建了一个文本节点并添加到该元素。最后一步是把这个元素添加到文档的主体上，这样元素及其包含的文本会出现在浏览器中。
+这个例子首先创建了一个`<div>`元素并给它添加了值为'message'的 class 属性，然后又创建了一个文本节点并添加到该元素。最后一步是把这个元素添加到文档的主体上，这样元素及其包含的文本会出现在浏览器中。
 
 一般来说一个元素只包含一个文本子节点。不过，也可以让元素包含多个文本子节点，如下面的例子所示：
 
 ```js
-let element = document.createElement("div");
-element.className = "message";
-let textNode = document.createTextNode("Hello world!");
+let element = document.createElement('div');
+element.className = 'message';
+let textNode = document.createTextNode('Hello world!');
 element.appendChild(textNode);
-let anotherTextNode = document.createTextNode("Yippee!");
+let anotherTextNode = document.createTextNode('Yippee!');
 element.appendChild(anotherTextNode);
 document.body.appendChild(element);
 ```
@@ -993,17 +994,17 @@ DOM 文档中的同胞文本节点可能导致困惑，因为一个文本节点�
 个相邻文本节点的父节点上调用 normalize()时，所有同胞文本节点会被合并为一个文本节点，这个文本节点的 nodeValue 就等于之前所有同胞节点 nodeValue 拼接在一起得到的字符串。来看下面的例子：
 
 ```js
-let element = document.createElement("div");
-element.className = "message";
-let textNode = document.createTextNode("Hello world!");
+let element = document.createElement('div');
+element.className = 'message';
+let textNode = document.createTextNode('Hello world!');
 element.appendChild(textNode);
-let anotherTextNode = document.createTextNode("Yippee!");
+let anotherTextNode = document.createTextNode('Yippee!');
 element.appendChild(anotherTextNode);
 document.body.appendChild(element);
 console.log(element.childNodes.length); // 2
 element.normalize();
 console.log(element.childNodes.length); // 1
-console.log(element.firstChild.nodeValue); // "Hello world!Yippee!"
+console.log(element.firstChild.nodeValue); // 'Hello world!Yippee!'
 ```
 
 浏览器在解析文档时，永远不会创建同胞文本节点。同胞文本节点只会出现在 DOM 脚本生成的文档树中。
@@ -1014,18 +1015,18 @@ Text 类型定义了一个与 normalize()相反的方法——splitText()。这�
 相同的 parentNode。来看下面的例子：
 
 ```js
-let element = document.createElement("div");
-element.className = "message";
-let textNode = document.createTextNode("Hello world!");
+let element = document.createElement('div');
+element.className = 'message';
+let textNode = document.createTextNode('Hello world!');
 element.appendChild(textNode);
 document.body.appendChild(element);
 let newNode = element.firstChild.splitText(5);
-console.log(element.firstChild.nodeValue); // "Hello"
-console.log(newNode.nodeValue); // " world!"
+console.log(element.firstChild.nodeValue); // 'Hello'
+console.log(newNode.nodeValue); // ' world!'
 console.log(element.childNodes.length); // 2
 ```
 
-在这个例子中，包含"Hello world!"的文本节点被从位置 5 拆分成两个文本节点。位置 5 对应"Hello"和"world!"之间的空格，因此原始文本节点包含字符串"Hello"，而新文本节点包含文本"world!"（包含空格）。
+在这个例子中，包含'Hello world!'的文本节点被从位置 5 拆分成两个文本节点。位置 5 对应'Hello'和'world!'之间的空格，因此原始文本节点包含字符串'Hello'，而新文本节点包含文本'world!'（包含空格）。
 
 拆分文本节点最常用于从文本节点中提取数据的 DOM 解析技术。
 
@@ -1034,7 +1035,7 @@ console.log(element.childNodes.length); // 2
 DOM 中的注释通过 Comment 类型表示。Comment 类型的节点具有以下特征：
 
 - nodeType 等于 8；
-- nodeName 值为"#comment"；
+- nodeName 值为'#comment'；
 - nodeValue 值为注释的内容；
 - parentNode 值为 Document 或 Element 对象；
 - 不支持子节点。
@@ -1044,21 +1045,21 @@ Comment 类型与 Text 类型继承同一个基类（CharacterData），因此�
 注释节点可以作为父节点的子节点来访问。比如下面的 HTML 代码：
 
 ```html
-<div id="myDiv"><!-- A comment --></div>
+<div id='myDiv'><!-- A comment --></div>
 ```
 
 这里的注释是`<div>`元素的子节点，这意味着可以像下面这样访问它：
 
 ```js
-let div = document.getElementById("myDiv");
+let div = document.getElementById('myDiv');
 let comment = div.firstChild;
-console.log(comment.data); // "A comment"
+console.log(comment.data); // 'A comment'
 ```
 
 可以使用 document.createComment()方法创建注释节点，参数为注释文本，如下所示：
 
 ```js
-let comment = document.createComment("A comment");
+let comment = document.createComment('A comment');
 ```
 
 显然，注释节点很少通过 JavaScrpit 创建和访问，因为注释几乎不涉及算法逻辑。此外，浏览器不承认结束的`</html>`标签之后的注释。如果要访问注释节点，则必须确定它们是`<html>`元素的后代。
@@ -1068,7 +1069,7 @@ let comment = document.createComment("A comment");
 CDATASection 类型表示 XML 中特有的 CDATA 区块。CDATASection 类型继承 Text 类型，因此拥有包括 splitText()在内的所有字符串操作方法。CDATASection 类型的节点具有以下特征：
 
 - nodeType 等于 4；
-- nodeName 值为"#cdata-section"；
+- nodeName 值为'#cdata-section'；
 - nodeValue 值为 CDATA 区块的内容；
 - parentNode 值为 Document 或 Element 对象；
 - 不支持子节点。
@@ -1076,7 +1077,7 @@ CDATASection 类型表示 XML 中特有的 CDATA 区块。CDATASection 类型继
 CDATA 区块只在 XML 文档中有效，因此某些浏览器比较陈旧的版本会错误地将 CDATA 区块解析为 Comment 或 Element。比如下面这行代码：
 
 ```html
-<div id="myDiv"><![CDATA[This is some content.]]></div>
+<div id='myDiv'><![CDATA[This is some content.]]></div>
 ```
 
 这里`<div>`的第一个子节点应该是 CDATASection 节点。但主流的四大浏览器没有一个将其识别为 CDATASection。即使在有效的 XHTML 文档中，这些浏览器也不能恰当地支持嵌入的 CDATA 区块。
@@ -1096,13 +1097,13 @@ DocumentType 类型的节点包含文档的文档类型（doctype）信息，具
 DocumentType 对象在 DOM Level 1 中不支持动态创建，只能在解析文档代码时创建。对于支持这个类型的浏览器，DocumentType 对象保存在 document.doctype 属性中。DOM Level 1 规定了 DocumentType 对象的 3 个属性：name、entities 和 notations。其中，name 是文档类型的名称，entities 是这个文档类型描述的实体的 NamedNodeMap，而 notations 是这个文档类型描述的表示法的 NamedNodeMap。因为浏览器中的文档通常是 HTML 或 XHTML 文档类型，所以 entities 和 notations 列表为空。（这个对象只包含行内声明的文档类型。）无论如何，只有 name 属性是有用的。这个属性包含文档类型的名称，即紧跟在`<!DOCTYPE` 后面的那串文本。比如下面的 HTML 4.01 严格文档类型：
 
 ```html
-<!DOCTYPE html PUBLIC "-// W3C// DTD HTML 4.01// EN" "http:// www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html PUBLIC '-// W3C// DTD HTML 4.01// EN' 'http:// www.w3.org/TR/html4/strict.dtd'>
 ```
 
-对于这个文档类型，name 属性的值是"html"：
+对于这个文档类型，name 属性的值是'html'：
 
 ```js
-console.log(document.doctype.name); // "html"
+console.log(document.doctype.name); // 'html'
 ```
 
 ### 14.1.8. DocumentFragment 类型
@@ -1110,7 +1111,7 @@ console.log(document.doctype.name); // "html"
 在所有节点类型中，DocumentFragment 类型是唯一一个在标记中没有对应表示的类型。DOM 将文档片段定义为“轻量级”文档，能够包含和操作节点，却没有完整文档那样额外的消耗。DocumentFragment 节点具有以下特征：
 
 - nodeType 等于 11；
-- nodeName 值为"#document-fragment"；
+- nodeName 值为'#document-fragment'；
 - nodeValue 值为 null；
 - parentNode 值为 null；
 - 子节点可以是 Element、ProcessingInstruction、Comment、Text、CDATASection 或 EntityReference。
@@ -1125,16 +1126,16 @@ let fragment = document.createDocumentFragment();
 档片段的内容添加到文档。在把文档片段作为参数传给这些方法时，这个文档片段的所有子节点会被添加到文档中相应的位置。文档片段本身永远不会被添加到文档树。以下面的 HTML 为例：
 
 ```html
-<ul id="myList"></ul>
+<ul id='myList'></ul>
 ```
 
 假设想给这个`<ul>`元素添加 3 个列表项。如果分 3 次给这个元素添加列表项，浏览器就要重新渲染 3 次页面，以反映新添加的内容。为避免多次渲染，下面的代码示例使用文档片段创建了所有列表项，然后一次性将它们添加到了`<ul>`元素：
 
 ```js
 let fragment = document.createDocumentFragment();
-let ul = document.getElementById("myList");
+let ul = document.getElementById('myList');
 for (let i = 0; i < 3; ++i) {
-  let li = document.createElement("li");
+  let li = document.createElement('li');
   li.appendChild(document.createTextNode(`Item ${i + 1}`));
   fragment.appendChild(li);
 }
@@ -1161,15 +1162,15 @@ Attr 对象上有 3 个属性：name、value 和 specified。其中，name 包�
 可以使用 document.createAttribute()方法创建新的 Attr 节点，参数为属性名。比如，要给元素添加 align 属性，可以使用下列代码：
 
 ```js
-let attr = document.createAttribute("align");
-attr.value = "left";
+let attr = document.createAttribute('align');
+attr.value = 'left';
 element.setAttributeNode(attr);
-console.log(element.attributes["align"].value); // "left"
-console.log(element.getAttributeNode("align").value); // "left"
-console.log(element.getAttribute("align")); // "left"
+console.log(element.attributes['align'].value); // 'left'
+console.log(element.getAttributeNode('align').value); // 'left'
+console.log(element.getAttribute('align')); // 'left'
 ```
 
-在这个例子中，首先创建了一个新属性。调用 createAttribute()并传入"align"为新属性设置了 name 属性，因此就不用再设置了。随后，value 属性被赋值为"left"。为把这个新属性添加到元素上，可以使用元素的 setAttributeNode()方法。添加这个属性后，可以通过不同方式访问它，包
+在这个例子中，首先创建了一个新属性。调用 createAttribute()并传入'align'为新属性设置了 name 属性，因此就不用再设置了。随后，value 属性被赋值为'left'。为把这个新属性添加到元素上，可以使用元素的 setAttributeNode()方法。添加这个属性后，可以通过不同方式访问它，包
 括 attributes 属性、getAttributeNode()和 getAttribute()方法。其中，attributes 属性和 getAttributeNode()方法都返回属性对应的 Attr 节点，而 getAttribute()方法只返回属性的值。
 
 注意 将属性作为节点来访问多数情况下并无必要。推荐使用 getAttribute()、removeAttribute()和 setAttribute()方法操作属性，而不是直接操作属性节点。
@@ -1185,14 +1186,14 @@ console.log(element.getAttribute("align")); // "left"
 动态加载外部文件很容易实现，比如下面的`<script>`元素：
 
 ```html
-<script src="foo.js"></script>
+<script src='foo.js'></script>
 ```
 
 可以像这样通过 DOM 编程创建这个节点：
 
 ```js
-let script = document.createElement("script");
-script.src = "foo.js";
+let script = document.createElement('script');
+script.src = 'foo.js';
 document.body.appendChild(script);
 ```
 
@@ -1200,7 +1201,7 @@ document.body.appendChild(script);
 
 ```js
 function loadScript(url) {
-  let script = document.createElement("script");
+  let script = document.createElement('script');
   script.src = url;
   document.body.appendChild(script);
 }
@@ -1209,7 +1210,7 @@ function loadScript(url) {
 然后，就可以像下面这样加载外部 JavaScript 文件了：
 
 ```js
-loadScript("client.js");
+loadScript('client.js');
 ```
 
 加载之后，这个脚本就可以对页面执行操作了。这里有个问题：怎么能知道脚本什么时候加载完？这个问题并没有标准答案。第 17 章会讨论一些与加载相关的事件，具体情况取决于使用的浏览器。
@@ -1219,7 +1220,7 @@ loadScript("client.js");
 ```html
 <script>
   function sayHi() {
-    console.log("hi");
+    console.log('hi');
   }
 </script>
 ```
@@ -1227,28 +1228,28 @@ loadScript("client.js");
 使用 DOM，可以实现以下逻辑：
 
 ```js
-let script = document.createElement("script");
-script.appendChild(document.createTextNode("function sayHi(){alert('hi');}"));
+let script = document.createElement('script');
+script.appendChild(document.createTextNode('function sayHi(){alert('hi');}'));
 document.body.appendChild(script);
 ```
 
 以上代码可以在 Firefox、Safari、Chrome 和 Opera 中运行。不过在旧版本的 IE 中可能会导致问题。这是因为 IE 对`<script>`元素做了特殊处理，不允许常规 DOM 访问其子节点。但`<script>`元素上有一个 text 属性，可以用来添加 JavaScript 代码，如下所示：
 
 ```js
-var script = document.createElement("script");
-script.text = "function sayHi(){alert('hi');}";
+var script = document.createElement('script');
+script.text = 'function sayHi(){alert('hi');}';
 document.body.appendChild(script);
 ```
 
 这样修改后，上面的代码可以在 IE、Firefox、Opera 和 Safari 3 及更高版本中运行。Safari 3 之前的版本不能正确支持这个 text 属性，但这些版本却支持文本节点赋值。对于早期的 Safari 版本，需要使用以下代码：
 
 ```js
-var script = document.createElement("script");
-var code = "function sayHi(){alert('hi');}";
+var script = document.createElement('script');
+var code = 'function sayHi(){alert('hi');}';
 try {
-  script.appendChild(document.createTextNode("code"));
+  script.appendChild(document.createTextNode('code'));
 } catch (ex) {
-  script.text = "code";
+  script.text = 'code';
 }
 document.body.appendChild(script);
 ```
@@ -1257,8 +1258,8 @@ document.body.appendChild(script);
 
 ```js
 function loadScriptString(code) {
-  var script = document.createElement("script");
-  script.type = "text/javascript";
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
   try {
     script.appendChild(document.createTextNode(code));
   } catch (ex) {
@@ -1271,7 +1272,7 @@ function loadScriptString(code) {
 这个函数可以这样调用：
 
 ```js
-loadScriptString("function sayHi(){alert('hi');}");
+loadScriptString('function sayHi(){alert('hi');}');
 ```
 
 以这种方式加载的代码会在全局作用域中执行，并在调用返回后立即生效。基本上，这就相当于在全局作用域中把源代码传给 eval()方法。
@@ -1285,17 +1286,17 @@ CSS 样式在 HTML 页面中可以通过两个元素加载。`<link>`元素用�
 来看下面这个典型的`<link>`元素：
 
 ```html
-<link rel="stylesheet" type="text/css" href="styles.css" />
+<link rel='stylesheet' type='text/css' href='styles.css' />
 ```
 
 这个元素很容易使用 DOM 编程创建出来：
 
 ```js
-let link = document.createElement("link");
-link.rel = "stylesheet";
-link.type = "text/css";
-link.href = "styles.css";
-let head = document.getElementsByTagName("head")[0];
+let link = document.createElement('link');
+link.rel = 'stylesheet';
+link.type = 'text/css';
+link.href = 'styles.css';
+let head = document.getElementsByTagName('head')[0];
 head.appendChild(link);
 ```
 
@@ -1303,11 +1304,11 @@ head.appendChild(link);
 
 ```js
 function loadStyles(url) {
-  let link = document.createElement("link");
-  link.rel = "stylesheet";
-  link.type = "text/css";
+  let link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.type = 'text/css';
   link.href = url;
-  let head = document.getElementsByTagName("head")[0];
+  let head = document.getElementsByTagName('head')[0];
   head.appendChild(link);
 }
 ```
@@ -1315,7 +1316,7 @@ function loadStyles(url) {
 然后就可以这样调用这个 loadStyles()函数了：
 
 ```js
-loadStyles("styles.css");
+loadStyles('styles.css');
 ```
 
 通过外部文件加载样式是一个异步过程。因此，样式的加载和正执行的 JavaScript 代码并没有先后顺序。一般来说，也没有必要知道样式什么时候加载完成。
@@ -1323,7 +1324,7 @@ loadStyles("styles.css");
 另一种定义样式的方式是使用`<script>`元素包含嵌入的 CSS 规则，例如：
 
 ```html
-<style type="text/css">
+<style type='text/css'>
   body {
     background-color: red;
   }
@@ -1333,24 +1334,24 @@ loadStyles("styles.css");
 逻辑上，下列 DOM 代码会有同样的效果：
 
 ```js
-let style = document.createElement("style");
-style.type = "text/css";
-style.appendChild(document.createTextNode("body{background-color:red}"));
-let head = document.getElementsByTagName("head")[0];
+let style = document.createElement('style');
+style.type = 'text/css';
+style.appendChild(document.createTextNode('body{background-color:red}'));
+let head = document.getElementsByTagName('head')[0];
 head.appendChild(style);
 ```
 
 以上代码在 Firefox、Safari、Chrome 和 Opera 中都可以运行，但 IE 除外。IE 对`<style>`节点会施加限制，不允许访问其子节点，这一点与它对`<script>`元素施加的限制一样。事实上，IE 在执行到给`<style>`添加子节点的代码时，会抛出与给`<script>`添加子节点时同样的错误。对于 IE，解决方案是访问元素的 styleSheet 属性，这个属性又有一个 cssText 属性，然后给这个属性添加 CSS 代码：
 
 ```js
-let style = document.createElement("style");
-style.type = "text/css";
+let style = document.createElement('style');
+style.type = 'text/css';
 try {
-  style.appendChild(document.createTextNode("body{background-color:red}"));
+  style.appendChild(document.createTextNode('body{background-color:red}'));
 } catch (ex) {
-  style.styleSheet.cssText = "body{background-color:red}";
+  style.styleSheet.cssText = 'body{background-color:red}';
 }
-let head = document.getElementsByTagName("head")[0];
+let head = document.getElementsByTagName('head')[0];
 head.appendChild(style);
 ```
 
@@ -1358,14 +1359,14 @@ head.appendChild(style);
 
 ```js
 function loadStyleString(css) {
-  let style = document.createElement("style");
-  style.type = "text/css";
+  let style = document.createElement('style');
+  style.type = 'text/css';
   try {
     style.appendChild(document.createTextNode(css));
   } catch (ex) {
     style.styleSheet.cssText = css;
   }
-  let head = document.getElementsByTagName("head")[0];
+  let head = document.getElementsByTagName('head')[0];
   head.appendChild(style);
 }
 ```
@@ -1373,7 +1374,7 @@ function loadStyleString(css) {
 可以这样调用这个函数：
 
 ```js
-loadStyleString("body{background-color:red}");
+loadStyleString('body{background-color:red}');
 ```
 
 这样添加的样式会立即生效，因此所有变化会立即反映出来。
@@ -1385,7 +1386,7 @@ loadStyleString("body{background-color:red}");
 表格是 HTML 中最复杂的结构之一。通过 DOM 编程创建`<table>`元素，通常要涉及大量标签，包括表行、表元、表题，等等。因此，通过 DOM 编程创建和修改表格时可能要写很多代码。假设要通过 DOM 来创建以下 HTML 表格：
 
 ```html
-<table border="1" width="100%">
+<table border='1' width='100%'>
   <tbody>
     <tr>
       <td>Cell 1,1</td>
@@ -1403,29 +1404,29 @@ loadStyleString("body{background-color:red}");
 
 ```js
 // 创建表格
-let table = document.createElement("table");
+let table = document.createElement('table');
 table.border = 1;
-table.width = "100%";
+table.width = '100%';
 // 创建表体
-let tbody = document.createElement("tbody");
+let tbody = document.createElement('tbody');
 table.appendChild(tbody);
 // 创建第一行
-let row1 = document.createElement("tr");
+let row1 = document.createElement('tr');
 tbody.appendChild(row1);
-let cell1_1 = document.createElement("td");
-cell1_1.appendChild(document.createTextNode("Cell 1,1"));
+let cell1_1 = document.createElement('td');
+cell1_1.appendChild(document.createTextNode('Cell 1,1'));
 row1.appendChild(cell1_1);
-let cell2_1 = document.createElement("td");
-cell2_1.appendChild(document.createTextNode("Cell 2,1"));
+let cell2_1 = document.createElement('td');
+cell2_1.appendChild(document.createTextNode('Cell 2,1'));
 row1.appendChild(cell2_1);
 // 创建第二行
-let row2 = document.createElement("tr");
+let row2 = document.createElement('tr');
 tbody.appendChild(row2);
-let cell1_2 = document.createElement("td");
-cell1_2.appendChild(document.createTextNode("Cell 1,2"));
+let cell1_2 = document.createElement('td');
+cell1_2.appendChild(document.createTextNode('Cell 1,2'));
 row2.appendChild(cell1_2);
-let cell2_2 = document.createElement("td");
-cell2_2.appendChild(document.createTextNode("Cell 2,2"));
+let cell2_2 = document.createElement('td');
+cell2_2.appendChild(document.createTextNode('Cell 2,2'));
 row2.appendChild(cell2_2);
 // 把表格添加到文档主体
 document.body.appendChild(table);
@@ -1459,24 +1460,24 @@ document.body.appendChild(table);
 
 ```js
 // 创建表格
-let table = document.createElement("table");
+let table = document.createElement('table');
 table.border = 1;
-table.width = "100%";
+table.width = '100%';
 // 创建表体
-let tbody = document.createElement("tbody");
+let tbody = document.createElement('tbody');
 table.appendChild(tbody);
 // 创建第一行
 tbody.insertRow(0);
 tbody.rows[0].insertCell(0);
-tbody.rows[0].cells[0].appendChild(document.createTextNode("Cell 1,1"));
+tbody.rows[0].cells[0].appendChild(document.createTextNode('Cell 1,1'));
 tbody.rows[0].insertCell(1);
-tbody.rows[0].cells[1].appendChild(document.createTextNode("Cell 2,1"));
+tbody.rows[0].cells[1].appendChild(document.createTextNode('Cell 2,1'));
 // 创建第二行
 tbody.insertRow(1);
 tbody.rows[1].insertCell(0);
-tbody.rows[1].cells[0].appendChild(document.createTextNode("Cell 1,2"));
+tbody.rows[1].cells[0].appendChild(document.createTextNode('Cell 1,2'));
 tbody.rows[1].insertCell(1);
-tbody.rows[1].cells[1].appendChild(document.createTextNode("Cell 2,2"));
+tbody.rows[1].cells[1].appendChild(document.createTextNode('Cell 2,2'));
 // 把表格添加到文档主体
 document.body.appendChild(table);
 ```
@@ -1493,9 +1494,9 @@ document.body.appendChild(table);
 循环：
 
 ```js
-let divs = document.getElementsByTagName("div");
+let divs = document.getElementsByTagName('div');
 for (let i = 0; i < divs.length; ++i) {
-  let div = document.createElement("div");
+  let div = document.createElement('div');
   document.body.appendChild(div);
 }
 ```
@@ -1505,8 +1506,8 @@ for (let i = 0; i < divs.length; ++i) {
 使用 ES6 迭代器并不会解决这个问题，因为迭代的是一个永远增长的实时集合。以下代码仍然会导致无穷循环：
 
 ```js
-for (let div of document.getElementsByTagName("div")) {
-  let newDiv = document.createElement("div");
+for (let div of document.getElementsByTagName('div')) {
+  let newDiv = document.createElement('div');
   document.body.appendChild(newDiv);
 }
 ```
@@ -1514,9 +1515,9 @@ for (let div of document.getElementsByTagName("div")) {
 任何时候要迭代 NodeList，最好再初始化一个变量保存当时查询时的长度，然后用循环变量与这个变量进行比较，如下所示：
 
 ```js
-let divs = document.getElementsByTagName("div");
+let divs = document.getElementsByTagName('div');
 for (let i = 0, len = divs.length; i < len; ++i) {
-  let div = document.createElement("div");
+  let div = document.createElement('div');
   document.body.appendChild(div);
 }
 ```
@@ -1526,9 +1527,9 @@ for (let i = 0, len = divs.length; i < len; ++i) {
 另外，如果不想再初始化一个变量，也可以像下面这样反向迭代集合：
 
 ```js
-let divs = document.getElementsByTagName("div");
+let divs = document.getElementsByTagName('div');
 for (let i = divs.length - 1; i >= 0; --i) {
-  let div = document.createElement("div");
+  let div = document.createElement('div');
   document.body.appendChild(div);
 }
 ```
@@ -1546,7 +1547,7 @@ for (let i = divs.length - 1; i >= 0; --i) {
 MutationObserver 的实例要通过调用 MutationObserver 构造函数并传入一个回调函数来创建：
 
 ```js
-let observer = new MutationObserver(() => console.log("DOM 改动了！"));
+let observer = new MutationObserver(() => console.log('DOM 改动了！'));
 ```
 
 1. **observe()** 方法
@@ -1556,7 +1557,7 @@ let observer = new MutationObserver(() => console.log("DOM 改动了！"));
 MutationObserverInit 对象用于控制观察哪些方面的变化，是一个键/值对形式配置选项的字典。例如，下面的代码会创建一个观察者（observer）并配置它观察`<body>`元素上的属性变化：
 
 ```js
-let observer = new MutationObserver(() => console.log("<body> 属性改变了"));
+let observer = new MutationObserver(() => console.log('<body> 属性改变了'));
 observer.observe(document.body, { attributes: true });
 ```
 
@@ -1564,11 +1565,11 @@ observer.observe(document.body, { attributes: true });
 
 ```js
 let observer = new MutationObserver(() =>
-  console.log("<body> attributes changed")
+  console.log('<body> attributes changed')
 );
 observer.observe(document.body, { attributes: true });
-setTimeout(() => (document.body.className = "foo"), 2000);
-console.log("Changed body class");
+setTimeout(() => (document.body.className = 'foo'), 2000);
+console.log('Changed body class');
 // Changed body class
 // 2秒后
 // <body> attributes changed
@@ -1585,18 +1586,18 @@ let observer = new MutationObserver((mutationRecords) =>
   console.log(mutationRecords)
 );
 observer.observe(document.body, { attributes: true });
-document.body.setAttribute("foo", "bar");
+document.body.setAttribute('foo', 'bar');
 // [
 //  {
 // addedNodes: NodeList [],
-// attributeName: "foo",
+// attributeName: 'foo',
 // attributeNamespace: null,
 // nextSibling: null,
 // oldValue: null,
 // previousSibling: null
 // removedNodes: NodeList [],
 // target: body
-// type: "attributes"
+// type: 'attributes'
 //  }
 // ]
 ```
@@ -1608,18 +1609,18 @@ let observer = new MutationObserver((mutationRecords) =>
   console.log(mutationRecords)
 );
 observer.observe(document.body, { attributes: true });
-document.body.setAttributeNS("baz", "foo", "bar");
+document.body.setAttributeNS('baz', 'foo', 'bar');
 // [
 // {
 // addedNodes: NodeList [],
-// attributeName: "foo",
-// attributeNamespace: "baz",
+// attributeName: 'foo',
+// attributeNamespace: 'baz',
 // nextSibling: null,
 // oldValue: null,
 // previousSibling: null
 // removedNodes: NodeList [],
 // target: body
-// type: "attributes"
+// type: 'attributes'
 // }
 // ]
 ```
@@ -1631,9 +1632,9 @@ let observer = new MutationObserver((mutationRecords) =>
   console.log(mutationRecords)
 );
 observer.observe(document.body, { attributes: true });
-document.body.className = "foo";
-document.body.className = "bar";
-document.body.className = "baz";
+document.body.className = 'foo';
+document.body.className = 'bar';
+document.body.className = 'baz';
 // [MutationRecord, MutationRecord, MutationRecord]
 ```
 
@@ -1642,14 +1643,14 @@ document.body.className = "baz";
 | 属 性              | 说 明                                                                                                                                                                        |
 | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
 | target             | 被修改影响的目标节点                                                                                                                                                         |
-| type               | 字符串，表示变化的类型："attributes"、"characterData"或"childList"                                                                                                           |
-| oldValue           | 如果在 MutationObserverInit 对象中启用（attributeOldValue 或 characterData OldValue 为 true），"attributes"或"characterData"的变化事件会设置这个属性为被替代的值 "childList" | 类型的变化始终将这个属性设置为 null |
-| attributeName      | 对于"attributes"类型的变化，这里保存被修改属性的名字其他变化事件会将这个属性设置为 null                                                                                      |
-| attributeNamespace | 对于使用了命名空间的"attributes"类型的变化，这里保存被修改属性的名字 其他变化事件会将这个属性设置为 null                                                                     |
-| addedNodes         | 对于"childList"类型的变化，返回包含变化中添加节点的 NodeList 默认为空 NodeList                                                                                               |
-| removedNodes       | 对于"childList"类型的变化，返回包含变化中删除节点的 NodeList 默认为空 NodeList                                                                                               |
-| previousSibling    | 对于"childList"类型的变化，返回变化节点的前一个同胞 Node 默认为 null                                                                                                         |
-| nextSibling        | 对于"childList"类型的变化，返回变化节点的后一个同胞 Node 默认为 null                                                                                                         |
+| type               | 字符串，表示变化的类型：'attributes'、'characterData'或'childList'                                                                                                           |
+| oldValue           | 如果在 MutationObserverInit 对象中启用（attributeOldValue 或 characterData OldValue 为 true），'attributes'或'characterData'的变化事件会设置这个属性为被替代的值 'childList' | 类型的变化始终将这个属性设置为 null |
+| attributeName      | 对于'attributes'类型的变化，这里保存被修改属性的名字其他变化事件会将这个属性设置为 null                                                                                      |
+| attributeNamespace | 对于使用了命名空间的'attributes'类型的变化，这里保存被修改属性的名字 其他变化事件会将这个属性设置为 null                                                                     |
+| addedNodes         | 对于'childList'类型的变化，返回包含变化中添加节点的 NodeList 默认为空 NodeList                                                                                               |
+| removedNodes       | 对于'childList'类型的变化，返回包含变化中删除节点的 NodeList 默认为空 NodeList                                                                                               |
+| previousSibling    | 对于'childList'类型的变化，返回变化节点的前一个同胞 Node 默认为 null                                                                                                         |
+| nextSibling        | 对于'childList'类型的变化，返回变化节点的后一个同胞 Node 默认为 null                                                                                                         |
 
 传给回调函数的第二个参数是观察变化的 MutationObserver 的实例，演示如下：
 
@@ -1658,7 +1659,7 @@ let observer = new MutationObserver((mutationRecords, mutationObserver) =>
   console.log(mutationRecords, mutationObserver)
 );
 observer.observe(document.body, { attributes: true });
-document.body.className = "foo";
+document.body.className = 'foo';
 // [MutationRecord], MutationObserver
 ```
 
@@ -1668,12 +1669,12 @@ document.body.className = "foo";
 
 ```js
 let observer = new MutationObserver(() =>
-  console.log("<body> attributes changed")
+  console.log('<body> attributes changed')
 );
 observer.observe(document.body, { attributes: true });
-document.body.className = "foo";
+document.body.className = 'foo';
 observer.disconnect();
-document.body.className = "bar";
+document.body.className = 'bar';
 //（没有日志输出）
 ```
 
@@ -1681,13 +1682,13 @@ document.body.className = "bar";
 
 ```js
 let observer = new MutationObserver(() =>
-  console.log("<body> attributes changed")
+  console.log('<body> attributes changed')
 );
 observer.observe(document.body, { attributes: true });
-document.body.className = "foo";
+document.body.className = 'foo';
 setTimeout(() => {
   observer.disconnect();
-  document.body.className = "bar";
+  document.body.className = 'bar';
 }, 0);
 // <body> attributes changed
 ```
@@ -1701,16 +1702,16 @@ let observer = new MutationObserver((mutationRecords) =>
   console.log(mutationRecords.map((x) => x.target))
 );
 // 向页面主体添加两个子节点
-let childA = document.createElement("div"),
-  childB = document.createElement("span");
+let childA = document.createElement('div'),
+  childB = document.createElement('span');
 document.body.appendChild(childA);
 document.body.appendChild(childB);
 // 观察两个子节点
 observer.observe(childA, { attributes: true });
 observer.observe(childB, { attributes: true });
 // 修改两个子节点的属性
-childA.setAttribute("foo", "bar");
-childB.setAttribute("foo", "bar");
+childA.setAttribute('foo', 'bar');
+childB.setAttribute('foo', 'bar');
 // [<div>, <span>]
 ```
 
@@ -1721,8 +1722,8 @@ let observer = new MutationObserver((mutationRecords) =>
   console.log(mutationRecords.map((x) => x.target))
 );
 // 向页面主体添加两个子节点
-let childA = document.createElement("div"),
-  childB = document.createElement("span");
+let childA = document.createElement('div'),
+  childB = document.createElement('span');
 document.body.appendChild(childA);
 document.body.appendChild(childB);
 // 观察两个子节点
@@ -1730,8 +1731,8 @@ observer.observe(childA, { attributes: true });
 observer.observe(childB, { attributes: true });
 observer.disconnect();
 // 修改两个子节点的属性
-childA.setAttribute("foo", "bar");
-childB.setAttribute("foo", "bar");
+childA.setAttribute('foo', 'bar');
+childB.setAttribute('foo', 'bar');
 // （没有日志输出）
 ```
 
@@ -1789,11 +1790,11 @@ let observer = new MutationObserver((mutationRecords) =>
 );
 observer.observe(document.body, { attributes: true });
 // 添加属性
-document.body.setAttribute("foo", "bar");
+document.body.setAttribute('foo', 'bar');
 // 修改属性
-document.body.setAttribute("foo", "baz");
+document.body.setAttribute('foo', 'baz');
 // 移除属性
-document.body.removeAttribute("foo");
+document.body.removeAttribute('foo');
 // 以上变化都被记录下来了
 // [MutationRecord, MutationRecord, MutationRecord]
 ```
@@ -1804,11 +1805,11 @@ document.body.removeAttribute("foo");
 let observer = new MutationObserver((mutationRecords) =>
   console.log(mutationRecords)
 );
-observer.observe(document.body, { attributeFilter: ["foo"] });
+observer.observe(document.body, { attributeFilter: ['foo'] });
 // 添加白名单属性
-document.body.setAttribute("foo", "bar");
+document.body.setAttribute('foo', 'bar');
 // 添加被排除的属性
-document.body.setAttribute("baz", "qux");
+document.body.setAttribute('baz', 'qux');
 // 只有foo 属性的变化被记录了
 // [MutationRecord]
 ```
@@ -1820,9 +1821,9 @@ let observer = new MutationObserver((mutationRecords) =>
   console.log(mutationRecords.map((x) => x.oldValue))
 );
 observer.observe(document.body, { attributeOldValue: true });
-document.body.setAttribute("foo", "bar");
-document.body.setAttribute("foo", "baz");
-document.body.setAttribute("foo", "qux");
+document.body.setAttribute('foo', 'bar');
+document.body.setAttribute('foo', 'baz');
+document.body.setAttribute('foo', 'qux');
 // 每次变化都保留了上一次的值
 // [null, 'bar', 'baz']
 ```
@@ -1836,14 +1837,14 @@ let observer = new MutationObserver((mutationRecords) =>
   console.log(mutationRecords)
 );
 // 创建要观察的文本节点
-document.body.firstChild.textContent = "foo";
+document.body.firstChild.textContent = 'foo';
 observer.observe(document.body.firstChild, { characterData: true });
 // 赋值为相同的字符串
-document.body.firstChild.textContent = "foo";
+document.body.firstChild.textContent = 'foo';
 // 赋值为新字符串
-document.body.firstChild.textContent = "bar";
+document.body.firstChild.textContent = 'bar';
 // 通过节点设置函数赋值
-document.body.firstChild.textContent = "baz";
+document.body.firstChild.textContent = 'baz';
 // 以上变化都被记录下来了
 // [MutationRecord, MutationRecord, MutationRecord]
 ```
@@ -1854,13 +1855,13 @@ document.body.firstChild.textContent = "baz";
 let observer = new MutationObserver((mutationRecords) =>
   console.log(mutationRecords.map((x) => x.oldValue))
 );
-document.body.innerText = "foo";
+document.body.innerText = 'foo';
 observer.observe(document.body.firstChild, { characterDataOldValue: true });
-document.body.innerText = "foo";
-document.body.innerText = "bar";
-document.body.firstChild.textContent = "baz";
+document.body.innerText = 'foo';
+document.body.innerText = 'bar';
+document.body.firstChild.textContent = 'baz';
 // 每次变化都保留了上一次的值
-// ["foo", "foo", "bar"]
+// ['foo', 'foo', 'bar']
 ```
 
 3. **观察子节点**
@@ -1872,7 +1873,7 @@ let observer = new MutationObserver((mutationRecords) =>
   console.log(mutationRecords)
 );
 observer.observe(document.body, { childList: true });
-document.body.appendChild(document.createElement("div"));
+document.body.appendChild(document.createElement('div'));
 // [
 // {
 // addedNodes: NodeList [div]
@@ -1883,7 +1884,7 @@ document.body.appendChild(document.createElement("div"));
 // previousSibling: script
 // removedNodes: NodeList []
 // target: body
-// type: "childList"
+// type: 'childList'
 // },
 // {
 // addedNodes: NodeList [text]
@@ -1894,7 +1895,7 @@ document.body.appendChild(document.createElement("div"));
 // previousSibling: div
 // removedNodes: NodeList []
 // target: body
-// type: "childList"
+// type: 'childList'
 // }
 // ]
 ```
@@ -1902,7 +1903,7 @@ document.body.appendChild(document.createElement("div"));
 下面的例子演示了移除子节点：
 
 ```js
-const div = document.createElement("div");
+const div = document.createElement('div');
 document.body.qppendChild(div);
 let observer = new MutationObserver((mutationRecords) =>
   console.log(mutationRecords)
@@ -1919,7 +1920,7 @@ document.body.removeChild(document.body.firstChild);
 // previousSibling: null
 // removedNodes: NodeList [div]
 // target: body
-// type: "childList"
+// type: 'childList'
 // },
 // {
 // addedNodes: NodeList [text]
@@ -1930,7 +1931,7 @@ document.body.removeChild(document.body.firstChild);
 // previousSibling: div
 // removedNodes: NodeList []
 // target: body
-// type: "childList"
+// type: 'childList'
 // }
 // ]
 ```
@@ -1939,13 +1940,13 @@ document.body.removeChild(document.body.firstChild);
 
 ```js
 // 清空主体
-document.body.innerHTML = "";
+document.body.innerHTML = '';
 let observer = new MutationObserver((mutationRecords) =>
   console.log(mutationRecords)
 );
 // 创建两个初始子节点
-document.body.appendChild(document.createElement("div"));
-document.body.appendChild(document.createElement("span"));
+document.body.appendChild(document.createElement('div'));
+document.body.appendChild(document.createElement('span'));
 observer.observe(document.body, { childList: true });
 // 交换子节点顺序
 document.body.insertBefore(document.body.lastChild, document.body.firstChild);
@@ -1971,7 +1972,7 @@ document.body.insertBefore(document.body.lastChild, document.body.firstChild);
 // previousSibling: null,
 // removedNodes: NodeList[],
 // target: body,
-// type: "childList",
+// type: 'childList',
 // }
 // ]
 ```
@@ -1984,28 +1985,28 @@ document.body.insertBefore(document.body.lastChild, document.body.firstChild);
 
 ```js
 // 清空主体
-document.body.innerHTML = "";
+document.body.innerHTML = '';
 let observer = new MutationObserver((mutationRecords) =>
   console.log(mutationRecords)
 );
 // 创建一个后代
-document.body.appendChild(document.createElement("div"));
+document.body.appendChild(document.createElement('div'));
 // 观察<body>元素及其子树
 observer.observe(document.body, { attributes: true, subtree: true });
 // 修改<body>元素的子树
-document.body.firstChild.setAttribute("foo", "bar");
+document.body.firstChild.setAttribute('foo', 'bar');
 // 记录了子树变化的事件
 // [
 // {
 // addedNodes: NodeList[],
-// attributeName: "foo",
+// attributeName: 'foo',
 // attributeNamespace: null,
 // oldValue: null,
 // nextSibling: null,
 // previousSibling: null,
 // removedNodes: NodeList[],
 // target: div,
-// type: "attributes",
+// type: 'attributes',
 // }
 // ]
 ```
@@ -2016,12 +2017,12 @@ document.body.firstChild.setAttribute("foo", "bar");
 
 ```js
 // 清空主体
-document.body.innerHTML = "";
+document.body.innerHTML = '';
 let observer = new MutationObserver((mutationRecords) =>
   console.log(mutationRecords)
 );
-let subtreeRoot = document.createElement("div"),
-  subtreeLeaf = document.createElement("span");
+let subtreeRoot = document.createElement('div'),
+  subtreeLeaf = document.createElement('span');
 // 创建包含两层的子树
 document.body.appendChild(subtreeRoot);
 subtreeRoot.appendChild(subtreeLeaf);
@@ -2029,7 +2030,7 @@ subtreeRoot.appendChild(subtreeLeaf);
 observer.observe(subtreeRoot, { attributes: true, subtree: true });
 // 把节点转移到其他子树
 document.body.insertBefore(subtreeLeaf, subtreeRoot);
-subtreeLeaf.setAttribute("foo", "bar");
+subtreeLeaf.setAttribute('foo', 'bar');
 // 移出的节点仍然触发变化事件
 // [MutationRecord]
 ```
@@ -2053,9 +2054,9 @@ let observer = new MutationObserver((mutationRecords) =>
   console.log(mutationRecords)
 );
 observer.observe(document.body, { attributes: true });
-document.body.className = "foo";
-document.body.className = "bar";
-document.body.className = "baz";
+document.body.className = 'foo';
+document.body.className = 'bar';
+document.body.className = 'baz';
 console.log(observer.takeRecords());
 console.log(observer.takeRecords());
 // [MutationRecord, MutationRecord, MutationRecord]
