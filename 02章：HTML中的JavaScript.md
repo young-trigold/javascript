@@ -73,13 +73,13 @@
 要包含外部文件中的 JavaScript，就必须使用 src 属性。这个属性的值是一个 URL，指向包含 JavaScript 代码的文件，比如：
 
 ```html
-<script src='example.js'></script>
+<script src="example.js"></script>
 ```
 
 这个例子在页面中加载了一个名为 example.js 的外部文件。文件本身只需包含要放在`<script>`的起始及结束标签中间的 JavaScript 代码。与解释行内 JavaScript 一样，在解释外部 JavaScript 文件时，页面也会阻塞。（阻塞时间也包含下载文件的时间。）在 XHTML 文档中，可以忽略结束标签，比如：
 
 ```html
-<script src='example.js' />
+<script src="example.js" />
 ```
 
 以上语法不能在 HTML 文件中使用，因为它是无效的 HTML，有些浏览器不能正常处理，比如 IE。
@@ -89,7 +89,7 @@
 `<script>`元素的一个最为强大、同时也备受争议的特性是，它可以包含来自外部域的 JavaScript 文件。跟`<img>`元素很像，`<script>`元素的 src 属性可以是一个完整的 URL，而且这个 URL 指向的资源可以跟包含它的 HTML 页面不在同一个域中，比如这个例子：
 
 ```html
-<script src='http://www.somewhere.com/afile.js'></script>
+<script src="http://www.somewhere.com/afile.js"></script>
 ```
 
 浏览器在解析这个资源时，会向 src 属性指定的路径发送一个 GET 请求，以取得相应资源，假定是一个 JavaScript 文件。这个初始的请求不受浏览器同源策略限制，但返回并被执行的 JavaScript 则受限制。当然，这个请求仍然受父页面 HTTP/HTTPS 协议的限制。
@@ -107,8 +107,8 @@
 <html>
   <head>
     <title>Example HTML Page</title>
-    <script src='example1.js'></script>
-    <script src='example2.js'></script>
+    <script src="example1.js"></script>
+    <script src="example2.js"></script>
   </head>
   <body>
     <!-- 这里是页面内容 -->
@@ -126,8 +126,8 @@
   </head>
   <body>
     <!-- 这里是页面内容 -->
-    <script src='example1.js'></script>
-    <script src='example2.js'></script>
+    <script src="example1.js"></script>
+    <script src="example2.js"></script>
   </body>
 </html>
 ```
@@ -143,8 +143,8 @@ HTML 4.01 为`<script>`元素定义了一个叫 defer 的属性。当浏览器�
 <html>
   <head>
     <title>Example HTML Page</title>
-    <script defer src='example1.js'></script>
-    <script defer src='example2.js'></script>
+    <script defer src="example1.js"></script>
+    <script defer src="example2.js"></script>
   </head>
   <body>
     <!-- 这里是页面内容 -->
@@ -167,8 +167,8 @@ HTML5 为`<script>`元素定义了 async 属性。当浏览器解析到带有 as
 <html>
   <head>
     <title>Example HTML Page</title>
-    <script async src='example1.js'></script>
-    <script async src='example2.js'></script>
+    <script async src="example1.js"></script>
+    <script async src="example2.js"></script>
   </head>
   <body>
     <!-- 这里是页面内容 -->
@@ -206,7 +206,7 @@ document.head.appendChild(script);
 以这种方式获取的资源对浏览器预加载器是不可见的。这会严重影响它们在资源获取队列中的优先级。根据应用程序的工作方式以及怎么使用，这种方式可能会严重影响性能。要想让预加载器知道这些动态请求文件的存在，可以在文档头部显式声明它们：
 
 ```html
-<link rel='preload' href='gibberish.js' />
+<link rel="preload" href="gibberish.js" />
 ```
 
 ## 2.2. 行内脚本与外部脚本
@@ -222,20 +222,20 @@ document.head.appendChild(script);
 比如，第一个页面包含如下脚本：
 
 ```html
-<script src='mainA.js'></script>
-<script src='component1.js'></script>
-<script src='component2.js'></script>
-<script src='component3.js'></script>
+<script src="mainA.js"></script>
+<script src="component1.js"></script>
+<script src="component2.js"></script>
+<script src="component3.js"></script>
 ...
 ```
 
 后续页面可能包含如下脚本：
 
 ```html
-<script src='mainB.js'></script>
-<script src='component3.js'></script>
-<script src='component4.js'></script>
-<script src='component5.js'></script>
+<script src="mainB.js"></script>
+<script src="component3.js"></script>
+<script src="component4.js"></script>
+<script src="component5.js"></script>
 ...
 ```
 
@@ -297,8 +297,8 @@ IE 初次支持文档模式切换以后，其他浏览器也跟着实现了。�
 <html>
   <head>
     <title>Example HTML Page</title>
-    <script defer='defer' src='example1.js'></script>
-    <script defer='defer' src='example2.js'></script>
+    <script defer="defer" src="example1.js"></script>
+    <script defer="defer" src="example2.js"></script>
   </head>
   <body>
     <noscript>

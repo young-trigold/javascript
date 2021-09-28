@@ -120,7 +120,7 @@ window.open('http://www.google.com/', 'topFrame');
 window.open(
   'http://www.google.com/',
   'googleWindow',
-  'height=400,width=400,top=10,left=10,resizable=yes'
+  'height=400,width=400,top=10,left=10,resizable=yes',
 );
 ```
 
@@ -132,7 +132,7 @@ window.open()方法返回一个对新建窗口的引用。这个对象与普通 
 let googleWin = window.open(
   'http://www.google.com/',
   'googleWindow',
-  'height=400,width=400,top=10,left=10,resizable=yes'
+  'height=400,width=400,top=10,left=10,resizable=yes',
 );
 // 缩放
 googleWin.resizeTo(500, 500);
@@ -159,7 +159,7 @@ alert(googleWin.closed); // true
 let googleWin = window.open(
   'http://www.google.com/',
   'googleWindow',
-  'height=400,width=400,top=10,left=10,resizable=yes'
+  'height=400,width=400,top=10,left=10,resizable=yes',
 );
 alert(googleWin.opener === window); // true
 ```
@@ -172,7 +172,7 @@ alert(googleWin.opener === window); // true
 let googleWin = window.open(
   'http://www.google.com/',
   'googleWindow',
-  'height=400,width=400,top=10,left=10,resizable=yes'
+  'height=400,width=400,top=10,left=10,resizable=yes',
 );
 googleWin.opener = null;
 ```
@@ -775,7 +775,7 @@ alert(hasQuickTime());
 navigator.registerProtocolHandler(
   'mailto',
   'http://www.somemailclient.com?cmd=%s',
-  'Some Mail Client'
+  'Some Mail Client',
 );
 ```
 

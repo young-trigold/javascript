@@ -789,13 +789,13 @@ IE3 和 Netscape Navigator 3 提供了浏览器对象模型（BOM） API，用�
 要包含外部文件中的 JavaScript，就必须使用 src 属性。这个属性的值是一个 URL，指向包含 JavaScript 代码的文件，比如：
 
 ```html
-<script src='example.js'></script>
+<script src="example.js"></script>
 ```
 
 这个例子在页面中加载了一个名为 example.js 的外部文件。文件本身只需包含要放在`<script>`的起始及结束标签中间的 JavaScript 代码。与解释行内 JavaScript 一样，在解释外部 JavaScript 文件时，页面也会阻塞。（阻塞时间也包含下载文件的时间。）在 XHTML 文档中，可以忽略结束标签，比如：
 
 ```html
-<script src='example.js' />
+<script src="example.js" />
 ```
 
 以上语法不能在 HTML 文件中使用，因为它是无效的 HTML，有些浏览器不能正常处理，比如 IE。
@@ -805,7 +805,7 @@ IE3 和 Netscape Navigator 3 提供了浏览器对象模型（BOM） API，用�
 `<script>`元素的一个最为强大、同时也备受争议的特性是，它可以包含来自外部域的 JavaScript 文件。跟`<img>`元素很像，`<script>`元素的 src 属性可以是一个完整的 URL，而且这个 URL 指向的资源可以跟包含它的 HTML 页面不在同一个域中，比如这个例子：
 
 ```html
-<script src='http://www.somewhere.com/afile.js'></script>
+<script src="http://www.somewhere.com/afile.js"></script>
 ```
 
 浏览器在解析这个资源时，会向 src 属性指定的路径发送一个 GET 请求，以取得相应资源，假定是一个 JavaScript 文件。这个初始的请求不受浏览器同源策略限制，但返回并被执行的 JavaScript 则受限制。当然，这个请求仍然受父页面 HTTP/HTTPS 协议的限制。
@@ -823,8 +823,8 @@ IE3 和 Netscape Navigator 3 提供了浏览器对象模型（BOM） API，用�
 <html>
   <head>
     <title>Example HTML Page</title>
-    <script src='example1.js'></script>
-    <script src='example2.js'></script>
+    <script src="example1.js"></script>
+    <script src="example2.js"></script>
   </head>
   <body>
     <!-- 这里是页面内容 -->
@@ -842,8 +842,8 @@ IE3 和 Netscape Navigator 3 提供了浏览器对象模型（BOM） API，用�
   </head>
   <body>
     <!-- 这里是页面内容 -->
-    <script src='example1.js'></script>
-    <script src='example2.js'></script>
+    <script src="example1.js"></script>
+    <script src="example2.js"></script>
   </body>
 </html>
 ```
@@ -859,8 +859,8 @@ HTML 4.01 为`<script>`元素定义了一个叫 defer 的属性。当浏览器�
 <html>
   <head>
     <title>Example HTML Page</title>
-    <script defer src='example1.js'></script>
-    <script defer src='example2.js'></script>
+    <script defer src="example1.js"></script>
+    <script defer src="example2.js"></script>
   </head>
   <body>
     <!-- 这里是页面内容 -->
@@ -883,8 +883,8 @@ HTML5 为`<script>`元素定义了 async 属性。当浏览器解析到带有 as
 <html>
   <head>
     <title>Example HTML Page</title>
-    <script async src='example1.js'></script>
-    <script async src='example2.js'></script>
+    <script async src="example1.js"></script>
+    <script async src="example2.js"></script>
   </head>
   <body>
     <!-- 这里是页面内容 -->
@@ -922,7 +922,7 @@ document.head.appendChild(script);
 以这种方式获取的资源对浏览器预加载器是不可见的。这会严重影响它们在资源获取队列中的优先级。根据应用程序的工作方式以及怎么使用，这种方式可能会严重影响性能。要想让预加载器知道这些动态请求文件的存在，可以在文档头部显式声明它们：
 
 ```html
-<link rel='preload' href='gibberish.js' />
+<link rel="preload" href="gibberish.js" />
 ```
 
 ## 2.2. 行内脚本与外部脚本
@@ -938,20 +938,20 @@ document.head.appendChild(script);
 比如，第一个页面包含如下脚本：
 
 ```html
-<script src='mainA.js'></script>
-<script src='component1.js'></script>
-<script src='component2.js'></script>
-<script src='component3.js'></script>
+<script src="mainA.js"></script>
+<script src="component1.js"></script>
+<script src="component2.js"></script>
+<script src="component3.js"></script>
 ...
 ```
 
 后续页面可能包含如下脚本：
 
 ```html
-<script src='mainB.js'></script>
-<script src='component3.js'></script>
-<script src='component4.js'></script>
-<script src='component5.js'></script>
+<script src="mainB.js"></script>
+<script src="component3.js"></script>
+<script src="component4.js"></script>
+<script src="component5.js"></script>
 ...
 ```
 
@@ -1013,8 +1013,8 @@ IE 初次支持文档模式切换以后，其他浏览器也跟着实现了。�
 <html>
   <head>
     <title>Example HTML Page</title>
-    <script defer='defer' src='example1.js'></script>
-    <script defer='defer' src='example2.js'></script>
+    <script defer="defer" src="example1.js"></script>
+    <script defer="defer" src="example2.js"></script>
   </head>
   <body>
     <noscript>
@@ -1054,17 +1054,96 @@ ECMAScript 的语法很大程度上借鉴了 C 语言和其他类 C 语言，如
 - 第一个字符必须是一个字母、下划线（\_）或美元符号（$）；
 - 剩下的其他字符可以是字母、下划线、美元符号或数字。
 
-按照惯例，ECMAScript 标识符使用驼峰大小写形式，即第一个单词的首字母小写，后面每个单词的首字母大写，如：
+一般避免使用单个字母作标识符，尽量使用更有描述性的名字：
 
 ```js
-firstSecond;
-myCar;
-doSomethingImportant;
+// 风格糟糕
+function q() {
+  // ...
+}
+
+// 风格良好
+function query() {
+  // ...
+}
 ```
 
-虽然这种写法并不是强制性的，但因为这种形式跟 ECMAScript 内置函数和对象的命名方式一致，所以算是最佳实践。
+变量名，函数名以及实例名尽量使用驼峰命名法：
 
-避免使用单个字母作标识符，尽量使用更有描述性的名字。
+```js
+// 风格糟糕
+const OBJEcttsssss = {};
+const this_is_my_object = {};
+function c() {}
+
+// 风格良好
+const thisIsMyObject = {};
+function thisIsMyFunction() {}
+```
+
+只有对类名使用毕加索命名法：
+
+```js
+// 风格糟糕
+function user(options) {
+  this.name = options.name;
+}
+
+const bad = new user({
+  name: 'nope',
+});
+
+// 风格良好
+class User {
+  constructor(options) {
+    this.name = options.name;
+  }
+}
+
+const good = new User({
+  name: 'yup',
+});
+```
+
+不要在标识符前和标识符后加下划线，在 JavaScript 中，实际上没有私有属性的概念，这些加了下划线的标识符对外界是公开的：
+
+```js
+// 风格糟糕
+this.__firstName__ = 'Panda';
+this.firstName_ = 'Panda';
+this._firstName = 'Panda';
+
+// 风格良好
+this.firstName = 'Panda';
+
+const firstNames = new WeakMap();
+firstNames.set(this, 'Panda');
+```
+
+由多个单词组成的缩写词，在命名中，根据当前命名法和出现的位置，所有字母的大小写与首字母的大小写保持一致：
+
+```js
+// 风格糟糕
+import SmsContainer from './containers/SmsContainer';
+
+// 风格糟糕
+const HttpRequests = [
+  // ...
+];
+
+// 风格良好
+import SMSContainer from './containers/SMSContainer';
+
+// 风格良好
+const HTTPRequests = [
+  // ...
+];
+
+// 风格良好
+const httpRequests = [
+  // ...
+];
+```
 
 ### 3.1.3. 注释
 
@@ -1105,7 +1184,12 @@ function getType() {
 }
 ```
 
-在单行注释中，加入 `FIXME` 指出存在一个问题，加入 `TODO` 指出将要做出一个解决方案。
+在单行注释中，有时我们会使用一些特殊标记进行说明。特殊标记必须使用单行注释的形式。下面列举了一些常用标记：
+
+- TODO: 有功能待实现。此时需要对将要实现的功能进行简单说明。
+- FIXME: 该处代码运行没问题，但可能由于时间赶或者其他原因，需要修正。此时需要对如何修正进行简单说明。
+- HACK: 为修正某些问题而写的不太好或者使用了某些诡异手段的代码。此时需要对思路或诡异手段进行描述。
+- XXX: 该处存在陷阱。此时需要对陷阱进行描述。
 
 ```js
 class Calculator extends Abacus {
@@ -1131,10 +1215,32 @@ class Calculator extends Abacus {
 
 ```js
 /**
-  * check whether a string includes 'foo' 
-  * @return Boolean 
-  * @param String
-  */
+ * 这是一个多行注释
+ */
+```
+
+为了可读性，经常把多行注释写为以上的格式。
+
+为了便于代码阅读和文档化，类和函数经常需要多行注释。
+
+```js
+// 风格良好
+/**
+ * 函数描述
+ *
+ * @param {string} p1 参数1的说明
+ * @param {string} p2 参数2的说明
+ * @param {number=} p3 参数3的说明（可选）
+ * @return {Object} 返回值描述
+ */
+function foo(p1, p2, p3) {
+  var p3 = p3 || 10;
+  return {
+    p1: p1,
+    p2: p2,
+    p3: p3,
+  };
+}
 ```
 
 ### 3.1.4. 语句
@@ -2281,11 +2387,7 @@ let lastName = 'Jacob';
 let lastName = `Jingleheimerschmidt`;
 ```
 
-跟某些语言中使用不同的引号会改变对字符串的解释方式不同，ECMAScript 语法中表示字符串的引号没有区别。不过要注意的是，以某种引号作为字符串开头，必须仍然以该种引号作为字符串结尾。比如，下面的写法会导致语法错误：
-
-```js
-let firstName = 'Nicholas'; // 语法错误：开头和结尾的引号必须是同一种
-```
+尽管双引号，单引号，以及反引号都可以标识字符串，但我们一般使用单引号。这是因为输入单引号不需要按住 shift，方便输入。实际使用中，字符串经常用来拼接 HTML。为方便 HTML 中包含双引号而不需要转义写法。
 
 1. **字符字面量**
 
@@ -2300,7 +2402,7 @@ let firstName = 'Nicholas'; // 语法错误：开头和结尾的引号必须是�
 | \f     | 换页                                                                                             |
 | `\\`   | 反斜杠（\）                                                                                      |
 | `\'`   | 单引号（'），在字符串以单引号标示时使用，例如`'He said, \'hey.\''`                               |
-| `\'`   | 双引号（'），在字符串以双引号标示时使用，例如`'He said, \'hey.\''`                               |
+| `\"`   | 双引号（"），在字符串以双引号标示时使用，例如`'He said, \"hey.\"'`                               |
 | \\\`   | 反引号（\`），在字符串以反引号标示时使用，例如 \`He said, \\\`hey.\\\``                          |
 | \xnn   | 以十六进制编码 nn 表示的字符（其中 n 是十六进制数字 0~F），例如\x41 等于'A'                      |
 | \unnnn | 以十六进制编码 nnnn 表示的 Unicode 字符（其中 n 是十六进制数字 0~F），例如\u03a3 等于希腊字符'Σ' |
@@ -2774,7 +2876,7 @@ console.log(o);
 // {Symbol(foo): 'foo val', Symbol(bar): 'bar val'}
 
 let barSymbol = Object.getOwnPropertySymbols(o).find((symbol) =>
-  symbol.toString().match(/bar/)
+  symbol.toString().match(/bar/),
 );
 console.log(barSymbol);
 // Symbol(bar)
@@ -6832,7 +6934,7 @@ Math.random()方法返回一个 0~1 范围内的随机数，其中包含 0 但�
 
 ```js
 number = Math.floor(
-  Math.random() * total_number_of_choices + first_possible_value
+  Math.random() * total_number_of_choices + first_possible_value,
 );
 ```
 
@@ -7399,7 +7501,7 @@ const a3 = Array.from(
   function (x) {
     return x ** this.exponent;
   },
-  { exponent: 2 }
+  { exponent: 2 },
 );
 console.log(a2); // [1, 4, 9, 16]
 console.log(a3); // [1, 4, 9, 16]
@@ -8054,7 +8156,7 @@ console.log(NaNs.indexOf(NaN)); // -1
 let arr = [1, 1, NaN, NaN];
 let uniaueArr = arr.reduce(
   (pre, cur) => (pre.includes(cur) ? pre : [...pre, cur]),
-  []
+  [],
 );
 console.log(uniaueArr); // [1, NaN]
 ```
@@ -8593,7 +8695,7 @@ const concatArray = typedArrayConcat(
   Int32Array,
   Int8Array.of(1, 2, 3),
   Int16Array.of(4, 5, 6),
-  Float32Array.of(7, 8, 9)
+  Float32Array.of(7, 8, 9),
 );
 console.log(concatArray); // [1, 2, 3, 4, 5, 6, 7, 8, 9]
 console.log(concatArray instanceof Int32Array); // true
@@ -11594,7 +11696,7 @@ dest = { id: 'dest' };
 result = Object.assign(
   dest,
   { id: 'src1', a: 'foo' },
-  { id: 'src2', b: 'bar' }
+  { id: 'src2', b: 'bar' },
 );
 // Object.assign 会覆盖重复的属性
 console.log(result); // { id: src2, a: foo, b: bar }
@@ -13460,7 +13562,7 @@ let BazMixin = (Superclass) =>
 function mix(BaseClass, ...Mixins) {
   return Mixins.reduce(
     (accumulator, current) => current(accumulator),
-    BaseClass
+    BaseClass,
   );
 }
 class Bus extends mix(Vehicle, FooMixin, BarMixin, BazMixin) {}
@@ -14445,7 +14547,7 @@ const getMedian = function (...nums) {
 const handler = {
   apply(target, thisArg, argumentsList) {
     const typeMatched = argumentsList.every(
-      (argument) => typeof argument === 'number'
+      (argument) => typeof argument === 'number',
     );
     if (typeMatched) {
       return Reflect.apply(...arguments);
@@ -14780,12 +14882,12 @@ let ints = [1, 2, 3];
 console.log(
   ints.map(function (i) {
     return i + 1;
-  })
+  }),
 ); // [2, 3, 4]
 console.log(
   ints.map((i) => {
     return i + 1;
-  })
+  }),
 ); // [2, 3, 4]
 ```
 
@@ -16254,7 +16356,7 @@ for (var i = 0; i < divs.length; ++i) {
       return function () {
         console.log(frozenCounter);
       };
-    })(i)
+    })(i),
   );
 }
 ```
@@ -16856,11 +16958,11 @@ let p1 = new Promise((resolve, reject) => setTimeout(resolve, 3000));
 let p2 = new Promise((resolve, reject) => setTimeout(reject, 3000));
 p1.then(
   () => onResolved('p1'),
-  () => onRejected('p1')
+  () => onRejected('p1'),
 );
 p2.then(
   () => onResolved('p2'),
-  () => onRejected('p2')
+  () => onRejected('p2'),
 );
 //（3 秒后）
 // p1 resolved
@@ -17078,7 +17180,7 @@ setTimeout(console.log, 0, p11); // Promise <rejected>: baz
 let p1 = Promise.resolve('foo');
 // 忽略解决的值
 let p2 = p1.finally(
-  () => new Promise((resolve, reject) => setTimeout(() => resolve('bar'), 100))
+  () => new Promise((resolve, reject) => setTimeout(() => resolve('bar'), 100)),
 );
 setTimeout(console.log, 0, p2); // Promise <pending>
 setTimeout(() => setTimeout(console.log, 0, p2), 200);
@@ -17637,7 +17739,7 @@ function addFive(x) {
 function addTen(x) {
   return [addTwo, addThree, addFive].reduce(
     (promise, fn) => promise.then(fn),
-    Promise.resolve(x)
+    Promise.resolve(x),
   );
 }
 addTen(8).then(console.log); // 18
@@ -17692,8 +17794,8 @@ class CancelToken {
 这个类大概可以这样使用：
 
 ```html
-<button id='start'>Start</button>
-<button id='cancel'>Cancel</button>
+<button id="start">Start</button>
+<button id="cancel">Cancel</button>
 <script>
   class CancelToken {
     constructor(cancelFn) {
@@ -17715,7 +17817,7 @@ class CancelToken {
         resolve();
       }, delay);
       const cancelToken = new CancelToken((cancelCallback) =>
-        cancelButton.addEventListener('click', cancelCallback)
+        cancelButton.addEventListener('click', cancelCallback),
       );
       cancelToken.promise.then(() => clearTimeout(id));
     });
@@ -18209,7 +18311,7 @@ async function randomDelay(id) {
     setTimeout(() => {
       console.log(`${id} finished`);
       resolve();
-    }, delay)
+    }, delay),
   );
 }
 async function foo() {
@@ -18240,7 +18342,7 @@ async function randomDelay(id) {
     setTimeout(() => {
       console.log(`${id} finished`);
       resolve();
-    }, delay)
+    }, delay),
   );
 }
 async function foo() {
@@ -18271,7 +18373,7 @@ async function randomDelay(id) {
     setTimeout(() => {
       setTimeout(console.log, 0, `${id} finished`);
       resolve();
-    }, delay)
+    }, delay),
   );
 }
 async function foo() {
@@ -18307,7 +18409,7 @@ async function randomDelay(id) {
     setTimeout(() => {
       console.log(`${id} finished`);
       resolve();
-    }, delay)
+    }, delay),
   );
 }
 async function foo() {
@@ -18339,7 +18441,7 @@ async function randomDelay(id) {
     setTimeout(() => {
       console.log(`${id} finished`);
       resolve(id);
-    }, delay)
+    }, delay),
   );
 }
 async function foo() {
@@ -18550,7 +18652,7 @@ window.open('http://www.google.com/', 'topFrame');
 window.open(
   'http://www.google.com/',
   'googleWindow',
-  'height=400,width=400,top=10,left=10,resizable=yes'
+  'height=400,width=400,top=10,left=10,resizable=yes',
 );
 ```
 
@@ -18562,7 +18664,7 @@ window.open()方法返回一个对新建窗口的引用。这个对象与普通 
 let googleWin = window.open(
   'http://www.google.com/',
   'googleWindow',
-  'height=400,width=400,top=10,left=10,resizable=yes'
+  'height=400,width=400,top=10,left=10,resizable=yes',
 );
 // 缩放
 googleWin.resizeTo(500, 500);
@@ -18589,7 +18691,7 @@ alert(googleWin.closed); // true
 let googleWin = window.open(
   'http://www.google.com/',
   'googleWindow',
-  'height=400,width=400,top=10,left=10,resizable=yes'
+  'height=400,width=400,top=10,left=10,resizable=yes',
 );
 alert(googleWin.opener === window); // true
 ```
@@ -18602,7 +18704,7 @@ alert(googleWin.opener === window); // true
 let googleWin = window.open(
   'http://www.google.com/',
   'googleWindow',
-  'height=400,width=400,top=10,left=10,resizable=yes'
+  'height=400,width=400,top=10,left=10,resizable=yes',
 );
 googleWin.opener = null;
 ```
@@ -19205,7 +19307,7 @@ alert(hasQuickTime());
 navigator.registerProtocolHandler(
   'mailto',
   'http://www.somemailclient.com?cmd=%s',
-  'Some Mail Client'
+  'Some Mail Client',
 );
 ```
 
@@ -19468,7 +19570,7 @@ class BrowserDetector {
     // Safari 7.1 及以上版本支持
     this.isSafari_Gte7_1 = (({ pushNotification = {} } = {}) =>
       pushNotification.toString() == '[object SafariRemoteNotification]')(
-      window.safari
+      window.safari,
     );
     // 测试addons 属性
     // Opera 20 及以上版本支持
@@ -20143,7 +20245,7 @@ navigator.geolocation.getCurrentPosition(
   (e) => {
     console.log(e.code); // 1
     console.log(e.message); // User denied Geolocation
-  }
+  },
 );
 // 这个例子展示了在不安全的上下文中执行代码的结果
 navigator.geolocation.getCurrentPosition(
@@ -20151,7 +20253,7 @@ navigator.geolocation.getCurrentPosition(
   (e) => {
     console.log(e.code); // 1
     console.log(e.message); // Only secure origins are allowed
-  }
+  },
 );
 ```
 
@@ -20253,7 +20355,7 @@ navigator.getBattery().then((battery) => {
   // 或
   battery.addEventListener(
     'dischargingtimechange',
-    dischargingTimeChangeHandler
+    dischargingTimeChangeHandler,
   );
   // 添加电量百分比变化时的处理程序
   const levelChangeHandler = () => console.log('levelchange');
@@ -20593,7 +20695,7 @@ document.domain = 'topics.google.com'; // 收紧，错误！
 getElementById()方法接收一个参数，即要获取元素的 ID，如果找到了则返回这个元素，如果没找到则返回 null。参数 ID 必须跟元素在页面中的 id 属性值完全匹配，包括大小写。比如页面中有以下元素：
 
 ```html
-<div id='myDiv'>Some text</div>
+<div id="myDiv">Some text</div>
 ```
 
 可以使用如下代码取得这个元素：
@@ -20628,7 +20730,7 @@ alert(images.item(0).src); // 同上
 HTMLCollection 对象还有一个额外的方法 namedItem()，可通过标签的 name 属性取得某一项的引用。例如，假设页面中包含如下的`<img>`元素：
 
 ```html
-<img src='myimage.gif' name='myImage' />
+<img src="myimage.gif" name="myImage" />
 ```
 
 那么也可以像这样从 images 中取得对这个`<img>`元素的引用：
@@ -20662,16 +20764,16 @@ HTMLDocument 类型上定义的获取元素的第三个方法是 getElementsByNa
   <legend>Which color do you prefer?</legend>
   <ul>
     <li>
-      <input type='radio' value='red' name='color' id='colorRed' />
-      <label for='colorRed'>Red</label>
+      <input type="radio" value="red" name="color" id="colorRed" />
+      <label for="colorRed">Red</label>
     </li>
     <li>
-      <input type='radio' value='green' name='color' id='colorGreen' />
-      <label for='colorGreen'>Green</label>
+      <input type="radio" value="green" name="color" id="colorGreen" />
+      <label for="colorGreen">Green</label>
     </li>
     <li>
-      <input type='radio' value='blue' name='color' id='colorBlue' />
-      <label for='colorBlue'>Blue</label>
+      <input type="radio" value="blue" name="color" id="colorBlue" />
+      <label for="colorBlue">Blue</label>
     </li>
   </ul>
 </fieldset>
@@ -20744,7 +20846,7 @@ document 对象有一个古老的能力，即向网页输出流中写入内容�
   <body>
     <p>
       The current date and time is:
-      <script type='text/javascript'>
+      <script type="text/javascript">
         document.write('<strong>' + new Date().toString() + '</strong>');
       </script>
     </p>
@@ -20778,7 +20880,7 @@ document.write('<script type=\'text/javascript\' src=\'file.js\'>' +
     <title>document.write() Example</title>
   </head>
   <body>
-    <script type='text/javascript'>
+    <script type="text/javascript">
       document.write(
         '<script type='text/javascript' src='file.js'>' + '<\/script>'
       );
@@ -20801,7 +20903,7 @@ document.write('<script type=\'text/javascript\' src=\'file.js\'>' +
       This is some content that you won't get to see because it will be
       overwritten.
     </p>
-    <script type='text/javascript'>
+    <script type="text/javascript">
       window.onload = function () {
         document.write('Hello world!');
       };
@@ -20829,7 +20931,7 @@ open()和 close()方法分别用于打开和关闭网页输出流。在调用 wr
 可以通过 nodeName 或 tagName 属性来获取元素的标签名。这两个属性返回同样的值（添加后一个属性明显是为了不让人误会）。比如有下面的元素：
 
 ```html
-<div id='myDiv'></div>
+<div id="myDiv"></div>
 ```
 
 可以像这样取得这个元素的标签名：
@@ -20868,7 +20970,7 @@ if (element.tagName.toLowerCase() === 'div') {
 所有这些都可以用来获取对应的属性值，也可以用来修改相应的值。比如有下面的 HTML 元素：
 
 ```html
-<div id='myDiv' class='bd' title='Body text' lang='en' dir='ltr'></div>
+<div id="myDiv" class="bd" title="Body text" lang="en" dir="ltr"></div>
 ```
 
 这个元素中的所有属性都可以使用下列 JavaScript 代码读取：
@@ -20965,7 +21067,7 @@ console.log(div.getAttribute('dir')); // 'ltr'
 getAttribute()方法也能取得不是 HTML 语言正式属性的自定义属性的值。比如下面的元素：
 
 ```html
-<div id='myDiv' my_special_attribute='hello!'></div>
+<div id="myDiv" my_special_attribute="hello!"></div>
 ```
 
 这个元素有一个自定义属性 my_special_attribute，值为'hello!'。可以像其他属性一样使用 getAttribute()取得这个属性的值：
@@ -20979,7 +21081,7 @@ let value = div.getAttribute('my_special_attribute');
 元素的所有属性也可以通过相应 DOM 元素对象的属性来取得。当然，这包括 HTMLElement 上定义的直接映射对应属性的 5 个属性，还有所有公认（非自定义）的属性也会被添加为 DOM 对象的属性。比如下面的例子：
 
 ```html
-<div id='myDiv' align='left' my_special_attribute='hello'></div>
+<div id="myDiv" align="left" my_special_attribute="hello"></div>
 ```
 
 因为 id 和 align 在 HTML 中是`<div>`元素公认的属性，所以 DOM 对象上也会有这两个属性。但 my_special_attribute 是自定义属性，因此不会成为 DOM 对象的属性。
@@ -21112,7 +21214,7 @@ document.body.appendChild(div);
 元素可以拥有任意多个子元素和后代元素，因为元素本身也可以是其他元素的子元素。childNodes 属性包含元素所有的子节点，这些子节点可能是其他元素、文本节点、注释或处理指令。不同浏览器在识别这些节点时的表现有明显不同。比如下面的代码：
 
 ```html
-<ul id='myList'>
+<ul id="myList">
   <li>Item 1</li>
   <li>Item 2</li>
   <li>Item 3</li>
@@ -21122,7 +21224,7 @@ document.body.appendChild(div);
 在解析以上代码时，`<ul>`元素会包含 7 个子元素，其中 3 个是`<li>`元素，还有 4 个 Text 节点（表示`<li>`元素周围的空格）。如果把元素之间的空格删掉，变成下面这样，则所有浏览器都会返回同样数量的子节点：
 
 ```html
-<ul id='myList'>
+<ul id="myList">
   <li>Item 1</li>
   <li>Item 2</li>
   <li>Item 3</li>
@@ -21297,7 +21399,7 @@ Comment 类型与 Text 类型继承同一个基类（CharacterData），因此�
 注释节点可以作为父节点的子节点来访问。比如下面的 HTML 代码：
 
 ```html
-<div id='myDiv'><!-- A comment --></div>
+<div id="myDiv"><!-- A comment --></div>
 ```
 
 这里的注释是`<div>`元素的子节点，这意味着可以像下面这样访问它：
@@ -21329,7 +21431,7 @@ CDATASection 类型表示 XML 中特有的 CDATA 区块。CDATASection 类型继
 CDATA 区块只在 XML 文档中有效，因此某些浏览器比较陈旧的版本会错误地将 CDATA 区块解析为 Comment 或 Element。比如下面这行代码：
 
 ```html
-<div id='myDiv'><![CDATA[This is some content.]]></div>
+<div id="myDiv"><![CDATA[This is some content.]]></div>
 ```
 
 这里`<div>`的第一个子节点应该是 CDATASection 节点。但主流的四大浏览器没有一个将其识别为 CDATASection。即使在有效的 XHTML 文档中，这些浏览器也不能恰当地支持嵌入的 CDATA 区块。
@@ -21378,7 +21480,7 @@ let fragment = document.createDocumentFragment();
 档片段的内容添加到文档。在把文档片段作为参数传给这些方法时，这个文档片段的所有子节点会被添加到文档中相应的位置。文档片段本身永远不会被添加到文档树。以下面的 HTML 为例：
 
 ```html
-<ul id='myList'></ul>
+<ul id="myList"></ul>
 ```
 
 假设想给这个`<ul>`元素添加 3 个列表项。如果分 3 次给这个元素添加列表项，浏览器就要重新渲染 3 次页面，以反映新添加的内容。为避免多次渲染，下面的代码示例使用文档片段创建了所有列表项，然后一次性将它们添加到了`<ul>`元素：
@@ -21438,7 +21540,7 @@ console.log(element.getAttribute('align')); // 'left'
 动态加载外部文件很容易实现，比如下面的`<script>`元素：
 
 ```html
-<script src='foo.js'></script>
+<script src="foo.js"></script>
 ```
 
 可以像这样通过 DOM 编程创建这个节点：
@@ -21538,7 +21640,7 @@ CSS 样式在 HTML 页面中可以通过两个元素加载。`<link>`元素用�
 来看下面这个典型的`<link>`元素：
 
 ```html
-<link rel='stylesheet' type='text/css' href='styles.css' />
+<link rel="stylesheet" type="text/css" href="styles.css" />
 ```
 
 这个元素很容易使用 DOM 编程创建出来：
@@ -21576,7 +21678,7 @@ loadStyles('styles.css');
 另一种定义样式的方式是使用`<script>`元素包含嵌入的 CSS 规则，例如：
 
 ```html
-<style type='text/css'>
+<style type="text/css">
   body {
     background-color: red;
   }
@@ -21638,7 +21740,7 @@ loadStyleString('body{background-color:red}');
 表格是 HTML 中最复杂的结构之一。通过 DOM 编程创建`<table>`元素，通常要涉及大量标签，包括表行、表元、表题，等等。因此，通过 DOM 编程创建和修改表格时可能要写很多代码。假设要通过 DOM 来创建以下 HTML 表格：
 
 ```html
-<table border='1' width='100%'>
+<table border="1" width="100%">
   <tbody>
     <tr>
       <td>Cell 1,1</td>
@@ -21817,7 +21919,7 @@ observer.observe(document.body, { attributes: true });
 
 ```js
 let observer = new MutationObserver(() =>
-  console.log('<body> attributes changed')
+  console.log('<body> attributes changed'),
 );
 observer.observe(document.body, { attributes: true });
 setTimeout(() => (document.body.className = 'foo'), 2000);
@@ -21835,7 +21937,7 @@ console.log('Changed body class');
 
 ```js
 let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords)
+  console.log(mutationRecords),
 );
 observer.observe(document.body, { attributes: true });
 document.body.setAttribute('foo', 'bar');
@@ -21858,7 +21960,7 @@ document.body.setAttribute('foo', 'bar');
 
 ```js
 let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords)
+  console.log(mutationRecords),
 );
 observer.observe(document.body, { attributes: true });
 document.body.setAttributeNS('baz', 'foo', 'bar');
@@ -21881,7 +21983,7 @@ document.body.setAttributeNS('baz', 'foo', 'bar');
 
 ```js
 let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords)
+  console.log(mutationRecords),
 );
 observer.observe(document.body, { attributes: true });
 document.body.className = 'foo';
@@ -21908,7 +22010,7 @@ document.body.className = 'baz';
 
 ```js
 let observer = new MutationObserver((mutationRecords, mutationObserver) =>
-  console.log(mutationRecords, mutationObserver)
+  console.log(mutationRecords, mutationObserver),
 );
 observer.observe(document.body, { attributes: true });
 document.body.className = 'foo';
@@ -21921,7 +22023,7 @@ document.body.className = 'foo';
 
 ```js
 let observer = new MutationObserver(() =>
-  console.log('<body> attributes changed')
+  console.log('<body> attributes changed'),
 );
 observer.observe(document.body, { attributes: true });
 document.body.className = 'foo';
@@ -21934,7 +22036,7 @@ document.body.className = 'bar';
 
 ```js
 let observer = new MutationObserver(() =>
-  console.log('<body> attributes changed')
+  console.log('<body> attributes changed'),
 );
 observer.observe(document.body, { attributes: true });
 document.body.className = 'foo';
@@ -21951,7 +22053,7 @@ setTimeout(() => {
 
 ```js
 let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords.map((x) => x.target))
+  console.log(mutationRecords.map((x) => x.target)),
 );
 // 向页面主体添加两个子节点
 let childA = document.createElement('div'),
@@ -21971,7 +22073,7 @@ disconnect()方法是一个“一刀切”的方案，调用它会停止观察�
 
 ```js
 let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords.map((x) => x.target))
+  console.log(mutationRecords.map((x) => x.target)),
 );
 // 向页面主体添加两个子节点
 let childA = document.createElement('div'),
@@ -22038,7 +22140,7 @@ MutationObserver 可以观察节点属性的添加、移除和修改。要为属
 
 ```js
 let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords)
+  console.log(mutationRecords),
 );
 observer.observe(document.body, { attributes: true });
 // 添加属性
@@ -22055,7 +22157,7 @@ document.body.removeAttribute('foo');
 
 ```js
 let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords)
+  console.log(mutationRecords),
 );
 observer.observe(document.body, { attributeFilter: ['foo'] });
 // 添加白名单属性
@@ -22070,7 +22172,7 @@ document.body.setAttribute('baz', 'qux');
 
 ```js
 let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords.map((x) => x.oldValue))
+  console.log(mutationRecords.map((x) => x.oldValue)),
 );
 observer.observe(document.body, { attributeOldValue: true });
 document.body.setAttribute('foo', 'bar');
@@ -22086,7 +22188,7 @@ MutationObserver 可以观察文本节点（如 Text、Comment 或 ProcessingIns
 
 ```js
 let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords)
+  console.log(mutationRecords),
 );
 // 创建要观察的文本节点
 document.body.firstChild.textContent = 'foo';
@@ -22105,7 +22207,7 @@ document.body.firstChild.textContent = 'baz';
 
 ```js
 let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords.map((x) => x.oldValue))
+  console.log(mutationRecords.map((x) => x.oldValue)),
 );
 document.body.innerText = 'foo';
 observer.observe(document.body.firstChild, { characterDataOldValue: true });
@@ -22122,7 +22224,7 @@ MutationObserver 可以观察目标节点子节点的添加和移除。要观察
 
 ```js
 let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords)
+  console.log(mutationRecords),
 );
 observer.observe(document.body, { childList: true });
 document.body.appendChild(document.createElement('div'));
@@ -22158,7 +22260,7 @@ document.body.appendChild(document.createElement('div'));
 const div = document.createElement('div');
 document.body.qppendChild(div);
 let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords)
+  console.log(mutationRecords),
 );
 observer.observe(document.body, { childList: true });
 document.body.removeChild(document.body.firstChild);
@@ -22303,7 +22405,7 @@ MutationObserver 接口是出于性能考虑而设计的，其核心是异步回
 
 ```js
 let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords)
+  console.log(mutationRecords),
 );
 observer.observe(document.body, { attributes: true });
 document.body.className = 'foo';
@@ -22517,7 +22619,7 @@ IE9 及以上版本，以及所有现代浏览器都支持 getElementsByClassNam
 要操作类名，可以通过 className 属性实现添加、删除和替换。但 className 是一个字符串，所以每次操作之后都需要重新设置这个值才能生效，即使只改动了部分字符串也一样。以下面的 HTML 代码为例：
 
 ```html
-<div class='bd user disabled'>...</div>
+<div class="bd user disabled">...</div>
 ```
 
 这个`<div>`元素有 3 个类名。要想删除其中一个，就得先把 className 拆开，删除不想要的那个，再把包含剩余类的字符串设置回去。比如：
@@ -22652,7 +22754,7 @@ document.characterSet = 'UTF-8';
 HTML5 允许给元素指定非标准的属性，但要使用前缀 data-以便告诉浏览器，这些属性既不包含与渲染有关的信息，也不包含元素的语义信息。除了前缀，自定义属性对命名是没有限制的，data-后面跟什么都可以。下面是一个例子：
 
 ```html
-<div id='myDiv' data-appId='12345' data-myname='Nicholas'></div>
+<div id="myDiv" data-appId="12345" data-myname="Nicholas"></div>
 ```
 
 定义了自定义数据属性后，可以通过元素的 dataset 属性来访问。dataset 属性是一个 DOMStringMap 的实例，包含一组键/值对映射。元素的每个 data-name 属性在 dataset 中都可以通过 data-后面的字符串作为键来访问（例如，属性 data-myname、data-myName 可以通过 myname 访问，但要注意 data-my-name、data-My-Name 要通过 myName 来访问）。下面是一个使用自定义数据属性的例子：
@@ -22683,8 +22785,12 @@ DOM 虽然已经为操纵节点提供了很多 API，但向文档中一次性插
 在读取 innerHTML 属性时，会返回元素所有后代的 HTML 字符串，包括元素、注释和文本节点。而在写入 innerHTML 时，则会根据提供的字符串值以新的 DOM 子树替代元素中原来包含的所有节点。比如下面的 HTML 代码：
 
 ```html
-<div id='content'>
-  <p>This is a <strong>paragraph</strong> with a list following it.</p>
+<div id="content">
+  <p>
+    This is a
+    <strong>paragraph</strong>
+    with a list following it.
+  </p>
   <ul>
     <li>Item 1</li>
     <li>Item 2</li>
@@ -22722,7 +22828,10 @@ div.innerHTML = 'Hello & welcome, <b>'reader'!</b>';
 这个操作的结果相当于：
 
 ```html
-<div id='content'>Hello &amp; welcome, <b>&quot;reader&quot;!</b></div>
+<div id="content">
+  Hello &amp; welcome,
+  <b>&quot;reader&quot;!</b>
+</div>
 ```
 
 设置完 innerHTML，马上就可以像访问其他节点一样访问这些新节点。
@@ -22771,8 +22880,12 @@ div.removeChild(div.firstChild);
 读取 outerHTML 属性时，会返回调用它的元素（及所有后代元素）的 HTML 字符串。在写入 outerHTML 属性时，调用它的元素会被传入的 HTML 字符串经解释之后生成的 DOM 子树取代。比如下面的 HTML 代码：
 
 ```html
-<div id='content'>
-  <p>This is a <strong>paragraph</strong> with a list following it.</p>
+<div id="content">
+  <p>
+    This is a
+    <strong>paragraph</strong>
+    with a list following it.
+  </p>
   <ul>
     <li>Item 1</li>
     <li>Item 2</li>
@@ -22945,8 +23058,12 @@ HTML5 将 IE 发明的 innerHTML 和 outerHTML 纳入了标准，但还有两个
 innerText 属性对应元素中包含的所有文本内容，无论文本在子树中哪个层级。在用于读取值时，innerText 会按照深度优先的顺序将子树中所有文本节点的值拼接起来。在用于写入值时，innerText 会移除元素的所有后代并插入一个包含该值的文本节点。来看下面的 HTML 代码：
 
 ```html
-<div id='content'>
-  <p>This is a <strong>paragraph</strong> with a list following it.</p>
+<div id="content">
+  <p>
+    This is a
+    <strong>paragraph</strong>
+    with a list following it.
+  </p>
   <ul>
     <li>Item 1</li>
     <li>Item 2</li>
@@ -22975,7 +23092,7 @@ div.innerText = 'Hello world!';
 执行这行代码后，HTML 页面中的这个`<div>`元素实际上会变成这个样子：
 
 ```html
-<div id='content'>Hello world!</div>
+<div id="content">Hello world!</div>
 ```
 
 设置 innerText 会移除元素之前所有的后代节点，完全改变 DOM 子树。此外，设置 innerText 也会编码出现在字符串中的 HTML 语法字符（小于号、大于号、引号及和号）。下面是一个例子：
@@ -22987,7 +23104,7 @@ div.innerText = 'Hello & welcome, <b>'reader'!</b>';
 执行之后的结果如下：
 
 ```html
-<div id='content'>
+<div id="content">
   Hello &amp; welcome, &lt;b&gt;&quot;reader&quot;!&lt;/b&gt;
 </div>
 ```
@@ -23071,7 +23188,7 @@ XML 命名空间可以实现在一个格式规范的文档中混用不同的 XML
 命名空间是使用 xmlns 指定的。XHTML 的命名空间是'http://www.w3.org/1999/xhtml'，应该包含在任何格式规范的XHTML 页面的`<html>`元素中，如下所示：
 
 ```html
-<html xmlns='http://www.w3.org/1999/xhtml'>
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <title>Example XHTML page</title>
   </head>
@@ -23084,7 +23201,7 @@ XML 命名空间可以实现在一个格式规范的文档中混用不同的 XML
 对这个例子来说，所有元素都默认属于 XHTML 命名空间。可以使用 xmlns 给命名空间创建一个前缀，格式为“xmlns: 前缀”，如下面的例子所示：
 
 ```html
-<xhtml:html xmlns:xhtml='http://www.w3.org/1999/xhtml'>
+<xhtml:html xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <xhtml:head>
     <xhtml:title>Example XHTML page</xhtml:title>
   </xhtml:head>
@@ -23097,11 +23214,11 @@ XML 命名空间可以实现在一个格式规范的文档中混用不同的 XML
 这里为 XHTML 命名空间定义了一个前缀 xhtml，同时所有 XHTML 元素都必须加上这个前缀。为避免混淆，属性也可以加上命名空间前缀，比如：
 
 ```html
-<xhtml:html xmlns:xhtml='http://www.w3.org/1999/xhtml'>
+<xhtml:html xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <xhtml:head>
     <xhtml:title>Example XHTML page</xhtml:title>
   </xhtml:head>
-  <xhtml:body xhtml:class='home'>
+  <xhtml:body xhtml:class="home">
     Hello world!
   </xhtml:body>
 </xhtml:html>
@@ -23110,18 +23227,18 @@ XML 命名空间可以实现在一个格式规范的文档中混用不同的 XML
 这里的 class 属性被加上了 xhtml 前缀。如果文档中只使用一种 XML 语言，那么命名空间前缀其实是多余的，只有一个文档混合使用多种 XML 语言时才有必要。比如下面这个文档就使用了 XHTML 和 SVG 两种语言：
 
 ```html
-<html xmlns='http://www.w3.org/1999/xhtml'>
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <title>Example XHTML page</title>
   </head>
   <body>
     <svg
-      xmlns='http://www.w3.org/2000/svg'
-      version='1.1'
-      viewBox='0 0 100 100'
-      style='width:100%; height:100%'
+      xmlns="http://www.w3.org/2000/svg"
+      version="1.1"
+      viewBox="0 0 100 100"
+      style="width:100%; height:100%"
     >
-      <rect x='0' y='0' width='100' height='100' style='fill:red' />
+      <rect x="0" y="0" width="100" height="100" style="fill:red" />
     </svg>
   </body>
 </html>
@@ -23142,18 +23259,18 @@ XML 命名空间可以实现在一个格式规范的文档中混用不同的 XML
 在节点使用命名空间前缀的情况下，nodeName 等于 prefix + ':' + localName。比如下面这个例子：
 
 ```html
-<html xmlns='http://www.w3.org/1999/xhtml'>
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <title>Example XHTML page</title>
   </head>
   <body>
     <s:svg
-      xmlns:s='http://www.w3.org/2000/svg'
-      version='1.1'
-      viewBox='0 0 100 100'
-      style='width:100%; height:100%'
+      xmlns:s="http://www.w3.org/2000/svg"
+      version="1.1"
+      viewBox="0 0 100 100"
+      style="width:100%; height:100%"
     >
-      <s:rect x='0' y='0' width='100' height='100' style='fill:red' />
+      <s:rect x="0" y="0" width="100" height="100" style="fill:red" />
     </s:svg>
   </body>
 </html>
@@ -23171,8 +23288,7 @@ DOM3 进一步增加了如下与命名空间相关的方法：
 对前面的例子，可以执行以下代码：
 
 ```js
-console.log(document.body.isDefaultNamespace('http://www.w3.org/1999/
-xhtml')); // true
+console.log(document.body.isDefaultNamespace('http://www.w3.org/1999/xhtml')); // true
 // 假设svg 包含对<s:svg>元素的引用
 console.log(svg.lookupPrefix('http://www.w3.org/2000/svg')); // 's'
 console.log(svg.lookupNamespaceURI('s')); // 'http://www.w3.org/2000/svg'
@@ -23197,7 +23313,7 @@ let att = document.createAttributeNS('http://www.somewhere.com', 'random');
 // 获取所有XHTML 元素
 let elems = document.getElementsByTagNameNS(
   'http://www.w3.org/1999/xhtml',
-  '*'
+  '*',
 );
 ```
 
@@ -23280,7 +23396,7 @@ let parentWindow = document.defaultView || document.parentWindow;
 let doctype = document.implementation.createDocumentType(
   'html',
   '-// W3C// DTD HTML 4.01// EN',
-  'http://www.w3.org/TR/html4/strict.dtd'
+  'http://www.w3.org/TR/html4/strict.dtd',
 );
 ```
 
@@ -23296,12 +23412,12 @@ let doc = document.implementation.createDocument('', 'root', null);
 let doctype = document.implementation.createDocumentType(
   'html',
   '-// W3C// DTD XHTML 1.0 Strict// EN',
-  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'
+  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd',
 );
 let doc = document.implementation.createDocument(
   'http://www.w3.org/1999/xhtml',
   'html',
-  doctype
+  doctype,
 );
 ```
 
@@ -23356,7 +23472,7 @@ div.setUserData(
     if (operation == 1) {
       dest.setUserData(key, value, function () {});
     }
-  }
+  },
 );
 let newDiv = div.cloneNode(true);
 console.log(newDiv.getUserData('name')); // 'Nicholas'
@@ -23416,7 +23532,7 @@ setTimeout(() => {
 通过 style 属性设置的值也可以通过 style 对象获取。比如下面的 HTML：
 
 ```html
-<div id='myDiv' style='background-color: blue; width: 10px; height: 25px'></div>
+<div id="myDiv" style="background-color: blue; width: 10px; height: 25px"></div>
 ```
 
 这个元素 style 属性的值可以像这样通过代码获取：
@@ -23472,8 +23588,8 @@ for (let i = 0, len = myDiv.style.length; i < len; i++) {
 ```js
 console.log(
   [...myDiv.style].map(
-    (prop) => `${prop}: ${myDiv.style.getPropertyValue(prop)}`
-  )
+    (prop) => `${prop}: ${myDiv.style.getPropertyValue(prop)}`,
+  ),
 );
 ```
 
@@ -23494,7 +23610,7 @@ style 对象中包含支持 style 属性的元素为这个属性设置的样式�
 <html>
   <head>
     <title>Computed Styles Example</title>
-    <style type='text/css'>
+    <style type="text/css">
       #myDiv {
         background-color: blue;
         width: 100px;
@@ -23504,8 +23620,8 @@ style 对象中包含支持 style 属性的元素为这个属性设置的样式�
   </head>
   <body>
     <div
-      id='myDiv'
-      style='background-color: red; border: 1px solid black'
+      id="myDiv"
+      style="background-color: red; border: 1px solid black"
     ></div>
   </body>
 </html>

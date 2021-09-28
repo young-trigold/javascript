@@ -201,7 +201,7 @@ IE9 及以上版本，以及所有现代浏览器都支持 getElementsByClassNam
 要操作类名，可以通过 className 属性实现添加、删除和替换。但 className 是一个字符串，所以每次操作之后都需要重新设置这个值才能生效，即使只改动了部分字符串也一样。以下面的 HTML 代码为例：
 
 ```html
-<div class='bd user disabled'>...</div>
+<div class="bd user disabled">...</div>
 ```
 
 这个`<div>`元素有 3 个类名。要想删除其中一个，就得先把 className 拆开，删除不想要的那个，再把包含剩余类的字符串设置回去。比如：
@@ -336,7 +336,7 @@ document.characterSet = 'UTF-8';
 HTML5 允许给元素指定非标准的属性，但要使用前缀 data-以便告诉浏览器，这些属性既不包含与渲染有关的信息，也不包含元素的语义信息。除了前缀，自定义属性对命名是没有限制的，data-后面跟什么都可以。下面是一个例子：
 
 ```html
-<div id='myDiv' data-appId='12345' data-myname='Nicholas'></div>
+<div id="myDiv" data-appId="12345" data-myname="Nicholas"></div>
 ```
 
 定义了自定义数据属性后，可以通过元素的 dataset 属性来访问。dataset 属性是一个 DOMStringMap 的实例，包含一组键/值对映射。元素的每个 data-name 属性在 dataset 中都可以通过 data-后面的字符串作为键来访问（例如，属性 data-myname、data-myName 可以通过 myname 访问，但要注意 data-my-name、data-My-Name 要通过 myName 来访问）。下面是一个使用自定义数据属性的例子：
@@ -367,8 +367,12 @@ DOM 虽然已经为操纵节点提供了很多 API，但向文档中一次性插
 在读取 innerHTML 属性时，会返回元素所有后代的 HTML 字符串，包括元素、注释和文本节点。而在写入 innerHTML 时，则会根据提供的字符串值以新的 DOM 子树替代元素中原来包含的所有节点。比如下面的 HTML 代码：
 
 ```html
-<div id='content'>
-  <p>This is a <strong>paragraph</strong> with a list following it.</p>
+<div id="content">
+  <p>
+    This is a
+    <strong>paragraph</strong>
+    with a list following it.
+  </p>
   <ul>
     <li>Item 1</li>
     <li>Item 2</li>
@@ -406,7 +410,10 @@ div.innerHTML = 'Hello & welcome, <b>'reader'!</b>';
 这个操作的结果相当于：
 
 ```html
-<div id='content'>Hello &amp; welcome, <b>&quot;reader&quot;!</b></div>
+<div id="content">
+  Hello &amp; welcome,
+  <b>&quot;reader&quot;!</b>
+</div>
 ```
 
 设置完 innerHTML，马上就可以像访问其他节点一样访问这些新节点。
@@ -455,8 +462,12 @@ div.removeChild(div.firstChild);
 读取 outerHTML 属性时，会返回调用它的元素（及所有后代元素）的 HTML 字符串。在写入 outerHTML 属性时，调用它的元素会被传入的 HTML 字符串经解释之后生成的 DOM 子树取代。比如下面的 HTML 代码：
 
 ```html
-<div id='content'>
-  <p>This is a <strong>paragraph</strong> with a list following it.</p>
+<div id="content">
+  <p>
+    This is a
+    <strong>paragraph</strong>
+    with a list following it.
+  </p>
   <ul>
     <li>Item 1</li>
     <li>Item 2</li>
@@ -629,8 +640,12 @@ HTML5 将 IE 发明的 innerHTML 和 outerHTML 纳入了标准，但还有两个
 innerText 属性对应元素中包含的所有文本内容，无论文本在子树中哪个层级。在用于读取值时，innerText 会按照深度优先的顺序将子树中所有文本节点的值拼接起来。在用于写入值时，innerText 会移除元素的所有后代并插入一个包含该值的文本节点。来看下面的 HTML 代码：
 
 ```html
-<div id='content'>
-  <p>This is a <strong>paragraph</strong> with a list following it.</p>
+<div id="content">
+  <p>
+    This is a
+    <strong>paragraph</strong>
+    with a list following it.
+  </p>
   <ul>
     <li>Item 1</li>
     <li>Item 2</li>
@@ -659,7 +674,7 @@ div.innerText = 'Hello world!';
 执行这行代码后，HTML 页面中的这个`<div>`元素实际上会变成这个样子：
 
 ```html
-<div id='content'>Hello world!</div>
+<div id="content">Hello world!</div>
 ```
 
 设置 innerText 会移除元素之前所有的后代节点，完全改变 DOM 子树。此外，设置 innerText 也会编码出现在字符串中的 HTML 语法字符（小于号、大于号、引号及和号）。下面是一个例子：
@@ -671,7 +686,7 @@ div.innerText = 'Hello & welcome, <b>'reader'!</b>';
 执行之后的结果如下：
 
 ```html
-<div id='content'>
+<div id="content">
   Hello &amp; welcome, &lt;b&gt;&quot;reader&quot;!&lt;/b&gt;
 </div>
 ```

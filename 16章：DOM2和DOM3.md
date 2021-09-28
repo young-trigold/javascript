@@ -45,7 +45,7 @@ XML 命名空间可以实现在一个格式规范的文档中混用不同的 XML
 命名空间是使用 xmlns 指定的。XHTML 的命名空间是'http://www.w3.org/1999/xhtml'，应该包含在任何格式规范的XHTML 页面的`<html>`元素中，如下所示：
 
 ```html
-<html xmlns='http://www.w3.org/1999/xhtml'>
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <title>Example XHTML page</title>
   </head>
@@ -58,7 +58,7 @@ XML 命名空间可以实现在一个格式规范的文档中混用不同的 XML
 对这个例子来说，所有元素都默认属于 XHTML 命名空间。可以使用 xmlns 给命名空间创建一个前缀，格式为“xmlns: 前缀”，如下面的例子所示：
 
 ```html
-<xhtml:html xmlns:xhtml='http://www.w3.org/1999/xhtml'>
+<xhtml:html xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <xhtml:head>
     <xhtml:title>Example XHTML page</xhtml:title>
   </xhtml:head>
@@ -71,11 +71,11 @@ XML 命名空间可以实现在一个格式规范的文档中混用不同的 XML
 这里为 XHTML 命名空间定义了一个前缀 xhtml，同时所有 XHTML 元素都必须加上这个前缀。为避免混淆，属性也可以加上命名空间前缀，比如：
 
 ```html
-<xhtml:html xmlns:xhtml='http://www.w3.org/1999/xhtml'>
+<xhtml:html xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <xhtml:head>
     <xhtml:title>Example XHTML page</xhtml:title>
   </xhtml:head>
-  <xhtml:body xhtml:class='home'>
+  <xhtml:body xhtml:class="home">
     Hello world!
   </xhtml:body>
 </xhtml:html>
@@ -84,18 +84,18 @@ XML 命名空间可以实现在一个格式规范的文档中混用不同的 XML
 这里的 class 属性被加上了 xhtml 前缀。如果文档中只使用一种 XML 语言，那么命名空间前缀其实是多余的，只有一个文档混合使用多种 XML 语言时才有必要。比如下面这个文档就使用了 XHTML 和 SVG 两种语言：
 
 ```html
-<html xmlns='http://www.w3.org/1999/xhtml'>
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <title>Example XHTML page</title>
   </head>
   <body>
     <svg
-      xmlns='http://www.w3.org/2000/svg'
-      version='1.1'
-      viewBox='0 0 100 100'
-      style='width:100%; height:100%'
+      xmlns="http://www.w3.org/2000/svg"
+      version="1.1"
+      viewBox="0 0 100 100"
+      style="width:100%; height:100%"
     >
-      <rect x='0' y='0' width='100' height='100' style='fill:red' />
+      <rect x="0" y="0" width="100" height="100" style="fill:red" />
     </svg>
   </body>
 </html>
@@ -116,18 +116,18 @@ XML 命名空间可以实现在一个格式规范的文档中混用不同的 XML
 在节点使用命名空间前缀的情况下，nodeName 等于 prefix + ':' + localName。比如下面这个例子：
 
 ```html
-<html xmlns='http://www.w3.org/1999/xhtml'>
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <title>Example XHTML page</title>
   </head>
   <body>
     <s:svg
-      xmlns:s='http://www.w3.org/2000/svg'
-      version='1.1'
-      viewBox='0 0 100 100'
-      style='width:100%; height:100%'
+      xmlns:s="http://www.w3.org/2000/svg"
+      version="1.1"
+      viewBox="0 0 100 100"
+      style="width:100%; height:100%"
     >
-      <s:rect x='0' y='0' width='100' height='100' style='fill:red' />
+      <s:rect x="0" y="0" width="100" height="100" style="fill:red" />
     </s:svg>
   </body>
 </html>
@@ -145,8 +145,7 @@ DOM3 进一步增加了如下与命名空间相关的方法：
 对前面的例子，可以执行以下代码：
 
 ```js
-console.log(document.body.isDefaultNamespace('http://www.w3.org/1999/
-xhtml')); // true
+console.log(document.body.isDefaultNamespace('http://www.w3.org/1999/xhtml')); // true
 // 假设svg 包含对<s:svg>元素的引用
 console.log(svg.lookupPrefix('http://www.w3.org/2000/svg')); // 's'
 console.log(svg.lookupNamespaceURI('s')); // 'http://www.w3.org/2000/svg'
@@ -171,7 +170,7 @@ let att = document.createAttributeNS('http://www.somewhere.com', 'random');
 // 获取所有XHTML 元素
 let elems = document.getElementsByTagNameNS(
   'http://www.w3.org/1999/xhtml',
-  '*'
+  '*',
 );
 ```
 
@@ -254,7 +253,7 @@ let parentWindow = document.defaultView || document.parentWindow;
 let doctype = document.implementation.createDocumentType(
   'html',
   '-// W3C// DTD HTML 4.01// EN',
-  'http://www.w3.org/TR/html4/strict.dtd'
+  'http://www.w3.org/TR/html4/strict.dtd',
 );
 ```
 
@@ -270,12 +269,12 @@ let doc = document.implementation.createDocument('', 'root', null);
 let doctype = document.implementation.createDocumentType(
   'html',
   '-// W3C// DTD XHTML 1.0 Strict// EN',
-  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'
+  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd',
 );
 let doc = document.implementation.createDocument(
   'http://www.w3.org/1999/xhtml',
   'html',
-  doctype
+  doctype,
 );
 ```
 
@@ -330,7 +329,7 @@ div.setUserData(
     if (operation == 1) {
       dest.setUserData(key, value, function () {});
     }
-  }
+  },
 );
 let newDiv = div.cloneNode(true);
 console.log(newDiv.getUserData('name')); // 'Nicholas'
@@ -390,7 +389,7 @@ setTimeout(() => {
 通过 style 属性设置的值也可以通过 style 对象获取。比如下面的 HTML：
 
 ```html
-<div id='myDiv' style='background-color: blue; width: 10px; height: 25px'></div>
+<div id="myDiv" style="background-color: blue; width: 10px; height: 25px"></div>
 ```
 
 这个元素 style 属性的值可以像这样通过代码获取：
@@ -446,8 +445,8 @@ for (let i = 0, len = myDiv.style.length; i < len; i++) {
 ```js
 console.log(
   [...myDiv.style].map(
-    (prop) => `${prop}: ${myDiv.style.getPropertyValue(prop)}`
-  )
+    (prop) => `${prop}: ${myDiv.style.getPropertyValue(prop)}`,
+  ),
 );
 ```
 
@@ -468,7 +467,7 @@ style 对象中包含支持 style 属性的元素为这个属性设置的样式�
 <html>
   <head>
     <title>Computed Styles Example</title>
-    <style type='text/css'>
+    <style type="text/css">
       #myDiv {
         background-color: blue;
         width: 100px;
@@ -478,8 +477,8 @@ style 对象中包含支持 style 属性的元素为这个属性设置的样式�
   </head>
   <body>
     <div
-      id='myDiv'
-      style='background-color: red; border: 1px solid black'
+      id="myDiv"
+      style="background-color: red; border: 1px solid black"
     ></div>
   </body>
 </html>

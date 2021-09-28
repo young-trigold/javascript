@@ -341,7 +341,7 @@ document.domain = 'topics.google.com'; // 收紧，错误！
 getElementById()方法接收一个参数，即要获取元素的 ID，如果找到了则返回这个元素，如果没找到则返回 null。参数 ID 必须跟元素在页面中的 id 属性值完全匹配，包括大小写。比如页面中有以下元素：
 
 ```html
-<div id='myDiv'>Some text</div>
+<div id="myDiv">Some text</div>
 ```
 
 可以使用如下代码取得这个元素：
@@ -376,7 +376,7 @@ alert(images.item(0).src); // 同上
 HTMLCollection 对象还有一个额外的方法 namedItem()，可通过标签的 name 属性取得某一项的引用。例如，假设页面中包含如下的`<img>`元素：
 
 ```html
-<img src='myimage.gif' name='myImage' />
+<img src="myimage.gif" name="myImage" />
 ```
 
 那么也可以像这样从 images 中取得对这个`<img>`元素的引用：
@@ -410,16 +410,16 @@ HTMLDocument 类型上定义的获取元素的第三个方法是 getElementsByNa
   <legend>Which color do you prefer?</legend>
   <ul>
     <li>
-      <input type='radio' value='red' name='color' id='colorRed' />
-      <label for='colorRed'>Red</label>
+      <input type="radio" value="red" name="color" id="colorRed" />
+      <label for="colorRed">Red</label>
     </li>
     <li>
-      <input type='radio' value='green' name='color' id='colorGreen' />
-      <label for='colorGreen'>Green</label>
+      <input type="radio" value="green" name="color" id="colorGreen" />
+      <label for="colorGreen">Green</label>
     </li>
     <li>
-      <input type='radio' value='blue' name='color' id='colorBlue' />
-      <label for='colorBlue'>Blue</label>
+      <input type="radio" value="blue" name="color" id="colorBlue" />
+      <label for="colorBlue">Blue</label>
     </li>
   </ul>
 </fieldset>
@@ -492,7 +492,7 @@ document 对象有一个古老的能力，即向网页输出流中写入内容�
   <body>
     <p>
       The current date and time is:
-      <script type='text/javascript'>
+      <script type="text/javascript">
         document.write('<strong>' + new Date().toString() + '</strong>');
       </script>
     </p>
@@ -526,7 +526,7 @@ document.write('<script type=\'text/javascript\' src=\'file.js\'>' +
     <title>document.write() Example</title>
   </head>
   <body>
-    <script type='text/javascript'>
+    <script type="text/javascript">
       document.write(
         '<script type='text/javascript' src='file.js'>' + '<\/script>'
       );
@@ -549,7 +549,7 @@ document.write('<script type=\'text/javascript\' src=\'file.js\'>' +
       This is some content that you won't get to see because it will be
       overwritten.
     </p>
-    <script type='text/javascript'>
+    <script type="text/javascript">
       window.onload = function () {
         document.write('Hello world!');
       };
@@ -577,7 +577,7 @@ open()和 close()方法分别用于打开和关闭网页输出流。在调用 wr
 可以通过 nodeName 或 tagName 属性来获取元素的标签名。这两个属性返回同样的值（添加后一个属性明显是为了不让人误会）。比如有下面的元素：
 
 ```html
-<div id='myDiv'></div>
+<div id="myDiv"></div>
 ```
 
 可以像这样取得这个元素的标签名：
@@ -616,7 +616,7 @@ if (element.tagName.toLowerCase() === 'div') {
 所有这些都可以用来获取对应的属性值，也可以用来修改相应的值。比如有下面的 HTML 元素：
 
 ```html
-<div id='myDiv' class='bd' title='Body text' lang='en' dir='ltr'></div>
+<div id="myDiv" class="bd" title="Body text" lang="en" dir="ltr"></div>
 ```
 
 这个元素中的所有属性都可以使用下列 JavaScript 代码读取：
@@ -713,7 +713,7 @@ console.log(div.getAttribute('dir')); // 'ltr'
 getAttribute()方法也能取得不是 HTML 语言正式属性的自定义属性的值。比如下面的元素：
 
 ```html
-<div id='myDiv' my_special_attribute='hello!'></div>
+<div id="myDiv" my_special_attribute="hello!"></div>
 ```
 
 这个元素有一个自定义属性 my_special_attribute，值为'hello!'。可以像其他属性一样使用 getAttribute()取得这个属性的值：
@@ -727,7 +727,7 @@ let value = div.getAttribute('my_special_attribute');
 元素的所有属性也可以通过相应 DOM 元素对象的属性来取得。当然，这包括 HTMLElement 上定义的直接映射对应属性的 5 个属性，还有所有公认（非自定义）的属性也会被添加为 DOM 对象的属性。比如下面的例子：
 
 ```html
-<div id='myDiv' align='left' my_special_attribute='hello'></div>
+<div id="myDiv" align="left" my_special_attribute="hello"></div>
 ```
 
 因为 id 和 align 在 HTML 中是`<div>`元素公认的属性，所以 DOM 对象上也会有这两个属性。但 my_special_attribute 是自定义属性，因此不会成为 DOM 对象的属性。
@@ -860,7 +860,7 @@ document.body.appendChild(div);
 元素可以拥有任意多个子元素和后代元素，因为元素本身也可以是其他元素的子元素。childNodes 属性包含元素所有的子节点，这些子节点可能是其他元素、文本节点、注释或处理指令。不同浏览器在识别这些节点时的表现有明显不同。比如下面的代码：
 
 ```html
-<ul id='myList'>
+<ul id="myList">
   <li>Item 1</li>
   <li>Item 2</li>
   <li>Item 3</li>
@@ -870,7 +870,7 @@ document.body.appendChild(div);
 在解析以上代码时，`<ul>`元素会包含 7 个子元素，其中 3 个是`<li>`元素，还有 4 个 Text 节点（表示`<li>`元素周围的空格）。如果把元素之间的空格删掉，变成下面这样，则所有浏览器都会返回同样数量的子节点：
 
 ```html
-<ul id='myList'>
+<ul id="myList">
   <li>Item 1</li>
   <li>Item 2</li>
   <li>Item 3</li>
@@ -1045,7 +1045,7 @@ Comment 类型与 Text 类型继承同一个基类（CharacterData），因此�
 注释节点可以作为父节点的子节点来访问。比如下面的 HTML 代码：
 
 ```html
-<div id='myDiv'><!-- A comment --></div>
+<div id="myDiv"><!-- A comment --></div>
 ```
 
 这里的注释是`<div>`元素的子节点，这意味着可以像下面这样访问它：
@@ -1077,7 +1077,7 @@ CDATASection 类型表示 XML 中特有的 CDATA 区块。CDATASection 类型继
 CDATA 区块只在 XML 文档中有效，因此某些浏览器比较陈旧的版本会错误地将 CDATA 区块解析为 Comment 或 Element。比如下面这行代码：
 
 ```html
-<div id='myDiv'><![CDATA[This is some content.]]></div>
+<div id="myDiv"><![CDATA[This is some content.]]></div>
 ```
 
 这里`<div>`的第一个子节点应该是 CDATASection 节点。但主流的四大浏览器没有一个将其识别为 CDATASection。即使在有效的 XHTML 文档中，这些浏览器也不能恰当地支持嵌入的 CDATA 区块。
@@ -1126,7 +1126,7 @@ let fragment = document.createDocumentFragment();
 档片段的内容添加到文档。在把文档片段作为参数传给这些方法时，这个文档片段的所有子节点会被添加到文档中相应的位置。文档片段本身永远不会被添加到文档树。以下面的 HTML 为例：
 
 ```html
-<ul id='myList'></ul>
+<ul id="myList"></ul>
 ```
 
 假设想给这个`<ul>`元素添加 3 个列表项。如果分 3 次给这个元素添加列表项，浏览器就要重新渲染 3 次页面，以反映新添加的内容。为避免多次渲染，下面的代码示例使用文档片段创建了所有列表项，然后一次性将它们添加到了`<ul>`元素：
@@ -1186,7 +1186,7 @@ console.log(element.getAttribute('align')); // 'left'
 动态加载外部文件很容易实现，比如下面的`<script>`元素：
 
 ```html
-<script src='foo.js'></script>
+<script src="foo.js"></script>
 ```
 
 可以像这样通过 DOM 编程创建这个节点：
@@ -1286,7 +1286,7 @@ CSS 样式在 HTML 页面中可以通过两个元素加载。`<link>`元素用�
 来看下面这个典型的`<link>`元素：
 
 ```html
-<link rel='stylesheet' type='text/css' href='styles.css' />
+<link rel="stylesheet" type="text/css" href="styles.css" />
 ```
 
 这个元素很容易使用 DOM 编程创建出来：
@@ -1324,7 +1324,7 @@ loadStyles('styles.css');
 另一种定义样式的方式是使用`<script>`元素包含嵌入的 CSS 规则，例如：
 
 ```html
-<style type='text/css'>
+<style type="text/css">
   body {
     background-color: red;
   }
@@ -1386,7 +1386,7 @@ loadStyleString('body{background-color:red}');
 表格是 HTML 中最复杂的结构之一。通过 DOM 编程创建`<table>`元素，通常要涉及大量标签，包括表行、表元、表题，等等。因此，通过 DOM 编程创建和修改表格时可能要写很多代码。假设要通过 DOM 来创建以下 HTML 表格：
 
 ```html
-<table border='1' width='100%'>
+<table border="1" width="100%">
   <tbody>
     <tr>
       <td>Cell 1,1</td>
@@ -1565,7 +1565,7 @@ observer.observe(document.body, { attributes: true });
 
 ```js
 let observer = new MutationObserver(() =>
-  console.log('<body> attributes changed')
+  console.log('<body> attributes changed'),
 );
 observer.observe(document.body, { attributes: true });
 setTimeout(() => (document.body.className = 'foo'), 2000);
@@ -1583,7 +1583,7 @@ console.log('Changed body class');
 
 ```js
 let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords)
+  console.log(mutationRecords),
 );
 observer.observe(document.body, { attributes: true });
 document.body.setAttribute('foo', 'bar');
@@ -1606,7 +1606,7 @@ document.body.setAttribute('foo', 'bar');
 
 ```js
 let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords)
+  console.log(mutationRecords),
 );
 observer.observe(document.body, { attributes: true });
 document.body.setAttributeNS('baz', 'foo', 'bar');
@@ -1629,7 +1629,7 @@ document.body.setAttributeNS('baz', 'foo', 'bar');
 
 ```js
 let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords)
+  console.log(mutationRecords),
 );
 observer.observe(document.body, { attributes: true });
 document.body.className = 'foo';
@@ -1656,7 +1656,7 @@ document.body.className = 'baz';
 
 ```js
 let observer = new MutationObserver((mutationRecords, mutationObserver) =>
-  console.log(mutationRecords, mutationObserver)
+  console.log(mutationRecords, mutationObserver),
 );
 observer.observe(document.body, { attributes: true });
 document.body.className = 'foo';
@@ -1669,7 +1669,7 @@ document.body.className = 'foo';
 
 ```js
 let observer = new MutationObserver(() =>
-  console.log('<body> attributes changed')
+  console.log('<body> attributes changed'),
 );
 observer.observe(document.body, { attributes: true });
 document.body.className = 'foo';
@@ -1682,7 +1682,7 @@ document.body.className = 'bar';
 
 ```js
 let observer = new MutationObserver(() =>
-  console.log('<body> attributes changed')
+  console.log('<body> attributes changed'),
 );
 observer.observe(document.body, { attributes: true });
 document.body.className = 'foo';
@@ -1699,7 +1699,7 @@ setTimeout(() => {
 
 ```js
 let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords.map((x) => x.target))
+  console.log(mutationRecords.map((x) => x.target)),
 );
 // 向页面主体添加两个子节点
 let childA = document.createElement('div'),
@@ -1719,7 +1719,7 @@ disconnect()方法是一个“一刀切”的方案，调用它会停止观察�
 
 ```js
 let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords.map((x) => x.target))
+  console.log(mutationRecords.map((x) => x.target)),
 );
 // 向页面主体添加两个子节点
 let childA = document.createElement('div'),
@@ -1786,7 +1786,7 @@ MutationObserver 可以观察节点属性的添加、移除和修改。要为属
 
 ```js
 let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords)
+  console.log(mutationRecords),
 );
 observer.observe(document.body, { attributes: true });
 // 添加属性
@@ -1803,7 +1803,7 @@ document.body.removeAttribute('foo');
 
 ```js
 let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords)
+  console.log(mutationRecords),
 );
 observer.observe(document.body, { attributeFilter: ['foo'] });
 // 添加白名单属性
@@ -1818,7 +1818,7 @@ document.body.setAttribute('baz', 'qux');
 
 ```js
 let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords.map((x) => x.oldValue))
+  console.log(mutationRecords.map((x) => x.oldValue)),
 );
 observer.observe(document.body, { attributeOldValue: true });
 document.body.setAttribute('foo', 'bar');
@@ -1834,7 +1834,7 @@ MutationObserver 可以观察文本节点（如 Text、Comment 或 ProcessingIns
 
 ```js
 let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords)
+  console.log(mutationRecords),
 );
 // 创建要观察的文本节点
 document.body.firstChild.textContent = 'foo';
@@ -1853,7 +1853,7 @@ document.body.firstChild.textContent = 'baz';
 
 ```js
 let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords.map((x) => x.oldValue))
+  console.log(mutationRecords.map((x) => x.oldValue)),
 );
 document.body.innerText = 'foo';
 observer.observe(document.body.firstChild, { characterDataOldValue: true });
@@ -1870,7 +1870,7 @@ MutationObserver 可以观察目标节点子节点的添加和移除。要观察
 
 ```js
 let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords)
+  console.log(mutationRecords),
 );
 observer.observe(document.body, { childList: true });
 document.body.appendChild(document.createElement('div'));
@@ -1906,7 +1906,7 @@ document.body.appendChild(document.createElement('div'));
 const div = document.createElement('div');
 document.body.qppendChild(div);
 let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords)
+  console.log(mutationRecords),
 );
 observer.observe(document.body, { childList: true });
 document.body.removeChild(document.body.firstChild);
@@ -2051,7 +2051,7 @@ MutationObserver 接口是出于性能考虑而设计的，其核心是异步回
 
 ```js
 let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords)
+  console.log(mutationRecords),
 );
 observer.observe(document.body, { attributes: true });
 document.body.className = 'foo';
