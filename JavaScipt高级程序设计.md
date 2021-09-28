@@ -1231,10 +1231,9 @@ class Calculator extends Abacus {
  * @param {string} p1 参数1的说明
  * @param {string} p2 参数2的说明
  * @param {number=} p3 参数3的说明（可选）
- * @return {Object} 返回值描述
+ * @returns {Object} 返回值描述
  */
 function foo(p1, p2, p3) {
-  var p3 = p3 || 10;
   return {
     p1: p1,
     p2: p2,
@@ -14851,6 +14850,17 @@ const factorial = function f(num) {
 ```
 
 这里创建了一个命名函数表达式 f()，然后将它赋值给了变量 factorial。即使把函数赋值给另一个变量，函数表达式的名称 f 也不变，因此递归调用不会有问题。这个模式在严格模式和非严格模式下都可以使用。
+
+命名函数表达式的名字效果等同于局部变量，因此这样创建不会报错，事实上这是推荐的一种创建函数的方式：
+
+```js
+const foo = function foo(){
+  console.log('test');
+}
+
+foo();
+// 'test'
+```
 
 ### 10.1.3. 箭头函数
 
