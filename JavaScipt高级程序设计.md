@@ -187,9 +187,9 @@ plan : 1 chapter/3 day
   - [9.1. 代理基础](#91-代理基础)
     - [9.1.1. 创建代理](#911-创建代理)
     - [9.1.2. 捕获器](#912-捕获器)
-    - [9.1.4. 反射](#914-反射)
-    - [9.1.5. 优先使用反射 API](#915-优先使用反射-api)
-    - [9.1.6. 代理的问题](#916-代理的问题)
+    - [9.1.3. 反射](#913-反射)
+    - [9.1.4. 优先使用反射 API](#914-优先使用反射-api)
+    - [9.1.5. 代理的问题](#915-代理的问题)
   - [9.2. 具体 API](#92-具体-api)
     - [9.2.1. get()](#921-get)
     - [9.2.2. set()](#922-set)
@@ -252,10 +252,10 @@ plan : 1 chapter/3 day
     - [11.1.1. 同步与异步](#1111-同步与异步)
     - [11.1.2. 以往的异步编程模式](#1112-以往的异步编程模式)
   - [11.2. 期约](#112-期约)
-    - [11.2.2. 期约基础](#1122-期约基础)
-    - [11.2.3. 期约实例的方法](#1123-期约实例的方法)
-    - [11.2.4. 期约连锁与期约合成](#1124-期约连锁与期约合成)
-    - [11.2.5. 期约扩展](#1125-期约扩展)
+    - [11.2.1. 期约基础](#1121-期约基础)
+    - [11.2.2. 期约实例的方法](#1122-期约实例的方法)
+    - [11.2.3. 期约连锁与期约合成](#1123-期约连锁与期约合成)
+    - [11.2.4. 期约扩展](#1124-期约扩展)
   - [11.3. 异步函数](#113-异步函数)
     - [11.3.1. 异步函数](#1131-异步函数)
     - [11.3.2. await](#1132-await)
@@ -337,6 +337,7 @@ plan : 1 chapter/3 day
   - [16.2. 样式](#162-样式)
     - [16.2.1. 存取元素样式](#1621-存取元素样式)
     - [16.2.2. 操作样式表](#1622-操作样式表)
+    - [16.2.3. 元素尺寸](#1623-元素尺寸)
 
 # 1. 什么是 JavaScript
 
@@ -13747,7 +13748,7 @@ console.log(proxy.foo);
 // TypeError
 ```
 
-### 9.1.4. 反射
+### 9.1.3. 反射
 
 所有捕获器都可以访问相应的参数，基于这些参数可以重建被捕获方法的原始行为。比如，get()捕获器会接收到目标对象、要查询的属性和代理对象三个参数。
 
@@ -13852,7 +13853,7 @@ console.log(proxy.baz); // qux
 console.log(target.baz); // qux
 ```
 
-### 9.1.5. 优先使用反射 API
+### 9.1.4. 优先使用反射 API
 
 某些情况下应该优先使用反射 API，这是有一些理由的。
 
@@ -13924,7 +13925,7 @@ Function.prototype.apply.call(myFunc, thisVal, argumentList);
 Reflect.apply(myFunc, thisVal, argumentsList);
 ```
 
-### 9.1.6. 代理的问题
+### 9.1.5. 代理的问题
 
 代理是在 ECMAScript 现有基础之上构建起来的一套新 API，因此其实现已经尽力做到最好了。很大程度上，代理作为对象的虚拟层可以正常使用。但在某些情况下，代理也不能与现在的 ECMAScript 机制很好地协同。
 
@@ -16741,7 +16742,7 @@ double(3, successCallback, failureCallback);
 
 ECMAScript 6 增加了对 Promises/A+规范的完善支持，即 Promise 类型。一经推出，Promise 就大受欢迎，成为了主导性的异步编程机制。所有现代浏览器都支持 ES6 期约，很多其他浏览器 API（如 fetch()和 Battery Status API）也以期约为基础。
 
-### 11.2.2. 期约基础
+### 11.2.1. 期约基础
 
 ECMAScript 6 新增的引用类型 Promise，可以通过 new 操作符来实例化。创建新期约时需要传入执行器（executor）函数作为参数（后面马上会介绍），下面的例子使用了一个空函数对象来应付一下解释器：
 
@@ -16924,7 +16925,7 @@ try {
 
 在前面的例子中，拒绝期约的错误并没有抛到执行同步代码的线程里，而是通过浏览器异步消息队列来处理的。因此，try/catch 块并不能捕获该错误。代码一旦开始以异步模式执行，则唯一与之交互的方式就是使用异步结构——更具体地说，就是期约的方法。
 
-### 11.2.3. 期约实例的方法
+### 11.2.2. 期约实例的方法
 
 期约实例的方法是连接外部同步代码与内部异步代码之间的桥梁。这些方法可以访问异步操作返回的数据，处理期约成功和失败的结果，连续对期约求值，或者添加只有期约进入终止状态时才会执行的代码。
 
@@ -17409,7 +17410,7 @@ new Promise((resolve, reject) => {
 // continue asynchronous execution
 ```
 
-### 11.2.4. 期约连锁与期约合成
+### 11.2.3. 期约连锁与期约合成
 
 多个期约组合在一起可以构成强大的代码逻辑。这种组合可以通过两种方式实现：期约连锁与期约合成。前者就是一个期约接一个期约地拼接，后者则是将多个期约组合为一个期约。
 
@@ -17766,7 +17767,7 @@ addTen(8).then(console.log); // 18
 
 注意 本章后面的 11.3 节在讨论异步函数时还会涉及这个概念。
 
-### 11.2.5. 期约扩展
+### 11.2.4. 期约扩展
 
 ES6 期约实现是很可靠的，但它也有不足之处。比如，很多第三方期约库实现中具备而 ECMAScript 规范却未涉及的两个特性：期约取消和进度追踪。
 
@@ -20583,8 +20584,7 @@ alert(shallowList.childNodes.length); // 0
 
 注意 cloneNode()方法不会复制添加到 DOM 节点的 JavaScript 属性，比如事件处理程序。这个方法只复制 HTML 属性，以及可选地复制子节点。除此之外则一概不会复制。IE 在很长时间内会复制事件处理程序，这是一个 bug，所以推荐在复制前先删除事件处理程序。
 
-本节要介绍的最后一个方法是 normalize()。这个方法唯一的任务就是处理文档子树中的文本节点。由于解析器实现的差异或 DOM 操作等原因，可能会出现并不包含文本的文本节点，或者文本节点之间互为同胞关系。在节点上调用 normalize()方法会检测这个节点的所有后代，从中搜索上述两种
-情形。如果发现空文本节点，则将其删除；如果两个同胞节点是相邻的，则将其合并为一个文本节点。这个方法将在本章后面进一步讨论。
+本节要介绍的最后一个方法是 normalize()。这个方法唯一的任务就是处理文档子树中的文本节点。由于解析器实现的差异或 DOM 操作等原因，可能会出现并不包含文本的文本节点，或者文本节点之间互为同胞关系。在节点上调用 normalize()方法会检测这个节点的所有后代，从中搜索上述两种情形。如果发现空文本节点，则将其删除；如果两个同胞节点是相邻的，则将其合并为一个文本节点。这个方法将在本章后面进一步讨论。
 
 ### 14.1.2. Document 类型
 
@@ -20711,8 +20711,7 @@ let div = document.getElementById('mydiv'); // null
 
 如果页面中存在多个具有相同 ID 的元素，则 getElementById()返回在文档中出现的第一个元素。
 
-getElementsByTagName()是另一个常用来获取元素引用的方法。这个方法接收一个参数，即要获取元素的标签名，返回包含零个或多个元素的 NodeList。在 HTML 文档中，这个方法返回一个 HTMLCollection 对象。考虑到二者都是“实时”列表，HTMLCollection 与 NodeList 是很相似的。
-例如，下面的代码会取得页面中所有的`<img>`元素并返回包含它们的 HTMLCollection：
+getElementsByTagName()是另一个常用来获取元素引用的方法。这个方法接收一个参数，即要获取元素的标签名，返回包含零个或多个元素的 NodeList。在 HTML 文档中，这个方法返回一个 HTMLCollection 对象。考虑到二者都是“实时”列表，HTMLCollection 与 NodeList 是很相似的。例如，下面的代码会取得页面中所有的`<img>`元素并返回包含它们的 HTMLCollection：
 
 ```js
 let images = document.getElementsByTagName('img');
@@ -20799,8 +20798,7 @@ document 对象上还暴露了几个特殊集合，这些集合也都是 HTMLCol
 
 5. **DOM 兼容性检测**
 
-由于 DOM 有多个 Level 和多个部分，因此确定浏览器实现了 DOM 的哪些部分是很必要的。document.implementation 属性是一个对象，其中提供了与浏览器 DOM 实现相关的信息和能力。DOM Level 1 在 document.implementation 上只定义了一个方法，即 hasFeature()。这个方法接
-收两个参数：特性名称和 DOM 版本。如果浏览器支持指定的特性和版本，则 hasFeature()方法返回 true，如下面的例子所示：
+由于 DOM 有多个 Level 和多个部分，因此确定浏览器实现了 DOM 的哪些部分是很必要的。document.implementation 属性是一个对象，其中提供了与浏览器 DOM 实现相关的信息和能力。DOM Level 1 在 document.implementation 上只定义了一个方法，即 hasFeature()。这个方法接收两个参数：特性名称和 DOM 版本。如果浏览器支持指定的特性和版本，则 hasFeature()方法返回 true，如下面的例子所示：
 
 ```js
 let hasXmlDom = document.implementation.hasFeature('XML', '1.0');
@@ -21523,8 +21521,7 @@ console.log(element.getAttributeNode('align').value); // 'left'
 console.log(element.getAttribute('align')); // 'left'
 ```
 
-在这个例子中，首先创建了一个新属性。调用 createAttribute()并传入'align'为新属性设置了 name 属性，因此就不用再设置了。随后，value 属性被赋值为'left'。为把这个新属性添加到元素上，可以使用元素的 setAttributeNode()方法。添加这个属性后，可以通过不同方式访问它，包
-括 attributes 属性、getAttributeNode()和 getAttribute()方法。其中，attributes 属性和 getAttributeNode()方法都返回属性对应的 Attr 节点，而 getAttribute()方法只返回属性的值。
+在这个例子中，首先创建了一个新属性。调用 createAttribute()并传入'align'为新属性设置了 name 属性，因此就不用再设置了。随后，value 属性被赋值为'left'。为把这个新属性添加到元素上，可以使用元素的 setAttributeNode()方法。添加这个属性后，可以通过不同方式访问它，包括 attributes 属性、getAttributeNode()和 getAttribute()方法。其中，attributes 属性和 getAttributeNode()方法都返回属性对应的 Attr 节点，而 getAttribute()方法只返回属性的值。
 
 注意 将属性作为节点来访问多数情况下并无必要。推荐使用 getAttribute()、removeAttribute()和 setAttribute()方法操作属性，而不是直接操作属性节点。
 
@@ -22811,8 +22808,7 @@ DOM 虽然已经为操纵节点提供了很多 API，但向文档中一次性插
 
 实际返回的文本内容会因浏览器而不同。IE 和 Opera 会把所有元素标签转换为大写，而 Safari、Chrome 和 Firefox 则会按照文档源代码的格式返回，包含空格和缩进。因此不要指望不同浏览器的 innerHTML 会返回完全一样的值。
 
-在写入模式下，赋给 innerHTML 属性的值会被解析为 DOM 子树，并替代元素之前的所有节点。因为所赋的值默认为 HTML，所以其中的所有标签都会以浏览器处理 HTML 的方式转换为元素（同样，转换结果也会因浏览器不同而不同）。如果赋值中不包含任何 HTML 标签，则直接生成一个文本节点，
-如下所示：
+在写入模式下，赋给 innerHTML 属性的值会被解析为 DOM 子树，并替代元素之前的所有节点。因为所赋的值默认为 HTML，所以其中的所有标签都会以浏览器处理 HTML 的方式转换为元素（同样，转换结果也会因浏览器不同而不同）。如果赋值中不包含任何 HTML 标签，则直接生成一个文本节点，如下所示：
 
 ```js
 div.innerHTML = 'Hello world!';
@@ -23329,7 +23325,8 @@ DOM2 Core 对 Element 类型的更新主要集中在对属性的操作上。下�
 - removeAttributeNS(namespaceURI, localName)，删除指定命名空间 namespaceURI 中名为 localName 的属性；
 - setAttributeNS(namespaceURI, qualifiedName, value)，设置指定命名空间 namespaceURI 中名为 qualifiedName 的属性为 value；
 - setAttributeNodeNS(attNode)，为元素设置（添加）包含命名空间信息的属性节点 attNode。
-  这些方法与 DOM1 中对应的方法行为相同，除 setAttributeNodeNS()之外都只是多了一个命名空间参数。
+
+这些方法与 DOM1 中对应的方法行为相同，除 setAttributeNodeNS()之外都只是多了一个命名空间参数。
 
 4. **NamedNodeMap 的变化**
 
@@ -23685,3 +23682,77 @@ CSSRule 类型表示样式表中的一条规则。这个类型也是一个通用
 - selectorText，返回规则的选择符文本。这里的文本可能与样式表中实际的文本不一样，因为浏览器内部处理样式表的方式也不一样。这个属性在 Firefox、Safari、Chrome 和 IE 中是只读的，在 Opera 中是可以修改的。
 - style，返回 CSSStyleDeclaration 对象，可以设置和获取当前规则中的样式。
 - type，数值常量，表示规则类型。对于样式规则，它始终为 1。
+
+在这些属性中，使用最多的是cssText、selectorText 和style。cssText 属性与style.cssText类似，不过并不完全一样。前者包含选择符文本和环绕样式声明的大括号，而后者则只包含样式声明（类似于元素上的style.cssText）。此外，cssText 是只读的，而style.cssText 可以被重写。
+
+多数情况下，使用style 属性就可以实现操作样式规则的任务了。这个对象可以像每个元素上的style 对象一样，用来读取或修改规则的样式。比如下面这个CSS 规则：
+
+```css
+div.box {
+  background-color: blue;
+  width: 100px;
+  height: 200px;
+}
+```
+
+假设这条规则位于页面中的第一个样式表中，而且是该样式表中唯一一条CSS 规则，则下列代码可以获取它的所有信息：
+
+```js
+let sheet = document.styleSheets[0];
+let rules = sheet.cssRules || sheet.rules; // 取得规则集合
+let rule = rules[0]; // 取得第一条规则
+console.log(rule.selectorText); // 'div.box'
+console.log(rule.style.cssText); // 完整的CSS 代码
+console.log(rule.style.backgroundColor); // 'blue'
+console.log(rule.style.width); // '100px'
+console.log(rule.style.height); // '200px'
+```
+
+使用这些接口，可以像确定元素style 对象中包含的样式一样，确定一条样式规则的样式信息。与元素的场景一样，也可以修改规则中的样式，如下所示：
+
+```js
+let sheet = document.styleSheets[0];
+let rules = sheet.cssRules || sheet.rules; // 取得规则集合
+let rule = rules[0]; // 取得第一条规则
+rule.style.backgroundColor = 'red'
+```
+
+注意，这样修改规则会影响到页面上所有应用了该规则的元素。如果页面上有两个`<div>`元素有'box'类，则这两个元素都会受到这个修改的影响。
+
+2. **创建规则**
+
+DOM 规定，可以使用insertRule()方法向样式表中添加新规则。这个方法接收两个参数：规则的文本和表示插入位置的索引值。下面是一个例子：
+
+```js
+sheet.insertRule("body { background-color: silver }", 0); // 使用DOM 方法
+```
+
+这个例子插入了一条改变文档背景颜色的规则。这条规则是作为样式表的第一条规则（位置0）插入的，顺序对规则层叠是很重要的。
+
+虽然可以这样添加规则，但随着要维护的规则增多，很快就会变得非常麻烦。这时候，更好的方式是使用第14 章介绍的动态样式加载技术。
+
+3. **删除规则**
+
+支持从样式表中删除规则的DOM 方法是deleteRule()，它接收一个参数：要删除规则的索引。要删除样式表中的第一条规则，可以这样做：
+
+```js
+sheet.deleteRule(0); // 使用DOM 方法
+```
+
+与添加规则一样，删除规则并不是Web 开发中常见的做法。考虑到可能影响CSS 层叠的效果，删除规则时要慎重。
+
+### 16.2.3. 元素尺寸
+
+本节介绍的属性和方法并不是DOM2 Style 规范中定义的，但与HTML 元素的样式有关。DOM 一直缺乏页面中元素实际尺寸的规定。IE 率先增加了一些属性，向开发者暴露元素的尺寸信息。这些属性现在已经得到所有主流浏览器支持。
+
+1. **偏移尺寸**
+
+第一组属性涉及 **偏移尺寸(offset dimensions)**，包含元素在屏幕上占用的所有视觉空间。元素在页面上的视觉空间由其高度和宽度决定，包括所有内边距、滚动条和边框（但不包含外边距）。以下4 个属性用于取得元素的偏移尺寸。
+
+- offsetHeight，元素在垂直方向上占用的像素尺寸，包括它的高度、水平滚动条高度（如果可见）和上、下边框的高度。
+- offsetLeft，元素左边框外侧距离包含元素左边框内侧的像素数。
+- offsetTop，元素上边框外侧距离包含元素上边框内侧的像素数。
+- offsetWidth，元素在水平方向上占用的像素尺寸，包括它的宽度、垂直滚动条宽度（如果可见）和左、右边框的宽度。
+
+其中，offsetLeft 和offsetTop 是相对于包含元素的，包含元素保存在offsetParent 属性中。offsetParent 不一定是parentNode。比如，`<td>`元素的offsetParent 是作为其祖先的`<table>`元素，因为`<table>`是节点层级中第一个提供尺寸的元素。下图展示了这些属性代表的不同尺寸。
+

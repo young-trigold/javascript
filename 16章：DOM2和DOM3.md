@@ -7,6 +7,7 @@
   - [16.2. 样式](#162-样式)
     - [16.2.1. 存取元素样式](#1621-存取元素样式)
     - [16.2.2. 操作样式表](#1622-操作样式表)
+    - [16.2.3. 元素尺寸](#1623-元素尺寸)
 
 # 16. DOM2 和 DOM3
 
@@ -187,7 +188,8 @@ DOM2 Core 对 Element 类型的更新主要集中在对属性的操作上。下�
 - removeAttributeNS(namespaceURI, localName)，删除指定命名空间 namespaceURI 中名为 localName 的属性；
 - setAttributeNS(namespaceURI, qualifiedName, value)，设置指定命名空间 namespaceURI 中名为 qualifiedName 的属性为 value；
 - setAttributeNodeNS(attNode)，为元素设置（添加）包含命名空间信息的属性节点 attNode。
-  这些方法与 DOM1 中对应的方法行为相同，除 setAttributeNodeNS()之外都只是多了一个命名空间参数。
+
+这些方法与 DOM1 中对应的方法行为相同，除 setAttributeNodeNS()之外都只是多了一个命名空间参数。
 
 4. **NamedNodeMap 的变化**
 
@@ -543,3 +545,77 @@ CSSRule 类型表示样式表中的一条规则。这个类型也是一个通用
 - selectorText，返回规则的选择符文本。这里的文本可能与样式表中实际的文本不一样，因为浏览器内部处理样式表的方式也不一样。这个属性在 Firefox、Safari、Chrome 和 IE 中是只读的，在 Opera 中是可以修改的。
 - style，返回 CSSStyleDeclaration 对象，可以设置和获取当前规则中的样式。
 - type，数值常量，表示规则类型。对于样式规则，它始终为 1。
+
+在这些属性中，使用最多的是cssText、selectorText 和style。cssText 属性与style.cssText类似，不过并不完全一样。前者包含选择符文本和环绕样式声明的大括号，而后者则只包含样式声明（类似于元素上的style.cssText）。此外，cssText 是只读的，而style.cssText 可以被重写。
+
+多数情况下，使用style 属性就可以实现操作样式规则的任务了。这个对象可以像每个元素上的style 对象一样，用来读取或修改规则的样式。比如下面这个CSS 规则：
+
+```css
+div.box {
+  background-color: blue;
+  width: 100px;
+  height: 200px;
+}
+```
+
+假设这条规则位于页面中的第一个样式表中，而且是该样式表中唯一一条CSS 规则，则下列代码可以获取它的所有信息：
+
+```js
+let sheet = document.styleSheets[0];
+let rules = sheet.cssRules || sheet.rules; // 取得规则集合
+let rule = rules[0]; // 取得第一条规则
+console.log(rule.selectorText); // 'div.box'
+console.log(rule.style.cssText); // 完整的CSS 代码
+console.log(rule.style.backgroundColor); // 'blue'
+console.log(rule.style.width); // '100px'
+console.log(rule.style.height); // '200px'
+```
+
+使用这些接口，可以像确定元素style 对象中包含的样式一样，确定一条样式规则的样式信息。与元素的场景一样，也可以修改规则中的样式，如下所示：
+
+```js
+let sheet = document.styleSheets[0];
+let rules = sheet.cssRules || sheet.rules; // 取得规则集合
+let rule = rules[0]; // 取得第一条规则
+rule.style.backgroundColor = 'red'
+```
+
+注意，这样修改规则会影响到页面上所有应用了该规则的元素。如果页面上有两个`<div>`元素有'box'类，则这两个元素都会受到这个修改的影响。
+
+2. **创建规则**
+
+DOM 规定，可以使用insertRule()方法向样式表中添加新规则。这个方法接收两个参数：规则的文本和表示插入位置的索引值。下面是一个例子：
+
+```js
+sheet.insertRule("body { background-color: silver }", 0); // 使用DOM 方法
+```
+
+这个例子插入了一条改变文档背景颜色的规则。这条规则是作为样式表的第一条规则（位置0）插入的，顺序对规则层叠是很重要的。
+
+虽然可以这样添加规则，但随着要维护的规则增多，很快就会变得非常麻烦。这时候，更好的方式是使用第14 章介绍的动态样式加载技术。
+
+3. **删除规则**
+
+支持从样式表中删除规则的DOM 方法是deleteRule()，它接收一个参数：要删除规则的索引。要删除样式表中的第一条规则，可以这样做：
+
+```js
+sheet.deleteRule(0); // 使用DOM 方法
+```
+
+与添加规则一样，删除规则并不是Web 开发中常见的做法。考虑到可能影响CSS 层叠的效果，删除规则时要慎重。
+
+### 16.2.3. 元素尺寸
+
+本节介绍的属性和方法并不是DOM2 Style 规范中定义的，但与HTML 元素的样式有关。DOM 一直缺乏页面中元素实际尺寸的规定。IE 率先增加了一些属性，向开发者暴露元素的尺寸信息。这些属性现在已经得到所有主流浏览器支持。
+
+1. **偏移尺寸**
+
+第一组属性涉及 **偏移尺寸(offset dimensions)**，包含元素在屏幕上占用的所有视觉空间。元素在页面上的视觉空间由其高度和宽度决定，包括所有内边距、滚动条和边框（但不包含外边距）。以下4 个属性用于取得元素的偏移尺寸。
+
+- offsetHeight，元素在垂直方向上占用的像素尺寸，包括它的高度、水平滚动条高度（如果可见）和上、下边框的高度。
+- offsetLeft，元素左边框外侧距离包含元素左边框内侧的像素数。
+- offsetTop，元素上边框外侧距离包含元素上边框内侧的像素数。
+- offsetWidth，元素在水平方向上占用的像素尺寸，包括它的宽度、垂直滚动条宽度（如果可见）和左、右边框的宽度。
+
+其中，offsetLeft 和offsetTop 是相对于包含元素的，包含元素保存在offsetParent 属性中。offsetParent 不一定是parentNode。比如，`<td>`元素的offsetParent 是作为其祖先的`<table>`元素，因为`<table>`是节点层级中第一个提供尺寸的元素。下图展示了这些属性代表的不同尺寸。
+
