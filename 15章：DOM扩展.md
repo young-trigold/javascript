@@ -46,7 +46,7 @@ Selectors API Level 2 规范在 Element 类型上新增了更多方法，比如 
 
 querySelector()方法接收 CSS 选择符参数，返回匹配该模式的第一个后代元素，如果没有匹配项则返回 null。下面是一些例子：
 
-```js
+```javascript
 // 取得<body>元素
 let body = document.querySelector('body');
 // 取得ID 为'myDiv'的元素
@@ -71,7 +71,7 @@ querySelectorAll()方法跟 querySelector()一样，也接收一个用于查询�
 
 与 querySelector()一样，querySelectorAll()也可以在 Document、DocumentFragment 和 Element 类型上使用。下面是几个例子：
 
-```js
+```javascript
 // 取得ID 为'myDiv'的<div>元素中的所有<em>元素
 let ems = document.getElementById('myDiv').querySelectorAll('em');
 // 取得所有类名中包含'selected'的元素
@@ -82,7 +82,7 @@ let strongs = document.querySelectorAll('p strong');
 
 返回的 NodeList 对象可以通过 for-of 循环、item()方法或中括号语法取得个别元素。比如：
 
-```js
+```javascript
 let strongElements = document.querySelectorAll('p strong');
 // 以下3 个循环的效果一样
 for (let strong of strongElements) {
@@ -102,7 +102,7 @@ for (let i = 0; i < strongElements.length; ++i) {
 
 matches()方法（在规范草案中称为 matchesSelector()）接收一个 CSS 选择符参数，如果元素匹配则该选择符返回 true，否则返回 false。例如：
 
-```js
+```javascript
 if (document.body.matches('body.page1')) {
   // true
 }
@@ -128,7 +128,7 @@ Element Traversal API 为 DOM 元素添加了 5 个属性：
 
 举个例子，过去要以跨浏览器方式遍历特定元素的所有子元素，代码大致是这样写的：
 
-```js
+```javascript
 let parentElement = document.getElementById('parent');
 let currentChildNode = parentElement.firstChild;
 // 没有子元素，firstChild 返回null，跳过循环
@@ -146,7 +146,7 @@ while (currentChildNode) {
 
 使用 Element Traversal 属性之后，以上代码可以简化如下：
 
-```js
+```javascript
 let parentElement = document.getElementById('parent');
 let currentChildElement = parentElement.firstElementChild;
 // 没有子元素，firstElementChild 返回null，跳过循环
@@ -180,7 +180,7 @@ getElementsByClassName()是 HTML5 新增的最受欢迎的一个方法，暴露�
 
 getElementsByClassName()方法接收一个参数，即包含一个或多个类名的字符串，返回类名中包含相应类的元素的 NodeList。如果提供了多个类名，则顺序无关紧要。下面是几个示例：
 
-```js
+```javascript
 // 取得所有类名中包含'username'和'current'元素
 // 这两个类名的顺序无关紧要
 let allCurrentUsernames = document.getElementsByClassName('username current');
@@ -206,7 +206,7 @@ IE9 及以上版本，以及所有现代浏览器都支持 getElementsByClassNam
 
 这个`<div>`元素有 3 个类名。要想删除其中一个，就得先把 className 拆开，删除不想要的那个，再把包含剩余类的字符串设置回去。比如：
 
-```js
+```javascript
 // 要删除'user'类
 let targetClass = 'user';
 // 把类名拆成数组
@@ -232,13 +232,13 @@ HTML5 通过给所有元素增加 classList 属性为这些操作提供了更简
 
 这样以来，前面的例子中那么多行代码就可以简化成下面的一行：
 
-```js
+```javascript
 div.classList.remove('user');
 ```
 
 这行代码可以在不影响其他类名的情况下完成删除。其他方法同样极大地简化了操作类名的复杂性，如下面的例子所示：
 
-```js
+```javascript
 // 删除'disabled'类
 div.classList.remove('disabled');
 // 添加'current'类
@@ -261,7 +261,7 @@ doStuff(class);
 
 HTML5 增加了辅助 DOM 焦点管理的功能。首先是 document.activeElement，始终包含当前拥有焦点的 DOM 元素。页面加载时，可以通过用户输入（按 Tab 键或代码中使用 focus()方法）让某个元素自动获得焦点。例如：
 
-```js
+```javascript
 let button = document.getElementById('myButton');
 button.focus();
 console.log(document.activeElement === button); // true
@@ -271,7 +271,7 @@ console.log(document.activeElement === button); // true
 
 其次是 document.hasFocus()方法，该方法返回布尔值，表示文档是否拥有焦点：
 
-```js
+```javascript
 let button = document.getElementById('myButton');
 button.focus();
 console.log(document.hasFocus()); // true
@@ -294,7 +294,7 @@ readyState 是 IE4 最早添加到 document 对象上的属性，后来其他浏
 
 实际开发中，最好是把 document.readState 当成一个指示器，以判断文档是否加载完毕。在这个属性得到广泛支持以前，通常要依赖 onload 事件处理程序设置一个标记，表示文档加载完了。这个属性的基本用法如下：
 
-```js
+```javascript
 if (document.readyState == 'complete') {
   // 执行操作
 }
@@ -304,7 +304,7 @@ if (document.readyState == 'complete') {
 
 自从 IE6 提供了以标准或混杂模式渲染页面的能力之后，检测页面渲染模式成为一个必要的需求。IE 为 document 添加了 compatMode 属性，这个属性唯一的任务是指示浏览器当前处于什么渲染模式。如下面的例子所示，标准模式下 document.compatMode 的值是'CSS1Compat'，而在混杂模式下，document.compatMode 的值是'BackCompat'：
 
-```js
+```javascript
 if (document.compatMode == 'CSS1Compat') {
   console.log('Standards mode');
 } else {
@@ -318,7 +318,7 @@ HTML5 最终也把 compatMode 属性的实现标准化了。
 
 作为对 document.body（指向文档的`<body>`元素）的补充，HTML5 增加了 document.head 属性，指向文档的`<head>`元素。可以像下面这样直接取得`<head>`元素：
 
-```js
+```javascript
 let head = document.head;
 ```
 
@@ -326,7 +326,7 @@ let head = document.head;
 
 HTML5 增加了几个与文档字符集有关的新属性。其中，characterSet 属性表示文档实际使用的字符集，也可以用来指定新字符集。这个属性的默认值是'UTF-16'，但可以通过`<meta>`元素或响应头，以及新增的 characterSeet 属性来修改。下面是一个例子：
 
-```js
+```javascript
 console.log(document.characterSet); // 'UTF-16'
 document.characterSet = 'UTF-8';
 ```
@@ -341,7 +341,7 @@ HTML5 允许给元素指定非标准的属性，但要使用前缀 data-以便�
 
 定义了自定义数据属性后，可以通过元素的 dataset 属性来访问。dataset 属性是一个 DOMStringMap 的实例，包含一组键/值对映射。元素的每个 data-name 属性在 dataset 中都可以通过 data-后面的字符串作为键来访问（例如，属性 data-myname、data-myName 可以通过 myname 访问，但要注意 data-my-name、data-My-Name 要通过 myName 来访问）。下面是一个使用自定义数据属性的例子：
 
-```js
+```javascript
 // 本例中使用的方法仅用于示范
 let div = document.getElementById('myDiv');
 // 取得自定义数据属性的值
@@ -383,7 +383,7 @@ DOM 虽然已经为操纵节点提供了很多 API，但向文档中一次性插
 
 对于这里的`<div>`元素而言，其 innerHTML 属性会返回以下字符串：
 
-```js
+```javascript
 <p>This is a <strong>paragraph</strong> with a list following it.</p>
 <ul>
 <li>Item 1</li>
@@ -394,16 +394,15 @@ DOM 虽然已经为操纵节点提供了很多 API，但向文档中一次性插
 
 实际返回的文本内容会因浏览器而不同。IE 和 Opera 会把所有元素标签转换为大写，而 Safari、Chrome 和 Firefox 则会按照文档源代码的格式返回，包含空格和缩进。因此不要指望不同浏览器的 innerHTML 会返回完全一样的值。
 
-在写入模式下，赋给 innerHTML 属性的值会被解析为 DOM 子树，并替代元素之前的所有节点。因为所赋的值默认为 HTML，所以其中的所有标签都会以浏览器处理 HTML 的方式转换为元素（同样，转换结果也会因浏览器不同而不同）。如果赋值中不包含任何 HTML 标签，则直接生成一个文本节点，
-如下所示：
+在写入模式下，赋给 innerHTML 属性的值会被解析为 DOM 子树，并替代元素之前的所有节点。因为所赋的值默认为 HTML，所以其中的所有标签都会以浏览器处理 HTML 的方式转换为元素（同样，转换结果也会因浏览器不同而不同）。如果赋值中不包含任何 HTML 标签，则直接生成一个文本节点，如下所示：
 
-```js
+```javascript
 div.innerHTML = 'Hello world!';
 ```
 
 因为浏览器会解析设置的值，所以给 innerHTML 设置包含 HTML 的字符串时，结果会大不一样。来看下面的例子：
 
-```js
+```javascript
 div.innerHTML = 'Hello & welcome, <b>'reader'!</b>';
 ```
 
@@ -424,14 +423,14 @@ div.innerHTML = 'Hello & welcome, <b>'reader'!</b>';
 
 在所有现代浏览器中，通过 innerHTML 插入的`<script>`标签是不会执行的。而在 IE8 及之前的版本中，只要这样插入的`<script>`元素指定了 defer 属性，且`<script>`之前是“受控元素”（scoped element），那就是可以执行的。`<script>`元素与`<style>`或注释一样，都是“非受控元素”（NoScope element），也就是在页面上看不到它们。IE 会把 innerHTML 中从非受控元素开始的内容都删掉，也就是说下面的例子是行不通的：
 
-```js
+```javascript
 // 行不通
 div.innerHTML = '<script defer>console.log('hi');</script>';
 ```
 
 在这个例子中，innerHTML 字符串以一个非受控元素开始，因此整个字符串都会被清空。为了达到目的，必须在`<script>`前面加上一个受控元素，例如文本节点或没有结束标签的元素（如`<input>`）。因此，下面的代码就是可行的：
 
-```js
+```javascript
 // 以下都可行
 div.innerHTML = '_<script defer>console.log('hi');<\/script>';
 div.innerHTML = '<div>&nbsp;</div><script defer>console.log('hi');<\/script>';
@@ -443,13 +442,13 @@ log('hi');<\/script>';
 
 在 IE 中，通过 innerHTML 插入`<style>`也会有类似的问题。多数浏览器支持使用 innerHTML 插入`<style>`元素：
 
-```js
+```javascript
 div.innerHTML = '<style type='text/css'>body {background-color: red; }</style>';
 ```
 
 但在 IE8 及之前的版本中，`<style>`也被认为是非受控元素，所以必须前置一个受控元素：
 
-```js
+```javascript
 div.innerHTML =
   '_<style type='text/css'>body {background-color: red; }</style>';
 div.removeChild(div.firstChild);
@@ -480,13 +479,13 @@ div.removeChild(div.firstChild);
 
 如果使用 outerHTML 设置 HTML，比如：
 
-```js
+```javascript
 div.outerHTML = '<p>This is a paragraph.</p>';
 ```
 
 则会得到与执行以下脚本相同的结果：`
 
-```js
+```javascript
 let p = document.createElement('p');
 p.appendChild(document.createTextNode('This is a paragraph.'));
 div.parentNode.replaceChild(p, div);
@@ -505,7 +504,7 @@ div.parentNode.replaceChild(p, div);
 
 注意这几个值是不区分大小写的。第二个参数会作为 HTML 字符串解析（与 innerHTML 和 outerHTML 相同）或者作为纯文本解析（与 innerText 和 outerText 相同）。如果是 HTML，则会在解析出错时抛出错误。下面展示了基本用法：
 
-```js
+```javascript
 // 作为前一个同胞节点插入
 element.insertAdjacentHTML('beforebegin', '<p>Hello world!</p>');
 element.insertAdjacentText('beforebegin', 'Hello world!');
@@ -526,7 +525,7 @@ element.insertAdjacentText('afterend', 'Hello world!');
 
 使用这些属性当然有其方便之处，特别是 innerHTML。一般来讲，插入大量的新 HTML 使用 innerHTML 比使用多次 DOM 操作创建节点再插入来得更便捷。这是因为 HTML 解析器会解析设置给 innerHTML（或 outerHTML）的值。解析器在浏览器中是底层代码（通常是 C++代码），比 JavaScript 快得多。不过，HTML 解析器的构建与解构也不是没有代价，因此最好限制使用 innerHTML 和 outerHTML 的次数。比如，下面的代码使用 innerHTML 创建了一些列表项：
 
-```js
+```javascript
 for (let value of values) {
   ul.innerHTML += '<li>${value}</li>'; // 别这样做！
 }
@@ -534,7 +533,7 @@ for (let value of values) {
 
 这段代码效率低，因为每次迭代都要设置一次 innerHTML。不仅如此，每次循环还要先读取 innerHTML，也就是说循环一次要访问两次 innerHTML。为此，最好通过循环先构建一个独立的字符串，最后再一次性把生成的字符串赋值给 innerHTML，比如：
 
-```js
+```javascript
 let itemsHtml = '';
 for (let value of values) {
   itemsHtml += '<li>${value}</li>';
@@ -544,7 +543,7 @@ ul.innerHTML = itemsHtml;
 
 这样修改之后效率就高多了，因为只有对 innerHTML 的一次赋值。当然，像下面这样一行代码也可以搞定：
 
-```js
+```javascript
 ul.innerHTML = values.map((value) => '<li>${value}</li>').join('');
 ```
 
@@ -571,7 +570,7 @@ scrollIntoView()方法存在于所有 HTML 元素上，可以滚动浏览器窗�
 
 来看几个例子：
 
-```js
+```javascript
 // 确保元素可见
 document.forms[0].scrollIntoView();
 // 同上
@@ -593,7 +592,7 @@ document.forms[0].scrollIntoView({ behavior: 'smooth', block: 'start' });
 
 IE9 之前的版本与其他浏览器在处理空白文本节点上的差异导致了 children 属性的出现。children 属性是一个 HTMLCollection，只包含元素的 Element 类型的子节点。如果元素的子节点类型全部是元素类型，那 children 和 childNodes 中包含的节点应该是一样的。可以像下面这样使用 children 属性：
 
-```js
+```javascript
 let childCount = element.children.length;
 let firstChild = element.children[0];
 ```
@@ -604,7 +603,7 @@ DOM 编程中经常需要确定一个元素是不是另一个元素的后代。I
 
 如果目标节点是被搜索节点的后代，contains()返回 true，否则返回 false。下面看一个例子：
 
-```js
+```javascript
 console.log(document.documentElement.contains(document.body)); // true
 ```
 
@@ -622,7 +621,7 @@ console.log(document.documentElement.contains(document.body)); // true
 
 要模仿 contains()方法，就需要用到掩码 16（0x10）。compareDocumentPosition()方法的结果可以通过按位与来确定参考节点是否包含传入的节点，比如：
 
-```js
+```javascript
 let result = document.documentElement.compareDocumentPosition(document.body);
 console.log(!!(result & 0x10));
 ```
@@ -656,7 +655,7 @@ innerText 属性对应元素中包含的所有文本内容，无论文本在子�
 
 对这个例子中的`<div>`而言，innerText 属性会返回以下字符串：
 
-```js
+```javascript
 This is a paragraph with a list following it.
 Item 1
 Item 2
@@ -667,7 +666,7 @@ Item 3
 
 下面再看一个使用 innerText 设置`<div>`元素内容的例子：
 
-```js
+```javascript
 div.innerText = 'Hello world!';
 ```
 
@@ -679,7 +678,7 @@ div.innerText = 'Hello world!';
 
 设置 innerText 会移除元素之前所有的后代节点，完全改变 DOM 子树。此外，设置 innerText 也会编码出现在字符串中的 HTML 语法字符（小于号、大于号、引号及和号）。下面是一个例子：
 
-```js
+```javascript
 div.innerText = 'Hello & welcome, <b>'reader'!</b>';
 ```
 
@@ -693,7 +692,7 @@ div.innerText = 'Hello & welcome, <b>'reader'!</b>';
 
 因为设置 innerText 只能在容器元素中生成一个文本节点，所以为了保证一定是文本节点，就必须进行 HTML 编码。innerText 属性可以用于去除 HTML 标签。通过将 innerText 设置为等于 innerText，可以去除所有 HTML 标签而只剩文本，如下所示：
 
-```js
+```javascript
 div.innerText = div.innerText;
 ```
 
@@ -705,13 +704,13 @@ div.innerText = div.innerText;
 
 outerText 与 innerText 是类似的，只不过作用范围包含调用它的节点。要读取文本值时，outerText 与 innerText 实际上会返回同样的内容。但在写入文本值时，outerText 就大不相同了。写入文本值时，outerText 不止会移除所有后代节点，而是会替换整个元素。比如：
 
-```js
+```javascript
 div.outerText = 'Hello world!';
 ```
 
 这行代码的执行效果就相当于以下两行代码：
 
-```js
+```javascript
 let text = document.createTextNode('Hello world!');
 div.parentNode.replaceChild(text, div);
 ```
@@ -726,7 +725,7 @@ outerText 是一个非标准的属性，而且也没有被标准化的前景。�
 
 下面使用 scrollIntoViewIfNeeded()方法的一个例子：
 
-```js
+```javascript
 // 如果不可见，则将元素可见
 document.images[0].scrollIntoViewIfNeeded();
 ```

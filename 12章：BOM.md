@@ -41,7 +41,7 @@ BOM 的核心是 window 对象，表示浏览器的实例。window 对象在浏�
 
 因为 window 对象被复用为 ECMAScript 的 Global 对象，所以通过 var 声明的所有全局变量和函数都会变成 window 对象的属性和方法。比如：
 
-```js
+```javascript
 var age = 29;
 var sayAge = () => alert(this.age);
 alert(window.age); // 29
@@ -53,7 +53,7 @@ window.sayAge(); // 29
 
 如果在这里使用 let 或 const 替代 var，则不会把变量添加给全局对象：
 
-```js
+```javascript
 let age = 29;
 const sayAge = () => alert(this.age);
 alert(window.age); // undefined
@@ -63,7 +63,7 @@ window.sayAge(); // TypeError: window.sayAge is not a function
 
 另外，访问未声明的变量会抛出错误，但是可以在 window 对象上查询是否存在可能未声明的变量。比如：
 
-```js
+```javascript
 // 这会导致抛出错误，因为oldValue 没有声明
 var newValue = oldValue;
 // 这不会抛出错误，因为这里是属性查询
@@ -87,7 +87,7 @@ window.open()方法可以用于导航到指定 URL，也可以用于打开新浏
 
 如果 window.open()的第二个参数是一个已经存在的窗口或窗格（frame）的名字，则会在对应的窗口或窗格中打开 URL。下面是一个例子：
 
-```js
+```javascript
 // 与<a href='http://www.google.com' target='topFrame'/>相同
 window.open('http://www.google.com/', 'topFrame');
 ```
@@ -116,7 +116,7 @@ window.open('http://www.google.com/', 'topFrame');
 
 这些设置需要以逗号分隔的名值对形式出现，其中名值对以等号连接。（特性字符串中不能包含空格。）来看下面的例子：
 
-```js
+```javascript
 window.open(
   'http://www.google.com/',
   'googleWindow',
@@ -128,7 +128,7 @@ window.open(
 
 window.open()方法返回一个对新建窗口的引用。这个对象与普通 window 对象没有区别，只是为控制新窗口提供了方便。例如，某些浏览器默认不允许缩放或移动主窗口，但可能允许缩放或移动通过 window.open()创建的窗口。跟使用任何 window 对象一样，可以使用这个对象操纵新打开的窗口。
 
-```js
+```javascript
 let googleWin = window.open(
   'http://www.google.com/',
   'googleWindow',
@@ -142,20 +142,20 @@ googleWin.moveTo(100, 100);
 
 还可以使用 close()方法像这样关闭新打开的窗口：
 
-```js
+```javascript
 googleWin.close();
 ```
 
 这个方法只能用于 window.open()创建的弹出窗口。虽然不可能不经用户确认就关闭主窗口，但弹出窗口可以调用 top.close()来关闭自己。关闭窗口以后，窗口的引用虽然还在，但只能用于检查其 closed 属性了：
 
-```js
+```javascript
 googleWin.close();
 alert(googleWin.closed); // true
 ```
 
 新创建窗口的 window 对象有一个属性 opener，指向打开它的窗口。这个属性只在弹出窗口的最上层 window 对象（top）有定义，是指向调用 window.open()打开它的窗口或窗格的指针。例如：
 
-```js
+```javascript
 let googleWin = window.open(
   'http://www.google.com/',
   'googleWindow',
@@ -168,7 +168,7 @@ alert(googleWin.opener === window); // true
 
 在某些浏览器中，每个标签页会运行在独立的进程中。如果一个标签页打开了另一个，而 window 对象需要跟另一个标签页通信，那么标签便不能运行在独立的进程中。在这些浏览器中，可以将新打开的标签页的 opener 属性设置为 null，表示新打开的标签页可以运行在独立的进程中。比如：
 
-```js
+```javascript
 let googleWin = window.open(
   'http://www.google.com/',
   'googleWindow',
@@ -191,7 +191,7 @@ IE 的早期版本实现针对弹窗的多重安全限制，包括不允许创�
 
 所有现代浏览器都内置了屏蔽弹窗的程序，因此大多数意料之外的弹窗都会被屏蔽。在浏览器屏蔽弹窗时，可能会发生一些事。如果浏览器内置的弹窗屏蔽程序阻止了弹窗，那么 window.open()很可能会返回 null。此时，只要检查这个方法的返回值就可以知道弹窗是否被屏蔽了，比如：
 
-```js
+```javascript
 let googleWin = window.open('http://www.google.com/', '_blank');
 if (googleWin == null) {
   alert('The popup was blocked!');
@@ -200,7 +200,7 @@ if (googleWin == null) {
 
 在浏览器扩展或其他程序屏蔽弹窗时，window.open()通常会抛出错误。因此要准确检测弹窗是否被屏蔽，除了检测 window.open()的返回值，还要把它用 try/catch 包装起来，像这样：
 
-```js
+```javascript
 let blocked = false;
 try {
   let googleWin = window.open('http://www.google.com/', '_blank');
@@ -223,7 +223,7 @@ window 对象的位置可以通过不同的属性和方法来确定。现代浏�
 
 可以使用 moveTo()和 moveBy()方法移动窗口。这两个方法都接收两个参数，其中 moveTo()接收要移动到的新位置的绝对坐标 x 和 y；而 moveBy()则接收相对当前位置在两个方向上移动的像素数。比如：
 
-```js
+```javascript
 // 把窗口移动到左上角
 window.moveTo(0, 0);
 // 把窗口向下移动100 像素
@@ -252,7 +252,7 @@ document.documentElement.clientWidth 和 document.documentElement.clientHeight �
 
 浏览器窗口自身的精确尺寸不好确定，但可以确定页面视口的大小，如下所示：
 
-```js
+```javascript
 let pageWidth = window.innerWidth,
   pageHeight = window.innerHeight;
 if (typeof pageWidth != 'number') {
@@ -278,7 +278,7 @@ if (typeof pageWidth != 'number') {
 
 可以使用 resizeTo()和 resizeBy()方法调整窗口大小。这两个方法都接收两个参数，resizeTo()接收新的宽度和高度值，而 resizeBy()接收宽度和高度各要缩放多少。下面看个例子：
 
-```js
+```javascript
 // 缩放到100×100
 window.resizeTo(100, 100);
 // 缩放到200×150
@@ -295,7 +295,7 @@ window.resizeTo(300, 300);
 
 可以使用 scroll()、scrollTo()和 scrollBy()方法滚动页面。这 3 个方法都接收表示相对视口距离的 x 和 y 坐标，这两个参数在前两个方法中表示要滚动到的坐标，在最后一个方法中表示滚动的距离。
 
-```js
+```javascript
 // 相对于当前视口向下滚动100 像素
 window.scrollBy(0, 100);
 // 相对于当前视口向右滚动40 像素
@@ -308,7 +308,7 @@ window.scrollTo(100, 100);
 
 这几个方法也都接收一个 ScrollToOptions 字典，除了提供偏移值，还可以通过 behavior 属性告诉浏览器是否平滑滚动。
 
-```js
+```javascript
 // 正常滚动
 window.scrollTo({
   left: 100,
@@ -329,7 +329,7 @@ JavaScript 在浏览器中是单线程执行的，但允许使用定时器指定
 
 setTimeout()方法通常接收两个参数：要执行的代码和在执行回调函数前等待的时间（毫秒）。第一个参数可以是包含 JavaScript 代码的字符串（类似于传给 eval()的字符串）或者一个函数，比如：
 
-```js
+```javascript
 // 在1 秒后显示警告框
 setTimeout(() => alert('Hello world!'), 1000);
 ```
@@ -338,7 +338,7 @@ setTimeout(() => alert('Hello world!'), 1000);
 
 调用 setTimeout()时，会返回一个表示该超时排期的数值 ID。这个超时 ID 是被排期执行代码的唯一标识符，可用于取消该任务。要取消等待中的排期任务，可以调用 clearTimeout()方法并传入超时 ID，如下面的例子所示：
 
-```js
+```javascript
 // 设置超时任务
 let timeoutId = setTimeout(() => alert('Hello world!'), 1000);
 // 取消超时任务
@@ -351,7 +351,7 @@ clearTimeout(timeoutId);
 
 setInterval()与 setTimeout()的使用方法类似，只不过指定的任务会每隔指定时间就执行一次，直到取消循环定时或者页面卸载。setInterval()同样可以接收两个参数：要执行的代码（字符串或函数），以及把下一次执行定时代码的任务添加到队列要等待的时间（毫秒）。下面是一个例子：
 
-```js
+```javascript
 setInterval(() => alert('Hello world!'), 10000);
 ```
 
@@ -360,7 +360,7 @@ setInterval(() => alert('Hello world!'), 10000);
 setInterval()方法也会返回一个循环定时 ID，可以用于在未来某个时间点上取消循环定时。要取消循环定时，可以调用 clearInterval()并传入定时 ID。相对于 setTimeout()而言，取消定时的能力对 setInterval()更加重要。毕竟，如果一直不管它，那么定时任务会一直执行到页面卸载。下
 面是一个常见的例子：
 
-```js
+```javascript
 let num = 0,
   intervalId = null;
 let max = 10;
@@ -377,7 +377,7 @@ intervalId = setInterval(incrementNumber, 500);
 
 在这个例子中，变量 num 会每半秒递增一次，直至达到最大限制值。此时循环定时会被取消。这个模式也可以使用 setTimeout()来实现，比如：
 
-```js
+```javascript
 let num = 0;
 let max = 10;
 let incrementNumber = function () {
@@ -407,7 +407,7 @@ alert()方法在本书示例中经常用到。它接收一个要显示给用户�
 
 要知道用户单击了 OK 按钮还是 Cancel 按钮，可以判断 confirm()方法的返回值：true 表示单击了 OK 按钮，false 表示单击了 Cancel 按钮或者通过单击某一角上的 X 图标关闭了确认框。确认框的典型用法如下所示：
 
-```js
+```javascript
 if (confirm('Are you sure?')) {
   alert('I'm so glad you're sure!');
 } else {
@@ -421,7 +421,7 @@ if (confirm('Are you sure?')) {
 
 如果用户单击了 OK 按钮，则 prompt()会返回文本框中的值。如果用户单击了 Cancel 按钮，或者对话框被关闭，则 prompt()会返回 null。下面是一个例子：
 
-```js
+```javascript
 let result = prompt('What is your name? ', '');
 if (result !== null) {
   alert('Welcome, ' + result);
@@ -436,7 +436,7 @@ if (result !== null) {
 
 JavaScript 还可以显示另外两种对话框：find()和 print()。这两种对话框都是异步显示的，即控制权会立即返回给脚本。用户在浏览器菜单上选择“查找”（find）和“打印”（print）时显示的就是这两种对话框。通过在 window 对象上调用 find()和 print()可以显示它们，比如：
 
-```js
+```javascript
 // 显示打印对话框
 window.print();
 // 显示查找对话框
@@ -469,7 +469,7 @@ location 是最有用的 BOM 对象之一，提供了当前窗口中加载文档
 
 location 的多数信息都可以通过上面的属性获取。但是 URL 中的查询字符串并不容易使用。虽然 location.search 返回了从问号开始直到 URL 末尾的所有内容，但没有办法逐个访问每个查询参数。下面的函数解析了查询字符串，并返回一个以每个查询参数为属性的对象：
 
-```js
+```javascript
 const getQueryArgs = function getQueryArgs() {
   // 取得没有开头问号的查询字符串
   const querys = location.search.length > 0 ? location.search.slice(1) : '';
@@ -495,7 +495,7 @@ const getQueryArgs = function getQueryArgs() {
 
 不过，如果键名有重复，这种方法并不适用，例如，查询字符串为 `'?key=1&key=2&value=3'`。所以，我们此时用数组来存储。
 
-```js
+```javascript
 const getQueryMap = function getQueryMap() {
   // '?key=1&key=2&value=3'
   const queryStr = location.search.length > 0 ? location.search.slice(1) : '';
@@ -523,7 +523,7 @@ console.log(getQueryMap());
 
 现在，查询字符串中的每个参数都是一个键，这样使用起来就方便了：
 
-```js
+```javascript
 const queryMap = getQueryMap();
 console.log(queryMap['key']); // ['1', '2']
 console.log(queryMap['value']); // '3'
@@ -533,7 +533,7 @@ console.log(queryMap['value']); // '3'
 
 URLSearchParams 提供了一组标准 API 方法，通过它们可以检查和修改查询字符串。给 URLSearchParams 构造函数传入一个查询字符串，就可以创建一个实例。这个实例上暴露了 get()、set()和 delete()等方法，可以对查询字符串执行相应操作。下面来看一个例子：
 
-```js
+```javascript
 let qs = '?q=javascript&num=10';
 let searchParams = new URLSearchParams(qs);
 alert(searchParams.toString()); // ' q=javascript&num=10'
@@ -547,7 +547,7 @@ alert(searchParams.toString()); // ' num=10&page=3'
 
 大多数支持 URLSearchParams 的浏览器也支持将 URLSearchParams 的实例用作可迭代对象：
 
-```js
+```javascript
 let qs = '?q=javascript&num=10';
 let searchParams = new URLSearchParams(qs);
 for (let param of searchParams) {
@@ -561,13 +561,13 @@ for (let param of searchParams) {
 
 可以通过修改 location 对象修改浏览器的地址。首先，最常见的是使用 assign()方法并传入一个 URL，如下所示：
 
-```js
+```javascript
 location.assign('http://www.google.com/');
 ```
 
 这行代码会立即启动导航到新 URL 的操作，同时在浏览器历史记录中增加一条记录。如果给 location.href 或 window.location 设置一个 URL，也会以同一个 URL 值调用 assign()方法。比如，下面两行代码都会执行与显式调用 assign()一样的操作：
 
-```js
+```javascript
 window.location = 'http://www.google.com/';
 location.href = 'http://www.google.com/';
 ```
@@ -576,7 +576,7 @@ location.href = 'http://www.google.com/';
 
 修改 location 对象的属性也会修改当前加载的页面。其中，hash、search、hostname、pathname 和 port 属性被设置为新值之后都会修改当前 URL，如下面的例子所示：
 
-```js
+```javascript
 // 假设当前URL 为http://www.google.com/WileyCDA/
 // 把URL 修改为http://www.google.com/WileyCDA/#section1
 location.hash = '#section1';
@@ -616,7 +616,7 @@ location.port = 8080;
 
 最后一个修改地址的方法是 reload()，它能重新加载当前显示的页面。调用 reload()而不传参数，页面会以最有效的方式重新加载。也就是说，如果页面自上次请求以来没有修改过，浏览器可能会从缓存中加载页面。如果想强制从服务器重新加载，可以像下面这样给 reload()传个 true：
 
-```js
+```javascript
 location.reload(); // 重新加载，可能是从缓存加载
 location.reload(true); // 重新加载，从服务器加载
 ```
@@ -690,7 +690,7 @@ navigator 对象的属性通常用于确定浏览器的类型。
 
 通常，name 属性包含识别插件所需的必要信息，尽管不是特别准确。检测插件就是遍历浏览器中可用的插件，并逐个比较插件的名称，如下所示：
 
-```js
+```javascript
 // 插件检测，IE10 及更低版本无效
 let hasPlugin = function (name) {
   name = name.toLowerCase();
@@ -717,7 +717,7 @@ IE11 的 window.navigator 对象开始支持 plugins 和 mimeTypes 属性。这�
 
 IE10 及更低版本中检测插件的问题比较多，因为这些浏览器不支持 Netscape 式的插件。在这些 IE 中检测插件要使用专有的 ActiveXObject，并尝试实例化特定的插件。IE 中的插件是实现为 COM 对象的，由唯一的字符串标识。因此，要检测某个插件就必须知道其 COM 标识符。例如，Flash 的标识符是'ShockwaveFlash.ShockwaveFlash'。知道了这个信息后，就可以像这样检测 IE 中是否安装了 Flash：
 
-```js
+```javascript
 // 在旧版本IE 中检测插件
 function hasIEPlugin(name) {
   try {
@@ -738,7 +738,7 @@ alert(hasIEPlugin('QuickTime.QuickTime'));
 
 因为检测插件涉及两种方式，所以一般要针对特定插件写一个函数，而不是使用通常的检测函数。比如下面的例子：
 
-```js
+```javascript
 // 在所有浏览器中检测Flash
 function hasFlash() {
   var result = hasPlugin('Flash');
@@ -771,7 +771,7 @@ alert(hasQuickTime());
 
 要使用 registerProtocolHandler()方法，必须传入 3 个参数：要处理的协议（如'mailto'或'ftp'）、处理该协议的 URL，以及应用名称。比如，要把一个 Web 应用程序注册为默认邮件客户端，可以这样做：
 
-```js
+```javascript
 navigator.registerProtocolHandler(
   'mailto',
   'http://www.somemailclient.com?cmd=%s',
@@ -807,7 +807,7 @@ history 对象表示当前窗口首次使用以来用户的导航历史记录。
 
 go()方法可以在用户历史记录中沿任何方向导航，可以前进也可以后退。这个方法只接收一个参数，这个参数可以是一个整数，表示前进或后退多少步。负值表示在历史记录中后退（类似点击浏览器的“后退”按钮），而正值表示在历史记录中前进（类似点击浏览器的“前进”按钮）。下面来看几个例子：
 
-```js
+```javascript
 // 后退一页
 history.go(-1);
 // 前进一页
@@ -818,7 +818,7 @@ history.go(2);
 
 在旧版本的一些浏览器中，go()方法的参数也可以是一个字符串，这种情况下浏览器会导航到历史中包含该字符串的第一个位置。最接近的位置可能涉及后退，也可能涉及前进。如果历史记录中没有匹配的项，则这个方法什么也不做，如下所示：
 
-```js
+```javascript
 // 导航到最近的wrox.com 页面
 history.go('google.com');
 // 导航到最近的nczonline.net 页面
@@ -827,7 +827,7 @@ history.go('nczonline.net');
 
 go()有两个简写方法：back()和 forward()。顾名思义，这两个方法模拟了浏览器的后退按钮和前进按钮：
 
-```js
+```javascript
 // 后退一页
 history.back();
 // 前进一页
@@ -836,7 +836,7 @@ history.forward();
 
 history 对象还有一个 length 属性，表示历史记录中有多个条目。这个属性反映了历史记录的数量，包括可以前进和后退的页面。对于窗口或标签页中加载的第一个页面，history.length 等于 1。通过以下方法测试这个值，可以确定用户浏览器的起点是不是你的页面：
 
-```js
+```javascript
 if (history.length == 1) {
   // 这是用户窗口中的第一个页面
 }
@@ -853,7 +853,7 @@ history 对象增加了方便的状态管理特性。
 
 hashchange 会在页面 URL 的散列变化时被触发，开发者可以在此时执行某些操作。而状态管理 API 则可以让开发者改变浏览器 URL 而不会加载新页面。为此，可以使用 history.pushState()方法。这个方法接收 3 个参数：一个 state 对象、一个新状态的标题和一个（可选的）相对 URL。例如：
 
-```js
+```javascript
 let stateObject = { foo: 'bar' };
 history.pushState(stateObject, 'My title', 'baz.html');
 ```
@@ -862,7 +862,7 @@ pushState()方法执行后，状态信息就会被推到历史记录中，浏览
 
 因为 pushState()会创建新的历史记录，所以也会相应地启用“后退”按钮。此时单击“后退”按钮，就会触发 window 对象上的 popstate 事件。popstate 事件的事件对象有一个 state 属性，其中包含通过 pushState()第一个参数传入的 state 对象：
 
-```js
+```javascript
 window.addEventListener('popstate', (event) => {
   let state = event.state;
   if (state) {
@@ -876,7 +876,7 @@ window.addEventListener('popstate', (event) => {
 
 可以通过 history.state 获取当前的状态对象，也可以使用 replaceState()并传入与 pushState()同样的前两个参数来更新状态。更新状态不会创建新历史记录，只会覆盖当前状态：
 
-```js
+```javascript
 history.replaceState({ newFoo: 'newBar' }, 'New title');
 ```
 

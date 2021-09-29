@@ -80,7 +80,7 @@ DOM Level 1 描述了名为 Node 的接口，这个接口是所有 DOM 节点类
 
 节点类型可通过与这些常量比较来确定，比如：
 
-```js
+```javascript
 if (someNode.nodeType == Node.ELEMENT_NODE) {
   alert('Node is an element.');
 }
@@ -94,7 +94,7 @@ if (someNode.nodeType == Node.ELEMENT_NODE) {
 
 nodeName 与 nodeValue 保存着有关节点的信息。这两个属性的值完全取决于节点类型。在使用这两个属性前，最好先检测节点类型，如下所示：
 
-```js
+```javascript
 if (someNode.nodeType == 1) {
   value = someNode.nodeName; // 会显示元素的标签名
 }
@@ -110,7 +110,7 @@ if (someNode.nodeType == 1) {
 
 下面的例子展示了如何使用中括号或使用 item()方法访问 NodeList 中的元素：
 
-```js
+```javascript
 let firstChild = someNode.childNodes[0];
 let secondChild = someNode.childNodes.item(1);
 let count = someNode.childNodes.length;
@@ -118,13 +118,13 @@ let count = someNode.childNodes.length;
 
 无论是使用中括号还是 item()方法都是可以的，但多数开发者倾向于使用中括号，因为它是一个类数组对象。注意，length 属性表示那一时刻 NodeList 中节点的数量。使用...可以像前面介绍 arguments 时一样把 NodeList 对象转换为数组。比如：
 
-```js
+```javascript
 let arrayOfNodes = [...someNode.childNodes];
 ```
 
 每个节点都有一个 parentNode 属性，指向其 DOM 树中的父元素。childNodes 中的所有节点都有同一个父元素，因此它们的 parentNode 属性都指向同一个节点。此外，childNodes 列表中的每个节点都是同一列表中其他节点的同胞节点。而使用 previousSibling 和 nextSibling 可以在这个列表的节点间导航。这个列表中第一个节点的 previousSibling 属性是 null，最后一个节点的 nextSibling 属性也是 null，如下所示：
 
-```js
+```javascript
 if (someNode.nextSibling === null) {
   alert('Last node in the parent's childNodes list.');
 } else if (someNode.previousSibling === null) {
@@ -148,7 +148,7 @@ if (someNode.nextSibling === null) {
 
 因为所有关系指针都是只读的，所以 DOM 又提供了一些操纵节点的方法。最常用的方法是 appendChild()，用于在 childNodes 列表末尾添加节点。添加新节点会更新相关的关系指针，包括父节点和之前的最后一个子节点。appendChild()方法返回新添加的节点，如下所示：
 
-```js
+```javascript
 let returnedNode = someNode.appendChild(newNode);
 alert(returnedNode == newNode); // true
 alert(someNode.lastChild == newNode); // true
@@ -156,7 +156,7 @@ alert(someNode.lastChild == newNode); // true
 
 如果把文档中已经存在的节点传给 appendChild()，则这个节点会从之前的位置被转移到新位置。即使 DOM 树通过各种关系指针维系，一个节点也不会在文档中同时出现在两个或更多个地方。因此，如果调用 appendChild()传入父元素的第一个子节点，则这个节点会成为父元素的最后一个子节点，如下所示：
 
-```js
+```javascript
 // 假设someNode 有多个子节点
 let returnedNode = someNode.appendChild(someNode.firstChild);
 alert(returnedNode == someNode.firstChild); // false
@@ -166,7 +166,7 @@ alert(returnedNode == someNode.lastChild); // true
 如果想把节点放到 childNodes 中的特定位置而不是末尾，则可以使用 insertBefore()方法。这个方法接收两个参数：要插入的节点和参照节点。调用这个方法后，要插入的节点会变成参照节点的前一个同胞节点，并被返回。如果参照节点是 null，则 insertBefore()与 appendChild()效果相
 同，如下面的例子所示：
 
-```js
+```javascript
 // 作为最后一个子节点插入
 returnedNode = someNode.insertBefore(newNode, null);
 alert(newNode == someNode.lastChild); // true
@@ -181,7 +181,7 @@ alert(newNode == someNode.childNodes[someNode.childNodes.length - 2]); // true
 
 appendChild() 和 insertBefore() 在插入节点时不会删除任何已有节点。相对地，replaceChild()方法接收两个参数：要插入的节点和要替换的节点。要替换的节点会被返回并从文档树中完全移除，要插入的节点会取而代之。下面看一个例子：
 
-```js
+```javascript
 // 替换第一个子节点
 let returnedNode = someNode.replaceChild(newNode, someNode.firstChild);
 // 替换最后一个子节点
@@ -192,7 +192,7 @@ returnedNode = someNode.replaceChild(newNode, someNode.lastChild);
 
 要移除节点而不是替换节点，可以使用 removeChild()方法。这个方法接收一个参数，即要移除的节点。被移除的节点会被返回，如下面的例子所示：
 
-```js
+```javascript
 // 删除第一个子节点
 let formerFirstChild = someNode.removeChild(someNode.firstChild);
 // 删除最后一个子节点
@@ -218,7 +218,7 @@ let formerLastChild = someNode.removeChild(someNode.lastChild);
 
 如果 myList 保存着对这个`<ul>`元素的引用，则下列代码展示了使用 cloneNode()方法的两种方式：
 
-```js
+```javascript
 let deepList = myList.cloneNode(true);
 alert(deepList.childNodes.length); // 3（IE9 之前的版本）或7（其他浏览器）
 let shallowList = myList.cloneNode(false);
@@ -257,7 +257,7 @@ Document 类型可以表示 HTML 页面或其他 XML 文档，但最常用的还
 
 浏览器解析完这个页面之后，文档只有一个子节点，即`<html>`元素。这个元素既可以通过 documentElement 属性获取，也可以通过 childNodes 列表访问，如下所示：
 
-```js
+```javascript
 let html = document.documentElement; // 取得对<html>的引用
 alert(html === document.childNodes[0]); // true
 alert(html === document.firstChild); // true
@@ -265,7 +265,7 @@ alert(html === document.firstChild); // true
 
 作为 HTMLDocument 的实例，document 对象还有一个 body 属性，直接指向`<body>`元素。因为这个元素是开发者使用最多的元素，所以 JavaScript 代码中经常可以看到 document.body，比如：
 
-```js
+```javascript
 let body = document.body; // 取得对<body>的引用
 ```
 
@@ -273,7 +273,7 @@ let body = document.body; // 取得对<body>的引用
 
 Document 类型另一种可能的子节点是 DocumentType。<!doctype>标签是文档中独立的部分，其信息可以通过 doctype 属性（在浏览器中是 document.doctype）来访问，比如：
 
-```js
+```javascript
 let doctype = document.doctype; // 取得对<!doctype>的引用
 ```
 
@@ -295,7 +295,7 @@ let doctype = document.doctype; // 取得对<!doctype>的引用
 
 document 作为 HTMLDocument 的实例，还有一些标准 Document 对象上所没有的属性。这些属性提供浏览器所加载网页的信息。其中第一个属性是 title，包含`<title>`元素中的文本，通常显示在浏览器窗口或标签页的标题栏。通过这个属性可以读写页面的标题，修改后的标题也会反映在浏览器标题栏上。不过，修改 title 属性并不会改变`<title>`元素。下面是一个例子：
 
-```js
+```javascript
 // 读取文档标题
 let originalTitle = document.title;
 // 修改文档标题
@@ -304,7 +304,7 @@ document.title = 'New page title';
 
 接下来要介绍的 3 个属性是 URL、domain 和 referrer。其中，URL 包含当前页面的完整 URL（地址栏中的 URL），domain 包含页面的域名，而 referrer 包含链接到当前页面的那个页面的 URL。如果当前页面没有来源，则 referrer 属性包含空字符串。所有这些信息都可以在请求的 HTTP 头部信息中获取，只是在 JavaScript 中通过这几个属性暴露出来而已，如下面的例子所示：
 
-```js
+```javascript
 // 取得完整的URL
 let url = document.URL;
 // 取得域名
@@ -317,7 +317,7 @@ URL 跟域名是相关的。比如，如果 document.URL 是http://www.google.co
 
 在这些属性中，只有 domain 属性是可以设置的。出于安全考虑，给 domain 属性设置的值是有限制的。如果 URL 包含子域名如 topics.google.com，则可以将 domain 设置为'google.com'（URL 包含“www”时也一样，比如www.google.com）。不能给这个属性设置URL 中不包含的值，比如：
 
-```js
+```javascript
 // 页面来自topics.google.com
 document.domain = 'google.com'; // 成功
 document.domain = 'baidu.com'; // 出错！
@@ -327,7 +327,7 @@ document.domain = 'baidu.com'; // 出错！
 
 浏览器对 domain 属性还有一个限制， 即这个属性一旦放松就不能再收紧。比如， 把 document.domain 设置为'google.com'之后，就不能再将其设置回'topics.google.com'，后者会导致错误，比如：
 
-```js
+```javascript
 // 页面来自topics.google.com
 document.domain = 'google.com'; // 放松，成功
 document.domain = 'topics.google.com'; // 收紧，错误！
@@ -345,13 +345,13 @@ getElementById()方法接收一个参数，即要获取元素的 ID，如果找�
 
 可以使用如下代码取得这个元素：
 
-```js
+```javascript
 let div = document.getElementById('myDiv'); // 取得对这个<div>元素的引用
 ```
 
 但参数大小写不匹配会返回 null：
 
-```js
+```javascript
 let div = document.getElementById('mydiv'); // null
 ```
 
@@ -359,13 +359,13 @@ let div = document.getElementById('mydiv'); // null
 
 getElementsByTagName()是另一个常用来获取元素引用的方法。这个方法接收一个参数，即要获取元素的标签名，返回包含零个或多个元素的 NodeList。在 HTML 文档中，这个方法返回一个 HTMLCollection 对象。考虑到二者都是“实时”列表，HTMLCollection 与 NodeList 是很相似的。例如，下面的代码会取得页面中所有的`<img>`元素并返回包含它们的 HTMLCollection：
 
-```js
+```javascript
 let images = document.getElementsByTagName('img');
 ```
 
 这里把返回的 HTMLCollection 对象保存在了变量 images 中。与 NodeList 对象一样，也可以使用中括号或 item()方法从 HTMLCollection 取得特定的元素。而取得元素的数量同样可以通过 length 属性得知，如下所示：
 
-```js
+```javascript
 alert(images.length); // 图片数量
 alert(images[0].src); // 第一张图片的src 属性
 alert(images.item(0).src); // 同上
@@ -379,13 +379,13 @@ HTMLCollection 对象还有一个额外的方法 namedItem()，可通过标签�
 
 那么也可以像这样从 images 中取得对这个`<img>`元素的引用：
 
-```js
+```javascript
 let myImage = images.namedItem('myImage');
 ```
 
 这样，HTMLCollection 就提供了除索引之外的另一种获取列表项的方式，从而为取得元素提供了便利。对于 name 属性的元素，还可以直接使用中括号来获取，如下面的例子所示：
 
-```js
+```javascript
 let myImage = images['myImage'];
 ```
 
@@ -425,7 +425,7 @@ HTMLDocument 类型上定义的获取元素的第三个方法是 getElementsByNa
 
 这里所有的单选按钮都有名为'color'的 name 属性，但它们的 ID 都不一样。这是因为 ID 是为了匹配对应的`<label>`元素，而 name 相同是为了保证只将三个中的一个值发送给服务器。然后就可以像下面这样取得所有单选按钮：
 
-```js
+```javascript
 let radios = document.getElementsByName('color');
 ```
 
@@ -446,7 +446,7 @@ document 对象上还暴露了几个特殊集合，这些集合也都是 HTMLCol
 
 由于 DOM 有多个 Level 和多个部分，因此确定浏览器实现了 DOM 的哪些部分是很必要的。document.implementation 属性是一个对象，其中提供了与浏览器 DOM 实现相关的信息和能力。DOM Level 1 在 document.implementation 上只定义了一个方法，即 hasFeature()。这个方法接收两个参数：特性名称和 DOM 版本。如果浏览器支持指定的特性和版本，则 hasFeature()方法返回 true，如下面的例子所示：
 
-```js
+```javascript
 let hasXmlDom = document.implementation.hasFeature('XML', '1.0');
 ```
 
@@ -579,7 +579,7 @@ open()和 close()方法分别用于打开和关闭网页输出流。在调用 wr
 
 可以像这样取得这个元素的标签名：
 
-```js
+```javascript
 const myDiv = document.getElementById('myDiv');
 console.log(myDiv.nodeName); // DIV
 console.log(myDIv.tagName); // DIV
@@ -587,7 +587,7 @@ console.log(myDIv.tagName); // DIV
 
 例子中的元素标签名为 div，ID 为'myDiv'。注意，div.tagName 实际上返回的是'DIV'而不是'div'。在 HTML 中，元素标签名始终以全大写表示；在 XML（包括 XHTML）中，标签名始终与源代码中的大小写一致。如果不确定脚本是在 HTML 文档还是 XML 文档中运行，最好将标签名转换为小写形式，以便于比较：
 
-```js
+```javascript
 if (element.tagName === 'div') {
   // 不要这样做，可能出错！
   // do something here
@@ -618,7 +618,7 @@ if (element.tagName.toLowerCase() === 'div') {
 
 这个元素中的所有属性都可以使用下列 JavaScript 代码读取：
 
-```js
+```javascript
 let div = document.getElementById('myDiv');
 console.log(div.id); // 'myDiv'
 console.log(div.className); // 'bd'
@@ -629,7 +629,7 @@ console.log(div.dir); // 'ltr'
 
 而且，可以使用下列代码修改元素的属性：
 
-```js
+```javascript
 div.id = 'someOtherId';
 div.className = 'ft';
 div.title = 'Some other text';
@@ -696,7 +696,7 @@ div.dir = 'rtl';
 
 每个元素都有零个或多个属性，通常用于为元素或其内容附加更多信息。与属性相关的 DOM 方法主要有 3 个：getAttribute()、setAttribute()和 removeAttribute()。这些方法主要用于操纵属性，包括在 HTMLElement 类型上定义的属性。下面看一个例子：
 
-```js
+```javascript
 let div = document.getElementById('myDiv');
 console.log(div.getAttribute('id')); // 'myDiv'
 console.log(div.getAttribute('class')); // 'bd'
@@ -715,7 +715,7 @@ getAttribute()方法也能取得不是 HTML 语言正式属性的自定义属性
 
 这个元素有一个自定义属性 my_special_attribute，值为'hello!'。可以像其他属性一样使用 getAttribute()取得这个属性的值：
 
-```js
+```javascript
 let value = div.getAttribute('my_special_attribute');
 ```
 
@@ -739,7 +739,7 @@ let value = div.getAttribute('my_special_attribute');
 
 与 getAttribute()配套的方法是 setAttribute()，这个方法接收两个参数：要设置的属性名和属性的值。如果属性已经存在，则 setAttribute()会以指定的值替换原来的值；如果属性不存在，则 setAttribute()会以指定的值创建该属性。下面看一个例子：
 
-```js
+```javascript
 div.setAttribute('id', 'someOtherId');
 div.setAttribute('class', 'ft');
 div.setAttribute('title', 'Some other text');
@@ -751,14 +751,14 @@ setAttribute()适用于 HTML 属性，也适用于自定义属性。另外，使
 
 因为元素属性也是 DOM 对象属性，所以直接给 DOM 对象的属性赋值也可以设置元素属性的值，如下所示：
 
-```js
+```javascript
 div.id = 'someOtherId';
 div.align = 'left';
 ```
 
 注意，在 DOM 对象上添加自定义属性，如下面的例子所示，不会自动让它变成元素的属性：
 
-```js
+```javascript
 div.mycolor = 'red';
 console.log(div.getAttribute('mycolor')); // null（IE 除外）
 ```
@@ -767,7 +767,7 @@ console.log(div.getAttribute('mycolor')); // null（IE 除外）
 
 最后一个方法 removeAttribute()用于从元素中删除属性。这样不单单是清除属性的值，而是会把整个属性完全从元素中去掉，如下所示：
 
-```js
+```javascript
 div.removeAttribute('class');
 ```
 
@@ -784,31 +784,31 @@ Element 类型是唯一使用 attributes 属性的 DOM 节点类型。attributes
 
 attributes 属性中的每个节点的 nodeName 是对应属性的名字，nodeValue 是属性的值。比如，要取得元素 id 属性的值，可以使用以下代码：
 
-```js
+```javascript
 let id = element.attributes.getNamedItem('id').nodeValue;
 ```
 
 下面是使用中括号访问属性的简写形式：
 
-```js
+```javascript
 let id = element.attributes['id'].nodeValue;
 ```
 
 同样，也可以用这种语法设置属性的值，即先取得属性节点，再将其 nodeValue 设置为新值，如下所示：
 
-```js
+```javascript
 element.attributes['id'].nodeValue = 'someOtherId';
 ```
 
 removeNamedItem()方法与元素上的 removeAttribute()方法类似，也是删除指定名字的属性。下面的例子展示了这两个方法唯一的不同之处，就是 removeNamedItem()返回表示被删除属性的 Attr 节点：
 
-```js
+```javascript
 let oldAttr = element.attributes.removeNamedItem('id');
 ```
 
 setNamedItem()方法很少使用，它接收一个属性节点，然后给元素添加一个新属性，如下所示：
 
-```js
+```javascript
 element.attributes.setNamedItem(newAttr);
 ```
 
@@ -816,8 +816,8 @@ element.attributes.setNamedItem(newAttr);
 
 attributes 属性最有用的场景是需要迭代元素上所有属性的时候。这时候往往是要把 DOM 结构序列化为 XML 或 HTML 字符串。比如，以下代码能够迭代一个元素上的所有属性并以 attribute1='value1' attribute2='value2'的形式生成格式化字符串：
 
-```js
-function outputAttributes(element) {
+```javascript
+const outputAttributes = function (element) {
   let pairs = [];
   for (let i = 0, len = element.attributes.length; i < len; ++i) {
     const attribute = element.attributes[i];
@@ -833,20 +833,20 @@ function outputAttributes(element) {
 
 可以使用 document.createElement()方法创建新元素。这个方法接收一个参数，即要创建元素的标签名。在 HTML 文档中，标签名是不区分大小写的，而 XML 文档（包括 XHTML）是区分大小写的。要创建`<div>`元素，可以使用下面的代码：
 
-```js
+```javascript
 let div = document.createElement('div');
 ```
 
 使用 createElement()方法创建新元素的同时也会将其 ownerDocument 属性设置为 document。此时，可以再为其添加属性、添加更多子元素。比如：
 
-```js
+```javascript
 div.id = 'myNewDiv';
 div.className = 'box';
 ```
 
 在新元素上设置这些属性只会附加信息。因为这个元素还没有添加到文档树，所以不会影响浏览器显示。要把元素添加到文档树，可以使用 appendChild()、insertBefore()或 replaceChild()。比如，以下代码会把刚才创建的元素添加到文档的`<body>`元素中：
 
-```js
+```javascript
 document.body.appendChild(div);
 ```
 
@@ -876,7 +876,7 @@ document.body.appendChild(div);
 
 所有浏览器解析上面的代码后，`<ul>`元素都会包含 3 个子节点。考虑到这种情况，通常在执行某个操作之后需要先检测一下节点的 nodeType，如下所示：
 
-```js
+```javascript
 for (let i = 0, len = element.childNodes.length; i < len; ++i) {
   if (element.childNodes[i].nodeType == 1) {
     // 执行某个操作
@@ -888,7 +888,7 @@ for (let i = 0, len = element.childNodes.length; i < len; ++i) {
 
 要取得某个元素的子节点和其他后代节点，可以使用元素的 getElementsByTagName()方法。在元素上调用这个方法与在文档上调用是一样的，只不过搜索范围限制在当前元素之内，即只会返回当前元素的后代。对于本节前面`<ul>`的例子，可以像下面这样取得其所有的`<li>`元素：
 
-```js
+```javascript
 let ul = document.getElementById('myList');
 let items = ul.getElementsByTagName('li');
 ```
@@ -932,19 +932,19 @@ Text 节点中包含的文本可以通过 nodeValue 属性访问，也可以通�
 
 示例中的第一个`<div>`元素中不包含内容，因此不会产生文本节点。只要开始标签和结束标签之间有内容，就会创建一个文本节点，因此第二个`<div>`元素会有一个文本节点的子节点，虽然它只包含空格。这个文本节点的 nodeValue 就是一个空格。第三个`<div>`元素也有一个文本节点的子节点，其 nodeValue 的值为'Hello World!'。下列代码可以用来访问这个文本节点：
 
-```js
+```javascript
 let textNode = div.firstChild; // 或div.childNodes[0]
 ```
 
 取得文本节点的引用后，可以像这样来修改它：
 
-```js
+```javascript
 div.firstChild.nodeValue = 'Some other message';
 ```
 
 只要节点在当前的文档树中，这样的修改就会马上反映出来。修改文本节点还有一点要注意，就是 HTML 或 XML 代码（取决于文档类型）会被转换成实体编码，即小于号、大于号或引号会被转义，如下所示：
 
-```js
+```javascript
 // 输出为'Some &lt;strong&gt;other&lt;/strong&gt; message'
 div.firstChild.nodeValue = 'Some <strong>other</strong> message';
 ```
@@ -955,13 +955,13 @@ div.firstChild.nodeValue = 'Some <strong>other</strong> message';
 
 document.createTextNode()可以用来创建新文本节点，它接收一个参数，即要插入节点的文本。跟设置已有文本节点的值一样，这些要插入的文本也会应用 HTML 或 XML 编码，如下面的例子所示：
 
-```js
+```javascript
 let textNode = document.createTextNode('<strong>Hello</strong> world!');
 ```
 
 创建新文本节点后，其 ownerDocument 属性会被设置为 document。但在把这个节点添加到文档树之前，我们不会在浏览器中看到它。以下代码创建了一个`<div>`元素并给它添加了一段文本消息：
 
-```js
+```javascript
 let element = document.createElement('div');
 element.className = 'message';
 let textNode = document.createTextNode('Hello world!');
@@ -973,7 +973,7 @@ document.body.appendChild(element);
 
 一般来说一个元素只包含一个文本子节点。不过，也可以让元素包含多个文本子节点，如下面的例子所示：
 
-```js
+```javascript
 let element = document.createElement('div');
 element.className = 'message';
 let textNode = document.createTextNode('Hello world!');
@@ -990,7 +990,7 @@ document.body.appendChild(element);
 DOM 文档中的同胞文本节点可能导致困惑，因为一个文本节点足以表示一个文本字符串。同样，DOM 文档中也经常会出现两个相邻文本节点。为此，有一个方法可以合并相邻的文本节点。这个方法叫 normalize()，是在 Node 类型中定义的（因此所有类型的节点上都有这个方法）。在包含两个或多
 个相邻文本节点的父节点上调用 normalize()时，所有同胞文本节点会被合并为一个文本节点，这个文本节点的 nodeValue 就等于之前所有同胞节点 nodeValue 拼接在一起得到的字符串。来看下面的例子：
 
-```js
+```javascript
 let element = document.createElement('div');
 element.className = 'message';
 let textNode = document.createTextNode('Hello world!');
@@ -1011,7 +1011,7 @@ console.log(element.firstChild.nodeValue); // 'Hello world!Yippee!'
 Text 类型定义了一个与 normalize()相反的方法——splitText()。这个方法可以在指定的偏移位置拆分 nodeValue，将一个文本节点拆分成两个文本节点。拆分之后，原来的文本节点包含开头到偏移位置前的文本，新文本节点包含剩下的文本。这个方法返回新的文本节点，具有与原来的文本节点
 相同的 parentNode。来看下面的例子：
 
-```js
+```javascript
 let element = document.createElement('div');
 element.className = 'message';
 let textNode = document.createTextNode('Hello world!');
@@ -1047,7 +1047,7 @@ Comment 类型与 Text 类型继承同一个基类（CharacterData），因此�
 
 这里的注释是`<div>`元素的子节点，这意味着可以像下面这样访问它：
 
-```js
+```javascript
 let div = document.getElementById('myDiv');
 let comment = div.firstChild;
 console.log(comment.data); // 'A comment'
@@ -1055,7 +1055,7 @@ console.log(comment.data); // 'A comment'
 
 可以使用 document.createComment()方法创建注释节点，参数为注释文本，如下所示：
 
-```js
+```javascript
 let comment = document.createComment('A comment');
 ```
 
@@ -1099,7 +1099,7 @@ DocumentType 对象在 DOM Level 1 中不支持动态创建，只能在解析文
 
 对于这个文档类型，name 属性的值是'html'：
 
-```js
+```javascript
 console.log(document.doctype.name); // 'html'
 ```
 
@@ -1115,7 +1115,7 @@ console.log(document.doctype.name); // 'html'
 
 不能直接把文档片段添加到文档。相反，文档片段的作用是充当其他要被添加到文档的节点的仓库。可以使用 document.createDocumentFragment()方法像下面这样创建文档片段：
 
-```js
+```javascript
 let fragment = document.createDocumentFragment();
 ```
 
@@ -1128,7 +1128,7 @@ let fragment = document.createDocumentFragment();
 
 假设想给这个`<ul>`元素添加 3 个列表项。如果分 3 次给这个元素添加列表项，浏览器就要重新渲染 3 次页面，以反映新添加的内容。为避免多次渲染，下面的代码示例使用文档片段创建了所有列表项，然后一次性将它们添加到了`<ul>`元素：
 
-```js
+```javascript
 let fragment = document.createDocumentFragment();
 let ul = document.getElementById('myList');
 for (let i = 0; i < 3; ++i) {
@@ -1158,7 +1158,7 @@ Attr 对象上有 3 个属性：name、value 和 specified。其中，name 包�
 
 可以使用 document.createAttribute()方法创建新的 Attr 节点，参数为属性名。比如，要给元素添加 align 属性，可以使用下列代码：
 
-```js
+```javascript
 let attr = document.createAttribute('align');
 attr.value = 'left';
 element.setAttributeNode(attr);
@@ -1187,7 +1187,7 @@ console.log(element.getAttribute('align')); // 'left'
 
 可以像这样通过 DOM 编程创建这个节点：
 
-```js
+```javascript
 let script = document.createElement('script');
 script.src = 'foo.js';
 document.body.appendChild(script);
@@ -1195,8 +1195,8 @@ document.body.appendChild(script);
 
 这里的 DOM 代码实际上完全照搬了它要表示的 HTML 代码。注意，在上面最后一行把`<script>`元素添加到页面之前，是不会开始下载外部文件的。当然也可以把它添加到`<head>`元素，同样可以实现动态脚本加载。这个过程可以抽象为一个函数，比如：
 
-```js
-function loadScript(url) {
+```javascript
+const loadScript = function (url) {
   let script = document.createElement('script');
   script.src = url;
   document.body.appendChild(script);
@@ -1205,7 +1205,7 @@ function loadScript(url) {
 
 然后，就可以像下面这样加载外部 JavaScript 文件了：
 
-```js
+```javascript
 loadScript('client.js');
 ```
 
@@ -1223,7 +1223,7 @@ loadScript('client.js');
 
 使用 DOM，可以实现以下逻辑：
 
-```js
+```javascript
 let script = document.createElement('script');
 script.appendChild(document.createTextNode('function sayHi(){alert('hi');}'));
 document.body.appendChild(script);
@@ -1231,7 +1231,7 @@ document.body.appendChild(script);
 
 以上代码可以在 Firefox、Safari、Chrome 和 Opera 中运行。不过在旧版本的 IE 中可能会导致问题。这是因为 IE 对`<script>`元素做了特殊处理，不允许常规 DOM 访问其子节点。但`<script>`元素上有一个 text 属性，可以用来添加 JavaScript 代码，如下所示：
 
-```js
+```javascript
 var script = document.createElement('script');
 script.text = 'function sayHi(){alert('hi');}';
 document.body.appendChild(script);
@@ -1239,7 +1239,7 @@ document.body.appendChild(script);
 
 这样修改后，上面的代码可以在 IE、Firefox、Opera 和 Safari 3 及更高版本中运行。Safari 3 之前的版本不能正确支持这个 text 属性，但这些版本却支持文本节点赋值。对于早期的 Safari 版本，需要使用以下代码：
 
-```js
+```javascript
 var script = document.createElement('script');
 var code = 'function sayHi(){alert('hi');}';
 try {
@@ -1252,7 +1252,7 @@ document.body.appendChild(script);
 
 这里先尝试使用标准的 DOM 文本节点插入方式，因为除 IE 之外的浏览器都支持这种方式。IE 此时会抛出错误，那么可以在捕获错误之后再使用 text 属性来插入 JavaScript 代码。于是，我们就可以抽象出一个跨浏览器的函数：
 
-```js
+```javascript
 function loadScriptString(code) {
   var script = document.createElement('script');
   script.type = 'text/javascript';
@@ -1267,7 +1267,7 @@ function loadScriptString(code) {
 
 这个函数可以这样调用：
 
-```js
+```javascript
 loadScriptString('function sayHi(){alert('hi');}');
 ```
 
@@ -1287,7 +1287,7 @@ CSS 样式在 HTML 页面中可以通过两个元素加载。`<link>`元素用�
 
 这个元素很容易使用 DOM 编程创建出来：
 
-```js
+```javascript
 let link = document.createElement('link');
 link.rel = 'stylesheet';
 link.type = 'text/css';
@@ -1298,8 +1298,8 @@ head.appendChild(link);
 
 以上代码在所有主流浏览器中都能正常运行。注意应该把`<link>`元素添加到`<head>`元素而不是`<body>`元素，这样才能保证所有浏览器都能正常运行。这个过程可以抽象为以下通用函数：
 
-```js
-function loadStyles(url) {
+```javascript
+const loadStyles = function (url) {
   let link = document.createElement('link');
   link.rel = 'stylesheet';
   link.type = 'text/css';
@@ -1311,7 +1311,7 @@ function loadStyles(url) {
 
 然后就可以这样调用这个 loadStyles()函数了：
 
-```js
+```javascript
 loadStyles('styles.css');
 ```
 
@@ -1329,7 +1329,7 @@ loadStyles('styles.css');
 
 逻辑上，下列 DOM 代码会有同样的效果：
 
-```js
+```javascript
 let style = document.createElement('style');
 style.type = 'text/css';
 style.appendChild(document.createTextNode('body{background-color:red}'));
@@ -1339,7 +1339,7 @@ head.appendChild(style);
 
 以上代码在 Firefox、Safari、Chrome 和 Opera 中都可以运行，但 IE 除外。IE 对`<style>`节点会施加限制，不允许访问其子节点，这一点与它对`<script>`元素施加的限制一样。事实上，IE 在执行到给`<style>`添加子节点的代码时，会抛出与给`<script>`添加子节点时同样的错误。对于 IE，解决方案是访问元素的 styleSheet 属性，这个属性又有一个 cssText 属性，然后给这个属性添加 CSS 代码：
 
-```js
+```javascript
 let style = document.createElement('style');
 style.type = 'text/css';
 try {
@@ -1353,8 +1353,8 @@ head.appendChild(style);
 
 与动态添加脚本源代码类似，这里也使用了 try...catch 语句捕获 IE 抛出的错误，然后再以 IE 特有的方式来设置样式。这是最终的通用函数：
 
-```js
-function loadStyleString(css) {
+```javascript
+const loadStyleString = function (css) {
   let style = document.createElement('style');
   style.type = 'text/css';
   try {
@@ -1369,7 +1369,7 @@ function loadStyleString(css) {
 
 可以这样调用这个函数：
 
-```js
+```javascript
 loadStyleString('body{background-color:red}');
 ```
 
@@ -1398,7 +1398,7 @@ loadStyleString('body{background-color:red}');
 
 下面就是以 DOM 编程方式重建这个表格的代码：
 
-```js
+```javascript
 // 创建表格
 let table = document.createElement('table');
 table.border = 1;
@@ -1454,7 +1454,7 @@ document.body.appendChild(table);
 
 这些属性和方法极大地减少了创建表格所需的代码量。例如，使用这些方法重写前面的代码之后是这样的（加粗代码表示更新的部分）：
 
-```js
+```javascript
 // 创建表格
 let table = document.createElement('table');
 table.border = 1;
@@ -1489,7 +1489,7 @@ document.body.appendChild(table);
 理解 NodeList 对象和相关的 NamedNodeMap、HTMLCollection，是理解 DOM 编程的关键。这 3 个集合类型都是“实时的”，意味着文档结构的变化会实时地在它们身上反映出来，因此它们的值始终代表最新的状态。实际上，NodeList 就是基于 DOM 文档的实时查询。例如，下面的代码会导致无穷
 循环：
 
-```js
+```javascript
 let divs = document.getElementsByTagName('div');
 for (let i = 0; i < divs.length; ++i) {
   let div = document.createElement('div');
@@ -1501,7 +1501,7 @@ for (let i = 0; i < divs.length; ++i) {
 
 使用 ES6 迭代器并不会解决这个问题，因为迭代的是一个永远增长的实时集合。以下代码仍然会导致无穷循环：
 
-```js
+```javascript
 for (let div of document.getElementsByTagName('div')) {
   let newDiv = document.createElement('div');
   document.body.appendChild(newDiv);
@@ -1510,7 +1510,7 @@ for (let div of document.getElementsByTagName('div')) {
 
 任何时候要迭代 NodeList，最好再初始化一个变量保存当时查询时的长度，然后用循环变量与这个变量进行比较，如下所示：
 
-```js
+```javascript
 let divs = document.getElementsByTagName('div');
 for (let i = 0, len = divs.length; i < len; ++i) {
   let div = document.createElement('div');
@@ -1522,7 +1522,7 @@ for (let i = 0, len = divs.length; i < len; ++i) {
 
 另外，如果不想再初始化一个变量，也可以像下面这样反向迭代集合：
 
-```js
+```javascript
 let divs = document.getElementsByTagName('div');
 for (let i = divs.length - 1; i >= 0; --i) {
   let div = document.createElement('div');
@@ -1542,7 +1542,7 @@ for (let i = divs.length - 1; i >= 0; --i) {
 
 MutationObserver 的实例要通过调用 MutationObserver 构造函数并传入一个回调函数来创建：
 
-```js
+```javascript
 let observer = new MutationObserver(() => console.log('DOM 改动了！'));
 ```
 
@@ -1552,14 +1552,14 @@ let observer = new MutationObserver(() => console.log('DOM 改动了！'));
 
 MutationObserverInit 对象用于控制观察哪些方面的变化，是一个键/值对形式配置选项的字典。例如，下面的代码会创建一个观察者（observer）并配置它观察`<body>`元素上的属性变化：
 
-```js
+```javascript
 let observer = new MutationObserver(() => console.log('<body> 属性改变了'));
 observer.observe(document.body, { attributes: true });
 ```
 
 执行以上代码后，`<body>`元素上任何属性发生变化都会被这个 MutationObserver 实例发现，然后就会异步执行注册的回调函数。`<body>`元素后代的修改或其他非属性修改都不会触发回调进入任务队列。可以通过以下代码来验证：
 
-```js
+```javascript
 let observer = new MutationObserver(() =>
   console.log('<body> attributes changed'),
 );
@@ -1577,7 +1577,7 @@ console.log('Changed body class');
 
 下面展示了反映一个属性变化的 MutationRecord 实例的数组：
 
-```js
+```javascript
 let observer = new MutationObserver((mutationRecords) =>
   console.log(mutationRecords),
 );
@@ -1600,7 +1600,7 @@ document.body.setAttribute('foo', 'bar');
 
 下面是一次涉及命名空间的类似变化：
 
-```js
+```javascript
 let observer = new MutationObserver((mutationRecords) =>
   console.log(mutationRecords),
 );
@@ -1623,7 +1623,7 @@ document.body.setAttributeNS('baz', 'foo', 'bar');
 
 连续修改会生成多个 MutationRecord 实例，下次回调执行时就会收到包含所有这些实例的数组，顺序为变化事件发生的顺序：
 
-```js
+```javascript
 let observer = new MutationObserver((mutationRecords) =>
   console.log(mutationRecords),
 );
@@ -1650,7 +1650,7 @@ document.body.className = 'baz';
 
 传给回调函数的第二个参数是观察变化的 MutationObserver 的实例，演示如下：
 
-```js
+```javascript
 let observer = new MutationObserver((mutationRecords, mutationObserver) =>
   console.log(mutationRecords, mutationObserver),
 );
@@ -1663,7 +1663,7 @@ document.body.className = 'foo';
 
 默认情况下，只要被观察的元素不被垃圾回收，MutationObserver 的回调就会响应 DOM 变化事件，从而被执行。要提前终止执行回调，可以调用 disconnect()方法。下面的例子演示了同步调用 disconnect()之后，不仅会停止此后变化事件的回调，也会抛弃已经加入任务队列要异步执行的回调：
 
-```js
+```javascript
 let observer = new MutationObserver(() =>
   console.log('<body> attributes changed'),
 );
@@ -1676,7 +1676,7 @@ document.body.className = 'bar';
 
 要想让已经加入任务队列的回调执行，可以使用 setTimeout()让已经入列的回调执行完毕再调用 disconnect()：
 
-```js
+```javascript
 let observer = new MutationObserver(() =>
   console.log('<body> attributes changed'),
 );
@@ -1693,7 +1693,7 @@ setTimeout(() => {
 
 多次调用 observe()方法，可以复用一个 MutationObserver 对象观察多个不同的目标节点。此时，MutationRecord 的 target 属性可以标识发生变化事件的目标节点。下面的示例演示了这个过程：
 
-```js
+```javascript
 let observer = new MutationObserver((mutationRecords) =>
   console.log(mutationRecords.map((x) => x.target)),
 );
@@ -1713,7 +1713,7 @@ childB.setAttribute('foo', 'bar');
 
 disconnect()方法是一个“一刀切”的方案，调用它会停止观察所有目标：
 
-```js
+```javascript
 let observer = new MutationObserver((mutationRecords) =>
   console.log(mutationRecords.map((x) => x.target)),
 );
@@ -1736,7 +1736,7 @@ childB.setAttribute('foo', 'bar');
 
 调用 disconnect()并不会结束 MutationObserver 的生命。还可以重新使用这个观察者，再将它关联到新的目标节点。下面的示例在两个连续的异步块中先断开然后又恢复了观察者与`<body>`元素的关联：
 
-```js
+```javascript
 let observer = new MutationObserver(() => console.log('<body> attributes
 changed'));
 observer.observe(document.body, { attributes: true });
@@ -1780,7 +1780,7 @@ MutationObserverInit 对象用于控制对目标节点的观察范围。粗略�
 
 MutationObserver 可以观察节点属性的添加、移除和修改。要为属性变化注册回调，需要在 MutationObserverInit 对象中将 attributes 属性设置为 true，如下所示：
 
-```js
+```javascript
 let observer = new MutationObserver((mutationRecords) =>
   console.log(mutationRecords),
 );
@@ -1797,7 +1797,7 @@ document.body.removeAttribute('foo');
 
 把 attributes 设置为 true 的默认行为是观察所有属性，但不会在 MutationRecord 对象中记录原来的属性值。如果想观察某个或某几个属性，可以使用 attributeFilter 属性来设置白名单，即一个属性名字符串数组：
 
-```js
+```javascript
 let observer = new MutationObserver((mutationRecords) =>
   console.log(mutationRecords),
 );
@@ -1812,7 +1812,7 @@ document.body.setAttribute('baz', 'qux');
 
 如果想在变化记录中保存属性原来的值，可以将 attributeOldValue 属性设置为 true：
 
-```js
+```javascript
 let observer = new MutationObserver((mutationRecords) =>
   console.log(mutationRecords.map((x) => x.oldValue)),
 );
@@ -1828,7 +1828,7 @@ document.body.setAttribute('foo', 'qux');
 
 MutationObserver 可以观察文本节点（如 Text、Comment 或 ProcessingInstruction 节点）中字符的添加、删除和修改。要为字符数据注册回调，需要在 MutationObserverInit 对象中将 characterData 属性设置为 true，如下所示：
 
-```js
+```javascript
 let observer = new MutationObserver((mutationRecords) =>
   console.log(mutationRecords),
 );
@@ -1847,7 +1847,7 @@ document.body.firstChild.textContent = 'baz';
 
 将 characterData 属性设置为 true 的默认行为不会在 MutationRecord 对象中记录原来的字符数据。如果想在变化记录中保存原来的字符数据，可以将 characterDataOldValue 属性设置为 true：
 
-```js
+```javascript
 let observer = new MutationObserver((mutationRecords) =>
   console.log(mutationRecords.map((x) => x.oldValue)),
 );
@@ -1864,7 +1864,7 @@ document.body.firstChild.textContent = 'baz';
 
 MutationObserver 可以观察目标节点子节点的添加和移除。要观察子节点，需要在 MutationObserverInit 对象中将 childList 属性设置为 true。下面的例子演示了添加子节点：
 
-```js
+```javascript
 let observer = new MutationObserver((mutationRecords) =>
   console.log(mutationRecords),
 );
@@ -1898,7 +1898,7 @@ document.body.appendChild(document.createElement('div'));
 
 下面的例子演示了移除子节点：
 
-```js
+```javascript
 const div = document.createElement('div');
 document.body.qppendChild(div);
 let observer = new MutationObserver((mutationRecords) =>
@@ -1934,7 +1934,7 @@ document.body.removeChild(document.body.firstChild);
 
 对子节点 **重新排序**（尽管调用一个方法即可实现）会报告两次变化事件，因为从技术上会涉及先移除和再添加：
 
-```js
+```javascript
 // 清空主体
 document.body.innerHTML = '';
 let observer = new MutationObserver((mutationRecords) =>
@@ -1979,7 +1979,7 @@ document.body.insertBefore(document.body.lastChild, document.body.firstChild);
 
 下面的代码展示了观察元素及其后代节点属性的变化：
 
-```js
+```javascript
 // 清空主体
 document.body.innerHTML = '';
 let observer = new MutationObserver((mutationRecords) =>
@@ -2011,7 +2011,7 @@ document.body.firstChild.setAttribute('foo', 'bar');
 
 下面的代码演示了这种情况：
 
-```js
+```javascript
 // 清空主体
 document.body.innerHTML = '';
 let observer = new MutationObserver((mutationRecords) =>
@@ -2045,7 +2045,7 @@ MutationObserver 接口是出于性能考虑而设计的，其核心是异步回
 
 调用 MutationObserver 实例的 takeRecords()方法可以清空记录队列，取出并返回其中的所有 MutationRecord 实例。看这个例子：
 
-```js
+```javascript
 let observer = new MutationObserver((mutationRecords) =>
   console.log(mutationRecords),
 );

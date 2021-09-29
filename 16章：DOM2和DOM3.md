@@ -147,7 +147,7 @@ DOM3 进一步增加了如下与命名空间相关的方法：
 
 对前面的例子，可以执行以下代码：
 
-```js
+```javascript
 console.log(document.body.isDefaultNamespace('http://www.w3.org/1999/xhtml')); // true
 // 假设svg 包含对<s:svg>元素的引用
 console.log(svg.lookupPrefix('http://www.w3.org/2000/svg')); // 's'
@@ -165,7 +165,7 @@ DOM2 在 Document 类型上新增了如下命名空间特定的方法：
 - getElementsByTagNameNS(namespaceURI, tagName)，返回指定命名空间 namespaceURI 中所有标签名为 tagName 的元素的 NodeList。
   使用这些方法都需要传入相应的命名空间 URI（不是命名空间前缀），如下面的例子所示：
 
-```js
+```javascript
 // 创建一个新SVG 元素
 let svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 // 创建一个任意命名空间的新属性
@@ -216,7 +216,7 @@ DocumentType 新增了 3 个属性：publicId、systemId 和 internalSubset。pu
 
 其 publicId 是'-// W3C// DTD HTML 4.01// EN'，而 systemId 是'http://www.w3.org/TR/html4/strict.dtd'。支持DOM2 的浏览器应该可以运行以下 JavaScript 代码：
 
-```js
+```javascript
 console.log(document.doctype.publicId);
 console.log(document.doctype.systemId);
 ```
@@ -238,7 +238,7 @@ Document 类型的更新中唯一跟命名空间无关的方法是 importNode()�
 
 importNode()方法跟 cloneNode()方法类似，同样接收两个参数：要复制的节点和表示是否同时复制子树的布尔值，返回结果是适合在当前文档中使用的新节点。下面看一个例子：
 
-```js
+```javascript
 let newNode = document.importNode(oldNode, true); // 导入节点及所有后代
 document.body.appendChild(newNode);
 ```
@@ -247,13 +247,13 @@ document.body.appendChild(newNode);
 
 DOM2 View 给 Document 类型增加了新属性 defaultView，是一个指向拥有当前文档的窗口（或窗格<frame>）的指针。这个规范中并没有明确视图何时可用，因此这是添加的唯一一个属性。defaultView 属性得到了除 IE8 及更早版本之外所有浏览器的支持。IE8 及更早版本支持等价的 parentWindow 属性，Opera 也支持这个属性。因此要确定拥有文档的窗口，可以使用以下代码：
 
-```js
+```javascript
 let parentWindow = document.defaultView || document.parentWindow;
 ```
 
 除了上面这一个方法和一个属性，DOM2 Core 还针对 document.implementation 对象增加了两个新方法：createDocumentType()和 createDocument()。前者用于创建 DocumentType 类型的新节点，接收 3 个参数：文档类型名称、publicId 和 systemId。比如，以下代码可以创建一个新的 HTML4.01 严格型文档：
 
-```js
+```javascript
 let doctype = document.implementation.createDocumentType(
   'html',
   '-// W3C// DTD HTML 4.01// EN',
@@ -263,13 +263,13 @@ let doctype = document.implementation.createDocumentType(
 
 已有文档的文档类型不可更改，因此 createDocumentType()只在创建新文档时才会用到，而创建新文档要使用 createDocument() 方法。createDocument() 接收 3 个参数： 文档元素的 namespaceURI、文档元素的标签名和文档类型。比如，下列代码可以创建一个空的 XML 文档：
 
-```js
+```javascript
 let doc = document.implementation.createDocument('', 'root', null);
 ```
 
 这个空文档没有命名空间和文档类型，只指定了`<root>`作为文档元素。要创建一个 XHTML 文档，可以使用以下代码：
 
-```js
+```javascript
 let doctype = document.implementation.createDocumentType(
   'html',
   '-// W3C// DTD XHTML 1.0 Strict// EN',
@@ -286,7 +286,7 @@ let doc = document.implementation.createDocument(
 
 DOM2 HTML 模块也为 document.implamentation 对象添加了 createHTMLDocument()方法。使用这个方法可以创建一个完整的 HTML 文档，包含`<html>`、`<head>`、`<title>`和`<body>`元素。这个方法只接收一个参数，即新创建文档的标题（放到`<title>`元素中），返回一个新的 HTML 文档。比如：
 
-```js
+```javascript
 let htmldoc = document.implementation.createHTMLDocument('New Doc');
 console.log(htmldoc.title); // 'New Doc'
 console.log(typeof htmldoc.body); // 'object'
@@ -298,7 +298,7 @@ createHTMLDocument()方法创建的对象是 HTMLDocument 类型的实例，因�
 
 DOM3 新增了两个用于比较节点的方法：isSameNode()和 isEqualNode()。这两个方法都接收一个节点参数，如果这个节点与参考节点相同或相等，则返回 true。节点相同，意味着引用同一个对象；节点相等，意味着节点类型相同，拥有相等的属性（nodeName、nodeValue 等），而且 attributes 和 childNodes 也相等（即同样的位置包含相等的值）。来看一个例子：
 
-```js
+```javascript
 let div1 = document.createElement('div');
 div1.setAttribute('class', 'box');
 let div2 = document.createElement('div');
@@ -312,19 +312,19 @@ console.log(div1.isSameNode(div2)); // false
 
 DOM3 也增加了给 DOM 节点附加额外数据的方法。setUserData()方法接收 3 个参数：键、值、处理函数，用于给节点追加数据。可以像下面这样把数据添加到一个节点：
 
-```js
+```javascript
 document.body.setUserData('name', 'Nicholas', function () {});
 ```
 
 然后，可以通过相同的键再取得这个信息，比如：
 
-```js
+```javascript
 let value = document.body.getUserData('name');
 ```
 
 setUserData()的处理函数会在包含数据的节点被复制、删除、重命名或导入其他文档的时候执行，可以在这时候决定如何处理用户数据。处理函数接收 5 个参数：表示操作类型的数值（1 代表复制，2 代表导入，3 代表删除，4 代表重命名）、数据的键、数据的值、源节点和目标节点。删除节点时，源节点为 null；除复制外，目标节点都为 null。
 
-```js
+```javascript
 let div = document.createElement('div');
 div.setUserData(
   'name',
@@ -345,7 +345,7 @@ console.log(newDiv.getUserData('name')); // 'Nicholas'
 
 DOM2 HTML 给 HTMLIFrameElement（即`<iframe>`，内嵌窗格）类型新增了一个属性，叫 contentDocument。这个属性包含代表子内嵌窗格中内容的 document 对象的指针。下面的例子展示了如何使用这个属性：
 
-```js
+```javascript
 let iframe = document.getElementById('myIframe');
 let iframeDoc = iframe.contentDocument;
 ```
@@ -373,7 +373,7 @@ HTML 中的样式有 3 种定义方式：外部样式表（通过`<link>`元素�
 
 任何时候，只要获得了有效 DOM 元素的引用，就可以通过 JavaScript 来设置样式。来看下面的例子：
 
-```js
+```javascript
 let myDiv = document.getElementById('myDiv');
 setTimeout(() => {
   // 设置背景颜色
@@ -398,7 +398,7 @@ setTimeout(() => {
 
 这个元素 style 属性的值可以像这样通过代码获取：
 
-```js
+```javascript
 console.log(myDiv.style.backgroundColor); // 'blue'
 console.log(myDiv.style.width); // '10px'
 console.log(myDiv.style.height); // '25px'
@@ -423,7 +423,7 @@ DOM2 Style 规范也在 style 对象上定义了一些属性和方法。这些�
 通过 cssText 属性可以存取样式的 CSS 代码。在读模式下，cssText 返回 style 属性 CSS 代码在浏览器内部的表示。在写模式下，给 cssText 赋值会重写整个 style 属性的值，意味着之前通过 style 属性设置的属性都会丢失。比如，如果一个元素通过 style 属性设置了边框，而赋给 cssText
 属性的值不包含边框，则元素的边框会消失。下面的例子演示了 cssText 的使用：
 
-```js
+```javascript
 myDiv.style.cssText = 'width: 25px; height: 100px; background-color: green';
 console.log(myDiv.style.cssText);
 ```
@@ -432,7 +432,7 @@ console.log(myDiv.style.cssText);
 
 length 属性是跟 item()方法一起配套迭代 CSS 属性用的。style 其实是一个类数组对象，也可以用中括号代替 item()取得相应位置的 CSS 属性名，如下所示：
 
-```js
+```javascript
 for (let i = 0, len = myDiv.style.length; i < len; i++) {
   console.log(myDiv.style[i]); // 或者用myDiv.style.item(i)
 }
@@ -440,13 +440,13 @@ for (let i = 0, len = myDiv.style.length; i < len; i++) {
 
 或者更简洁的：
 
-```js
+```javascript
 [...myDiv.style].forEach((prop) => console.log(prop));
 ```
 
 使用中括号或者 item()都可以取得相应位置的 CSS 属性名（'background-color'，不是'backgroundColor'）。这个属性名可以传给 getPropertyValue()以取得属性的值，如下面的例子所示：
 
-```js
+```javascript
 console.log(
   [...myDiv.style].map(
     (prop) => `${prop}: ${myDiv.style.getPropertyValue(prop)}`,
@@ -456,7 +456,7 @@ console.log(
 
 removeProperty()方法用于从元素样式中删除指定的 CSS 属性。使用这个方法删除属性意味着会应用该属性的默认（从其他样式表层叠继承的）样式。例如，可以像下面这样删除 style 属性中设置的 border 样式：
 
-```js
+```javascript
 myDiv.style.removeProperty('border');
 ```
 
@@ -490,7 +490,7 @@ style 对象中包含支持 style 属性的元素为这个属性设置的样式�
 
 这里的`<div>`元素从文档样式表（`<style>`元素）和自己的 style 属性获取了样式。此时，这个元素的 style 对象中包含 backgroundColor 和 border 属性，但不包含（通过样式表规则应用的）width 和 height 属性。下面的代码从这个元素获取了计算样式：
 
-```js
+```javascript
 let myDiv = document.getElementById('myDiv');
 let computedStyle = document.defaultView.getComputedStyle(myDiv, null);
 console.log(computedStyle.backgroundColor); // 'red'
@@ -525,7 +525,7 @@ CSSStyleSheet 类型继承 StyleSheet，后者可用作非 CSS 样式表的基�
 
 document.styleSheets 表示文档中可用的样式表集合。这个集合的 length 属性保存着文档中样式表的数量，而每个样式表都可以使用中括号或 item()方法获取。来看这个例子：
 
-```js
+```javascript
 let sheet = null;
 for (let i = 0, len = document.styleSheets.length; i < len; i++) {
   sheet = document.styleSheets[i];
@@ -562,7 +562,7 @@ div.box {
 
 假设这条规则位于页面中的第一个样式表中，而且是该样式表中唯一一条 CSS 规则，则下列代码可以获取它的所有信息：
 
-```js
+```javascript
 let sheet = document.styleSheets[0];
 let rules = sheet.cssRules || sheet.rules; // 取得规则集合
 let rule = rules[0]; // 取得第一条规则
@@ -575,7 +575,7 @@ console.log(rule.style.height); // '200px'
 
 使用这些接口，可以像确定元素 style 对象中包含的样式一样，确定一条样式规则的样式信息。与元素的场景一样，也可以修改规则中的样式，如下所示：
 
-```js
+```javascript
 let sheet = document.styleSheets[0];
 let rules = sheet.cssRules || sheet.rules; // 取得规则集合
 let rule = rules[0]; // 取得第一条规则
@@ -588,7 +588,7 @@ rule.style.backgroundColor = 'red'
 
 DOM 规定，可以使用 insertRule()方法向样式表中添加新规则。这个方法接收两个参数：规则的文本和表示插入位置的索引值。下面是一个例子：
 
-```js
+```javascript
 sheet.insertRule("body { background-color: silver }", 0); // 使用DOM 方法
 ```
 
@@ -600,7 +600,7 @@ sheet.insertRule("body { background-color: silver }", 0); // 使用DOM 方法
 
 支持从样式表中删除规则的 DOM 方法是 deleteRule()，它接收一个参数：要删除规则的索引。要删除样式表中的第一条规则，可以这样做：
 
-```js
+```javascript
 sheet.deleteRule(0); // 使用DOM 方法
 ```
 
@@ -625,7 +625,7 @@ sheet.deleteRule(0); // 使用DOM 方法
 
 要确定一个元素在页面中的偏移量，可以把它的 offsetLeft 和 offsetTop 属性分别与 offsetParent 的相同属性相加，一直加到根元素。下面是一个例子：
 
-```js
+```javascript
 const getElementLeft = function (element) {
   let actualLeft = element.offsetLeft;
   let current = element.offsetParent;
@@ -686,7 +686,7 @@ scrollLeft 和 scrollTop 属性可以用于确定当前元素滚动的位置，�
 
 下面这个函数检测元素是不是位于顶部，如果不是则把它滚动回顶部：
 
-```js
+```javascript
 const scrollToTop = (element) {
   if (element.scrollTop != 0) {
     element.scrollTop = 0;
@@ -757,13 +757,13 @@ whatToShow 参数是一个位掩码，通过应用一个或多个过滤器来指
 
 这些值除了 NodeFilter.SHOW_ALL 之外，都可以组合使用。比如，可以像下面这样使用按位或操作组合多个选项：
 
-```js
+```javascript
 const whatToShow = NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT;
 ```
 
 createNodeIterator()方法的 filter 参数可以用来指定自定义 NodeFilter 对象，或者一个作为节点过滤器的函数。NodeFilter 对象只有一个方法 acceptNode()，如果给定节点应该访问就返回 NodeFilter.FILTER_ACCEPT，否则返回 NodeFilter.FILTER_SKIP。因为 NodeFilter 是一个抽象类型，所以不可能创建它的实例。只要创建一个包含 acceptNode()的对象，然后把它传给 createNodeIterator()就可以了。以下代码定义了只接收`<p>`元素的节点过滤器对象：
 
-```js
+```javascript
 const filter = {
   acceptNode(node) {
     return node.tagName.toLowerCase() == "p"
@@ -776,7 +776,7 @@ const iterator = document.createNodeIterator(root, NodeFilter.SHOW_ELEMENT, filt
 
 filter 参数还可以是一个函数，与 acceptNode()的形式一样，如下面的例子所示：
 
-```js
+```javascript
 let filter = function(node) {
   return node.tagName.toLowerCase() == "p"
   ? NodeFilter.FILTER_ACCEPT

@@ -40,7 +40,7 @@
 
 ```html
 <script>
-  function sayHi() {
+  const sayHi = function () {
     console.log('Hi!');
   }
 </script>
@@ -52,7 +52,7 @@
 
 ```html
 <script>
-  function sayScript() {
+  const sayScript = function () {
     console.log('</script>');
   }
 </script>
@@ -62,7 +62,7 @@
 
 ```html
 <script>
-  function sayScript() {
+  const sayScript = function () {
     console.log('<\/script>');
   }
 </script>
@@ -188,16 +188,16 @@ HTML5 为`<script>`元素定义了 async 属性。当浏览器解析到带有 as
 
 除了`<script>`标签，还有其他方式可以加载脚本。因为 JavaScript 可以使用 DOM API，所以通过向 DOM 中动态添加 script 元素同样可以加载指定的脚本。只要创建一个 script 元素并将其添加到 DOM 即可。
 
-```js
-let script = document.createElement('script');
+```javascript
+const script = document.createElement('script');
 script.src = 'gibberish.js';
 document.head.appendChild(script);
 ```
 
 当然，在把 HTML 元素添加到 DOM 且执行到这段代码之前不会发送请求。默认情况下，以这种方式创建的`<script>`元素是以异步方式加载的，相当于添加了 async 属性。不过这样做可能会有问题，因为所有浏览器都支持 createElement()方法，但不是所有浏览器都支持 async 属性。因此，如果要统一动态脚本的加载行为，可以明确将其设置为同步加载：
 
-```js
-let script = document.createElement('script');
+```javascript
+const script = document.createElement('script');
 script.src = 'gibberish.js';
 script.async = false;
 document.head.appendChild(script);
@@ -296,13 +296,13 @@ IE 初次支持文档模式切换以后，其他浏览器也跟着实现了。�
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Example HTML Page</title>
+    <title>noscript 示例</title>
     <script defer="defer" src="example1.js"></script>
     <script defer="defer" src="example2.js"></script>
   </head>
   <body>
     <noscript>
-      <p>This page requires a JavaScript-enabled browser.</p>
+      <p>JavaScript 被禁用或您的浏览器不支持 JavaScript。</p>
     </noscript>
   </body>
 </html>
