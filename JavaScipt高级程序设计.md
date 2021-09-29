@@ -338,6 +338,8 @@ plan : 1 chapter/3 day
     - [16.2.1. 存取元素样式](#1621-存取元素样式)
     - [16.2.2. 操作样式表](#1622-操作样式表)
     - [16.2.3. 元素尺寸](#1623-元素尺寸)
+  - [16.3. 遍历](#163-遍历)
+    - [16.3.1. NodeIterator](#1631-nodeiterator)
 
 # 1. 什么是 JavaScript
 
@@ -20071,7 +20073,7 @@ for (const prop in result) {
     console.log(`${prop}: ${result[prop]}`);
   }
 }
-/* 
+/*
 ua: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36
 browser:
     name: Chrome
@@ -20088,7 +20090,7 @@ device:
     model: undefined
     type: undefined
 cpu:
-    architecture: amd64 
+    architecture: amd64
 */
 ```
 
@@ -21171,7 +21173,7 @@ element.attributes.setNamedItem(newAttr);
 attributes 属性最有用的场景是需要迭代元素上所有属性的时候。这时候往往是要把 DOM 结构序列化为 XML 或 HTML 字符串。比如，以下代码能够迭代一个元素上的所有属性并以 attribute1='value1' attribute2='value2'的形式生成格式化字符串：
 
 ```js
-function outputAttributes(element) {
+const outputAttributes = function (element) {
   let pairs = [];
   for (let i = 0, len = element.attributes.length; i < len; ++i) {
     const attribute = element.attributes[i];
@@ -21550,7 +21552,7 @@ document.body.appendChild(script);
 这里的 DOM 代码实际上完全照搬了它要表示的 HTML 代码。注意，在上面最后一行把`<script>`元素添加到页面之前，是不会开始下载外部文件的。当然也可以把它添加到`<head>`元素，同样可以实现动态脚本加载。这个过程可以抽象为一个函数，比如：
 
 ```js
-function loadScript(url) {
+const loadScript = function (url) {
   let script = document.createElement('script');
   script.src = url;
   document.body.appendChild(script);
@@ -21653,7 +21655,7 @@ head.appendChild(link);
 以上代码在所有主流浏览器中都能正常运行。注意应该把`<link>`元素添加到`<head>`元素而不是`<body>`元素，这样才能保证所有浏览器都能正常运行。这个过程可以抽象为以下通用函数：
 
 ```js
-function loadStyles(url) {
+const loadStyles = function (url) {
   let link = document.createElement('link');
   link.rel = 'stylesheet';
   link.type = 'text/css';
@@ -21708,7 +21710,7 @@ head.appendChild(style);
 与动态添加脚本源代码类似，这里也使用了 try...catch 语句捕获 IE 抛出的错误，然后再以 IE 特有的方式来设置样式。这是最终的通用函数：
 
 ```js
-function loadStyleString(css) {
+const loadStyleString = function (css) {
   let style = document.createElement('style');
   style.type = 'text/css';
   try {
@@ -23683,9 +23685,9 @@ CSSRule 类型表示样式表中的一条规则。这个类型也是一个通用
 - style，返回 CSSStyleDeclaration 对象，可以设置和获取当前规则中的样式。
 - type，数值常量，表示规则类型。对于样式规则，它始终为 1。
 
-在这些属性中，使用最多的是cssText、selectorText 和style。cssText 属性与style.cssText类似，不过并不完全一样。前者包含选择符文本和环绕样式声明的大括号，而后者则只包含样式声明（类似于元素上的style.cssText）。此外，cssText 是只读的，而style.cssText 可以被重写。
+在这些属性中，使用最多的是 cssText、selectorText 和 style。cssText 属性与 style.cssText 类似，不过并不完全一样。前者包含选择符文本和环绕样式声明的大括号，而后者则只包含样式声明（类似于元素上的 style.cssText）。此外，cssText 是只读的，而 style.cssText 可以被重写。
 
-多数情况下，使用style 属性就可以实现操作样式规则的任务了。这个对象可以像每个元素上的style 对象一样，用来读取或修改规则的样式。比如下面这个CSS 规则：
+多数情况下，使用 style 属性就可以实现操作样式规则的任务了。这个对象可以像每个元素上的 style 对象一样，用来读取或修改规则的样式。比如下面这个 CSS 规则：
 
 ```css
 div.box {
@@ -23695,7 +23697,7 @@ div.box {
 }
 ```
 
-假设这条规则位于页面中的第一个样式表中，而且是该样式表中唯一一条CSS 规则，则下列代码可以获取它的所有信息：
+假设这条规则位于页面中的第一个样式表中，而且是该样式表中唯一一条 CSS 规则，则下列代码可以获取它的所有信息：
 
 ```js
 let sheet = document.styleSheets[0];
@@ -23708,7 +23710,7 @@ console.log(rule.style.width); // '100px'
 console.log(rule.style.height); // '200px'
 ```
 
-使用这些接口，可以像确定元素style 对象中包含的样式一样，确定一条样式规则的样式信息。与元素的场景一样，也可以修改规则中的样式，如下所示：
+使用这些接口，可以像确定元素 style 对象中包含的样式一样，确定一条样式规则的样式信息。与元素的场景一样，也可以修改规则中的样式，如下所示：
 
 ```js
 let sheet = document.styleSheets[0];
@@ -23721,38 +23723,204 @@ rule.style.backgroundColor = 'red'
 
 2. **创建规则**
 
-DOM 规定，可以使用insertRule()方法向样式表中添加新规则。这个方法接收两个参数：规则的文本和表示插入位置的索引值。下面是一个例子：
+DOM 规定，可以使用 insertRule()方法向样式表中添加新规则。这个方法接收两个参数：规则的文本和表示插入位置的索引值。下面是一个例子：
 
 ```js
 sheet.insertRule("body { background-color: silver }", 0); // 使用DOM 方法
 ```
 
-这个例子插入了一条改变文档背景颜色的规则。这条规则是作为样式表的第一条规则（位置0）插入的，顺序对规则层叠是很重要的。
+这个例子插入了一条改变文档背景颜色的规则。这条规则是作为样式表的第一条规则（位置 0）插入的，顺序对规则层叠是很重要的。
 
-虽然可以这样添加规则，但随着要维护的规则增多，很快就会变得非常麻烦。这时候，更好的方式是使用第14 章介绍的动态样式加载技术。
+虽然可以这样添加规则，但随着要维护的规则增多，很快就会变得非常麻烦。这时候，更好的方式是使用第 14 章介绍的动态样式加载技术。
 
 3. **删除规则**
 
-支持从样式表中删除规则的DOM 方法是deleteRule()，它接收一个参数：要删除规则的索引。要删除样式表中的第一条规则，可以这样做：
+支持从样式表中删除规则的 DOM 方法是 deleteRule()，它接收一个参数：要删除规则的索引。要删除样式表中的第一条规则，可以这样做：
 
 ```js
 sheet.deleteRule(0); // 使用DOM 方法
 ```
 
-与添加规则一样，删除规则并不是Web 开发中常见的做法。考虑到可能影响CSS 层叠的效果，删除规则时要慎重。
+与添加规则一样，删除规则并不是 Web 开发中常见的做法。考虑到可能影响 CSS 层叠的效果，删除规则时要慎重。
 
 ### 16.2.3. 元素尺寸
 
-本节介绍的属性和方法并不是DOM2 Style 规范中定义的，但与HTML 元素的样式有关。DOM 一直缺乏页面中元素实际尺寸的规定。IE 率先增加了一些属性，向开发者暴露元素的尺寸信息。这些属性现在已经得到所有主流浏览器支持。
+本节介绍的属性和方法并不是 DOM2 Style 规范中定义的，但与 HTML 元素的样式有关。DOM 一直缺乏页面中元素实际尺寸的规定。IE 率先增加了一些属性，向开发者暴露元素的尺寸信息。这些属性现在已经得到所有主流浏览器支持。
 
 1. **偏移尺寸**
 
-第一组属性涉及 **偏移尺寸(offset dimensions)**，包含元素在屏幕上占用的所有视觉空间。元素在页面上的视觉空间由其高度和宽度决定，包括所有内边距、滚动条和边框（但不包含外边距）。以下4 个属性用于取得元素的偏移尺寸。
+第一组属性涉及 **偏移尺寸(offset dimensions)**，包含元素在屏幕上占用的所有视觉空间。元素在页面上的视觉空间由其高度和宽度决定，包括所有内边距、滚动条和边框（但不包含外边距）。以下 4 个属性用于取得元素的偏移尺寸。
 
 - offsetHeight，元素在垂直方向上占用的像素尺寸，包括它的高度、水平滚动条高度（如果可见）和上、下边框的高度。
 - offsetLeft，元素左边框外侧距离包含元素左边框内侧的像素数。
 - offsetTop，元素上边框外侧距离包含元素上边框内侧的像素数。
 - offsetWidth，元素在水平方向上占用的像素尺寸，包括它的宽度、垂直滚动条宽度（如果可见）和左、右边框的宽度。
 
-其中，offsetLeft 和offsetTop 是相对于包含元素的，包含元素保存在offsetParent 属性中。offsetParent 不一定是parentNode。比如，`<td>`元素的offsetParent 是作为其祖先的`<table>`元素，因为`<table>`是节点层级中第一个提供尺寸的元素。下图展示了这些属性代表的不同尺寸。
+其中，offsetLeft 和 offsetTop 是相对于包含元素的，包含元素保存在 offsetParent 属性中。offsetParent 不一定是 parentNode。比如，`<td>`元素的 offsetParent 是作为其祖先的`<table>`元素，因为`<table>`是节点层级中第一个提供尺寸的元素。下图展示了这些属性代表的不同尺寸。
+
+![16-1-偏移尺寸](illustrations/16-1-偏移尺寸.png)
+
+要确定一个元素在页面中的偏移量，可以把它的 offsetLeft 和 offsetTop 属性分别与 offsetParent 的相同属性相加，一直加到根元素。下面是一个例子：
+
+```js
+const getElementLeft = function (element) {
+  let actualLeft = element.offsetLeft;
+  let current = element.offsetParent;
+
+  while (current !== null) {
+    actualLeft += current.offsetLeft;
+    current = current.offsetParent;
+  }
+
+  return actualLeft;
+}
+
+const getElementTop = function (element) {
+  let actualTop = element.offsetTop;
+  let current = element.offsetParent;
+
+  while (current !== null) {
+    actualTop += current.offsetTop;
+    current = current.offsetParent;
+  }
+
+  return actualTop;
+}
+```
+
+这两个函数使用 offsetParent 在 DOM 树中逐级上溯，将每一级的偏移属性相加，最终得到元素的实际偏移量。对于使用 CSS 布局的简单页面，这两个函数是很精确的。而对于使用表格和内嵌窗格的页面布局，它们返回的值会因浏览器不同而有所差异，因为浏览器实现这些元素的方式不同。一般来说，包含在`<div>`元素中所有元素都以`<body>`为其 offsetParent，因此 getElementleft()和 getElementTop()返回的值与 offsetLeft 和 offsetTop 返回的值相同。
+
+注意 所有这些偏移尺寸属性都是只读的，每次访问都会重新计算。因此，应该尽量减少查询它们的次数。比如把查询的值保存在局量中，就可以避免影响性能。
+
+2. **客户端尺寸**
+
+元素的 **客户端尺寸(client dimensions)** 包含元素内容及其内边距所占用的空间。客户端尺寸只有两个相关属性：clientWidth 和 clientHeight。其中，clientWidth 是内容区宽度加左、右内边距宽度，clientHeight 是内容区高度加上、下内边距高度。下图形象地展示了这两个属性。
+
+![16-2-客户端尺寸](illustrations/16-2-客户端尺寸.png)
+
+客户端尺寸实际上就是元素内部的空间，因此不包含滚动条占用的空间。这两个属性最常用于确定浏览器视口尺寸，即检测 document.documentElement 的 clientWidth 和 clientHeight。这两个属性表示视口（`<html>`或`<body>`元素）的尺寸。
+
+注意 与偏移尺寸一样，客户端尺寸也是只读的，而且每次访问都会重新计算。
+
+3. **滚动尺寸**
+
+最后一组尺寸是 **滚动尺寸(scroll dimensions)**，提供了元素内容滚动距离的信息。有些元素，比如`<html>`无须任何代码就可以自动滚动，而其他元素则需要使用 CSS 的 overflow 属性令其滚动。滚动尺寸相关的属性有如下 4 个。
+
+- scrollHeight，没有滚动条出现时，元素内容的总高度。
+- scrollLeft，内容区左侧隐藏的像素数，设置这个属性可以改变元素的滚动位置。
+- scrollTop，内容区顶部隐藏的像素数，设置这个属性可以改变元素的滚动位置。
+- scrollWidth，没有滚动条出现时，元素内容的总宽度。
+
+下图展示了这些属性的含义。
+
+![16-3-滚动尺寸](illustrations/16-3-滚动尺寸.png)
+
+scrollWidth 和 scrollHeight 可以用来确定给定元素内容的实际尺寸。例如，`<html>`元素是浏览器中滚动视口的元素。因此，document.documentElement.scrollHeight 就是整个页面垂直方向的总高度。
+
+scrollWidth 和 scrollHeight 与 clientWidth 和 clientHeight 之间的关系在不需要滚动的文档上是分不清的。如果文档尺寸超过视口尺寸，则在所有主流浏览器中这两对属性都不相等，scrollWidth 和 scollHeight 等于文档内容的宽度，而 clientWidth 和 clientHeight 等于视口的大小。
+
+scrollLeft 和 scrollTop 属性可以用于确定当前元素滚动的位置，或者用于设置它们的滚动位置。元素在未滚动时，这两个属性都等于 0。如果元素在垂直方向上滚动，则 scrollTop 会大于 0，表示元素顶部不可见区域的高度。如果元素在水平方向上滚动，则 scrollLeft 会大于 0，表示元素左侧不可见区域的宽度。因为这两个属性也是可写的，所以把它们都设置为 0 就可以重置元素的滚动位置。
+
+下面这个函数检测元素是不是位于顶部，如果不是则把它滚动回顶部：
+
+```js
+const scrollToTop = (element) {
+  if (element.scrollTop != 0) {
+    element.scrollTop = 0;
+  }
+}
+```
+
+这个函数使用 scrollTop 获取并设置值。
+
+4. **确定元素尺寸**
+
+浏览器在每个元素上都暴露了 getBoundingClientRect()方法，返回一个 DOMRect 对象，包含 6 个属性：left、top、right、bottom、height 和 width。这些属性给出了元素在页面中相对于视口的位置。下图展示了这些属性的含义。
+
+![16-4-确定元素尺寸](illustrations/16-4-确定元素尺寸.png)
+
+## 16.3. 遍历
+
+DOM2 Traversal and Range 模块定义了两个类型用于辅助顺序遍历 DOM 结构。这两个类型——NodeIterator 和 TreeWalker——从某个起点开始执行对 DOM 结构的深度优先遍历。
+
+如前所述，DOM 遍历是对 DOM 结构的深度优先遍历，至少允许朝两个方向移动（取决于类型）。遍历以给定节点为根，不能在 DOM 中向上超越这个根节点。来看下面的 HTML：
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Example</title>
+  </head>
+  <body>
+    <p><b>Hello</b> world!</p>
+  </body>
+</html>
+```
+
+这段代码构成的 DOM 树如下图所示。
+
+![16-5-DOM树](illustrations/16-5-DOM树.png)
+
+其中的任何节点都可以成为遍历的根节点。比如，假设以`<body>`元素作为遍历的根节点，那么接下来是`<p>`元素、`<b>`元素和两个文本节点（都是`<body>`元素的后代）。但这个遍历不会到达`<html>`元素、`<head>`元素，或者其他不属于`<body>`元素子树的元素。而以 document 为根节点的遍历，则可以访问到文档中的所有节点。下图展示了以 document 为根节点的深度优先遍历。
+
+![16-6-DOM树深度优先遍历](illustrations/16-6-DOM树深度优先遍历.png)
+
+从 document 开始，然后循序移动，第一个节点是 document，最后一个节点是包含" world!"的文本节点。到达文档末尾最后那个文本节点后，遍历会在 DOM 树中反向回溯。此时，第一个访问的节点就是包含" world!"的文本节点，而最后一个是 document 节点本身。NodeIterator 和 TreeWalker 都以这种方式进行遍历。
+
+### 16.3.1. NodeIterator
+
+NodeIterator 类型是两个类型中比较简单的，可以通过 document.createNodeIterator()方法创建其实例。这个方法接收以下 4 个参数。
+
+- root，作为遍历根节点的节点。
+- whatToShow，数值代码，表示应该访问哪些节点。
+- filter，NodeFilter 对象或函数，表示是否接收或跳过特定节点。
+- entityReferenceExpansion，布尔值，表示是否扩展实体引用。这个参数在 HTML 文档中没有效果，因为实体引用永远不扩展。
+
+whatToShow 参数是一个位掩码，通过应用一个或多个过滤器来指定访问哪些节点。这个参数对应的常量是在 NodeFilter 类型中定义的。
+
+- NodeFilter.SHOW_ALL，所有节点。
+- NodeFilter.SHOW_ELEMENT，元素节点。
+- NodeFilter.SHOW_ATTRIBUTE，属性节点。由于 DOM 的结构，因此实际上用不上。
+- NodeFilter.SHOW_TEXT，文本节点。
+- NodeFilter.SHOW_CDATA_SECTION，CData 区块节点。不是在 HTML 页面中使用的。
+- NodeFilter.SHOW_ENTITY_REFERENCE，实体引用节点。不是在 HTML 页面中使用的。
+- NodeFilter.SHOW_ENTITY，实体节点。不是在 HTML 页面中使用的。
+- NodeFilter.SHOW_PROCESSING_INSTRUCTION，处理指令节点。不是在 HTML 页面中使用的。
+- NodeFilter.SHOW_COMMENT，注释节点。
+- NodeFilter.SHOW_DOCUMENT，文档节点。
+- NodeFilter.SHOW_DOCUMENT_TYPE，文档类型节点。
+- NodeFilter.SHOW_DOCUMENT_FRAGMENT，文档片段节点。不是在 HTML 页面中使用的。
+- NodeFilter.SHOW_NOTATION，记号节点。不是在 HTML 页面中使用的。
+
+这些值除了 NodeFilter.SHOW_ALL 之外，都可以组合使用。比如，可以像下面这样使用按位或操作组合多个选项：
+
+```js
+const whatToShow = NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT;
+```
+
+createNodeIterator()方法的 filter 参数可以用来指定自定义 NodeFilter 对象，或者一个作为节点过滤器的函数。NodeFilter 对象只有一个方法 acceptNode()，如果给定节点应该访问就返回 NodeFilter.FILTER_ACCEPT，否则返回 NodeFilter.FILTER_SKIP。因为 NodeFilter 是一个抽象类型，所以不可能创建它的实例。只要创建一个包含 acceptNode()的对象，然后把它传给 createNodeIterator()就可以了。以下代码定义了只接收`<p>`元素的节点过滤器对象：
+
+```js
+const filter = {
+  acceptNode(node) {
+    return node.tagName.toLowerCase() == "p"
+    ? NodeFilter.FILTER_ACCEPT
+    : NodeFilter.FILTER_SKIP;
+  }
+};
+const iterator = document.createNodeIterator(root, NodeFilter.SHOW_ELEMENT, filter, false);
+```
+
+filter 参数还可以是一个函数，与 acceptNode()的形式一样，如下面的例子所示：
+
+```js
+let filter = function(node) {
+  return node.tagName.toLowerCase() == "p"
+  ? NodeFilter.FILTER_ACCEPT
+  : NodeFilter.FILTER_SKIP;
+};
+let iterator = document.createNodeIterator(root, NodeFilter.SHOW_ELEMENT,
+filter, false);
+```
+
 
