@@ -470,7 +470,7 @@ location 是最有用的 BOM 对象之一，提供了当前窗口中加载文档
 location 的多数信息都可以通过上面的属性获取。但是 URL 中的查询字符串并不容易使用。虽然 location.search 返回了从问号开始直到 URL 末尾的所有内容，但没有办法逐个访问每个查询参数。下面的函数解析了查询字符串，并返回一个以每个查询参数为属性的对象：
 
 ```javascript
-const getQueryArgs = function getQueryArgs() {
+const getQueryArgs = function () {
   // 取得没有开头问号的查询字符串
   const querys = location.search.length > 0 ? location.search.slice(1) : '';
 
@@ -496,7 +496,7 @@ const getQueryArgs = function getQueryArgs() {
 不过，如果键名有重复，这种方法并不适用，例如，查询字符串为 `'?key=1&key=2&value=3'`。所以，我们此时用数组来存储。
 
 ```javascript
-const getQueryMap = function getQueryMap() {
+const getQueryMap = function () {
   // '?key=1&key=2&value=3'
   const queryStr = location.search.length > 0 ? location.search.slice(1) : '';
   const pairStrs = queryStr.split('&');
@@ -854,7 +854,7 @@ history 对象增加了方便的状态管理特性。
 hashchange 会在页面 URL 的散列变化时被触发，开发者可以在此时执行某些操作。而状态管理 API 则可以让开发者改变浏览器 URL 而不会加载新页面。为此，可以使用 history.pushState()方法。这个方法接收 3 个参数：一个 state 对象、一个新状态的标题和一个（可选的）相对 URL。例如：
 
 ```javascript
-let stateObject = { foo: 'bar' };
+let stateObject = {foo: 'bar'};
 history.pushState(stateObject, 'My title', 'baz.html');
 ```
 
@@ -877,7 +877,7 @@ window.addEventListener('popstate', (event) => {
 可以通过 history.state 获取当前的状态对象，也可以使用 replaceState()并传入与 pushState()同样的前两个参数来更新状态。更新状态不会创建新历史记录，只会覆盖当前状态：
 
 ```javascript
-history.replaceState({ newFoo: 'newBar' }, 'New title');
+history.replaceState({newFoo: 'newBar'}, 'New title');
 ```
 
 传给 pushState()和 replaceState()的 state 对象应该只包含可以被序列化的信息。因此，DOM 元素之类并不适合放到状态对象里保存。
