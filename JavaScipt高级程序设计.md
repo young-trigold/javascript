@@ -340,6 +340,9 @@ plan : 1 chapter/3 day
     - [16.2.3. 元素尺寸](#1623-元素尺寸)
   - [16.3. 遍历](#163-遍历)
     - [16.3.1. NodeIterator](#1631-nodeiterator)
+    - [16.3.2. TreeWalker](#1632-treewalker)
+  - [16.4. 范围](#164-范围)
+    - [16.4.1. DOM 范围](#1641-dom-范围)
 
 # 1. 什么是 JavaScript
 
@@ -24269,6 +24272,7 @@ const filter = {
       : NodeFilter.FILTER_SKIP;
   },
 };
+
 const iterator = document.createNodeIterator(
   root,
   NodeFilter.SHOW_ELEMENT,
@@ -24280,15 +24284,204 @@ const iterator = document.createNodeIterator(
 filter 参数还可以是一个函数，与 acceptNode()的形式一样，如下面的例子所示：
 
 ```javascript
-let filter = function (node) {
+const filter = function (node) {
   return node.tagName.toLowerCase() == 'p'
     ? NodeFilter.FILTER_ACCEPT
     : NodeFilter.FILTER_SKIP;
 };
-let iterator = document.createNodeIterator(
+
+const iterator = document.createNodeIterator(
   root,
   NodeFilter.SHOW_ELEMENT,
   filter,
   false,
 );
 ```
+
+要创建一个简单的遍历所有节点的 NodeIterator，可以使用以下代码：
+
+```javascript
+const iterator = document.createNodeIterator(
+  document,
+  NodeFilter.SHOW_ALL,
+  null,
+  false,
+);
+```
+
+NodeIterator 的两个主要方法是 nextNode()和 previousNode()。nextNode()方法在 DOM 子树中以深度优先方式进前一步，而 previousNode()则是在遍历中后退一步。创建 NodeIterator 对象的时候，会有一个内部指针指向根节点，因此第一次调用 nextNode()返回的是根节点。当遍历到达 DOM 树最后一个节点时，nextNode()返回 null。previousNode()方法也是类似的。当遍历到达 DOM 树最后一个节点时，调用 previousNode()返回遍历的根节点后，再次调用也会返回 null。
+
+以下面的 HTML 片段为例：
+
+```html
+<div id="div1">
+  <p>
+    <b>Hello</b>
+    world!
+  </p>
+  <ul>
+    <li>List item 1</li>
+    <li>List item 2</li>
+    <li>List item 3</li>
+  </ul>
+</div>
+```
+
+假设想要遍历<div>元素内部的所有元素，那么可以使用如下代码：
+
+```js
+const div = document.getElementById('div1');
+const iterator = document.createNodeIterator(
+  div,
+  NodeFilter.SHOW_ELEMENT,
+  null,
+  false,
+);
+let node = iterator.nextNode();
+
+while (node !== null) {
+  // 输出标签名
+  console.log(node.tagName);
+  node = iterator.nextNode();
+}
+```
+
+这个例子中第一次调用 nextNode()返回`<div>`元素。因为 nextNode()在遍历到达 DOM 子树末尾时返回 null，所以这里通过 while 循环检测每次调用 nextNode()的返回值是不是 null。以上代码执行后会输出以下标签名：
+
+```javascript
+'DIV';
+'P';
+'B';
+'UL';
+'LI';
+'LI';
+'LI';
+```
+
+如果只想遍历`<li>`元素，可以传入一个过滤器，比如：
+
+```javascript
+const div = document.getElementById('div1');
+const filter = function (node) {
+  return node.tagName.toLowerCase() == 'li'
+    ? NodeFilter.FILTER_ACCEPT
+    : NodeFilter.FILTER_SKIP;
+};
+const iterator = document.createNodeIterator(
+  div,
+  NodeFilter.SHOW_ELEMENT,
+  filter,
+  false,
+);
+let node = iterator.nextNode();
+
+while (node !== null) {
+  // 输出标签名
+  console.log(node.tagName);
+  node = iterator.nextNode();
+}
+```
+
+在这个例子中，遍历只会输出`<li>`元素的标签。
+
+nextNode()和 previousNode()方法共同维护 NodeIterator 对 DOM 结构的内部指针，因此修改 DOM 结构也会体现在遍历中。
+
+### 16.3.2. TreeWalker
+
+TreeWalker 是 NodeIterator 的高级版。除了包含同样的 nextNode()、previousNode()方法，TreeWalker 还添加了如下在 DOM 结构中向不同方向遍历的方法。
+
+- parentNode()，遍历到当前节点的父节点。
+- firstChild()，遍历到当前节点的第一个子节点。
+- lastChild()，遍历到当前节点的最后一个子节点。
+- nextSibling()，遍历到当前节点的下一个同胞节点。
+- previousSibling()，遍历到当前节点的上一个同胞节点。
+
+TreeWalker 对象要调用 document.createTreeWalker() 方法来创建， 这个方法接收与 document.createNodeIterator()同样的参数：作为遍历起点的根节点、要查看的节点类型、节点过滤器和一个表示是否扩展实体引用的布尔值。因为两者很类似，所以 TreeWalker 通常可以取代 NodeIterator，比如：
+
+```javascript
+const div = document.getElementById('div1');
+const filter = function (node) {
+  return node.tagName.toLowerCase() == 'li'
+    ? NodeFilter.FILTER_ACCEPT
+    : NodeFilter.FILTER_SKIP;
+};
+const walker = document.createTreeWalker(
+  div,
+  NodeFilter.SHOW_ELEMENT,
+  filter,
+  false,
+);
+let node = iterator.nextNode();
+
+while (node !== null) {
+  // 输出标签名
+  console.log(node.tagName);
+  node = iterator.nextNode();
+}
+```
+
+不同的是，节点过滤器（filter）除了可以返回 NodeFilter.FILTER_ACCEPT 和 NodeFilter.FILTER_SKIP，还可以返回 NodeFilter.FILTER_REJECT。在使用 NodeIterator 时，NodeFilter.FILTER_SKIP 和 NodeFilter.FILTER_REJECT 是一样的。但在使用 TreeWalker 时，NodeFilter.FILTER_SKIP 表示跳过节点，访问子树中的下一个节点，而 NodeFilter.FILTER_REJECT 则表示跳过该节点以及该节点的整个子树。例如，如果把前面示例中的过滤器函数改为返回 NodeFilter.FILTER_REJECT（而不是 NodeFilter.FILTER_SKIP），则会导致遍历立即返回，不会访问任何节点。这是因为第一个返回的元素是`<div>`，其中标签名不是"li"，因此过滤函数返回 NodeFilter.FILTER_REJECT，表示要跳过整个子树。因为`<div>`本身就是遍历的根节点，所以遍历会就此结束。
+
+当然，TreeWalker 真正的威力是可以在 DOM 结构中四处游走。如果不使用过滤器，单纯使用 TreeWalker 的漫游能力同样可以在 DOM 树中访问`<li>`元素，比如：
+
+```javascript
+const div = document.getElementById('div1');
+const walker = document.createTreeWalker(
+  div,
+  NodeFilter.SHOW_ELEMENT,
+  null,
+  false,
+);
+
+// 前往<p>
+walker.firstChild();
+
+// 前往<ul>
+walker.nextSibling();
+
+// 前往第一个<li>
+let node = walker.firstChild();
+while (node !== null) {
+  console.log(node.tagName);
+  node = walker.nextSibling();
+}
+```
+
+因为我们知道`<li>`元素在文档结构中的位置，所以可以直接定位过去。先使用 firstChild()前往`<p>`元素，再通过 nextSibling()前往`<ul>`元素，然后使用 firstChild()到达第一个`<li>`元素。注意，此时的 TreeWalker 只返回元素（这是因为传给 createTreeWalker()的第二个参数）。最后就可以使用 nextSibling()访问每个`<li>`元素，直到再也没有元素，此时方法返回 null。
+
+TreeWalker 类型也有一个名为 currentNode 的属性，表示遍历过程中上一次返回的节点（无论使用的是哪个遍历方法）。可以通过修改这个属性来影响接下来遍历的起点，如下面的例子所示：
+
+```js
+const node = walker.nextNode();
+
+// true
+console.log(node === walker.currentNode);
+
+// 修改起点
+walker.currentNode = document.body;
+```
+
+相比于NodeIterator，TreeWalker 类型为遍历DOM 提供了更大的灵活性。
+
+## 16.4. 范围
+
+为了支持对页面更细致的控制，DOM2 Traversal and Range 模块定义了范围接口。范围可用于在文档中选择内容，而不用考虑节点之间的界限。（选择在后台发生，用户是看不到的。）范围在常规DOM操作的粒度不够时可以发挥作用。
+
+### 16.4.1. DOM 范围
+
+DOM2 在Document 类型上定义了一个createRange()方法，暴露在document 对象上。使用这个方法可以创建一个DOM范围对象，如下所示：
+
+```javascript
+const range = document.createRange();
+```
+
+与节点类似，这个新创建的范围对象是与创建它的文档关联的，不能在其他文档中使用。然后可以使用这个范围在后台选择文档特定的部分。创建范围并指定它的位置之后，可以对范围的内容执行一些操作，从而实现对底层DOM 树更精细的控制。
+
+每个范围都是Range 类型的实例，拥有相应的属性和方法。下面的属性提供了与范围在文档中位置相关的信息。
+
+- startContainer，范围起点所在的节点（选区中第一个子节点的父节点）。
+- startOffset，范围起点在startContainer 中的偏移量。如果startContainer 是文本节点、注释节点或CData 区块节点，则startOffset 指范围起点之前跳过的字符数；否则，表示范围中第一个节点的索引。
+- endContainer，范围终点所在的节点（选区中最后一个子节点的父节点）。
+- endOffset，范围起点在startContainer 中的偏移量（与startOffset 中偏移量的含义相同）。
+- commonAncestorContainer，文档中以startContainer 和endContainer 为后代的最深的节点。这些属性会在范围被放到文档中特定位置时获得相应的值。
+
