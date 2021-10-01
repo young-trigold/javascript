@@ -366,6 +366,7 @@ plan : 1 chapter/3 day
     - [17.3.2. IE 事件对象](#1732-ie-事件对象)
     - [17.3.3. 跨浏览器事件对象](#1733-跨浏览器事件对象)
   - [17.4. 事件类型](#174-事件类型)
+    - [17.4.1. 用户界面事件](#1741-用户界面事件)
 
 # 1. 什么是 JavaScript
 
@@ -25623,3 +25624,123 @@ document.body.onclick = function (event) {
 
 ## 17.4. 事件类型
 
+Web 浏览器中可以发生很多种事件。如前所述，所发生事件的类型决定了事件对象中会保存什么信息。DOM3 Events 定义了如下事件类型。
+
+- 用户界面事件（UIEvent）：涉及与 BOM 交互的通用浏览器事件。
+- 焦点事件（FocusEvent）：在元素获得和失去焦点时触发。
+- 鼠标事件（MouseEvent）：使用鼠标在页面上执行某些操作时触发。
+- 滚轮事件（WheelEvent）：使用鼠标滚轮（或类似设备）时触发。
+- 输入事件（InputEvent）：向文档中输入文本时触发。
+- 键盘事件（KeyboardEvent）：使用键盘在页面上执行某些操作时触发。
+- 合成事件（CompositionEvent）：在使用某种 IME（Input Method Editor，输入法编辑器）输入字符时触发。
+
+除了这些事件类型之外，HTML5 还定义了另一组事件，而浏览器通常在 DOM 和 BOM 上实现专有事件。这些专有事件基本上都是根据开发者需求而不是按照规范增加的，因此不同浏览器的实现可能不同。
+
+DOM3 Events 在 DOM2 Events 基础上重新定义了事件，并增加了新的事件类型。所有主流浏览器都支持 DOM2 Events 和 DOM3 Events。
+
+### 17.4.1. 用户界面事件
+
+用户界面事件或 UI 事件不一定跟用户操作有关。这类事件在 DOM 规范出现之前就已经以某种形式存在了，保留它们是为了向后兼容。UI 事件主要有以下几种。
+
+- DOMActivate：元素被用户通过鼠标或键盘操作激活时触发（比 click 或 keydown 更通用）。这个事件在 DOM3 Events 中已经废弃。因为浏览器实现之间存在差异，所以不要使用它。
+- load：在 window 上当页面加载完成后触发，在窗套（`<frameset>`）上当所有窗格（`<frame>`）都加载完成后触发，在`<img>`元素上当图片加载完成后触发，在`<object>`元素上当相应对象加载完成后触发。
+- unload：在 window 上当页面完全卸载后触发，在窗套上当所有窗格都卸载完成后触发，在`<object>`元素上当相应对象卸载完成后触发。
+- abort：在`<object>`元素上当相应对象加载完成前被用户提前终止下载时触发。
+- error：在 window 上当 JavaScript 报错时触发，在`<img>`元素上当无法加载指定图片时触发，在`<object>`元素上当无法加载相应对象时触发，在窗套上当一个或多个窗格无法完成加载时触发。
+- select：在文本框（`<input>`或 textarea）上当用户选择了一个或多个字符时触发。
+- resize：在 window 或窗格上当窗口或窗格被缩放时触发。
+- scroll：当用户滚动包含滚动条的元素时在元素上触发。`<body>`元素包含已加载页面的滚动条。
+
+大多数 HTML 事件与 window 对象和表单控件有关。
+
+除了 DOMActivate，这些事件在 DOM2 Events 中都被归为 HTML Events（DOMActivate 在 DOM2 中仍旧是 UI 事件）。
+
+1. **load 事件**
+
+load 事件可能是 JavaScript 中最常用的事件。在 window 对象上，load 事件会在整个页面（包括所有外部资源如图片、JavaScript 文件和 CSS 文件）加载完成后触发。可以通过两种方式指定 load 事件处理程序。第一种是 JavaScript 方式，如下所示：
+
+```javascript
+window.addEventListener('load', (event) => {
+  console.log('Loaded!');
+});
+```
+
+这是使用 addEventListener()方法来指定事件处理程序。与其他事件一样，事件处理程序会接收到一个 event 对象。这个 event 对象并没有提供关于这种类型事件的额外信息，虽然在 DOM 合规的浏览器中，event.target 会被设置为 document，但在 IE8 之前的版本中，不会设置这个对象的
+srcElement 属性。
+
+第二种指定 load 事件处理程序的方式是向`<body>`元素添加 onload 属性，如下所示：
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Load Event Example</title>
+  </head>
+  <body onload="console.log('Loaded!')"></body>
+</html>
+```
+
+一般来说，任何在 window 上发生的事件，都可以通过给`<body>`元素上对应的属性赋值来指定，这是因为 HTML 中没有 window 元素。这实际上是为了保证向后兼容的一个策略，但在所有浏览器中都能得到很好的支持。实际开发中要尽量使用 JavaScript 方式。
+
+注意 根据 DOM2 Events，load 事件应该在 document 而非 window 上触发。可是为了向后兼容，所有浏览器都在 window 上实现了 load 事件。
+
+图片上也会触发 load 事件，包括 DOM 中的图片和非 DOM 中的图片。可以在 HTML 中直接给`<img>`元素的 onload 属性指定事件处理程序，比如：
+
+```html
+<img src="smile.gif" onload="console.log('图片加载完成。')" />
+```
+
+这个例子会在图片加载完成后输出一条消息。同样，使用 JavaScript 也可以为图片指定事件处理程序：
+
+```javascript
+const image = document.getElementById('myImage');
+image.addEventListener('load', (event) => {
+  console.log(event.target.src);
+});
+```
+
+这里使用 JavaScript 为图片指定了 load 事件处理程序。处理程序会接收到 event 对象，虽然这个对象上没有多少有用的信息。这个事件的目标是`<img>`元素，因此可以直接从 event.target.src 属性中取得图片地址并打印出来。
+
+在通过 JavaScript 创建新`<img>`元素时，也可以给这个元素指定一个在加载完成后执行的事件处理程序。在这里，关键是要在赋值 src 属性前指定事件处理程序，如下所示：
+
+```javascript
+window.addEventListener('load', () => {
+  const image = document.createElement('img');
+  image.addEventListener('load', (event) => {
+    console.log(event.target.src);
+  });
+  document.body.appendChild(image);
+  image.src = 'smile.gif';
+});
+```
+
+这个例子首先为 window 指定了一个 load 事件处理程序。因为示例涉及向 DOM 中添加新元素，所以必须确保页面已经加载完成。如果在页面加载完成之前操作 document.body，则会导致错误。然后，代码创建了一个新的`<img>`元素，并为这个元素设置了 load 事件处理程序。最后，才把这个元素添加到文档中并指定了其 src 属性。注意，下载图片并不一定要把`<img>`元素添加到文档，只要给它设置了 src 属性就会立即开始下载。
+
+同样的技术也适用于 DOM0 的 Image 对象。在 DOM 出现之前，客户端都使用 Image 对象预先加载图片。可以像使用前面（通过 createElement()方法创建）的`<img>`元素一样使用 Image 对象，只是不能把后者添加到 DOM 树。下面的例子使用新 Image 对象实现了图片预加载：
+
+```javascript
+window.addEventListener('load', () => {
+  let image = new Image();
+  image.addEventListener('load', (event) => {
+    console.log('Image loaded!');
+  });
+  image.src = 'smile.gif';
+});
+```
+
+这里调用 Image 构造函数创建了一个新图片，并给它设置了事件处理程序。有些浏览器会把 Image 对象实现为`<img>`元素，但并非所有浏览器都如此。所以最好把它们看成是两个东西。
+
+注意 在 IE8 及早期版本中，如果图片没有添加到 DOM 文档中，则 load 事件发生时不会生成 event 对象。对未被添加到文档中的`<img>`元素以及 Image 对象来说都是这样。IE9 修复了这个问题。
+
+还有一些元素也以非标准的方式支持 load 事件。`<script>`元素会在 JavaScript 文件加载完成后触发 load 事件，从而可以动态检测。与图片不同，要下载 JavaScript 文件必须同时指定 src 属性并把`<script>`元素添加到文档中。因此指定事件处理程序和指定 src 属性的顺序在这里并不重要。下面的代码展示了如何给动态创建的`<script>`元素指定事件处理程序：
+
+```javascript
+window.addEventListener('load', () => {
+  const script = document.createElement('script');
+  script.addEventListener('load', (event) => {
+    console.log('Loaded');
+  });
+  script.src = 'example.js';
+  document.body.appendChild(script);
+});
+```
