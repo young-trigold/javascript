@@ -26711,7 +26711,7 @@ document.addEventListener('touchend', handleTouchEvent);
 document.addEventListener('touchmove', handleTouchEvent);
 ```
 
-以上代码会追踪屏幕上的一个触点。为简单起见，代码只会在屏幕有一个触点时输出信息。在touchstart 事件触发时，触点的位置信息会输出到output 元素中。在touchmove 事件触发时，会取消默认行为以阻止滚动（移动触点通常会滚动页面），并输出变化的触点信息。在touchend 事件触发时，会输出触点最后的信息。注意，touchend 事件触发时touches 集合中什么也没有，这是因为没有滚动的触点了。此时必须使用changedTouches 集合。
+以上代码会追踪屏幕上的一个触点。为简单起见，代码只会在屏幕有一个触点时输出信息。在 touchstart 事件触发时，触点的位置信息会输出到 output 元素中。在 touchmove 事件触发时，会取消默认行为以阻止滚动（移动触点通常会滚动页面），并输出变化的触点信息。在 touchend 事件触发时，会输出触点最后的信息。注意，touchend 事件触发时 touches 集合中什么也没有，这是因为没有滚动的触点了。此时必须使用 changedTouches 集合。
 
 这些事件会在文档的所有元素上触发，因此可以分别控制页面的不同部分。当手指点触屏幕上的元素时，依次会发生如下事件（包括鼠标事件）：
 
@@ -26725,7 +26725,7 @@ document.addEventListener('touchmove', handleTouchEvent);
 
 2. **手势事件**
 
-iOS 2.0 中的Safari 还增加了一种手势事件。**手势事件** 会在两个手指触碰屏幕且相对距离或旋转角度变化时触发。手势事件有以下3 种。
+iOS 2.0 中的 Safari 还增加了一种手势事件。**手势事件** 会在两个手指触碰屏幕且相对距离或旋转角度变化时触发。手势事件有以下 3 种。
 
 - gesturestart：一个手指已经放在屏幕上，再把另一个手指放到屏幕上时触发。
 - gesturechange：任何一个手指在屏幕上的位置发生变化时触发。
@@ -26733,40 +26733,42 @@ iOS 2.0 中的Safari 还增加了一种手势事件。**手势事件** 会在两
 
 只有在两个手指同时接触事件接收者时，这些事件才会触发。在一个元素上设置事件处理程序，意味着两个手指必须都在元素边界以内才能触发手势事件（这个元素就是事件目标）。因为这些事件会冒泡，所以也可以把事件处理程序放到文档级别，从而可以处理所有手势事件。使用这种方式时，事件的目标就是两个手指均位于其边界内的元素。
 
-触摸事件和手势事件存在一定的关系。当一个手指放在屏幕上时，会触发touchstart 事件。当另一个手指放到屏幕上时，gesturestart 事件会首先触发，然后紧接着触发这个手指的touchstart事件。如果两个手指或其中一个手指移动，则会触发gesturechange 事件。只要其中一个手指离开屏幕，就会触发gestureend 事件，紧接着触发该手指的touchend 事件。
+触摸事件和手势事件存在一定的关系。当一个手指放在屏幕上时，会触发 touchstart 事件。当另一个手指放到屏幕上时，gesturestart 事件会首先触发，然后紧接着触发这个手指的 touchstart 事件。如果两个手指或其中一个手指移动，则会触发 gesturechange 事件。只要其中一个手指离开屏幕，就会触发 gestureend 事件，紧接着触发该手指的 touchend 事件。
 
-与触摸事件类似，每个手势事件的event 对象都包含所有标准的鼠标事件属性：bubbles、cancelable、view、clientX、clientY、screenX、screenY、detail、altKey、shiftKey、ctrlKey 和metaKey。新增的两个event 对象属性是rotation 和scale。rotation 属性表示手指变化旋转的度数，负值表示逆时针旋转，正值表示顺时针旋转（从0 开始）。scale 属性表示两指之间距离变化（对捏）的程度。开始时为1，然后随着距离增大或缩小相应地增大或缩小。
+与触摸事件类似，每个手势事件的 event 对象都包含所有标准的鼠标事件属性：bubbles、cancelable、view、clientX、clientY、screenX、screenY、detail、altKey、shiftKey、ctrlKey 和 metaKey。新增的两个 event 对象属性是 rotation 和 scale。rotation 属性表示手指变化旋转的度数，负值表示逆时针旋转，正值表示顺时针旋转（从 0 开始）。scale 属性表示两指之间距离变化（对捏）的程度。开始时为 1，然后随着距离增大或缩小相应地增大或缩小。
 
 可以像下面这样使用手势事件的属性：
 
 ```javascript
 const handleGestureEvent = function (event) {
-let output = document.getElementById("output");
-switch(event.type) {
-case "gesturestart":
-output.innerHTML += `Gesture started: ` +
-`rotation=${event.rotation},` +
-`scale=${event.scale}`;
-break;
-case "gestureend":
-output.innerHTML += `Gesture ended: ` +
-`rotation=${event.rotation},` +
-`scale=${event.scale}`;
-break;
-case "gesturechange":
-output.innerHTML += `Gesture changed: ` +
-`rotation=${event.rotation},` +
-`scale=${event.scale}`;
-break;
-}
-}
+  let output = document.getElementById('output');
+  switch (event.type) {
+    case 'gesturestart':
+      output.innerHTML +=
+        `Gesture started: ` +
+        `rotation=${event.rotation},` +
+        `scale=${event.scale}`;
+      break;
+    case 'gestureend':
+      output.innerHTML +=
+        `Gesture ended: ` +
+        `rotation=${event.rotation},` +
+        `scale=${event.scale}`;
+      break;
+    case 'gesturechange':
+      output.innerHTML +=
+        `Gesture changed: ` +
+        `rotation=${event.rotation},` +
+        `scale=${event.scale}`;
+      break;
+  }
+};
 
-document.addEventListener("gesturestart", handleGestureEvent, false);
-document.addEventListener("gestureend", handleGestureEvent, false);
-document.addEventListener("gesturechange", handleGestureEvent, false);
+document.addEventListener('gesturestart', handleGestureEvent, false);
+document.addEventListener('gestureend', handleGestureEvent, false);
+document.addEventListener('gesturechange', handleGestureEvent, false);
 ```
 
 与触摸事件的例子一样，以上代码简单地将每个事件对应到一个处理函数，然后输出每个事件的信息。
 
-注意 触摸事件也会返回rotation 和scale 属性，但只在两个手指触碰屏幕时才会变化。一般来说，使用两个手指的手势事件比考虑所有交互的触摸事件使用起来更容易一些。
-
+注意 触摸事件也会返回 rotation 和 scale 属性，但只在两个手指触碰屏幕时才会变化。一般来说，使用两个手指的手势事件比考虑所有交互的触摸事件使用起来更容易一些。
