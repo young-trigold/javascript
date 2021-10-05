@@ -343,13 +343,13 @@ plan : 1 chapter/3 day
     - [16.3.2. TreeWalker](#1632-treewalker)
   - [16.4. 范围](#164-范围)
     - [16.4.1. DOM 范围](#1641-dom-范围)
-  - [16.5. 简单选择](#165-简单选择)
-    - [16.5.1. 复杂选择](#1651-复杂选择)
-    - [16.5.2. 操作范围](#1652-操作范围)
-    - [16.5.3. 范围插入](#1653-范围插入)
-    - [16.5.4. 范围折叠](#1654-范围折叠)
-    - [16.5.5. 范围比较](#1655-范围比较)
-    - [16.5.6. 范围其他 API](#1656-范围其他-api)
+    - [16.4.2. 简单选择](#1642-简单选择)
+    - [16.4.3. 复杂选择](#1643-复杂选择)
+    - [16.4.4. 操作范围](#1644-操作范围)
+    - [16.4.5. 范围插入](#1645-范围插入)
+    - [16.4.6. 范围折叠](#1646-范围折叠)
+    - [16.4.7. 范围比较](#1647-范围比较)
+    - [16.4.8. 范围其他 API](#1648-范围其他-api)
 - [17. 事件](#17-事件)
   - [17.1. 事件流](#171-事件流)
     - [17.1.1. 事件冒泡](#1711-事件冒泡)
@@ -22916,14 +22916,17 @@ Selectors API Level 2 规范在 Element 类型上新增了更多方法，比如 
 querySelector()方法接收 CSS 选择符参数，返回匹配该模式的第一个后代元素，如果没有匹配项则返回 null。下面是一些例子：
 
 ```javascript
-// 取得<body>元素
-let body = document.querySelector('body');
-// 取得ID 为'myDiv'的元素
-let myDiv = document.querySelector('#myDiv');
-// 取得类名为'selected'的第一个元素
-let selected = document.querySelector('.selected');
-// 取得类名为'button'的图片
-let img = document.body.querySelector('img.button');
+// 取得 <body> 元素
+const body = document.querySelector('body');
+
+// 取得 ID 为 'myDiv' 的元素
+const myDiv = document.querySelector('#myDiv');
+
+// 取得类名为 'selected' 的第一个元素
+const selected = document.querySelector('.selected');
+
+// 取得类名为 'button' 的图片
+const img = document.body.querySelector('img.button');
 ```
 
 在 Document 上使用 querySelector()方法时，会从文档元素开始搜索；在 Element 上使用 querySelector()方法时，则只会从当前元素的后代中查询。
@@ -22941,25 +22944,30 @@ querySelectorAll()方法跟 querySelector()一样，也接收一个用于查询�
 与 querySelector()一样，querySelectorAll()也可以在 Document、DocumentFragment 和 Element 类型上使用。下面是几个例子：
 
 ```javascript
-// 取得ID 为'myDiv'的<div>元素中的所有<em>元素
-let ems = document.getElementById('myDiv').querySelectorAll('em');
-// 取得所有类名中包含'selected'的元素
-let selecteds = document.querySelectorAll('.selected');
-// 取得所有是<p>元素子元素的<strong>元素
-let strongs = document.querySelectorAll('p strong');
+// 取得 ID 为 'myDiv' 的 <div> 元素中的所有 <em> 元素
+const ems = document.getElementById('myDiv').querySelectorAll('em');
+
+// 取得所有类名中包含 'selected' 的元素
+const selecteds = document.querySelectorAll('.selected');
+
+// 取得所有是 <p> 元素子元素的 <strong> 元素
+const strongs = document.querySelectorAll('p strong');
 ```
 
 返回的 NodeList 对象可以通过 for-of 循环、item()方法或中括号语法取得个别元素。比如：
 
 ```javascript
-let strongElements = document.querySelectorAll('p strong');
+const strongElements = document.querySelectorAll('p strong');
+
 // 以下3 个循环的效果一样
 for (let strong of strongElements) {
   strong.className = 'important';
 }
+
 for (let i = 0; i < strongElements.length; ++i) {
   strongElements.item(i).className = 'important';
 }
+
 for (let i = 0; i < strongElements.length; ++i) {
   strongElements[i].className = 'important';
 }
@@ -24582,7 +24590,7 @@ const range = document.createRange();
 - endOffset，范围起点在 startContainer 中的偏移量（与 startOffset 中偏移量的含义相同）。
 - commonAncestorContainer，文档中以 startContainer 和 endContainer 为后代的最深的节点。这些属性会在范围被放到文档中特定位置时获得相应的值。
 
-## 16.5. 简单选择
+### 16.4.2. 简单选择
 
 通过范围选择文档中某个部分最简单的方式，就是使用 selectNode()或 selectNodeContents()方法。这两个方法都接收一个节点作为参数，并将该节点的信息添加到调用它的范围。selectNode()方法选择整个节点，包括其后代节点，而 selectNodeContents()只选择节点的后代。假设有如下 HTML：
 
@@ -24625,7 +24633,7 @@ range2.selectNodeContents(p1);
 
 调用这些方法时，所有属性都会自动重新赋值。不过，为了实现复杂的选区，也可以直接修改这些属性的值。
 
-### 16.5.1. 复杂选择
+### 16.4.3. 复杂选择
 
 要创建复杂的范围，需要使用 setStart()和 setEnd()方法。这两个方法都接收两个参数：参照节点和偏移量。对 setStart()来说，参照节点会成为 startContainer，而偏移量会赋值给 startOffset。对 setEnd()而言，参照节点会成为 endContainer，而偏移量会赋值给 endOffset。
 
@@ -24678,7 +24686,7 @@ range.setEnd(worldNode, 3);
 
 当然，只选择文档中的某个部分并不是特别有用，除非可以对选中部分执行操作。
 
-### 16.5.2. 操作范围
+### 16.4.4. 操作范围
 
 创建范围之后，浏览器会在内部创建一个文档片段节点，用于包含范围选区中的节点。为操作范围的内容，选区中的内容必须格式完好。在前面的例子中，因为范围的起点和终点都在文本节点内部，并不是完好的 DOM 结构，所以无法在 DOM 中表示。不过，范围能够确定缺失的开始和结束标签，从而可以重构出有效的 DOM 结构，以便后续操作。
 
@@ -24769,7 +24777,7 @@ wo
 
 此时关键是要知道，为保持结构完好而拆分节点的操作，只有在调用前述方法时才会发生。在 DOM 被修改之前，原始 HTML 会一直保持不变。
 
-### 16.5.3. 范围插入
+### 16.4.5. 范围插入
 
 上一节介绍了移除和复制范围的内容，本节来看一看怎么向范围中插入内容。使用 insertNode()方法可以在范围选区的开始位置插入一个节点。例如，假设我们想在前面例子中的 HTML 中插入如下 HTML：
 
@@ -24837,7 +24845,7 @@ range.surroundContents(span);
 
 为了插入`<span>`元素，范围中必须包含完整的 DOM 结构。如果范围中包含部分选择的非文节点，这个操作会失败并报错。另外，如果给定的节点是 Document、DocumentType 或 DocumentFragment 类型，也会导致抛出错误。
 
-### 16.5.4. 范围折叠
+### 16.4.6. 范围折叠
 
 如果范围并没有选择文档的任何部分，则称为 **折叠(collapsed)**。折叠范围有点类似文本框：如果文本框中有文本，那么可以用鼠标选中以高亮显示全部文本。这时候，如果再单击鼠标，则选区会被移除，光标会落在某两个字符中间。而在折叠范围时，位置会被设置为范围与文档交界的地方，可能是范围选区的开始处，也可能是结尾处。下图展示了范围折叠时会发生什么。
 
@@ -24875,7 +24883,7 @@ console.log(range.collapsed);
 
 在这种情况下，创建的范围是折叠的，因为 p1 后面和 p2 前面没有任何内容。
 
-### 16.5.5. 范围比较
+### 16.4.7. 范围比较
 
 如果有多个范围，则可以使用 compareBoundaryPoints()方法确定范围之间是否存在公共的边界（起点或终点）。这个方法接收两个参数：要比较的范围和一个常量值，表示比较的方式。这个常量参数包括：
 
@@ -24905,7 +24913,7 @@ console.log(range1.compareBoundaryPoints(Range.END_TO_END, range2));
 
 ![16-11-范围示例3](illustrations/16-11-范围示例3.png)
 
-### 16.5.6. 范围其他 API
+### 16.4.8. 范围其他 API
 
 调用范围的 cloneRange()方法可以复制范围。这个方法会创建调用它的范围的副本：
 
