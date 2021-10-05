@@ -379,6 +379,7 @@ plan : 1 chapter/3 day
     - [17.5.2. 删除事件处理程序](#1752-删除事件处理程序)
   - [17.6. 模拟事件](#176-模拟事件)
     - [17.6.1. DOM 事件模拟](#1761-dom-事件模拟)
+    - [17.6.2. IE 事件模拟](#1762-ie-事件模拟)
 
 # 1. 什么是 JavaScript
 
@@ -24953,7 +24954,7 @@ JavaScript 与 HTML 的交互是通过事件实现的，事件代表文档或浏
 
 ```javascript
 // EXAMPLE: $('#btn')
-const $ = document.querySelector.bind(document);
+var $ = document.querySelector.bind(document);
 ```
 
 ## 17.1. 事件流
@@ -27162,3 +27163,82 @@ target.dispatchEvent(event);
 ```
 
 这个例子模拟了在给定目标上触发 focus 事件。其他 HTML 事件也可以像这样来模拟。注意 HTML 事件在浏览器中很少使用，因为它们用处有限。
+
+4. **自定义 DOM 事件**
+
+DOM3 增加了自定义事件的类型。自定义事件不会触发原生 DOM 事件，但可以让开发者定义自己的事件。要创建自定义事件， 需要调用 createEvent("CustomEvent") 。返回的对象包含 initCustomEvent()方法，该方法接收以下 4 个参数。
+
+- type（字符串）：要触发的事件类型，如"myevent"。
+- bubbles（布尔值）：表示事件是否冒泡。
+- cancelable（布尔值）：表示事件是否可以取消。
+- detail（对象）：任意值。作为 event 对象的 detail 属性。
+
+自定义事件可以像其他事件一样在 DOM 中派发，比如：
+
+```javascript
+const div = $("#myDiv"),
+
+div.addEventListener("myevent", (event) => {
+console.log("DIV: " + event.detail);
+});
+
+document.addEventListener("myevent", (event) => {
+console.log("DOCUMENT: " + event.detail);
+});
+
+if (document.implementation.hasFeature("CustomEvents", "3.0")) {
+const event = document.createEvent("CustomEvent");
+event.initCustomEvent("myevent", true, false, "Hello world!");
+div.dispatchEvent(event);
+}
+```
+
+这个例子创建了一个名为"myevent"的冒泡事件。event 对象的 detail 属性就是一个简单的字符串，`<div>`元素和 document 都为这个事件注册了事件处理程序。因为使用 initCustomEvent()初始化时将事件指定为可以冒泡，所以浏览器会负责把事件冒泡到 document。
+
+### 17.6.2. IE 事件模拟
+
+在 IE8 及更早版本中模拟事件的过程与 DOM 方式类似：创建 event 对象，指定相应信息，然后使用这个对象触发。当然，IE 实现每一步的方式都不一样。
+
+首先，要使用 document 对象的 createEventObject()方法来创建 event 对象。与 DOM 不同，这个方法不接收参数，返回一个通用 event 对象。然后，可以手工给返回的对象指定希望该对象具备的所有属性。（没有初始化方法。）最后一步是在事件目标上调用 fireEvent()方法，这个方法接收两个参数：事件处理程序的名字和 event 对象。调用 fireEvent()时，srcElement 和 type 属性会自动指派到 event 对象（其他所有属性必须手工指定）。这意味着 IE 支持的所有事件都可以通过相同的方式来模拟。例如，下面的代码在一个按钮上模拟了 click 事件：
+
+```javascript
+var btn = $('#myBtn');
+
+// 创建event 对象
+var event = document.createEventObject();
+
+/// 初始化event 对象
+event.screenX = 100;
+event.screenY = 0;
+event.clientX = 0;
+event.clientY = 0;
+event.ctrlKey = false;
+event.altKey = false;
+event.shiftKey = false;
+event.button = 0;
+
+// 触发事件
+btn.fireEvent('onclick', event);
+```
+
+这个例子先创建 event 对象，然后用相关信息对其进行了初始化。注意，这里可以指定任何属性，包括 IE8 及更早版本不支持的属性。这些属性的值对于事件来说并不重要，因为只有事件处理程序才会使用它们。
+
+同样的方式也可以用来模拟 keypress 事件，如下面的例子所示：
+
+```javascript
+var textbox = $('#myTextbox');
+
+// 创建event 对象
+var event = document.createEventObject();
+
+// 初始化event 对象
+event.altKey = false;
+event.ctrlKey = false;
+event.shiftKey = false;
+event.keyCode = 65;
+
+// 触发事件
+textbox.fireEvent('onkeypress', event);
+```
+
+由于鼠标事件、键盘事件或其他事件的 event 对象并没有区别，因此使用通用的 event 对象可以触发任何类型的事件。注意，与 DOM 方式模拟键盘事件一样，这里模拟的 keypress 虽然会触发，但文本框中也不会出现字符。
