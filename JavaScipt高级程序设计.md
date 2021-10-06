@@ -24911,11 +24911,11 @@ range1.selectNodeContents(p1);
 range2.selectNodeContents(p1);
 range2.setEndBefore(p1.lastChild);
 
-// 0
 console.log(range1.compareBoundaryPoints(Range.START_TO_START, range2));
+// >> 0
 
-// 1
 console.log(range1.compareBoundaryPoints(Range.END_TO_END, range2));
+// >> 1
 ```
 
 在这段代码中，两个范围的起点是相等的，因为它们都是 selectNodeContents()默认返回的值。因此，比较二者起点的方法返回 0。不过，因为 range2 的终点被使用 setEndBefore()修改了，所以导致 range1 的终点位于 range2 的终点之后，结果这个方法返回了 1。
@@ -24935,8 +24935,11 @@ const newRange = range.cloneRange();
 在使用完范围之后，最好调用 detach()方法把范围从创建它的文档中剥离。调用 detach()之后，就可以放心解除对范围的引用，以便垃圾回收程序释放它所占用的内存。下面是一个例子：
 
 ```javascript
-range.detach(); // 从文档中剥离范围
-range = null; // 解除引用
+// 从文档中剥离范围
+range.detach();
+
+// 解除引用
+range = null;
 ```
 
 这两步是最合理的结束使用范围的方式。剥离之后的范围就不能再使用了。
@@ -25036,6 +25039,7 @@ DOM2 Events 规范规定事件流分为 3 个阶段：事件捕获、到达目�
   </head>
   <body>
     <button id="btn">Click Me!</button>
+    <script src="main.js"></script>
   </body>
 </html>
 ```
@@ -25052,12 +25056,14 @@ while(curNode){
 }
 
 nodes.forEach((node) => {
+  const nodeName = node.nodeName.toLowerCase();
+
   node.addEventListener('click', (event) => {
-    console.log(event.eventPhase, 'trap', node.nodeName.toLowerCase());
+    console.log(event.eventPhase, 'trap', nodeName);
   }, true);
 
   node.addEventListener('click', (event) => {
-    console.log(event.eventPhase, 'bubble', node.nodeName.toLowerCase());
+    console.log(event.eventPhase, 'bubble', nodeName);
   }, false);
 });
 
@@ -26006,7 +26012,7 @@ window.addEventListener('scroll', (event) => {
 
 click 和 dblclick 在触发前都依赖其他事件触发，mousedown 和 mouseup 则不会受其他事件影响。
 
-下面这个程序可以帮助你更好地理解以上事件发生地顺序。
+下面这个程序可以帮助你更好地理解以上事件发生的顺序。
 
 这是 HTML 模板：
 
