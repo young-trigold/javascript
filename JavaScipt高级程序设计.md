@@ -405,6 +405,7 @@ plan : 1 chapter/3 day
     - [18.4.1. WebGL 上下文](#1841-webgl-上下文)
     - [18.4.2. WebGL 基础](#1842-webgl-基础)
     - [18.4.3. WebGL1 与 WebGL2](#1843-webgl1-与-webgl2)
+- [19. 表单脚本](#19-表单脚本)
 
 # 1. 什么是 JavaScript
 
@@ -28648,3 +28649,14 @@ gl.drawBuffers([...]);
 - Vertex shader texture access
 
 注意 要了解 WebGL 更新的内容，可以参考 WebGL2Fundamentals 网站上的文章“WebGL2 from WebGL1”。
+
+# 19. 表单脚本
+
+本章内容
+
+- 理解表单基础
+- 文本框验证与交互
+- 使用其他表单控件
+
+JavaScript 较早的一个用途是承担一部分服务器端表单处理的责任。虽然Web 和JavaScript 都已经发展了很多年，但Web 表单的变化不是很大。由于不能直接使用表单解决问题，因此开发者不得不使用JavaScript 既做表单验证，又用于增强标准表单控件的默认行为。
+
