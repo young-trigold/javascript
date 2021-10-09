@@ -425,7 +425,8 @@ plan : 1 chapter/3 day
     - [19.5.1. 使用 contenteditable](#1951-使用-contenteditable)
     - [19.5.2. 与富文本交互](#1952-与富文本交互)
     - [19.5.3. 富文本选择](#1953-富文本选择)
-    - [通过表单提交富文本](#通过表单提交富文本)
+    - [19.5.4. 通过表单提交富文本](#1954-通过表单提交富文本)
+- [20. JavaScript API](#20-javascript-api)
 
 # 1. 什么是 JavaScript
 
@@ -30011,7 +30012,7 @@ range.pasteHTML(
 
 以上代码使用 htmlText 取得了当前选区的 HTML，然后用一个`<span>`标签将其包围起来并通过 pasteHTML()再把它插入选区中。
 
-### 通过表单提交富文本
+### 19.5.4. 通过表单提交富文本
 
 因为富文本编辑是在内嵌窗格中或通过为元素指定 contenteditable 属性实现的，而不是在表单控件中实现，所以富文本编辑器技术上与表单没有关系。这意味着要把富文本编辑的结果提交给服务器，必须手工提取 HTML 并自己提交。通常的解决方案是在表单中添加一个隐藏字段，使用内嵌窗格或
 contenteditable 元素的 HTML 更新它的值。在表单提交之前，从内嵌窗格或 contenteditable 元素中提取出 HTML 并插入隐藏字段中。例如，以下代码在使用内嵌窗格实现富文本编辑时，可以用在表单的 onsubmit 事件处理程序中：
@@ -30033,4 +30034,6 @@ form.addEventListener('submit', (event) => {
     document.getElementById('richedit').innerHTML;
 });
 ```
+
+# 20. JavaScript API
 
