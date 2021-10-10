@@ -1,33 +1,39 @@
 **目录：**
 
-- [16. DOM2 和 DOM3](#16-dom2-和-dom3)
-  - [16.1. DOM 的演进](#161-dom-的演进)
-    - [16.1.1. XML 命名空间](#1611-xml-命名空间)
-    - [16.1.2. 其他变化](#1612-其他变化)
-  - [16.2. 样式](#162-样式)
-    - [16.2.1. 存取元素样式](#1621-存取元素样式)
-    - [16.2.2. 操作样式表](#1622-操作样式表)
-    - [16.2.3. 元素尺寸](#1623-元素尺寸)
-  - [16.3. 遍历](#163-遍历)
-    - [16.3.1. NodeIterator](#1631-nodeiterator)
-    - [16.3.2. TreeWalker](#1632-treewalker)
-  - [16.4. 范围](#164-范围)
-    - [16.4.1. DOM 范围](#1641-dom-范围)
-    - [16.4.2. 简单选择](#1642-简单选择)
-    - [16.4.3. 复杂选择](#1643-复杂选择)
-    - [16.4.4. 操作范围](#1644-操作范围)
-    - [16.4.5. 范围插入](#1645-范围插入)
-    - [16.4.6. 范围折叠](#1646-范围折叠)
-    - [16.4.7. 范围比较](#1647-范围比较)
-    - [16.4.8. 范围其他 API](#1648-范围其他-api)
+- [13. DOM2 和 DOM3](#13-dom2-和-dom3)
+  - [13.1. DOM 的演进](#131-dom-的演进)
+    - [13.1.1. XML 命名空间](#1311-xml-命名空间)
+    - [13.1.2. 其他变化](#1312-其他变化)
+  - [13.2. 样式](#132-样式)
+    - [13.2.1. 存取元素样式](#1321-存取元素样式)
+    - [13.2.2. 操作样式表](#1322-操作样式表)
+    - [13.2.3. 元素尺寸](#1323-元素尺寸)
+  - [13.3. 遍历](#133-遍历)
+    - [13.3.1. NodeIterator](#1331-nodeiterator)
+    - [13.3.2. TreeWalker](#1332-treewalker)
+  - [13.4. 范围](#134-范围)
+    - [13.4.1. DOM 范围](#1341-dom-范围)
+    - [13.4.2. 简单选择](#1342-简单选择)
+    - [13.4.3. 复杂选择](#1343-复杂选择)
+    - [13.4.4. 操作范围](#1344-操作范围)
+    - [13.4.5. 范围插入](#1345-范围插入)
+    - [13.4.6. 范围折叠](#1346-范围折叠)
+    - [13.4.7. 范围比较](#1347-范围比较)
+    - [13.4.8. 范围其他 API](#1348-范围其他-api)
+  - [13.5. MutationObserver 接口](#135-mutationobserver-接口)
+    - [13.5.1. 基本用法](#1351-基本用法)
+    - [13.5.2. MutationObserverInit 与观察范围](#1352-mutationobserverinit-与观察范围)
+    - [13.5.3. 异步回调与记录队列](#1353-异步回调与记录队列)
+    - [13.5.4. 性能，内存与垃圾回收](#1354-性能内存与垃圾回收)
 
-# 16. DOM2 和 DOM3
+# 13. DOM2 和 DOM3
 
 本章内容
 
 - DOM2 到 DOM3 的变化
 - 操作样式的 DOM API
 - DOM 遍历与范围
+- MutationObserver 接口
 
 DOM1（DOM Level 1）主要定义了 HTML 和 XML 文档的底层结构。DOM2（DOM Level 2）和 DOM3（DOM Level 3）在这些结构之上加入更多交互能力，提供了更高级的 XML 特性。实际上，DOM2 和 DOM3 是按照模块化的思路来制定标准的，每个模块之间有一定关联，但分别针对某个 DOM 子集。这些模式如下所示。
 
@@ -43,7 +49,7 @@ DOM1（DOM Level 1）主要定义了 HTML 和 XML 文档的底层结构。DOM2�
 
 注意 比较老旧的浏览器（如 IE8）对本章内容支持有限。如果你的项目要兼容这些低版本浏览器，在使用本章介绍的 API 之前先确认浏览器的支持情况。推荐参考 Can I Use 网站。
 
-## 16.1. DOM 的演进
+## 13.1. DOM 的演进
 
 DOM2 和 DOM3 Core 模块的目标是扩展 DOM API，满足 XML 的所有需求并提供更好的错误处理和特性检测。很大程度上，这意味着支持 XML 命名空间的概念。DOM2 Core 没有新增任何类型，仅仅在 DOM1 Core 基础上增加了一些方法和属性。DOM3 Core 则除了增强原有类型，也新增了一些新类型。
 
@@ -51,7 +57,7 @@ DOM2 和 DOM3 Core 模块的目标是扩展 DOM API，满足 XML 的所有需求
 
 注意 本章只讨论浏览器实现的 DOM API，不会提及未被浏览器实现的。
 
-### 16.1.1. XML 命名空间
+### 13.1.1. XML 命名空间
 
 XML 命名空间可以实现在一个格式规范的文档中混用不同的 XML 语言，而不必担心元素命名冲突。严格来讲，XML 命名空间在 XHTML 中才支持，HTML 并不支持。因此，本节的示例使用 XHTML。
 
@@ -177,11 +183,13 @@ DOM2 在 Document 类型上新增了如下命名空间特定的方法：
 
 ```javascript
 // 创建一个新SVG 元素
-let svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+
 // 创建一个任意命名空间的新属性
-let att = document.createAttributeNS('http://www.somewhere.com', 'random');
+const att = document.createAttributeNS('http://www.somewhere.com', 'random');
+
 // 获取所有XHTML 元素
-let elems = document.getElementsByTagNameNS(
+const elems = document.getElementsByTagNameNS(
   'http://www.w3.org/1999/xhtml',
   '*',
 );
@@ -210,9 +218,10 @@ NamedNodeMap 也增加了以下处理命名空间的方法。因为 NamedNodeMap
 - getNamedItemNS(namespaceURI, localName)，取得指定命名空间 namespaceURI 中名为 localName 的项；
 - removeNamedItemNS(namespaceURI, localName)，删除指定命名空间 namespaceURI 中名为 localName 的项；
 - setNamedItemNS(node)，为元素设置（添加）包含命名空间信息的节点。
-  这些方法很少使用，因为通常都是使用元素来访问属性。
 
-### 16.1.2. 其他变化
+这些方法很少使用，因为通常都是使用元素来访问属性。
+
+### 13.1.2. 其他变化
 
 除命名空间相关的变化，DOM2 Core 还对 DOM 的其他部分做了一些更新。这些变化与 XML 命名空间无关，主要关注 DOM API 的完整性与可靠性。
 
@@ -232,6 +241,7 @@ console.log(document.doctype.systemId);
 ```
 
 通常在网页中很少需要访问这些信息。
+
 internalSubset 用于访问文档类型声明中可能包含的额外定义，如下面的例子所示：
 
 ```html
@@ -249,7 +259,8 @@ Document 类型的更新中唯一跟命名空间无关的方法是 importNode()�
 importNode()方法跟 cloneNode()方法类似，同样接收两个参数：要复制的节点和表示是否同时复制子树的布尔值，返回结果是适合在当前文档中使用的新节点。下面看一个例子：
 
 ```javascript
-let newNode = document.importNode(oldNode, true); // 导入节点及所有后代
+// 导入节点及所有后代
+const newNode = document.importNode(oldNode, true);
 document.body.appendChild(newNode);
 ```
 
@@ -258,13 +269,13 @@ document.body.appendChild(newNode);
 DOM2 View 给 Document 类型增加了新属性 defaultView，是一个指向拥有当前文档的窗口（或窗格<frame>）的指针。这个规范中并没有明确视图何时可用，因此这是添加的唯一一个属性。defaultView 属性得到了除 IE8 及更早版本之外所有浏览器的支持。IE8 及更早版本支持等价的 parentWindow 属性，Opera 也支持这个属性。因此要确定拥有文档的窗口，可以使用以下代码：
 
 ```javascript
-let parentWindow = document.defaultView || document.parentWindow;
+const parentWindow = document.defaultView || document.parentWindow;
 ```
 
 除了上面这一个方法和一个属性，DOM2 Core 还针对 document.implementation 对象增加了两个新方法：createDocumentType()和 createDocument()。前者用于创建 DocumentType 类型的新节点，接收 3 个参数：文档类型名称、publicId 和 systemId。比如，以下代码可以创建一个新的 HTML4.01 严格型文档：
 
 ```javascript
-let doctype = document.implementation.createDocumentType(
+const doctype = document.implementation.createDocumentType(
   'html',
   '-// W3C// DTD HTML 4.01// EN',
   'http://www.w3.org/TR/html4/strict.dtd',
@@ -274,18 +285,18 @@ let doctype = document.implementation.createDocumentType(
 已有文档的文档类型不可更改，因此 createDocumentType()只在创建新文档时才会用到，而创建新文档要使用 createDocument() 方法。createDocument() 接收 3 个参数： 文档元素的 namespaceURI、文档元素的标签名和文档类型。比如，下列代码可以创建一个空的 XML 文档：
 
 ```javascript
-let doc = document.implementation.createDocument('', 'root', null);
+const doc = document.implementation.createDocument('', 'root', null);
 ```
 
 这个空文档没有命名空间和文档类型，只指定了`<root>`作为文档元素。要创建一个 XHTML 文档，可以使用以下代码：
 
 ```javascript
-let doctype = document.implementation.createDocumentType(
+const doctype = document.implementation.createDocumentType(
   'html',
   '-// W3C// DTD XHTML 1.0 Strict// EN',
   'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd',
 );
-let doc = document.implementation.createDocument(
+const doc = document.implementation.createDocument(
   'http://www.w3.org/1999/xhtml',
   'html',
   doctype,
@@ -297,9 +308,12 @@ let doc = document.implementation.createDocument(
 DOM2 HTML 模块也为 document.implamentation 对象添加了 createHTMLDocument()方法。使用这个方法可以创建一个完整的 HTML 文档，包含`<html>`、`<head>`、`<title>`和`<body>`元素。这个方法只接收一个参数，即新创建文档的标题（放到`<title>`元素中），返回一个新的 HTML 文档。比如：
 
 ```javascript
-let htmldoc = document.implementation.createHTMLDocument('New Doc');
-console.log(htmldoc.title); // 'New Doc'
-console.log(typeof htmldoc.body); // 'object'
+const htmldoc = document.implementation.createHTMLDocument('New Doc');
+console.log(htmldoc.title);
+// >> 'New Doc'
+
+console.log(typeof htmldoc.body);
+// >> 'object'
 ```
 
 createHTMLDocument()方法创建的对象是 HTMLDocument 类型的实例，因此包括该类型所有相关的方法和属性，包括 title 和 body 属性。
@@ -309,13 +323,18 @@ createHTMLDocument()方法创建的对象是 HTMLDocument 类型的实例，因�
 DOM3 新增了两个用于比较节点的方法：isSameNode()和 isEqualNode()。这两个方法都接收一个节点参数，如果这个节点与参考节点相同或相等，则返回 true。节点相同，意味着引用同一个对象；节点相等，意味着节点类型相同，拥有相等的属性（nodeName、nodeValue 等），而且 attributes 和 childNodes 也相等（即同样的位置包含相等的值）。来看一个例子：
 
 ```javascript
-let div1 = document.createElement('div');
+const div1 = document.createElement('div');
 div1.setAttribute('class', 'box');
-let div2 = document.createElement('div');
+const div2 = document.createElement('div');
 div2.setAttribute('class', 'box');
-console.log(div1.isSameNode(div1)); // true
-console.log(div1.isEqualNode(div2)); // true
-console.log(div1.isSameNode(div2)); // false
+console.log(div1.isSameNode(div1));
+// >> true
+
+console.log(div1.isEqualNode(div2));
+// >> true
+
+console.log(div1.isSameNode(div2));
+// >> false
 ```
 
 这里创建了包含相同属性的两个`<div>`元素。这两个元素相等，但不相同。
@@ -329,13 +348,14 @@ document.body.setUserData('name', 'Nicholas', function () {});
 然后，可以通过相同的键再取得这个信息，比如：
 
 ```javascript
-let value = document.body.getUserData('name');
+const value = document.body.getUserData('name');
 ```
 
 setUserData()的处理函数会在包含数据的节点被复制、删除、重命名或导入其他文档的时候执行，可以在这时候决定如何处理用户数据。处理函数接收 5 个参数：表示操作类型的数值（1 代表复制，2 代表导入，3 代表删除，4 代表重命名）、数据的键、数据的值、源节点和目标节点。删除节点时，源节点为 null；除复制外，目标节点都为 null。
 
 ```javascript
-let div = document.createElement('div');
+const div = document.createElement('div');
+
 div.setUserData(
   'name',
   'Nicholas',
@@ -345,8 +365,10 @@ div.setUserData(
     }
   },
 );
-let newDiv = div.cloneNode(true);
-console.log(newDiv.getUserData('name')); // 'Nicholas'
+
+const newDiv = div.cloneNode(true);
+console.log(newDiv.getUserData('name'));
+// >> 'Nicholas'
 ```
 
 这里先创建了一个`<div>`元素，然后给它添加了一些数据，包含用户的名字。在使用 cloneNode()复制这个元素时，就会调用处理函数，从而将同样的数据再附加给复制得到的目标节点。然后，在副本节点上调用 getUserData()能够取得附加到源节点上的数据。
@@ -356,19 +378,19 @@ console.log(newDiv.getUserData('name')); // 'Nicholas'
 DOM2 HTML 给 HTMLIFrameElement（即`<iframe>`，内嵌窗格）类型新增了一个属性，叫 contentDocument。这个属性包含代表子内嵌窗格中内容的 document 对象的指针。下面的例子展示了如何使用这个属性：
 
 ```javascript
-let iframe = document.getElementById('myIframe');
-let iframeDoc = iframe.contentDocument;
+const iframe = document.getElementById('myIframe');
+const iframeDoc = iframe.contentDocument;
 ```
 
 contentDocument 属性是 Document 的实例，拥有所有文档属性和方法，因此可以像使用其他 HTML 文档一样使用它。还有一个属性 contentWindow，返回相应窗格的 window 对象，这个对象上有一个 document 属性。所有现代浏览器都支持 contentDocument 和 contentWindow 属性。
 
 注意 跨源访问子内嵌窗格的 document 对象会受到安全限制。如果内嵌窗格中加载了不同域名（或子域名）的页面，或者该页面使用了不同协议，则访问其 document 对象会抛出错误。
 
-## 16.2. 样式
+## 13.2. 样式
 
 HTML 中的样式有 3 种定义方式：外部样式表（通过`<link>`元素）、文档样式表（使用`<style>`元素）和元素特定样式（使用 style 属性）。DOM2 Style 为这 3 种应用样式的机制都提供了 API。
 
-### 16.2.1. 存取元素样式
+### 13.2.1. 存取元素样式
 
 任何支持 style 属性的 HTML 元素在 JavaScript 中都会有一个对应的 style 属性。这个 style 属性是 CSSStyleDeclaration 类型的实例，其中包含通过 HTML style 属性为元素设置的所有样式信息，但不包含通过层叠机制从文档样式和外部样式中继承来的样式。HTML style 属性中的 CSS 属性在 JavaScript style 对象中都有对应的属性。因为 CSS 属性名使用连字符表示法（用连字符分隔两个单词，如 background-image），所以在 JavaScript 中这些属性必须转换为驼峰大小写形式（如 backgroundImage）。下表给出了几个常用的 CSS 属性与 style 对象中等价属性的对比。
 
@@ -384,13 +406,16 @@ HTML 中的样式有 3 种定义方式：外部样式表（通过`<link>`元素�
 任何时候，只要获得了有效 DOM 元素的引用，就可以通过 JavaScript 来设置样式。来看下面的例子：
 
 ```javascript
-let myDiv = document.getElementById('myDiv');
+const myDiv = document.getElementById('myDiv');
+
 setTimeout(() => {
   // 设置背景颜色
   myDiv.style.backgroundColor = 'red';
+
   // 修改大小
   myDiv.style.width = '100px';
   myDiv.style.height = '200px';
+
   // 设置边框
   myDiv.style.border = '1px solid black';
 }, 2000);
@@ -409,9 +434,14 @@ setTimeout(() => {
 这个元素 style 属性的值可以像这样通过代码获取：
 
 ```javascript
-console.log(myDiv.style.backgroundColor); // 'blue'
-console.log(myDiv.style.width); // '10px'
-console.log(myDiv.style.height); // '25px'
+console.log(myDiv.style.backgroundColor);
+// >> 'blue'
+
+console.log(myDiv.style.width);
+// >> '10px'
+
+console.log(myDiv.style.height);
+// >> '25px'
 ```
 
 如果元素上没有 style 属性，则 style 对象包含所有可能的 CSS 属性的空值。
@@ -444,7 +474,8 @@ length 属性是跟 item()方法一起配套迭代 CSS 属性用的。style 其�
 
 ```javascript
 for (let i = 0, len = myDiv.style.length; i < len; i++) {
-  console.log(myDiv.style[i]); // 或者用myDiv.style.item(i)
+  // 或者用myDiv.style.item(i)
+  console.log(myDiv.style[i]);
 }
 ```
 
@@ -501,12 +532,19 @@ style 对象中包含支持 style 属性的元素为这个属性设置的样式�
 这里的`<div>`元素从文档样式表（`<style>`元素）和自己的 style 属性获取了样式。此时，这个元素的 style 对象中包含 backgroundColor 和 border 属性，但不包含（通过样式表规则应用的）width 和 height 属性。下面的代码从这个元素获取了计算样式：
 
 ```javascript
-let myDiv = document.getElementById('myDiv');
-let computedStyle = document.defaultView.getComputedStyle(myDiv, null);
-console.log(computedStyle.backgroundColor); // 'red'
-console.log(computedStyle.width); // '100px'
-console.log(computedStyle.height); // '200px'
-console.log(computedStyle.border); // '1px solid black'（在某些浏览器中）
+const myDiv = document.getElementById('myDiv');
+const computedStyle = document.defaultView.getComputedStyle(myDiv, null);
+console.log(computedStyle.backgroundColor);
+// >> 'red'
+
+console.log(computedStyle.width);
+// >> '100px'
+
+console.log(computedStyle.height);
+// >> '200px'
+
+console.log(computedStyle.border);
+// >> '1px solid black'（在某些浏览器中）
 ```
 
 在取得这个元素的计算样式时，得到的背景颜色是'red'，宽度为'100px'，高度为'200px'。背景颜色不是'blue'，因为元素样式覆盖了它。border 属性不一定返回样式表中实际的 border 规则（某些浏览器会）。这种不一致性是因浏览器解释简写样式的方式造成的，比如 border 实际上会设置一组别的属性。在设置 border 时，实际上设置的是 4 条边的线条宽度、颜色和样式（border-left-width、border-top-color、border-bottom-style 等）。因此，即使 computedStyle.border 在所有浏览器中都不会返回值，computedStyle.borderLeftWidth 也一定会返回值。
@@ -515,7 +553,7 @@ console.log(computedStyle.border); // '1px solid black'（在某些浏览器中�
 
 关于计算样式要记住一点，在所有浏览器中计算样式都是只读的，不能修改 getComputedStyle()方法返回的对象。而且，计算样式还包含浏览器内部样式表中的信息。因此有默认值的 CSS 属性会出现在计算样式里。例如，visibility 属性在所有浏览器中都有默认值，但这个值因实现而不同。有些浏览器会把 visibility 的默认值设置为'visible'，而另一些将其设置为'inherit'。不能假设 CSS 属性的默认值在所有浏览器中都一样。如果需要元素具有特定的默认值，那么一定要在样式表中手动指定。
 
-### 16.2.2. 操作样式表
+### 13.2.2. 操作样式表
 
 CSSStyleSheet 类型表示 CSS 样式表，包括使用`<link>`元素和通过`<style>`元素定义的样式表。注意，这两个元素本身分别是 HTMLLinkElement 和 HTMLStyleElement。CSSStyleSheet 类型是一个通用样式表类型，可以表示以任何方式在 HTML 中定义的样式表。另外，元素特定的类型允许修改 HTML 属性，而 CSSStyleSheet 类型的实例则是一个只读对象（只有一个属性例外）。
 
@@ -537,6 +575,7 @@ document.styleSheets 表示文档中可用的样式表集合。这个集合的 l
 
 ```javascript
 let sheet = null;
+
 for (let i = 0, len = document.styleSheets.length; i < len; i++) {
   sheet = document.styleSheets[i];
   console.log(sheet.href);
@@ -616,7 +655,7 @@ sheet.deleteRule(0); // 使用DOM 方法
 
 与添加规则一样，删除规则并不是 Web 开发中常见的做法。考虑到可能影响 CSS 层叠的效果，删除规则时要慎重。
 
-### 16.2.3. 元素尺寸
+### 13.2.3. 元素尺寸
 
 本节介绍的属性和方法并不是 DOM2 Style 规范中定义的，但与 HTML 元素的样式有关。DOM 一直缺乏页面中元素实际尺寸的规定。IE 率先增加了一些属性，向开发者暴露元素的尺寸信息。这些属性现在已经得到所有主流浏览器支持。
 
@@ -712,7 +751,7 @@ const scrollToTop = (element) {
 
 ![16-4-确定元素尺寸](illustrations/16-4-确定元素尺寸.png)
 
-## 16.3. 遍历
+## 13.3. 遍历
 
 DOM2 Traversal and Range 模块定义了两个类型用于辅助顺序遍历 DOM 结构。这两个类型——NodeIterator 和 TreeWalker——从某个起点开始执行对 DOM 结构的深度优先遍历。
 
@@ -743,7 +782,7 @@ DOM2 Traversal and Range 模块定义了两个类型用于辅助顺序遍历 DOM
 
 从 document 开始，然后循序移动，第一个节点是 document，最后一个节点是包含" world!"的文本节点。到达文档末尾最后那个文本节点后，遍历会在 DOM 树中反向回溯。此时，第一个访问的节点就是包含" world!"的文本节点，而最后一个是 document 节点本身。NodeIterator 和 TreeWalker 都以这种方式进行遍历。
 
-### 16.3.1. NodeIterator
+### 13.3.1. NodeIterator
 
 NodeIterator 类型是两个类型中比较简单的，可以通过 document.createNodeIterator()方法创建其实例。这个方法接收以下 4 个参数。
 
@@ -898,7 +937,7 @@ while (node !== null) {
 
 nextNode()和 previousNode()方法共同维护 NodeIterator 对 DOM 结构的内部指针，因此修改 DOM 结构也会体现在遍历中。
 
-### 16.3.2. TreeWalker
+### 13.3.2. TreeWalker
 
 TreeWalker 是 NodeIterator 的高级版。除了包含同样的 nextNode()、previousNode()方法，TreeWalker 还添加了如下在 DOM 结构中向不同方向遍历的方法。
 
@@ -975,11 +1014,11 @@ walker.currentNode = document.body;
 
 相比于 NodeIterator，TreeWalker 类型为遍历 DOM 提供了更大的灵活性。
 
-## 16.4. 范围
+## 13.4. 范围
 
 为了支持对页面更细致的控制，DOM2 Traversal and Range 模块定义了范围接口。范围可用于在文档中选择内容，而不用考虑节点之间的界限。（选择在后台发生，用户是看不到的。）范围在常规 DOM 操作的粒度不够时可以发挥作用。
 
-### 16.4.1. DOM 范围
+### 13.4.1. DOM 范围
 
 DOM2 在 Document 类型上定义了一个 createRange()方法，暴露在 document 对象上。使用这个方法可以创建一个 DOM 范围对象，如下所示：
 
@@ -997,7 +1036,7 @@ const range = document.createRange();
 - endOffset，范围起点在 startContainer 中的偏移量（与 startOffset 中偏移量的含义相同）。
 - commonAncestorContainer，文档中以 startContainer 和 endContainer 为后代的最深的节点。这些属性会在范围被放到文档中特定位置时获得相应的值。
 
-### 16.4.2. 简单选择
+### 13.4.2. 简单选择
 
 通过范围选择文档中某个部分最简单的方式，就是使用 selectNode()或 selectNodeContents()方法。这两个方法都接收一个节点作为参数，并将该节点的信息添加到调用它的范围。selectNode()方法选择整个节点，包括其后代节点，而 selectNodeContents()只选择节点的后代。假设有如下 HTML：
 
@@ -1040,7 +1079,7 @@ range2.selectNodeContents(p1);
 
 调用这些方法时，所有属性都会自动重新赋值。不过，为了实现复杂的选区，也可以直接修改这些属性的值。
 
-### 16.4.3. 复杂选择
+### 13.4.3. 复杂选择
 
 要创建复杂的范围，需要使用 setStart()和 setEnd()方法。这两个方法都接收两个参数：参照节点和偏移量。对 setStart()来说，参照节点会成为 startContainer，而偏移量会赋值给 startOffset。对 setEnd()而言，参照节点会成为 endContainer，而偏移量会赋值给 endOffset。
 
@@ -1093,7 +1132,7 @@ range.setEnd(worldNode, 3);
 
 当然，只选择文档中的某个部分并不是特别有用，除非可以对选中部分执行操作。
 
-### 16.4.4. 操作范围
+### 13.4.4. 操作范围
 
 创建范围之后，浏览器会在内部创建一个文档片段节点，用于包含范围选区中的节点。为操作范围的内容，选区中的内容必须格式完好。在前面的例子中，因为范围的起点和终点都在文本节点内部，并不是完好的 DOM 结构，所以无法在 DOM 中表示。不过，范围能够确定缺失的开始和结束标签，从而可以重构出有效的 DOM 结构，以便后续操作。
 
@@ -1184,7 +1223,7 @@ wo
 
 此时关键是要知道，为保持结构完好而拆分节点的操作，只有在调用前述方法时才会发生。在 DOM 被修改之前，原始 HTML 会一直保持不变。
 
-### 16.4.5. 范围插入
+### 13.4.5. 范围插入
 
 上一节介绍了移除和复制范围的内容，本节来看一看怎么向范围中插入内容。使用 insertNode()方法可以在范围选区的开始位置插入一个节点。例如，假设我们想在前面例子中的 HTML 中插入如下 HTML：
 
@@ -1252,7 +1291,7 @@ range.surroundContents(span);
 
 为了插入`<span>`元素，范围中必须包含完整的 DOM 结构。如果范围中包含部分选择的非文节点，这个操作会失败并报错。另外，如果给定的节点是 Document、DocumentType 或 DocumentFragment 类型，也会导致抛出错误。
 
-### 16.4.6. 范围折叠
+### 13.4.6. 范围折叠
 
 如果范围并没有选择文档的任何部分，则称为 **折叠(collapsed)**。折叠范围有点类似文本框：如果文本框中有文本，那么可以用鼠标选中以高亮显示全部文本。这时候，如果再单击鼠标，则选区会被移除，光标会落在某两个字符中间。而在折叠范围时，位置会被设置为范围与文档交界的地方，可能是范围选区的开始处，也可能是结尾处。下图展示了范围折叠时会发生什么。
 
@@ -1290,7 +1329,7 @@ console.log(range.collapsed);
 
 在这种情况下，创建的范围是折叠的，因为 p1 后面和 p2 前面没有任何内容。
 
-### 16.4.7. 范围比较
+### 13.4.7. 范围比较
 
 如果有多个范围，则可以使用 compareBoundaryPoints()方法确定范围之间是否存在公共的边界（起点或终点）。这个方法接收两个参数：要比较的范围和一个常量值，表示比较的方式。这个常量参数包括：
 
@@ -1309,18 +1348,18 @@ range1.selectNodeContents(p1);
 range2.selectNodeContents(p1);
 range2.setEndBefore(p1.lastChild);
 
-// 0
 console.log(range1.compareBoundaryPoints(Range.START_TO_START, range2));
+// >> 0
 
-// 1
 console.log(range1.compareBoundaryPoints(Range.END_TO_END, range2));
+// >> 1
 ```
 
 在这段代码中，两个范围的起点是相等的，因为它们都是 selectNodeContents()默认返回的值。因此，比较二者起点的方法返回 0。不过，因为 range2 的终点被使用 setEndBefore()修改了，所以导致 range1 的终点位于 range2 的终点之后，结果这个方法返回了 1。
 
 ![16-11-范围示例3](illustrations/16-11-范围示例3.png)
 
-### 16.4.8. 范围其他 API
+### 13.4.8. 范围其他 API
 
 调用范围的 cloneRange()方法可以复制范围。这个方法会创建调用它的范围的副本：
 
@@ -1333,8 +1372,558 @@ const newRange = range.cloneRange();
 在使用完范围之后，最好调用 detach()方法把范围从创建它的文档中剥离。调用 detach()之后，就可以放心解除对范围的引用，以便垃圾回收程序释放它所占用的内存。下面是一个例子：
 
 ```javascript
-range.detach(); // 从文档中剥离范围
-range = null; // 解除引用
+// 从文档中剥离范围
+range.detach();
+
+// 解除引用
+range = null;
 ```
 
 这两步是最合理的结束使用范围的方式。剥离之后的范围就不能再使用了。
+
+## 13.5. MutationObserver 接口
+
+不久前添加到 DOM 规范中的 MutationObserver 接口，可以在 DOM 被修改时异步执行回调。使用 MutationObserver 可以观察整个文档、DOM 树的一部分，或某个元素。此外还可以观察元素属性、子节点、文本，或者前三者任意组合的变化。
+
+注意 新引进 MutationObserver 接口是为了取代废弃的 MutationEvent。
+
+### 13.5.1. 基本用法
+
+MutationObserver 的实例要通过调用 MutationObserver 构造函数并传入一个回调函数来创建：
+
+```javascript
+let observer = new MutationObserver(() => console.log('DOM 改动了！'));
+```
+
+1. **observe()** 方法
+
+新创建的 MutationObserver 实例不会关联 DOM 的任何部分。要把这个 observer 与 DOM 关联起来，需要使用 observe()方法。这个方法接收两个必需的参数：要观察其变化的 DOM 节点，以及一个 MutationObserverInit 对象。
+
+MutationObserverInit 对象用于控制观察哪些方面的变化，是一个键/值对形式配置选项的字典。例如，下面的代码会创建一个观察者（observer）并配置它观察`<body>`元素上的属性变化：
+
+```javascript
+let observer = new MutationObserver(() => console.log('<body> 属性改变了'));
+observer.observe(document.body, {attributes: true});
+```
+
+执行以上代码后，`<body>`元素上任何属性发生变化都会被这个 MutationObserver 实例发现，然后就会异步执行注册的回调函数。`<body>`元素后代的修改或其他非属性修改都不会触发回调进入任务队列。可以通过以下代码来验证：
+
+```javascript
+let observer = new MutationObserver(() =>
+  console.log('<body> attributes changed'),
+);
+observer.observe(document.body, {attributes: true});
+setTimeout(() => (document.body.className = 'foo'), 2000);
+console.log('Changed body class');
+// Changed body class
+// 2秒后
+// <body> attributes changed
+```
+
+2. **回调与 MutationRecord**
+
+每个回调都会收到一个 MutationRecord 实例的数组。MutationRecord 实例包含的信息包括发生了什么变化，以及 DOM 的哪一部分受到了影响。因为回调执行之前可能同时发生多个满足观察条件的事件，所以每次执行回调都会传入一个包含按顺序入队的 MutationRecord 实例的数组。
+
+下面展示了反映一个属性变化的 MutationRecord 实例的数组：
+
+```javascript
+let observer = new MutationObserver((mutationRecords) =>
+  console.log(mutationRecords),
+);
+observer.observe(document.body, {attributes: true});
+document.body.setAttribute('foo', 'bar');
+// [
+//  {
+// addedNodes: NodeList [],
+// attributeName: 'foo',
+// attributeNamespace: null,
+// nextSibling: null,
+// oldValue: null,
+// previousSibling: null
+// removedNodes: NodeList [],
+// target: body
+// type: 'attributes'
+//  }
+// ]
+```
+
+下面是一次涉及命名空间的类似变化：
+
+```javascript
+let observer = new MutationObserver((mutationRecords) =>
+  console.log(mutationRecords),
+);
+observer.observe(document.body, {attributes: true});
+document.body.setAttributeNS('baz', 'foo', 'bar');
+// [
+// {
+// addedNodes: NodeList [],
+// attributeName: 'foo',
+// attributeNamespace: 'baz',
+// nextSibling: null,
+// oldValue: null,
+// previousSibling: null
+// removedNodes: NodeList [],
+// target: body
+// type: 'attributes'
+// }
+// ]
+```
+
+连续修改会生成多个 MutationRecord 实例，下次回调执行时就会收到包含所有这些实例的数组，顺序为变化事件发生的顺序：
+
+```javascript
+let observer = new MutationObserver((mutationRecords) =>
+  console.log(mutationRecords),
+);
+observer.observe(document.body, {attributes: true});
+document.body.className = 'foo';
+document.body.className = 'bar';
+document.body.className = 'baz';
+// [MutationRecord, MutationRecord, MutationRecord]
+```
+
+下表列出了 MutationRecord 实例的属性。
+
+| 属 性              | 说 明                                                                                                                                                                        |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| target             | 被修改影响的目标节点                                                                                                                                                         |
+| type               | 字符串，表示变化的类型：'attributes'、'characterData'或'childList'                                                                                                           |
+| oldValue           | 如果在 MutationObserverInit 对象中启用（attributeOldValue 或 characterData OldValue 为 true），'attributes'或'characterData'的变化事件会设置这个属性为被替代的值 'childList' | 类型的变化始终将这个属性设置为 null |
+| attributeName      | 对于'attributes'类型的变化，这里保存被修改属性的名字其他变化事件会将这个属性设置为 null                                                                                      |
+| attributeNamespace | 对于使用了命名空间的'attributes'类型的变化，这里保存被修改属性的名字 其他变化事件会将这个属性设置为 null                                                                     |
+| addedNodes         | 对于'childList'类型的变化，返回包含变化中添加节点的 NodeList 默认为空 NodeList                                                                                               |
+| removedNodes       | 对于'childList'类型的变化，返回包含变化中删除节点的 NodeList 默认为空 NodeList                                                                                               |
+| previousSibling    | 对于'childList'类型的变化，返回变化节点的前一个同胞 Node 默认为 null                                                                                                         |
+| nextSibling        | 对于'childList'类型的变化，返回变化节点的后一个同胞 Node 默认为 null                                                                                                         |
+
+传给回调函数的第二个参数是观察变化的 MutationObserver 的实例，演示如下：
+
+```javascript
+let observer = new MutationObserver((mutationRecords, mutationObserver) =>
+  console.log(mutationRecords, mutationObserver),
+);
+observer.observe(document.body, {attributes: true});
+document.body.className = 'foo';
+// [MutationRecord], MutationObserver
+```
+
+3. **disconnect()方法**
+
+默认情况下，只要被观察的元素不被垃圾回收，MutationObserver 的回调就会响应 DOM 变化事件，从而被执行。要提前终止执行回调，可以调用 disconnect()方法。下面的例子演示了同步调用 disconnect()之后，不仅会停止此后变化事件的回调，也会抛弃已经加入任务队列要异步执行的回调：
+
+```javascript
+let observer = new MutationObserver(() =>
+  console.log('<body> attributes changed'),
+);
+observer.observe(document.body, {attributes: true});
+document.body.className = 'foo';
+observer.disconnect();
+document.body.className = 'bar';
+//（没有日志输出）
+```
+
+要想让已经加入任务队列的回调执行，可以使用 setTimeout()让已经入列的回调执行完毕再调用 disconnect()：
+
+```javascript
+let observer = new MutationObserver(() =>
+  console.log('<body> attributes changed'),
+);
+observer.observe(document.body, {attributes: true});
+document.body.className = 'foo';
+setTimeout(() => {
+  observer.disconnect();
+  document.body.className = 'bar';
+}, 0);
+// <body> attributes changed
+```
+
+4. **复用 MutationObserver**
+
+多次调用 observe()方法，可以复用一个 MutationObserver 对象观察多个不同的目标节点。此时，MutationRecord 的 target 属性可以标识发生变化事件的目标节点。下面的示例演示了这个过程：
+
+```javascript
+let observer = new MutationObserver((mutationRecords) =>
+  console.log(mutationRecords.map((x) => x.target)),
+);
+// 向页面主体添加两个子节点
+let childA = document.createElement('div'),
+  childB = document.createElement('span');
+document.body.appendChild(childA);
+document.body.appendChild(childB);
+// 观察两个子节点
+observer.observe(childA, {attributes: true});
+observer.observe(childB, {attributes: true});
+// 修改两个子节点的属性
+childA.setAttribute('foo', 'bar');
+childB.setAttribute('foo', 'bar');
+// [<div>, <span>]
+```
+
+disconnect()方法是一个“一刀切”的方案，调用它会停止观察所有目标：
+
+```javascript
+let observer = new MutationObserver((mutationRecords) =>
+  console.log(mutationRecords.map((x) => x.target)),
+);
+// 向页面主体添加两个子节点
+let childA = document.createElement('div'),
+  childB = document.createElement('span');
+document.body.appendChild(childA);
+document.body.appendChild(childB);
+// 观察两个子节点
+observer.observe(childA, {attributes: true});
+observer.observe(childB, {attributes: true});
+observer.disconnect();
+// 修改两个子节点的属性
+childA.setAttribute('foo', 'bar');
+childB.setAttribute('foo', 'bar');
+// （没有日志输出）
+```
+
+5. **重用 MutationObserver**
+
+调用 disconnect()并不会结束 MutationObserver 的生命。还可以重新使用这个观察者，再将它关联到新的目标节点。下面的示例在两个连续的异步块中先断开然后又恢复了观察者与`<body>`元素的关联：
+
+```javascript
+let observer = new MutationObserver(() => console.log('<body> attributes
+changed'));
+observer.observe(document.body, { attributes: true });
+// 这行代码会触发变化事件
+document.body.setAttribute('foo', 'bar');
+setTimeout(() => {
+observer.disconnect();
+// 这行代码不会触发变化事件
+document.body.setAttribute('bar', 'baz');
+}, 0);
+setTimeout(() => {
+// Reattach
+observer.observe(document.body, { attributes: true });
+// 这行代码会触发变化事件
+document.body.setAttribute('baz', 'qux');
+}, 0);
+// <body> attributes changed
+// <body> attributes changed
+```
+
+### 13.5.2. MutationObserverInit 与观察范围
+
+MutationObserverInit 对象用于控制对目标节点的观察范围。粗略地讲，观察者可以观察的事件包括属性变化、文本变化和子节点变化。
+
+下表列出了 MutationObserverInit 对象的属性。
+
+| 属 性                                                                   | 说 明                                                                                                                                              |
+| ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| subtree                                                                 | 布尔值，表示除了目标节点，是否观察目标节点的子树（后代）如果是 false，则只观察目标节点的变化；如果是 true，则观察目标节点及其整个子树 默认为 false |
+| attributes                                                              | 布尔值，表示是否观察目标节点的属性变化 默认为 false                                                                                                |
+| attributeFilter                                                         | 字符串数组，表示要观察哪些属性的变化 把这个值设置为 true 也会将 attributes 的值转换为 true 默认为观察所有属性                                      |
+| attributeOldValue                                                       | 布尔值，表示 MutationRecord 是否记录变化之前的属性值 把这个值设置为 true 也会将 attributes 的值转换为 true                                         |
+| 默认为 false                                                            |
+| characterData                                                           | 布尔值，表示修改字符数据是否触发变化事件 默认为 false                                                                                              |
+| characterDataOldValue                                                   | 布尔值，表示 MutationRecord 是否记录变化之前的字符数据 把这个值设置为 true 也会将 characterData 的值转换为 true 默认为 false                       |
+| childList 布尔值，表示修改目标节点的子节点是否触发变化事件 默认为 false |
+
+注意 在调用 observe()时，MutationObserverInit 对象中的 attribute、characterData 和 childList 属性必须至少有一项为 true（无论是直接设置这几个属性，还是通过设置 attributeOldValue 等属性间接导致它们的值转换为 true）。否则会抛出错误，因为没有任何变化事件可能触发回调。
+
+1. **观察属性**
+
+MutationObserver 可以观察节点属性的添加、移除和修改。要为属性变化注册回调，需要在 MutationObserverInit 对象中将 attributes 属性设置为 true，如下所示：
+
+```javascript
+let observer = new MutationObserver((mutationRecords) =>
+  console.log(mutationRecords),
+);
+observer.observe(document.body, {attributes: true});
+// 添加属性
+document.body.setAttribute('foo', 'bar');
+// 修改属性
+document.body.setAttribute('foo', 'baz');
+// 移除属性
+document.body.removeAttribute('foo');
+// 以上变化都被记录下来了
+// [MutationRecord, MutationRecord, MutationRecord]
+```
+
+把 attributes 设置为 true 的默认行为是观察所有属性，但不会在 MutationRecord 对象中记录原来的属性值。如果想观察某个或某几个属性，可以使用 attributeFilter 属性来设置白名单，即一个属性名字符串数组：
+
+```javascript
+let observer = new MutationObserver((mutationRecords) =>
+  console.log(mutationRecords),
+);
+observer.observe(document.body, {attributeFilter: ['foo']});
+// 添加白名单属性
+document.body.setAttribute('foo', 'bar');
+// 添加被排除的属性
+document.body.setAttribute('baz', 'qux');
+// 只有foo 属性的变化被记录了
+// [MutationRecord]
+```
+
+如果想在变化记录中保存属性原来的值，可以将 attributeOldValue 属性设置为 true：
+
+```javascript
+let observer = new MutationObserver((mutationRecords) =>
+  console.log(mutationRecords.map((x) => x.oldValue)),
+);
+observer.observe(document.body, {attributeOldValue: true});
+document.body.setAttribute('foo', 'bar');
+document.body.setAttribute('foo', 'baz');
+document.body.setAttribute('foo', 'qux');
+// 每次变化都保留了上一次的值
+// [null, 'bar', 'baz']
+```
+
+2. **观察字符数据**
+
+MutationObserver 可以观察文本节点（如 Text、Comment 或 ProcessingInstruction 节点）中字符的添加、删除和修改。要为字符数据注册回调，需要在 MutationObserverInit 对象中将 characterData 属性设置为 true，如下所示：
+
+```javascript
+let observer = new MutationObserver((mutationRecords) =>
+  console.log(mutationRecords),
+);
+// 创建要观察的文本节点
+document.body.firstChild.textContent = 'foo';
+observer.observe(document.body.firstChild, {characterData: true});
+// 赋值为相同的字符串
+document.body.firstChild.textContent = 'foo';
+// 赋值为新字符串
+document.body.firstChild.textContent = 'bar';
+// 通过节点设置函数赋值
+document.body.firstChild.textContent = 'baz';
+// 以上变化都被记录下来了
+// [MutationRecord, MutationRecord, MutationRecord]
+```
+
+将 characterData 属性设置为 true 的默认行为不会在 MutationRecord 对象中记录原来的字符数据。如果想在变化记录中保存原来的字符数据，可以将 characterDataOldValue 属性设置为 true：
+
+```javascript
+let observer = new MutationObserver((mutationRecords) =>
+  console.log(mutationRecords.map((x) => x.oldValue)),
+);
+document.body.innerText = 'foo';
+observer.observe(document.body.firstChild, {characterDataOldValue: true});
+document.body.innerText = 'foo';
+document.body.innerText = 'bar';
+document.body.firstChild.textContent = 'baz';
+// 每次变化都保留了上一次的值
+// ['foo', 'foo', 'bar']
+```
+
+3. **观察子节点**
+
+MutationObserver 可以观察目标节点子节点的添加和移除。要观察子节点，需要在 MutationObserverInit 对象中将 childList 属性设置为 true。下面的例子演示了添加子节点：
+
+```javascript
+let observer = new MutationObserver((mutationRecords) =>
+  console.log(mutationRecords),
+);
+observer.observe(document.body, {childList: true});
+document.body.appendChild(document.createElement('div'));
+// [
+// {
+// addedNodes: NodeList [div]
+// attributeName: null
+// attributeNamespace: null
+// nextSibling: null
+// oldValue: null
+// previousSibling: script
+// removedNodes: NodeList []
+// target: body
+// type: 'childList'
+// },
+// {
+// addedNodes: NodeList [text]
+// attributeName: null
+// attributeNamespace: null
+// nextSibling: null
+// oldValue: null
+// previousSibling: div
+// removedNodes: NodeList []
+// target: body
+// type: 'childList'
+// }
+// ]
+```
+
+下面的例子演示了移除子节点：
+
+```javascript
+const div = document.createElement('div');
+document.body.qppendChild(div);
+let observer = new MutationObserver((mutationRecords) =>
+  console.log(mutationRecords),
+);
+observer.observe(document.body, {childList: true});
+document.body.removeChild(document.body.firstChild);
+// [
+// {
+// addedNodes: NodeList []
+// attributeName: null
+// attributeNamespace: null
+// nextSibling: null
+// oldValue: null
+// previousSibling: null
+// removedNodes: NodeList [div]
+// target: body
+// type: 'childList'
+// },
+// {
+// addedNodes: NodeList [text]
+// attributeName: null
+// attributeNamespace: null
+// nextSibling: null
+// oldValue: null
+// previousSibling: div
+// removedNodes: NodeList []
+// target: body
+// type: 'childList'
+// }
+// ]
+```
+
+对子节点 **重新排序**（尽管调用一个方法即可实现）会报告两次变化事件，因为从技术上会涉及先移除和再添加：
+
+```javascript
+// 清空主体
+document.body.innerHTML = '';
+let observer = new MutationObserver((mutationRecords) =>
+  console.log(mutationRecords),
+);
+// 创建两个初始子节点
+document.body.appendChild(document.createElement('div'));
+document.body.appendChild(document.createElement('span'));
+observer.observe(document.body, {childList: true});
+// 交换子节点顺序
+document.body.insertBefore(document.body.lastChild, document.body.firstChild);
+// 发生了两次变化：第一次是节点被移除，第二次是节点被添加
+// [
+// {
+// addedNodes: NodeList[],
+// attributeName: null,
+// attributeNamespace: null,
+// oldValue: null,
+// nextSibling: null,
+// previousSibling: div,
+// removedNodes: NodeList[span],
+// target: body,
+// type: childList,
+// },
+// {
+// addedNodes: NodeList[span],
+// attributeName: null,
+// attributeNamespace: null,
+// oldValue: null,
+// nextSibling: div,
+// previousSibling: null,
+// removedNodes: NodeList[],
+// target: body,
+// type: 'childList',
+// }
+// ]
+```
+
+4. **观察子树**
+
+默认情况下，MutationObserver 将观察的范围限定为一个元素及其子节点的变化。可以把观察的范围扩展到这个元素的子树（所有后代节点），这需要在 MutationObserverInit 对象中将 subtree 属性设置为 true。
+
+下面的代码展示了观察元素及其后代节点属性的变化：
+
+```javascript
+// 清空主体
+document.body.innerHTML = '';
+let observer = new MutationObserver((mutationRecords) =>
+  console.log(mutationRecords),
+);
+// 创建一个后代
+document.body.appendChild(document.createElement('div'));
+// 观察<body>元素及其子树
+observer.observe(document.body, {attributes: true, subtree: true});
+// 修改<body>元素的子树
+document.body.firstChild.setAttribute('foo', 'bar');
+// 记录了子树变化的事件
+// [
+// {
+// addedNodes: NodeList[],
+// attributeName: 'foo',
+// attributeNamespace: null,
+// oldValue: null,
+// nextSibling: null,
+// previousSibling: null,
+// removedNodes: NodeList[],
+// target: div,
+// type: 'attributes',
+// }
+// ]
+```
+
+有意思的是，被观察子树中的节点被移出子树之后仍然能够触发变化事件。这意味着在子树中的节点离开该子树后，即使严格来讲该节点已经脱离了原来的子树，但它仍然会触发变化事件。
+
+下面的代码演示了这种情况：
+
+```javascript
+// 清空主体
+document.body.innerHTML = '';
+let observer = new MutationObserver((mutationRecords) =>
+  console.log(mutationRecords),
+);
+let subtreeRoot = document.createElement('div'),
+  subtreeLeaf = document.createElement('span');
+// 创建包含两层的子树
+document.body.appendChild(subtreeRoot);
+subtreeRoot.appendChild(subtreeLeaf);
+// 观察子树
+observer.observe(subtreeRoot, {attributes: true, subtree: true});
+// 把节点转移到其他子树
+document.body.insertBefore(subtreeLeaf, subtreeRoot);
+subtreeLeaf.setAttribute('foo', 'bar');
+// 移出的节点仍然触发变化事件
+// [MutationRecord]
+```
+
+### 13.5.3. 异步回调与记录队列
+
+MutationObserver 接口是出于性能考虑而设计的，其核心是异步回调与记录队列模型。为了在大量变化事件发生时不影响性能，每次变化的信息（由观察者实例决定）会保存在 MutationRecord 实例中，然后添加到 **记录队列**。这个队列对每个 MutationObserver 实例都是唯一的，是所有 DOM 变化事件的有序列表。
+
+1. **记录队列**
+
+每次 MutationRecord 被添加到 MutationObserver 的记录队列时，仅当之前没有已排期的微任务回调时（队列中微任务长度为 0），才会将观察者注册的回调（在初始化 MutationObserver 时传入）作为微任务调度到任务队列上。这样可以保证记录队列的内容不会被回调处理两次。
+
+不过在回调的微任务异步执行期间，有可能又会发生更多变化事件。因此被调用的回调会接收到一个 MutationRecord 实例的数组，顺序为它们进入记录队列的顺序。回调要负责处理这个数组的每一个实例，因为函数退出之后这些实现就不存在了。回调执行后，这些 MutationRecord 就用不着了，因此记录队列会被清空，其内容会被丢弃。
+
+2. **takeRecords()方法**
+
+调用 MutationObserver 实例的 takeRecords()方法可以清空记录队列，取出并返回其中的所有 MutationRecord 实例。看这个例子：
+
+```javascript
+let observer = new MutationObserver((mutationRecords) =>
+  console.log(mutationRecords),
+);
+observer.observe(document.body, {attributes: true});
+document.body.className = 'foo';
+document.body.className = 'bar';
+document.body.className = 'baz';
+console.log(observer.takeRecords());
+console.log(observer.takeRecords());
+// [MutationRecord, MutationRecord, MutationRecord]
+// []
+```
+
+这在希望断开与观察目标的联系，但又希望处理由于调用 disconnect()而被抛弃的记录队列中的 MutationRecord 实例时比较有用。
+
+### 13.5.4. 性能，内存与垃圾回收
+
+DOM Level 2 规范中描述的 MutationEvent 定义了一组会在各种 DOM 变化时触发的事件。由于浏览器事件的实现机制，这个接口出现了严重的性能问题。因此，DOM Level 3 规定废弃了这些事件。MutationObserver 接口就是为替代这些事件而设计的更实用、性能更好的方案。
+
+将变化回调委托给微任务来执行可以保证事件同步触发，同时避免随之而来的混乱。为 MutationObserver 而实现的记录队列，可以保证即使变化事件被爆发式地触发，也不会显著地拖慢浏览器。无论如何，使用 MutationObserver 仍然 **不是没有代价** 的。因此理解什么时候避免出现这种情况就很重要了。
+
+1. **MutationObserver 的引用**
+
+MutationObserver 实例与目标节点之间的引用关系是非对称的。MutationObserver 拥有对要观察的目标节点的弱引用。因为是弱引用，所以不会妨碍垃圾回收程序回收目标节点。
+
+然而，目标节点却拥有对 MutationObserver 的强引用。如果目标节点从 DOM 中被移除，随后被垃圾回收，则关联的 MutationObserver 也会被垃圾回收。
+
+2. **MutationRecord 的引用**
+
+记录队列中的每个 MutationRecord 实例至少包含对已有 DOM 节点的一个引用。如果变化是 childList 类型，则会包含多个节点的引用。记录队列和回调处理的默认行为是耗尽这个队列，处理每个 MutationRecord，然后让它们超出作用域并被垃圾回收。
+
+有时候可能需要保存某个观察者的完整变化记录。保存这些 MutationRecord 实例，也就会保存它们引用的节点，因而会妨碍这些节点被回收。如果需要尽快地释放内存，建议从每个 MutationRecord 中抽取出最有用的信息，然后保存到一个新对象中，最后抛弃 MutationRecord。
