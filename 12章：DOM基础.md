@@ -60,7 +60,7 @@ DOM Level 1 在 1998 年成为 W3C 推荐标准，提供了基本文档结构和
 
 如果表示为层级结构，则如下图所示。
 
-![14-1-DOM层次](illustrations/14-1-DOM层次.png)
+![12-1-DOM层次](illustrations/12-1-DOM层次.png)
 
 其中，document 节点表示每个文档的根节点。在这里，根节点的唯一子节点是`<html>`元素，我们称之为 **文档元素（documentElement）**。文档元素是文档最外层的元素，所有其他元素都存在于这个元素之内。每个文档只能有一个文档元素。在 HTML 页面中，文档元素始终是`<html>`元素。在 XML 文档中，则没有这样预定义的元素，任何元素都可能成为文档元素。
 
@@ -133,9 +133,9 @@ let arrayOfNodes = [...someNode.childNodes];
 
 ```javascript
 if (someNode.nextSibling === null) {
-  alert('Last node in the parent's childNodes list.');
+  alert('Last node in the parent\'s childNodes list.');
 } else if (someNode.previousSibling === null) {
-  alert('First node in the parent's childNodes list.');
+  alert('First node in the parent\'s childNodes list.');
 }
 ```
 
@@ -143,7 +143,7 @@ if (someNode.nextSibling === null) {
 
 父节点和它的第一个及最后一个子节点也有专门属性：firstChild 和 lastChild 分别指向 childNodes 中的第一个和最后一个子节点。someNode.firstChild 的值始终等于 someNode.childNodes[0]，而 someNode.lastChild 的值始终等于 someNode.childNodes[someNode.childNodes.length-1]。如果只有一个子节点，则 firstChild 和 lastChild 指向同一个节点。如果没有子节点，则 firstChild 和 lastChild 都是 null。上述这些节点之间的关系为在文档树的节点之间导航提供了方便。下图形象地展示了这些关系。
 
-![14-2-节点关系](illustrations/14-2-节点关系.png)
+![12-2-节点关系](illustrations/12-2-节点关系.png)
 
 有了这些关系，childNodes 属性的作用远远不止是必备属性那么简单了。这是因为利用这些关系指针，几乎可以访问到文档树中的任何节点，而这种便利性是 childNodes 的最大亮点。还有一个便利的方法是 hasChildNodes()，这个方法如果返回 true 则说明节点有一个或多个子节点。相比查询 childNodes 的 length 属性，这个方法无疑更方便。
 

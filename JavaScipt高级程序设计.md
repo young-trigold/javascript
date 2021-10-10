@@ -19162,9 +19162,9 @@ let arrayOfNodes = [...someNode.childNodes];
 
 ```javascript
 if (someNode.nextSibling === null) {
-  alert('Last node in the parent's childNodes list.');
+  alert('Last node in the parent\'s childNodes list.');
 } else if (someNode.previousSibling === null) {
-  alert('First node in the parent's childNodes list.');
+  alert('First node in the parent\'s childNodes list.');
 }
 ```
 
@@ -21564,7 +21564,7 @@ sheet.deleteRule(0); // 使用DOM 方法
 
 其中，offsetLeft 和 offsetTop 是相对于包含元素的，包含元素保存在 offsetParent 属性中。offsetParent 不一定是 parentNode。比如，`<td>`元素的 offsetParent 是作为其祖先的`<table>`元素，因为`<table>`是节点层级中第一个提供尺寸的元素。下图展示了这些属性代表的不同尺寸。
 
-![16-1-偏移尺寸](illustrations/16-1-偏移尺寸.png)
+![13-1-偏移尺寸](illustrations/13-1-偏移尺寸.png)
 
 要确定一个元素在页面中的偏移量，可以把它的 offsetLeft 和 offsetTop 属性分别与 offsetParent 的相同属性相加，一直加到根元素。下面是一个例子：
 
@@ -21602,7 +21602,7 @@ const getElementTop = function (element) {
 
 元素的 **客户端尺寸(client dimensions)** 包含元素内容及其内边距所占用的空间。客户端尺寸只有两个相关属性：clientWidth 和 clientHeight。其中，clientWidth 是内容区宽度加左、右内边距宽度，clientHeight 是内容区高度加上、下内边距高度。下图形象地展示了这两个属性。
 
-![16-2-客户端尺寸](illustrations/16-2-客户端尺寸.png)
+![13-2-客户端尺寸](illustrations/13-2-客户端尺寸.png)
 
 客户端尺寸实际上就是元素内部的空间，因此不包含滚动条占用的空间。这两个属性最常用于确定浏览器视口尺寸，即检测 document.documentElement 的 clientWidth 和 clientHeight。这两个属性表示视口（`<html>`或`<body>`元素）的尺寸。
 
@@ -21619,7 +21619,7 @@ const getElementTop = function (element) {
 
 下图展示了这些属性的含义。
 
-![16-3-滚动尺寸](illustrations/16-3-滚动尺寸.png)
+![13-3-滚动尺寸](illustrations/13-3-滚动尺寸.png)
 
 scrollWidth 和 scrollHeight 可以用来确定给定元素内容的实际尺寸。例如，`<html>`元素是浏览器中滚动视口的元素。因此，document.documentElement.scrollHeight 就是整个页面垂直方向的总高度。
 
@@ -21643,7 +21643,7 @@ const scrollToTop = (element) {
 
 浏览器在每个元素上都暴露了 getBoundingClientRect()方法，返回一个 DOMRect 对象，包含 6 个属性：left、top、right、bottom、height 和 width。这些属性给出了元素在页面中相对于视口的位置。下图展示了这些属性的含义。
 
-![16-4-确定元素尺寸](illustrations/16-4-确定元素尺寸.png)
+![13-4-确定元素尺寸](illustrations/13-4-确定元素尺寸.png)
 
 ## 13.3. 遍历
 
@@ -21668,11 +21668,11 @@ DOM2 Traversal and Range 模块定义了两个类型用于辅助顺序遍历 DOM
 
 这段代码构成的 DOM 树如下图所示。
 
-![16-5-DOM树](illustrations/16-5-DOM树.png)
+![13-5-DOM树](illustrations/13-5-DOM树.png)
 
 其中的任何节点都可以成为遍历的根节点。比如，假设以`<body>`元素作为遍历的根节点，那么接下来是`<p>`元素、`<b>`元素和两个文本节点（都是`<body>`元素的后代）。但这个遍历不会到达`<html>`元素、`<head>`元素，或者其他不属于`<body>`元素子树的元素。而以 document 为根节点的遍历，则可以访问到文档中的所有节点。下图展示了以 document 为根节点的深度优先遍历。
 
-![16-6-DOM树深度优先遍历](illustrations/16-6-DOM树深度优先遍历.png)
+![13-6-DOM树深度优先遍历](illustrations/13-6-DOM树深度优先遍历.png)
 
 从 document 开始，然后循序移动，第一个节点是 document，最后一个节点是包含" world!"的文本节点。到达文档末尾最后那个文本节点后，遍历会在 DOM 树中反向回溯。此时，第一个访问的节点就是包含" world!"的文本节点，而最后一个是 document 节点本身。NodeIterator 和 TreeWalker 都以这种方式进行遍历。
 
@@ -21958,7 +21958,7 @@ range2.selectNodeContents(p1);
 
 例子中的这 2 个范围包含文档的不同部分。range1 包含 `<p>` 元素及其后代，而 range2 包含 `<b>` 元素，文本节点 `'hello'` 和文本节点 `' world!'`，如下图所示。
 
-![16-7-范围示例1](illustrations/16-7-范围示例1.png)
+![13-7-范围示例1](illustrations/13-7-范围示例1.png)
 
 调用 selectNode()时，startContainer、endContainer 和 commonAncestorContainer 都等于传入节点的父节点。在这个例子中，这几个属性都等于 document.body。startOffset 属性等于传入节点在其父节点 childNodes 集合中的索引（在这个例子中，startOffset 等于 1，因为 DOM 的合规实现把空格当成文本节点），而 endOffset 等于 startOffset 加 1（因为只选择了一个节点）。
 
@@ -22020,7 +22020,7 @@ range.setEnd(worldNode, 3);
 
 因为选区起点在"Hello"中的字母"e"之后，所以要给 setStart()传入 helloNode 和偏移量 2（"e"后面的位置，"H"的位置是 0）。要设置选区终点，则要给 setEnd()传入 worldNode 和偏移量 3，即不属于选区的第一个字符的位置，也就是"r"的位置 3（位置 0 是一个空格）。下图展示了范围对应的选区。
 
-![16-8-范围示例2](illustrations/16-8-范围示例2.png)
+![13-8-范围示例2](illustrations/13-8-范围示例2.png)
 
 因为 helloNode 和 worldNode 是文本节点，所以它们会成为范围的 startContainer 和 endContainer，这样 startOffset 和 endOffset 实际上表示每个节点中文本字符的位置，而不是子节点的位置（传入元素节点时的情形）。而 commonAncestorContainer 是`<p>`元素，即包含这两个节点的第一个祖先节点。
 
@@ -22044,7 +22044,7 @@ range.setEnd(worldNode, 3);
 
 而且，" world!"文本节点会被拆分成两个文本节点，一个包含" wo"，另一个包含"rld!"。最终的 DOM 树，以及范围对应的文档片段如下图所示。
 
-![16-9-文档片段对应DOM](illustrations/16-9-文档片段对应DOM.png)
+![13-9-文档片段对应DOM](illustrations/13-9-文档片段对应DOM.png)
 
 这样创建了范围之后，就可以使用很多方法来操作范围的内容。（注意，范围对应文档片段中的所有节点，都是文档中相应节点的指针。）
 
@@ -22189,7 +22189,7 @@ range.surroundContents(span);
 
 如果范围并没有选择文档的任何部分，则称为 **折叠(collapsed)**。折叠范围有点类似文本框：如果文本框中有文本，那么可以用鼠标选中以高亮显示全部文本。这时候，如果再单击鼠标，则选区会被移除，光标会落在某两个字符中间。而在折叠范围时，位置会被设置为范围与文档交界的地方，可能是范围选区的开始处，也可能是结尾处。下图展示了范围折叠时会发生什么。
 
-![16-10-范围折叠](illustrations/16-10-范围折叠.png)
+![13-10-范围折叠](illustrations/13-10-范围折叠.png)
 
 折叠范围可以使用 collapse()方法，这个方法接收一个参数：布尔值，表示折叠到范围哪一端。true 表示折叠到起点，false 表示折叠到终点。要确定范围是否已经被折叠，可以检测范围的 collapsed 属性：
 
@@ -22251,7 +22251,7 @@ console.log(range1.compareBoundaryPoints(Range.END_TO_END, range2));
 
 在这段代码中，两个范围的起点是相等的，因为它们都是 selectNodeContents()默认返回的值。因此，比较二者起点的方法返回 0。不过，因为 range2 的终点被使用 setEndBefore()修改了，所以导致 range1 的终点位于 range2 的终点之后，结果这个方法返回了 1。
 
-![16-11-范围示例3](illustrations/16-11-范围示例3.png)
+![13-11-范围示例3](illustrations/13-11-范围示例3.png)
 
 ### 13.4.8. 范围其他 API
 
