@@ -15447,7 +15447,7 @@ let result = compare(5, 10);
 
 这里定义的 compare()函数是在全局上下文中调用的。第一次调用 compare()时，会为它创建一个包含 arguments、value1 和 value2 的活动对象，这个对象是其作用域链上的第一个对象。而全局上下文的变量对象则是 compare()作用域链上的第二个对象，其中包含 this、result 和 compare。下图展示了以上关系：
 
-![10-1-作用域链1](illustrations/10-1-作用域链1.png)
+![9-1-作用域链1](illustrations/9-1-作用域链1.png)
 
 函数执行时，每个执行上下文中都会有一个包含其中变量的对象。全局上下文中的叫变量对象，它会在代码执行期间始终存在。而函数局部上下文中的叫活动对象，只在函数执行期间存在。在定义 compare()函数时，就会为它创建作用域链，预装载全局变量对象，并保存在内部的`[[Scope]]`中。在调用这个函数时，会创建相应的执行上下文，然后通过复制函数的`[[Scope]]`来创建其作用域链。接着会创建函数的活动对象（用作变量对象）并将其推入作用域链的前端。在这个例子中，这意味着 compare()函数执行上下文的作用域链中有两个变量对象：局部变量对象和全局变量对象。作用域链其实是一个包含指针的列表，每个指针分别指向一个变量对象，但物理上并不会包含相应的对象。
 
@@ -15460,7 +15460,7 @@ let compare = createComparisonFunction('name');
 let result = compare({name: 'Nicholas'}, {name: 'Matt'});
 ```
 
-![10-2-作用域链2](illustrations/10-2-作用域链2.png)
+![9-2-作用域链2](illustrations/9-2-作用域链2.png)
 
 在 createComparisonFunction()返回匿名函数后，它的作用域链被初始化为包含 createComparisonFunction()的活动对象和全局变量对象。这样，匿名函数就可以访问到 createComparisonFunction()可以访问的所有变量。另一个有意思的副作用就是，createComparisonFunction()的
 活动对象并不能在它执行完毕后销毁，因为匿名函数的作用域链中仍然有对它的引用。在 createComparisonFunction()执行完毕后，其执行上下文的作用域链会销毁，但它的活动对象仍然会保留在内存中，直到匿名函数被销毁后才会被销毁：
@@ -19089,7 +19089,7 @@ DOM Level 1 在 1998 年成为 W3C 推荐标准，提供了基本文档结构和
 
 如果表示为层级结构，则如下图所示。
 
-![14-1-DOM层次](illustrations/14-1-DOM层次.png)
+![12-1-DOM层次](illustrations/12-1-DOM层次.png)
 
 其中，document 节点表示每个文档的根节点。在这里，根节点的唯一子节点是`<html>`元素，我们称之为 **文档元素（documentElement）**。文档元素是文档最外层的元素，所有其他元素都存在于这个元素之内。每个文档只能有一个文档元素。在 HTML 页面中，文档元素始终是`<html>`元素。在 XML 文档中，则没有这样预定义的元素，任何元素都可能成为文档元素。
 
@@ -19172,7 +19172,7 @@ if (someNode.nextSibling === null) {
 
 父节点和它的第一个及最后一个子节点也有专门属性：firstChild 和 lastChild 分别指向 childNodes 中的第一个和最后一个子节点。someNode.firstChild 的值始终等于 someNode.childNodes[0]，而 someNode.lastChild 的值始终等于 someNode.childNodes[someNode.childNodes.length-1]。如果只有一个子节点，则 firstChild 和 lastChild 指向同一个节点。如果没有子节点，则 firstChild 和 lastChild 都是 null。上述这些节点之间的关系为在文档树的节点之间导航提供了方便。下图形象地展示了这些关系。
 
-![14-2-节点关系](illustrations/14-2-节点关系.png)
+![12-2-节点关系](illustrations/12-2-节点关系.png)
 
 有了这些关系，childNodes 属性的作用远远不止是必备属性那么简单了。这是因为利用这些关系指针，几乎可以访问到文档树中的任何节点，而这种便利性是 childNodes 的最大亮点。还有一个便利的方法是 hasChildNodes()，这个方法如果返回 true 则说明节点有一个或多个子节点。相比查询 childNodes 的 length 属性，这个方法无疑更方便。
 
