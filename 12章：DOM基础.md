@@ -1,34 +1,41 @@
 **目录：**
 
-- [14. DOM](#14-dom)
-  - [14.1. 理解节点](#141-理解节点)
-    - [14.1.1. Node 类型](#1411-node-类型)
-    - [14.1.2. Document 类型](#1412-document-类型)
-    - [14.1.3. Element 类型](#1413-element-类型)
-    - [14.1.4. Text 类型](#1414-text-类型)
-    - [14.1.5. Comment 类型](#1415-comment-类型)
-    - [14.1.6. CDATASection 类型](#1416-cdatasection-类型)
-    - [14.1.7. DocumentType 类型](#1417-documenttype-类型)
-    - [14.1.8. DocumentFragment 类型](#1418-documentfragment-类型)
-    - [14.1.9. Attr 类型](#1419-attr-类型)
-  - [14.2. DOM 编程](#142-dom-编程)
-    - [14.2.1. 动态脚本](#1421-动态脚本)
-    - [14.2.2. 动态样式](#1422-动态样式)
-    - [14.2.3. 操作表格](#1423-操作表格)
-    - [14.2.4. 使用 NodeList](#1424-使用-nodelist)
-  - [14.3. MutationObserver 接口](#143-mutationobserver-接口)
-    - [14.3.1. 基本用法](#1431-基本用法)
-    - [14.3.2. MutationObserverInit 与观察范围](#1432-mutationobserverinit-与观察范围)
-    - [14.3.3. 异步回调与记录队列](#1433-异步回调与记录队列)
-    - [14.3.4. 性能，内存与垃圾回收](#1434-性能内存与垃圾回收)
+- [12. DOM 基础](#12-dom-基础)
+  - [12.1. 理解节点](#121-理解节点)
+    - [12.1.1. Node 类型](#1211-node-类型)
+    - [12.1.2. Document 类型](#1212-document-类型)
+    - [12.1.3. Element 类型](#1213-element-类型)
+    - [12.1.4. Text 类型](#1214-text-类型)
+    - [12.1.5. Comment 类型](#1215-comment-类型)
+    - [12.1.6. CDATASection 类型](#1216-cdatasection-类型)
+    - [12.1.7. DocumentType 类型](#1217-documenttype-类型)
+    - [12.1.8. DocumentFragment 类型](#1218-documentfragment-类型)
+    - [12.1.9. Attr 类型](#1219-attr-类型)
+  - [12.2. Slector API](#122-slector-api)
+    - [12.2.1. querySelector()](#1221-queryselector)
+    - [12.2.2. querySelectorAll()](#1222-queryselectorall)
+    - [12.2.3. matches()](#1223-matches)
+  - [12.3. 元素遍历](#123-元素遍历)
+  - [12.4. HTML 5](#124-html-5)
+    - [12.4.1. CSS 类扩展](#1241-css-类扩展)
+    - [12.4.2. 焦点管理](#1242-焦点管理)
+    - [12.4.3. HTMLDocument 扩展](#1243-htmldocument-扩展)
+    - [12.4.4. 字符集属性](#1244-字符集属性)
+    - [12.4.5. 自定义数据属性](#1245-自定义数据属性)
+    - [12.4.6. 插入标记](#1246-插入标记)
+  - [12.5. 专有扩展](#125-专有扩展)
+    - [12.5.1. children 属性](#1251-children-属性)
+    - [12.5.2. contains()方法](#1252-contains方法)
+    - [12.5.3. 插入标记](#1253-插入标记)
+    - [12.5.4. 滚动](#1254-滚动)
 
-# 14. DOM
+# 12. DOM 基础
 
 本章内容
 
 - 理解节点
-- 操作 DOM
-- MutationObserver 接口
+- selector API
+- HTML5 扩展
 
 **文档对象模型(DOM，Document Object Model)** 是 HTML 和 XML 文档的编程接口。DOM 表示由多层节点构成的文档，通过它开发者可以添加、删除和修改页面的各个部分。脱胎于网景和微软早期的动态 HTML（DHTML，Dynamic HTML），DOM 现在是真正跨平台、语言无关的表示和操作网页的方式。
 
@@ -36,7 +43,7 @@ DOM Level 1 在 1998 年成为 W3C 推荐标准，提供了基本文档结构和
 
 注意 IE8 及更低版本中的 DOM 是通过 COM 对象实现的。这意味着这些版本的 IE 中，DOM 对象跟原生 JavaScript 对象具有不同的行为和功能。
 
-## 14.1. 理解节点
+## 12.1. 理解节点
 
 任何 HTML 或 XML 文档都可以用 DOM 表示为一个由节点构成的层级结构。节点分很多类型，每种类型对应着文档中不同的信息和（或）标记，也都有自己不同的特性、数据和方法，而且与其他类型有某种关系。这些关系构成了层级，让标记可以表示为一个以特定节点为根的树形结构。以下面的 HTML 为例：
 
@@ -59,7 +66,7 @@ DOM Level 1 在 1998 年成为 W3C 推荐标准，提供了基本文档结构和
 
 HTML 中的每段标记都可以表示为这个树形结构中的一个节点。元素节点表示 HTML 元素，属性节点表示属性，文档类型节点表示文档类型，注释节点表示注释。DOM 中总共有 12 种节点类型，这些类型都继承一种基本类型。
 
-### 14.1.1. Node 类型
+### 12.1.1. Node 类型
 
 DOM Level 1 描述了名为 Node 的接口，这个接口是所有 DOM 节点类型都必须实现的。Node 接口在 JavaScript 中被实现为 Node 类型，在除 IE 之外的所有浏览器中都可以直接访问这个类型。在 JavaScript 中，所有节点类型都继承 Node 类型，因此所有类型都共享相同的基本属性和方法。
 
@@ -232,7 +239,7 @@ alert(shallowList.childNodes.length); // 0
 
 本节要介绍的最后一个方法是 normalize()。这个方法唯一的任务就是处理文档子树中的文本节点。由于解析器实现的差异或 DOM 操作等原因，可能会出现并不包含文本的文本节点，或者文本节点之间互为同胞关系。在节点上调用 normalize()方法会检测这个节点的所有后代，从中搜索上述两种情形。如果发现空文本节点，则将其删除；如果两个同胞节点是相邻的，则将其合并为一个文本节点。这个方法将在本章后面进一步讨论。
 
-### 14.1.2. Document 类型
+### 12.1.2. Document 类型
 
 Document 类型是 JavaScript 中表示文档节点的类型。在浏览器中，文档对象 document 是 HTMLDocument 的实例（HTMLDocument 继承 Document），表示整个 HTML 页面。document 是 window 对象的属性，因此是一个全局对象。Document 类型的节点有以下特征：
 
@@ -561,7 +568,7 @@ open()和 close()方法分别用于打开和关闭网页输出流。在调用 wr
 
 注意 严格的 XHTML 文档不支持文档写入。对于内容类型为 application/xml+xhtml 的页面，这些方法不起作用。
 
-### 14.1.3. Element 类型
+### 12.1.3. Element 类型
 
 除了 Document 类型，Element 类型就是 Web 开发中最常用的类型了。Element 表示 XML 或 HTML 元素，对外暴露出访问元素标签名、子节点和属性的能力。Element 类型的节点具有以下特征：
 
@@ -824,7 +831,7 @@ const outputAttributes = function (element) {
     pairs.push(`${attribute.nodeName}='${attribute.nodeValue}'`);
   }
   return pairs.join(' ');
-}
+};
 ```
 
 这个函数使用数组存储每个名/值对，迭代完所有属性后，再将这些名/值对用空格拼接在一起。（这个技术常用于序列化为长字符串。）这个函数中的 for 循环使用 attributes.length 属性迭代每个属性，将每个属性的名字和值输出为字符串。不同浏览器返回的 attributes 中的属性顺序也可能不一样。HTML 或 XML 代码中属性出现的顺序不一定与 attributes 中的顺序一致。
@@ -895,7 +902,7 @@ let items = ul.getElementsByTagName('li');
 
 这里例子中的`<ul>`元素只有一级子节点，如果它包含更多层级，则所有层级中的`<li>`元素都会返回。
 
-### 14.1.4. Text 类型
+### 12.1.4. Text 类型
 
 Text 节点由 Text 类型表示，包含按字面解释的纯文本，也可能包含转义后的 HTML 字符，但不含 HTML 代码。Text 类型的节点具有以下特征：
 
@@ -1027,7 +1034,7 @@ console.log(element.childNodes.length); // 2
 
 拆分文本节点最常用于从文本节点中提取数据的 DOM 解析技术。
 
-### 14.1.5. Comment 类型
+### 12.1.5. Comment 类型
 
 DOM 中的注释通过 Comment 类型表示。Comment 类型的节点具有以下特征：
 
@@ -1061,7 +1068,7 @@ let comment = document.createComment('A comment');
 
 显然，注释节点很少通过 JavaScrpit 创建和访问，因为注释几乎不涉及算法逻辑。此外，浏览器不承认结束的`</html>`标签之后的注释。如果要访问注释节点，则必须确定它们是`<html>`元素的后代。
 
-### 14.1.6. CDATASection 类型
+### 12.1.6. CDATASection 类型
 
 CDATASection 类型表示 XML 中特有的 CDATA 区块。CDATASection 类型继承 Text 类型，因此拥有包括 splitText()在内的所有字符串操作方法。CDATASection 类型的节点具有以下特征：
 
@@ -1081,7 +1088,7 @@ CDATA 区块只在 XML 文档中有效，因此某些浏览器比较陈旧的版
 
 在真正的 XML 文档中，可以使用 document.createCDataSection()并传入节点内容来创建 CDATA 区块。
 
-### 14.1.7. DocumentType 类型
+### 12.1.7. DocumentType 类型
 
 DocumentType 类型的节点包含文档的文档类型（doctype）信息，具有以下特征：
 
@@ -1103,7 +1110,7 @@ DocumentType 对象在 DOM Level 1 中不支持动态创建，只能在解析文
 console.log(document.doctype.name); // 'html'
 ```
 
-### 14.1.8. DocumentFragment 类型
+### 12.1.8. DocumentFragment 类型
 
 在所有节点类型中，DocumentFragment 类型是唯一一个在标记中没有对应表示的类型。DOM 将文档片段定义为“轻量级”文档，能够包含和操作节点，却没有完整文档那样额外的消耗。DocumentFragment 节点具有以下特征：
 
@@ -1141,7 +1148,7 @@ ul.appendChild(fragment);
 
 这个例子先创建了一个文档片段，然后取得了`<ul>`元素的引用。接着通过 for 循环创建了 3 个列表项，每一项都包含表明自己身份的文本。为此先创建`<li>`元素，再创建文本节点并添加到该元素。然后通过 appendChild()把`<li>`元素添加到文档片段。循环结束后，通过把文档片段传给 appendChild()将所有列表项添加到了`<ul>`元素。此时，文档片段的子节点全部被转移到了`<ul>`元素。
 
-### 14.1.9. Attr 类型
+### 12.1.9. Attr 类型
 
 元素数据在 DOM 中通过 Attr 类型表示。Attr 类型构造函数和原型在所有浏览器中都可以直接访问。技术上讲，属性是存在于元素 attributes 属性中的节点。Attr 节点具有以下特征：
 
@@ -1171,910 +1178,715 @@ console.log(element.getAttribute('align')); // 'left'
 
 注意 将属性作为节点来访问多数情况下并无必要。推荐使用 getAttribute()、removeAttribute()和 setAttribute()方法操作属性，而不是直接操作属性节点。
 
-## 14.2. DOM 编程
+## 12.2. Slector API
 
-很多时候，操作 DOM 是很直观的。通过 HTML 代码能实现的，也一样能通过 JavaScript 实现。但有时候，DOM 也没有看起来那么简单。浏览器能力的参差不齐和各种问题，也会导致 DOM 的某些方面会复杂一些。
+JavaScript 库中最流行的一种能力就是根据 CSS 选择符的模式匹配 DOM 元素。比如，jQuery 就完全以 CSS 选择符查询 DOM 获取元素引用，而不是使用 getElementById()和 getElementsByTagName()。
 
-### 14.2.1. 动态脚本
+Selectors API（参见 W3C 网站上的 Selectors API Level 1）是 W3C 推荐标准，规定了浏览器原生支持的 CSS 查询 API。支持这一特性的所有 JavaScript 库都会实现一个基本的 CSS 解析器，然后使用已有的 DOM 方法搜索文档并匹配目标节点。虽然库开发者在不断改进其性能，但 JavaScript 代码能做到的毕竟有限。通过浏览器原生支持这个 API，解析和遍历 DOM 树可以通过底层编译语言实现，性能也有了数量级的提升。
 
-`<script>`元素用于向网页中插入 JavaScript 代码，可以是 src 属性包含的外部文件，也可以是作为该元素内容的源代码。动态脚本就是在页面初始加载时不存在，之后又通过 DOM 包含的脚本。与对应的 HTML 元素一样，有两种方式通过`<script>`动态为网页添加脚本：引入外部文件和直接插入源代码。
+Selectors API Level 1 的核心是两个方法：querySelector()和 querySelectorAll()。在兼容浏览器中，Document 类型和 Element 类型的实例上都会暴露这两个方法。
 
-动态加载外部文件很容易实现，比如下面的`<script>`元素：
+Selectors API Level 2 规范在 Element 类型上新增了更多方法，比如 matches()、find()和 findAll()。不过，目前还没有浏览器实现或宣称实现 find()和 findAll()。
 
-```html
-<script src="foo.js"></script>
-```
+### 12.2.1. querySelector()
 
-可以像这样通过 DOM 编程创建这个节点：
+querySelector()方法接收 CSS 选择符参数，返回匹配该模式的第一个后代元素，如果没有匹配项则返回 null。下面是一些例子：
 
 ```javascript
-let script = document.createElement('script');
-script.src = 'foo.js';
-document.body.appendChild(script);
+// 取得 <body> 元素
+const body = document.querySelector('body');
+
+// 取得 ID 为 'myDiv' 的元素
+const myDiv = document.querySelector('#myDiv');
+
+// 取得类名为 'selected' 的第一个元素
+const selected = document.querySelector('.selected');
+
+// 取得类名为 'button' 的图片
+const img = document.body.querySelector('img.button');
 ```
 
-这里的 DOM 代码实际上完全照搬了它要表示的 HTML 代码。注意，在上面最后一行把`<script>`元素添加到页面之前，是不会开始下载外部文件的。当然也可以把它添加到`<head>`元素，同样可以实现动态脚本加载。这个过程可以抽象为一个函数，比如：
+在 Document 上使用 querySelector()方法时，会从文档元素开始搜索；在 Element 上使用 querySelector()方法时，则只会从当前元素的后代中查询。
+
+用于查询模式的 CSS 选择符可繁可简，依需求而定。如果选择符有语法错误或碰到不支持的选择符，则 querySelector()方法会抛出错误。
+
+### 12.2.2. querySelectorAll()
+
+querySelectorAll()方法跟 querySelector()一样，也接收一个用于查询的参数，但它会返回所有匹配的节点，而不止一个。这个方法返回的是一个 NodeList 的静态实例。
+
+再强调一次，querySelectorAll()返回的 NodeList 实例一个属性和方法都不缺，但它是一个静态的“快照”，而非“实时”的查询。这样的底层实现避免了使用 NodeList 对象可能造成的性能问题。
+
+以有效 CSS 选择符调用 querySelectorAll()都会返回 NodeList，无论匹配多少个元素都可以。如果没有匹配项，则返回空的 NodeList 实例。
+
+与 querySelector()一样，querySelectorAll()也可以在 Document、DocumentFragment 和 Element 类型上使用。下面是几个例子：
 
 ```javascript
-const loadScript = function (url) {
-  let script = document.createElement('script');
-  script.src = url;
-  document.body.appendChild(script);
+// 取得 ID 为 'myDiv' 的 <div> 元素中的所有 <em> 元素
+const ems = document.getElementById('myDiv').querySelectorAll('em');
+
+// 取得所有类名中包含 'selected' 的元素
+const selecteds = document.querySelectorAll('.selected');
+
+// 取得所有是 <p> 元素子元素的 <strong> 元素
+const strongs = document.querySelectorAll('p strong');
+```
+
+返回的 NodeList 对象可以通过 for-of 循环、item()方法或中括号语法取得个别元素。比如：
+
+```javascript
+const strongElements = document.querySelectorAll('p strong');
+
+// 以下3 个循环的效果一样
+for (let strong of strongElements) {
+  strong.className = 'important';
+}
+
+for (let i = 0; i < strongElements.length; ++i) {
+  strongElements.item(i).className = 'important';
+}
+
+for (let i = 0; i < strongElements.length; ++i) {
+  strongElements[i].className = 'important';
 }
 ```
 
-然后，就可以像下面这样加载外部 JavaScript 文件了：
+与 querySelector()方法一样，如果选择符有语法错误或碰到不支持的选择符，则 querySelectorAll()方法会抛出错误。
+
+### 12.2.3. matches()
+
+matches()方法（在规范草案中称为 matchesSelector()）接收一个 CSS 选择符参数，如果元素匹配则该选择符返回 true，否则返回 false。例如：
 
 ```javascript
-loadScript('client.js');
+if (document.body.matches('body.page1')) {
+  // true
+}
 ```
 
-加载之后，这个脚本就可以对页面执行操作了。这里有个问题：怎么能知道脚本什么时候加载完？这个问题并没有标准答案。第 17 章会讨论一些与加载相关的事件，具体情况取决于使用的浏览器。
+使用这个方法可以方便地检测某个元素会不会被 querySelector()或 querySelectorAll()方法返回。
 
-另一个动态插入 JavaScript 的方式是嵌入源代码，如下面的例子所示：
+所有主流浏览器都支持 matches()。Edge、Chrome、Firefox、Safari 和 Opera 完全支持，IE9~11 及一些移动浏览器支持带前缀的方法。
 
-```html
-<script>
-  function sayHi() {
-    console.log('hi');
+## 12.3. 元素遍历
+
+IE9 之前的版本不会把元素间的空格当成空白节点，而其他浏览器则会。这样就导致了 childNodes 和 firstChild 等属性上的差异。为了弥补这个差异，同时不影响 DOM 规范，W3C 通过新的 ElementTraversal 规范定义了一组新属性。
+
+Element Traversal API 为 DOM 元素添加了 5 个属性：
+
+- childElementCount，返回子元素数量（不包含文本节点和注释）；
+- firstElementChild，指向第一个 Element 类型的子元素（Element 版 firstChild）；
+- lastElementChild，指向最后一个 Element 类型的子元素（Element 版 lastChild）；
+- previousElementSibling ， 指向前一个 Element 类型的同胞元素（ Element 版 previousSibling）；
+- nextElementSibling，指向后一个 Element 类型的同胞元素（Element 版 nextSibling）。
+
+在支持的浏览器中，所有 DOM 元素都会有这些属性，为遍历 DOM 元素提供便利。这样开发者就不用担心空白文本节点的问题了。
+
+举个例子，过去要以跨浏览器方式遍历特定元素的所有子元素，代码大致是这样写的：
+
+```javascript
+let parentElement = document.getElementById('parent');
+let currentChildNode = parentElement.firstChild;
+// 没有子元素，firstChild 返回null，跳过循环
+while (currentChildNode) {
+  if (currentChildNode.nodeType === 1) {
+    // 如果有元素节点，则做相应处理
+    processChild(currentChildNode);
   }
-</script>
-```
-
-使用 DOM，可以实现以下逻辑：
-
-```javascript
-let script = document.createElement('script');
-script.appendChild(document.createTextNode('function sayHi(){alert('hi');}'));
-document.body.appendChild(script);
-```
-
-以上代码可以在 Firefox、Safari、Chrome 和 Opera 中运行。不过在旧版本的 IE 中可能会导致问题。这是因为 IE 对`<script>`元素做了特殊处理，不允许常规 DOM 访问其子节点。但`<script>`元素上有一个 text 属性，可以用来添加 JavaScript 代码，如下所示：
-
-```javascript
-var script = document.createElement('script');
-script.text = 'function sayHi(){alert('hi');}';
-document.body.appendChild(script);
-```
-
-这样修改后，上面的代码可以在 IE、Firefox、Opera 和 Safari 3 及更高版本中运行。Safari 3 之前的版本不能正确支持这个 text 属性，但这些版本却支持文本节点赋值。对于早期的 Safari 版本，需要使用以下代码：
-
-```javascript
-var script = document.createElement('script');
-var code = 'function sayHi(){alert('hi');}';
-try {
-  script.appendChild(document.createTextNode('code'));
-} catch (ex) {
-  script.text = 'code';
-}
-document.body.appendChild(script);
-```
-
-这里先尝试使用标准的 DOM 文本节点插入方式，因为除 IE 之外的浏览器都支持这种方式。IE 此时会抛出错误，那么可以在捕获错误之后再使用 text 属性来插入 JavaScript 代码。于是，我们就可以抽象出一个跨浏览器的函数：
-
-```javascript
-function loadScriptString(code) {
-  var script = document.createElement('script');
-  script.type = 'text/javascript';
-  try {
-    script.appendChild(document.createTextNode(code));
-  } catch (ex) {
-    script.text = code;
+  if (currentChildNode === parentElement.lastChild) {
+    break;
   }
-  document.body.appendChild(script);
+  currentChildNode = currentChildNode.nextSibling;
 }
 ```
 
-这个函数可以这样调用：
+使用 Element Traversal 属性之后，以上代码可以简化如下：
 
 ```javascript
-loadScriptString('function sayHi(){alert('hi');}');
+let parentElement = document.getElementById('parent');
+let currentChildElement = parentElement.firstElementChild;
+// 没有子元素，firstElementChild 返回null，跳过循环
+while (currentChildElement) {
+  // 这就是元素节点，做相应处理
+  processChild(currentChildElement);
+  if (currentChildElement === parentElement.lastElementChild) {
+    break;
+  }
+  currentChildElement = currentChildElement.nextElementSibling;
+}
 ```
 
-以这种方式加载的代码会在全局作用域中执行，并在调用返回后立即生效。基本上，这就相当于在全局作用域中把源代码传给 eval()方法。
+IE9 及以上版本，以及所有现代浏览器都支持 Element Traversal 属性。
 
-注意，通过 innerHTML 属性创建的`<script>`元素永远不会执行。浏览器会尽责地创建`<script>`元素，以及其中的脚本文本，但解析器会给这个`<script>`元素打上永不执行的标签。只要是使用 innerHTML 创建的`<script>`元素，以后也没有办法强制其执行。
+## 12.4. HTML 5
 
-### 14.2.2. 动态样式
+HTML5 代表着与以前的 HTML 截然不同的方向。在所有以前的 HTML 规范中，从未出现过描述 JavaScript 接口的情形，HTML 就是一个纯标记语言。JavaScript 绑定的事，一概交给 DOM 规范去定义。
 
-CSS 样式在 HTML 页面中可以通过两个元素加载。`<link>`元素用于包含 CSS 外部文件，而`<style>`元素用于添加嵌入样式。与动态脚本类似，动态样式也是页面初始加载时并不存在，而是在之后才添加到页面中的。
+然而，HTML5 规范却包含了与标记相关的大量 JavaScript API 定义。其中有的 API 与 DOM 重合，定义了浏览器应该提供的 DOM 扩展。
 
-来看下面这个典型的`<link>`元素：
+注意 因为 HTML5 覆盖的范围极其广泛，所以本节主要讨论其影响所有 DOM 节点的部分。HTML5 的其他部分将在本书后面的相关章节中再讨论。
+
+### 12.4.1. CSS 类扩展
+
+自 HTML4 被广泛采用以来，Web 开发中一个主要的变化是 class 属性用得越来越多，其用处是为元素添加样式以及语义信息。自然地，JavaScript 与 CSS 类的交互就增多了，包括动态修改类名，以及根据给定的一个或一组类名查询元素，等等。为了适应开发者和他们对 class 属性的认可，HTML5 增加了一些特性以方便使用 CSS 类。
+
+1. **getElementsByClassName()**
+
+getElementsByClassName()是 HTML5 新增的最受欢迎的一个方法，暴露在 document 对象和所有 HTML 元素上。 这个方法脱胎于基于原有 DOM 特性实现该功能的 JavaScript 库，提供了性能高好的原生实现。
+
+getElementsByClassName()方法接收一个参数，即包含一个或多个类名的字符串，返回类名中包含相应类的元素的 NodeList。如果提供了多个类名，则顺序无关紧要。下面是几个示例：
+
+```javascript
+// 取得所有类名中包含'username'和'current'元素
+// 这两个类名的顺序无关紧要
+let allCurrentUsernames = document.getElementsByClassName('username current');
+// 取得ID 为'myDiv'的元素子树中所有包含'selected'类的元素
+let selected = document
+  .getElementById('myDiv')
+  .getElementsByClassName('selected');
+```
+
+这个方法只会返回以调用它的对象为根元素的子树中所有匹配的元素。在 document 上调用 getElementsByClassName()返回文档中所有匹配的元素，而在特定元素上调用 getElementsByClassName()则返回该元素后代中匹配的元素。
+
+如果要给包含特定类（而不是特定 ID 或标签）的元素添加事件处理程序，使用这个方法会很方便。不过要记住，因为返回值是 NodeList，所以使用这个方法会遇到跟使用 getElementsByTagName()和其他返回 NodeList 对象的 DOM 方法同样的问题。
+
+IE9 及以上版本，以及所有现代浏览器都支持 getElementsByClassName()方法。
+
+2. **classList 属性**
+
+要操作类名，可以通过 className 属性实现添加、删除和替换。但 className 是一个字符串，所以每次操作之后都需要重新设置这个值才能生效，即使只改动了部分字符串也一样。以下面的 HTML 代码为例：
 
 ```html
-<link rel="stylesheet" type="text/css" href="styles.css" />
+<div class="bd user disabled">...</div>
 ```
 
-这个元素很容易使用 DOM 编程创建出来：
+这个`<div>`元素有 3 个类名。要想删除其中一个，就得先把 className 拆开，删除不想要的那个，再把包含剩余类的字符串设置回去。比如：
 
 ```javascript
-let link = document.createElement('link');
-link.rel = 'stylesheet';
-link.type = 'text/css';
-link.href = 'styles.css';
-let head = document.getElementsByTagName('head')[0];
-head.appendChild(link);
+// 要删除'user'类
+let targetClass = 'user';
+// 把类名拆成数组
+let classNames = div.className.split(/\s+/);
+// 找到要删除类名的索引
+let idx = classNames.indexOf(targetClass);
+// 如果有则删除
+if (idx > -1) {
+  classNames.splice(i, 1);
+}
+// 重新设置类名
+div.className = classNames.join(' ');
 ```
 
-以上代码在所有主流浏览器中都能正常运行。注意应该把`<link>`元素添加到`<head>`元素而不是`<body>`元素，这样才能保证所有浏览器都能正常运行。这个过程可以抽象为以下通用函数：
+这就是从`<div>`元素的类名中删除'user'类要写的代码。替换类名和检测类名也要涉及同样的算法。添加类名只涉及字符串拼接，但必须先检查一下以确保不会重复添加相同的类名。很多 JavaScript 库为这些操作实现了便利方法。
+
+HTML5 通过给所有元素增加 classList 属性为这些操作提供了更简单也更安全的实现方式。classList 是一个新的集合类型 DOMTokenList 的实例。与其他 DOM 集合类型一样，DOMTokenList 也有 length 属性表示自己包含多少项，也可以通过 item()或中括号取得个别的元素。此外，DOMTokenList 还增加了以下方法。
+
+- add(value)，向类名列表中添加指定的字符串值 value。如果这个值已经存在，则什么也不做。
+- contains(value)，返回布尔值，表示给定的 value 是否存在。
+- remove(value)，从类名列表中删除指定的字符串值 value。
+- toggle(value)，如果类名列表中已经存在指定的 value，则删除；如果不存在，则添加。
+
+这样以来，前面的例子中那么多行代码就可以简化成下面的一行：
 
 ```javascript
-const loadStyles = function (url) {
-  let link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.type = 'text/css';
-  link.href = url;
-  let head = document.getElementsByTagName('head')[0];
-  head.appendChild(link);
+div.classList.remove('user');
+```
+
+这行代码可以在不影响其他类名的情况下完成删除。其他方法同样极大地简化了操作类名的复杂性，如下面的例子所示：
+
+```javascript
+// 删除'disabled'类
+div.classList.remove('disabled');
+// 添加'current'类
+div.classList.add('current');
+// 切换'user'类
+div.classList.toggle('user');
+// 检测类名
+if (div.classList.contains('bd') && !div.classList.contains('disabled')){
+// 执行操作
+)
+// 迭代类名
+for (let class of div.classList){
+doStuff(class);
 }
 ```
 
-然后就可以这样调用这个 loadStyles()函数了：
+添加了 classList 属性之后，除非是完全删除或完全重写元素的 class 属性，否则 className 属性就用不到了。IE10 及以上版本（部分）和其他主流浏览器（完全）实现了 classList 属性。
+
+### 12.4.2. 焦点管理
+
+HTML5 增加了辅助 DOM 焦点管理的功能。首先是 document.activeElement，始终包含当前拥有焦点的 DOM 元素。页面加载时，可以通过用户输入（按 Tab 键或代码中使用 focus()方法）让某个元素自动获得焦点。例如：
 
 ```javascript
-loadStyles('styles.css');
+let button = document.getElementById('myButton');
+button.focus();
+console.log(document.activeElement === button); // true
 ```
 
-通过外部文件加载样式是一个异步过程。因此，样式的加载和正执行的 JavaScript 代码并没有先后顺序。一般来说，也没有必要知道样式什么时候加载完成。
+默认情况下，document.activeElement 在页面刚加载完之后会设置为 document.body。而在页面完全加载之前，document.activeElement 的值为 null。
 
-另一种定义样式的方式是使用`<script>`元素包含嵌入的 CSS 规则，例如：
+其次是 document.hasFocus()方法，该方法返回布尔值，表示文档是否拥有焦点：
+
+```javascript
+let button = document.getElementById('myButton');
+button.focus();
+console.log(document.hasFocus()); // true
+```
+
+确定文档是否获得了焦点，就可以帮助确定用户是否在操作页面。
+
+第一个方法可以用来查询文档，确定哪个元素拥有焦点，第二个方法可以查询文档是否获得了焦点，而这对于保证 Web 应用程序的无障碍使用是非常重要的。无障碍 Web 应用程序的一个重要方面就是焦点管理，而能够确定哪个元素当前拥有焦点（相比于之前的猜测）是一个很大的进步。
+
+### 12.4.3. HTMLDocument 扩展
+
+HTML5 扩展了 HTMLDocument 类型，增加了更多功能。与其他 HTML5 定义的 DOM 扩展一样，这些变化同样基于所有浏览器事实上都已经支持的专有扩展。为此，即使这些扩展的标准化相对较晚，很多浏览器也早就实现了相应的功能。
+
+1. **readyState 属性**
+
+readyState 是 IE4 最早添加到 document 对象上的属性，后来其他浏览器也都依葫芦画瓢地支持这个属性。最终，HTML5 将这个属性写进了标准。document.readyState 属性有 3 个可能的值：
+
+- loading，表示文档正在加载。
+- interactive，文档已被解析，“正在加载” 状态结束，但是诸如图像，样式表和框架之类的子资源仍在加载。
+- complete，文档和所有子资源已完成加载。
+
+实际开发中，最好是把 document.readState 当成一个指示器，以判断文档是否加载完毕。在这个属性得到广泛支持以前，通常要依赖 onload 事件处理程序设置一个标记，表示文档加载完了。这个属性的基本用法如下：
+
+```javascript
+if (document.readyState == 'complete') {
+  // 执行操作
+}
+```
+
+2. **compatMode 属性**
+
+自从 IE6 提供了以标准或混杂模式渲染页面的能力之后，检测页面渲染模式成为一个必要的需求。IE 为 document 添加了 compatMode 属性，这个属性唯一的任务是指示浏览器当前处于什么渲染模式。如下面的例子所示，标准模式下 document.compatMode 的值是'CSS1Compat'，而在混杂模式下，document.compatMode 的值是'BackCompat'：
+
+```javascript
+if (document.compatMode == 'CSS1Compat') {
+  console.log('Standards mode');
+} else {
+  console.log('Quirks mode');
+}
+```
+
+HTML5 最终也把 compatMode 属性的实现标准化了。
+
+3. **head 属性**
+
+作为对 document.body（指向文档的`<body>`元素）的补充，HTML5 增加了 document.head 属性，指向文档的`<head>`元素。可以像下面这样直接取得`<head>`元素：
+
+```javascript
+const head = document.head;
+```
+
+### 12.4.4. 字符集属性
+
+HTML5 增加了几个与文档字符集有关的新属性。其中，characterSet 属性表示文档实际使用的字符集，也可以用来指定新字符集。这个属性的默认值是'UTF-16'，但可以通过`<meta>`元素或响应头，以及新增的 characterSeet 属性来修改。下面是一个例子：
+
+```javascript
+console.log(document.characterSet); // 'UTF-16'
+document.characterSet = 'UTF-8';
+```
+
+### 12.4.5. 自定义数据属性
+
+HTML5 允许给元素指定非标准的属性，但要使用前缀 data-以便告诉浏览器，这些属性既不包含与渲染有关的信息，也不包含元素的语义信息。除了前缀，自定义属性对命名是没有限制的，data-后面跟什么都可以。下面是一个例子：
 
 ```html
-<style type="text/css">
-  body {
-    background-color: red;
-  }
-</style>
+<div id="myDiv" data-appId="12345" data-myname="Nicholas"></div>
 ```
 
-逻辑上，下列 DOM 代码会有同样的效果：
+定义了自定义数据属性后，可以通过元素的 dataset 属性来访问。dataset 属性是一个 DOMStringMap 的实例，包含一组键/值对映射。元素的每个 data-name 属性在 dataset 中都可以通过 data-后面的字符串作为键来访问（例如，属性 data-myname、data-myName 可以通过 myname 访问，但要注意 data-my-name、data-My-Name 要通过 myName 来访问）。下面是一个使用自定义数据属性的例子：
 
 ```javascript
-let style = document.createElement('style');
-style.type = 'text/css';
-style.appendChild(document.createTextNode('body{background-color:red}'));
-let head = document.getElementsByTagName('head')[0];
-head.appendChild(style);
-```
-
-以上代码在 Firefox、Safari、Chrome 和 Opera 中都可以运行，但 IE 除外。IE 对`<style>`节点会施加限制，不允许访问其子节点，这一点与它对`<script>`元素施加的限制一样。事实上，IE 在执行到给`<style>`添加子节点的代码时，会抛出与给`<script>`添加子节点时同样的错误。对于 IE，解决方案是访问元素的 styleSheet 属性，这个属性又有一个 cssText 属性，然后给这个属性添加 CSS 代码：
-
-```javascript
-let style = document.createElement('style');
-style.type = 'text/css';
-try {
-  style.appendChild(document.createTextNode('body{background-color:red}'));
-} catch (ex) {
-  style.styleSheet.cssText = 'body{background-color:red}';
-}
-let head = document.getElementsByTagName('head')[0];
-head.appendChild(style);
-```
-
-与动态添加脚本源代码类似，这里也使用了 try...catch 语句捕获 IE 抛出的错误，然后再以 IE 特有的方式来设置样式。这是最终的通用函数：
-
-```javascript
-const loadStyleString = function (css) {
-  let style = document.createElement('style');
-  style.type = 'text/css';
-  try {
-    style.appendChild(document.createTextNode(css));
-  } catch (ex) {
-    style.styleSheet.cssText = css;
-  }
-  let head = document.getElementsByTagName('head')[0];
-  head.appendChild(style);
+// 本例中使用的方法仅用于示范
+let div = document.getElementById('myDiv');
+// 取得自定义数据属性的值
+let appId = div.dataset.appId;
+let myName = div.dataset.myname;
+// 设置自定义数据属性的值
+div.dataset.appId = 23456;
+div.dataset.myname = 'Michael';
+// 有'myname'吗？
+if (div.dataset.myname) {
+  console.log(`Hello, ${div.dataset.myname}`);
 }
 ```
 
-可以这样调用这个函数：
+自定义数据属性非常适合需要给元素附加某些数据的场景，比如链接追踪和在聚合应用程序中标识页面的不同部分。另外，单页应用程序框架也非常多地使用了自定义数据属性。
 
-```javascript
-loadStyleString('body{background-color:red}');
-```
+### 12.4.6. 插入标记
 
-这样添加的样式会立即生效，因此所有变化会立即反映出来。
+DOM 虽然已经为操纵节点提供了很多 API，但向文档中一次性插入大量 HTML 时还是比较麻烦。相比先创建一堆节点，再把它们以正确的顺序连接起来，直接插入一个 HTML 字符串要简单（快速）得多。HTML5 已经通过以下 DOM 扩展将这种能力标准化了。
 
-注意 对于 IE，要小心使用 styleSheet.cssText。如果重用同一个`<style>`元素并设置该属性超过一次，则可能导致浏览器崩溃。同样，将 cssText 设置为空字符串也可能导致浏览器崩溃。
+1. **innerHTML 属性**
 
-### 14.2.3. 操作表格
-
-表格是 HTML 中最复杂的结构之一。通过 DOM 编程创建`<table>`元素，通常要涉及大量标签，包括表行、表元、表题，等等。因此，通过 DOM 编程创建和修改表格时可能要写很多代码。假设要通过 DOM 来创建以下 HTML 表格：
+在读取 innerHTML 属性时，会返回元素所有后代的 HTML 字符串，包括元素、注释和文本节点。而在写入 innerHTML 时，则会根据提供的字符串值以新的 DOM 子树替代元素中原来包含的所有节点。比如下面的 HTML 代码：
 
 ```html
-<table border="1" width="100%">
-  <tbody>
-    <tr>
-      <td>Cell 1,1</td>
-      <td>Cell 2,1</td>
-    </tr>
-    <tr>
-      <td>Cell 1,2</td>
-      <td>Cell 2,2</td>
-    </tr>
-  </tbody>
-</table>
+<div id="content">
+  <p>
+    This is a
+    <strong>paragraph</strong>
+    with a list following it.
+  </p>
+  <ul>
+    <li>Item 1</li>
+    <li>Item 2</li>
+    <li>Item 3</li>
+  </ul>
+</div>
 ```
 
-下面就是以 DOM 编程方式重建这个表格的代码：
+对于这里的`<div>`元素而言，其 innerHTML 属性会返回以下字符串：
 
-```javascript
-// 创建表格
-let table = document.createElement('table');
-table.border = 1;
-table.width = '100%';
-// 创建表体
-let tbody = document.createElement('tbody');
-table.appendChild(tbody);
-// 创建第一行
-let row1 = document.createElement('tr');
-tbody.appendChild(row1);
-let cell1_1 = document.createElement('td');
-cell1_1.appendChild(document.createTextNode('Cell 1,1'));
-row1.appendChild(cell1_1);
-let cell2_1 = document.createElement('td');
-cell2_1.appendChild(document.createTextNode('Cell 2,1'));
-row1.appendChild(cell2_1);
-// 创建第二行
-let row2 = document.createElement('tr');
-tbody.appendChild(row2);
-let cell1_2 = document.createElement('td');
-cell1_2.appendChild(document.createTextNode('Cell 1,2'));
-row2.appendChild(cell1_2);
-let cell2_2 = document.createElement('td');
-cell2_2.appendChild(document.createTextNode('Cell 2,2'));
-row2.appendChild(cell2_2);
-// 把表格添加到文档主体
-document.body.appendChild(table);
+```html
+<p>
+  This is a
+  <strong>paragraph</strong>
+  with a list following it.
+</p>
+<ul>
+  <li>Item 1</li>
+  <li>Item 2</li>
+  <li>Item 3</li>
+</ul>
 ```
 
-以上代码相当烦琐，也不好理解。为了方便创建表格，HTML DOM 给`<table>`、`<tbody>`和`<tr>`元素添加了一些属性和方法。
+实际返回的文本内容会因浏览器而不同。IE 和 Opera 会把所有元素标签转换为大写，而 Safari、Chrome 和 Firefox 则会按照文档源代码的格式返回，包含空格和缩进。因此不要指望不同浏览器的 innerHTML 会返回完全一样的值。
 
-`<table>`元素添加了以下属性和方法：
-
-- caption，指向`<caption>`元素的指针（如果存在）；
-- tBodies，包含`<tbody>`元素的 HTMLCollection；
-- tFoot，指向`<tfoot>`元素（如果存在）；
-- tHead，指向`<thead>`元素（如果存在）；
-- rows，包含表示所有行的 HTMLCollection；
-- createTHead()，创建`<thead>`元素，放到表格中，返回引用；
-- createTFoot()，创建`<tfoot>`元素，放到表格中，返回引用；
-- createCaption()，创建`<caption>`元素，放到表格中，返回引用；
-- deleteTHead()，删除`<thead>`元素；
-- deleteTFoot()，删除`<tfoot>`元素；
-- deleteCaption()，删除`<caption>`元素；
-- deleteRow(pos)，删除给定位置的行；
-- insertRow(pos)，在行集合中给定位置插入一行。`<tbody>`元素添加了以下属性和方法：
-- rows，包含`<tbody>`元素中所有行的 HTMLCollection；
-- deleteRow(pos)，删除给定位置的行；
-- insertRow(pos)，在行集合中给定位置插入一行，返回该行的引用。`<tr>`元素添加了以下属性和方法：
-- cells，包含`<tr>`元素所有表元的 HTMLCollection；
-- deleteCell(pos)，删除给定位置的表元；
-- insertCell(pos)，在表元集合给定位置插入一个表元，返回该表元的引用。
-
-这些属性和方法极大地减少了创建表格所需的代码量。例如，使用这些方法重写前面的代码之后是这样的（加粗代码表示更新的部分）：
+在写入模式下，赋给 innerHTML 属性的值会被解析为 DOM 子树，并替代元素之前的所有节点。因为所赋的值默认为 HTML，所以其中的所有标签都会以浏览器处理 HTML 的方式转换为元素（同样，转换结果也会因浏览器不同而不同）。如果赋值中不包含任何 HTML 标签，则直接生成一个文本节点，如下所示：
 
 ```javascript
-// 创建表格
-let table = document.createElement('table');
-table.border = 1;
-table.width = '100%';
-// 创建表体
-let tbody = document.createElement('tbody');
-table.appendChild(tbody);
-// 创建第一行
-tbody.insertRow(0);
-tbody.rows[0].insertCell(0);
-tbody.rows[0].cells[0].appendChild(document.createTextNode('Cell 1,1'));
-tbody.rows[0].insertCell(1);
-tbody.rows[0].cells[1].appendChild(document.createTextNode('Cell 2,1'));
-// 创建第二行
-tbody.insertRow(1);
-tbody.rows[1].insertCell(0);
-tbody.rows[1].cells[0].appendChild(document.createTextNode('Cell 1,2'));
-tbody.rows[1].insertCell(1);
-tbody.rows[1].cells[1].appendChild(document.createTextNode('Cell 2,2'));
-// 把表格添加到文档主体
-document.body.appendChild(table);
+div.innerHTML = 'Hello world!';
 ```
 
-这里创建`<table>`和`<tbody>`元素的代码没有变。变化的是创建两行的部分，这次使用了 HTML DOM 表格的属性和方法。创建第一行时，在`<tbody>` 元素上调用了 insertRow()方法。传入参数 0，表示把这一行放在什么位置。然后，使用 tbody.rows[0]来引用这一行，因为这一行刚刚创建并被添加到了`<tbody>`的位置 0。
-
-创建表元的方式也与之类似。在`<tr>`元素上调用 insertCell()方法，传入参数 0，表示把这个表元放在什么位置上。然后，使用 tbody.rows[0].cells[0]来引用这个表元，因为这个表元刚刚创建并被添加到了`<tr>`的位置 0。
-
-虽然以上两种代码在技术上都是正确的，但使用这些属性和方法创建表格让代码变得更有逻辑性，也更容易理解。
-
-### 14.2.4. 使用 NodeList
-
-理解 NodeList 对象和相关的 NamedNodeMap、HTMLCollection，是理解 DOM 编程的关键。这 3 个集合类型都是“实时的”，意味着文档结构的变化会实时地在它们身上反映出来，因此它们的值始终代表最新的状态。实际上，NodeList 就是基于 DOM 文档的实时查询。例如，下面的代码会导致无穷
-循环：
+因为浏览器会解析设置的值，所以给 innerHTML 设置包含 HTML 的字符串时，结果会大不一样。来看下面的例子：
 
 ```javascript
-let divs = document.getElementsByTagName('div');
-for (let i = 0; i < divs.length; ++i) {
-  let div = document.createElement('div');
-  document.body.appendChild(div);
+div.innerHTML = 'Hello & welcome, <b>'reader'!</b>';
+```
+
+这个操作的结果相当于：
+
+```html
+<div id="content">
+  Hello &amp; welcome,
+  <b>&quot;reader&quot;!</b>
+</div>
+```
+
+设置完 innerHTML，马上就可以像访问其他节点一样访问这些新节点。
+
+注意 设置 innerHTML 会导致浏览器将 HTML 字符串解析为相应的 DOM 树。这意味着设置 innerHTML 属性后马上再读出来会得到不同的字符串。这是因为返回的字符串是将原始字符串对应的 DOM 子树序列化之后的结果。
+
+2. **旧 IE 中的 innerHTML**
+
+在所有现代浏览器中，通过 innerHTML 插入的`<script>`标签是不会执行的。而在 IE8 及之前的版本中，只要这样插入的`<script>`元素指定了 defer 属性，且`<script>`之前是“受控元素”（scoped element），那就是可以执行的。`<script>`元素与`<style>`或注释一样，都是“非受控元素”（NoScope element），也就是在页面上看不到它们。IE 会把 innerHTML 中从非受控元素开始的内容都删掉，也就是说下面的例子是行不通的：
+
+```javascript
+// 行不通
+div.innerHTML = '<script defer>console.log('hi');</script>';
+```
+
+在这个例子中，innerHTML 字符串以一个非受控元素开始，因此整个字符串都会被清空。为了达到目的，必须在`<script>`前面加上一个受控元素，例如文本节点或没有结束标签的元素（如`<input>`）。因此，下面的代码就是可行的：
+
+```javascript
+// 以下都可行
+div.innerHTML = '_<script defer>console.log('hi');<\/script>';
+div.innerHTML = '<div>&nbsp;</div><script defer>console.log('hi');<\/script>';
+div.innerHTML = '<input type=\'hidden\'><script defer>console.
+log('hi');<\/script>';
+```
+
+第一行会在`<script>`元素前面插入一个文本节点。为了不影响页面排版，可能稍后需要删掉这个文本节点。第二行与之类似，使用了包含空格的`<div>`元素。空`<div>`是不行的，必须包含一点内容，以强制创建一个文本节点。同样，这个`<div>`元素可能也需要事后删除，以免影响页面外观。第三行使用了一个隐藏的`<input>`字段来达成同样的目的。因为这个字段不影响页面布局，所以应该是最理想的方案。
+
+在 IE 中，通过 innerHTML 插入`<style>`也会有类似的问题。多数浏览器支持使用 innerHTML 插入`<style>`元素：
+
+```javascript
+div.innerHTML = '<style type='text/css'>body {background-color: red; }</style>';
+```
+
+但在 IE8 及之前的版本中，`<style>`也被认为是非受控元素，所以必须前置一个受控元素：
+
+```javascript
+div.innerHTML =
+  '_<style type='text/css'>body {background-color: red; }</style>';
+div.removeChild(div.firstChild);
+```
+
+注意 Firefox 在内容类型为 application/xhtml+xml 的 XHTML 文档中对 innerHTML 更加严格。在 XHTML 文档中使用 innerHTML，必须使用格式良好的 XHTML 代码。否则，在 Firefox 中会静默失败。
+
+3. **outerHTML 属性**
+
+读取 outerHTML 属性时，会返回调用它的元素（及所有后代元素）的 HTML 字符串。在写入 outerHTML 属性时，调用它的元素会被传入的 HTML 字符串经解释之后生成的 DOM 子树取代。比如下面的 HTML 代码：
+
+```html
+<div id="content">
+  <p>
+    This is a
+    <strong>paragraph</strong>
+    with a list following it.
+  </p>
+  <ul>
+    <li>Item 1</li>
+    <li>Item 2</li>
+    <li>Item 3</li>
+  </ul>
+</div>
+```
+
+在这个`<div>`元素上调用 outerHTML 会返回相同的字符串，包括`<div>`本身。注意，浏览器因解析和解释 HTML 代码的机制不同，返回的字符串也可能不同。（跟 innerHTML 的情况是一样的。）
+
+如果使用 outerHTML 设置 HTML，比如：
+
+```javascript
+div.outerHTML = '<p>This is a paragraph.</p>';
+```
+
+则会得到与执行以下脚本相同的结果：`
+
+```javascript
+let p = document.createElement('p');
+p.appendChild(document.createTextNode('This is a paragraph.'));
+div.parentNode.replaceChild(p, div);
+```
+
+新的`<p>`元素会取代 DOM 树中原来的`<div>`元素。
+
+4. **insertAdjacentHTML()与 insertAdjacentText()**
+
+关于插入标签的最后两个新增方法是 insertAdjacentHTML()和 insertAdjacentText()。这两个方法最早源自 IE，它们都接收两个参数：要插入标记的位置和要插入的 HTML 或文本。第一个参数必须是下列值中的一个：
+
+- 'beforebegin'，插入当前元素前面，作为前一个同胞节点；
+- 'afterbegin'，插入当前元素内部，作为新的子节点或放在第一个子节点前面；
+- 'beforeend'，插入当前元素内部，作为新的子节点或放在最后一个子节点后面；
+- 'afterend'，插入当前元素后面，作为下一个同胞节点。
+
+注意这几个值是不区分大小写的。第二个参数会作为 HTML 字符串解析（与 innerHTML 和 outerHTML 相同）或者作为纯文本解析（与 innerText 和 outerText 相同）。如果是 HTML，则会在解析出错时抛出错误。下面展示了基本用法：
+
+```javascript
+// 作为前一个同胞节点插入
+element.insertAdjacentHTML('beforebegin', '<p>Hello world!</p>');
+element.insertAdjacentText('beforebegin', 'Hello world!');
+// 作为第一个子节点插入
+element.insertAdjacentHTML('afterbegin', '<p>Hello world!</p>');
+element.insertAdjacentText('afterbegin', 'Hello world!');
+// 作为最后一个子节点插入
+element.insertAdjacentHTML('beforeend', '<p>Hello world!</p>');
+element.insertAdjacentText('beforeend', 'Hello world!');
+// 作为下一个同胞节点插入
+element.insertAdjacentHTML('afterend', '<p>Hello world!</p>');
+element.insertAdjacentText('afterend', 'Hello world!');
+```
+
+5. **内存与性能问题**
+
+使用本节介绍的方法替换子节点可能在浏览器（特别是 IE）中导致内存问题。比如，如果被移除的子树元素中之前有关联的事件处理程序或其他 JavaScript 对象（作为元素的属性），那它们之间的绑定关系会滞留在内存中。如果这种替换操作频繁发生，页面的内存占用就会持续攀升。在使用 innerHTML、outerHTML 和 insertAdjacentHTML()之前，最好手动删除要被替换的元素上关联的事件处理程序和 JavaScript 对象。
+
+使用这些属性当然有其方便之处，特别是 innerHTML。一般来讲，插入大量的新 HTML 使用 innerHTML 比使用多次 DOM 操作创建节点再插入来得更便捷。这是因为 HTML 解析器会解析设置给 innerHTML（或 outerHTML）的值。解析器在浏览器中是底层代码（通常是 C++代码），比 JavaScript 快得多。不过，HTML 解析器的构建与解构也不是没有代价，因此最好限制使用 innerHTML 和 outerHTML 的次数。比如，下面的代码使用 innerHTML 创建了一些列表项：
+
+```javascript
+for (let value of values) {
+  ul.innerHTML += '<li>${value}</li>'; // 别这样做！
 }
 ```
 
-第一行取得了包含文档中所有`<div>`元素的 HTMLCollection。因为这个集合是“实时的”，所以任何时候只要向页面中添加一个新`<div>`元素，再查询这个集合就会多一项。因为浏览器不希望保存每次创建的集合，所以就会在每次访问时更新集合。这样就会出现前面使用循环的例子中所演示的问题。每次循环开始，都会求值 i < divs.length。这意味着要执行获取所有`<div>`元素的查询。因为循环体中会创建并向文档添加一个新`<div>`元素，所以每次循环 divs.length 的值也会递增。因为两个值都会递增，所以 i 将永远不会等于 divs.length。
-
-使用 ES6 迭代器并不会解决这个问题，因为迭代的是一个永远增长的实时集合。以下代码仍然会导致无穷循环：
+这段代码效率低，因为每次迭代都要设置一次 innerHTML。不仅如此，每次循环还要先读取 innerHTML，也就是说循环一次要访问两次 innerHTML。为此，最好通过循环先构建一个独立的字符串，最后再一次性把生成的字符串赋值给 innerHTML，比如：
 
 ```javascript
-for (let div of document.getElementsByTagName('div')) {
-  let newDiv = document.createElement('div');
-  document.body.appendChild(newDiv);
+let itemsHtml = '';
+for (let value of values) {
+  itemsHtml += '<li>${value}</li>';
 }
+ul.innerHTML = itemsHtml;
 ```
 
-任何时候要迭代 NodeList，最好再初始化一个变量保存当时查询时的长度，然后用循环变量与这个变量进行比较，如下所示：
+这样修改之后效率就高多了，因为只有对 innerHTML 的一次赋值。当然，像下面这样一行代码也可以搞定：
 
 ```javascript
-let divs = document.getElementsByTagName('div');
-for (let i = 0, len = divs.length; i < len; ++i) {
-  let div = document.createElement('div');
-  document.body.appendChild(div);
-}
+ul.innerHTML = values.map((value) => '<li>${value}</li>').join('');
 ```
 
-在这个例子中，又初始化了一个保存集合长度的变量 len。因为 len 保存着循环开始时集合的长度，而这个值不会随集合增大动态增长，所以就可以避免前面例子中出现的无穷循环。本章还会使用这种技术来演示迭代 NodeList 对象的首选方式。
+6. **跨站点脚本**
 
-另外，如果不想再初始化一个变量，也可以像下面这样反向迭代集合：
+尽管 innerHTML 不会执行自己创建的`<script>`标签，但仍然向恶意用户暴露了很大的攻击面，因为通过它可以毫不费力地创建元素并执行 onclick 之类的属性。
+
+如果页面中要使用用户提供的信息，则不建议使用 innerHTML。与使用 innerHTML 获得的方便相比，防止 XSS 攻击更让人头疼。此时一定要隔离要插入的数据，在插入页面前必须毫不犹豫地使用相关的库对它们进行转义。
+
+7. **scrollIntoView()**
+
+DOM 规范中没有涉及的一个问题是如何滚动页面中的某个区域。为填充这方面的缺失，不同浏览器实现了不同的控制滚动的方式。在所有这些专有方法中，HTML5 选择了标准化 scrollIntoView()。
+
+scrollIntoView()方法存在于所有 HTML 元素上，可以滚动浏览器窗口或容器元素以便包含元素进入视口。这个方法的参数如下：
+
+- alignToTop 是一个布尔值。
+  - true：窗口滚动后元素的顶部与视口顶部对齐。
+  - false：窗口滚动后元素的底部与视口底部对齐。
+- scrollIntoViewOptions 是一个选项对象。
+  - behavior：定义过渡动画，可取的值为'smooth'和'auto'，默认为'auto'。
+  - block：定义垂直方向的对齐，可取的值为'start'、'center'、'end'和'nearest'，默认为 'start'。
+  - inline：定义水平方向的对齐，可取的值为'start'、'center'、'end'和'nearest'，默认为 'nearest'。
+- 不传参数等同于 alignToTop 为 true。
+
+来看几个例子：
 
 ```javascript
-let divs = document.getElementsByTagName('div');
-for (let i = divs.length - 1; i >= 0; --i) {
-  let div = document.createElement('div');
-  document.body.appendChild(div);
-}
+// 确保元素可见
+document.forms[0].scrollIntoView();
+// 同上
+document.forms[0].scrollIntoView(true);
+document.forms[0].scrollIntoView({block: 'start'});
+// 尝试将元素平滑地滚入视口
+document.forms[0].scrollIntoView({behavior: 'smooth', block: 'start'});
 ```
 
-一般来说，最好限制操作 NodeList 的次数。因为每次查询都会搜索整个文档，所以最好把查询到的 NodeList 缓存起来。
+这个方法可以用来在页面上发生某个事件时引起用户关注。把焦点设置到一个元素上也会导致浏览器将元素滚动到可见位置。
 
-## 14.3. MutationObserver 接口
+## 12.5. 专有扩展
 
-不久前添加到 DOM 规范中的 MutationObserver 接口，可以在 DOM 被修改时异步执行回调。使用 MutationObserver 可以观察整个文档、DOM 树的一部分，或某个元素。此外还可以观察元素属性、子节点、文本，或者前三者任意组合的变化。
+尽管所有浏览器厂商都理解遵循标准的重要性，但它们也都有为弥补功能缺失而为 DOM 添加专有扩展的历史。虽然这表面上看是一件坏事，但专有扩展也为开发者提供了很多重要功能，而这些功能后来则有可能被标准化，比如进入 HTML5。
 
-注意 新引进 MutationObserver 接口是为了取代废弃的 MutationEvent。
+除了已经标准化的，各家浏览器还有很多未被标准化的专有扩展。这并不意味着它们将来不会被纳入标准，只不过在本书编写时，它们还只是由部分浏览器专有和采用。
 
-### 14.3.1. 基本用法
+### 12.5.1. children 属性
 
-MutationObserver 的实例要通过调用 MutationObserver 构造函数并传入一个回调函数来创建：
+IE9 之前的版本与其他浏览器在处理空白文本节点上的差异导致了 children 属性的出现。children 属性是一个 HTMLCollection，只包含元素的 Element 类型的子节点。如果元素的子节点类型全部是元素类型，那 children 和 childNodes 中包含的节点应该是一样的。可以像下面这样使用 children 属性：
 
 ```javascript
-let observer = new MutationObserver(() => console.log('DOM 改动了！'));
+let childCount = element.children.length;
+let firstChild = element.children[0];
 ```
 
-1. **observe()** 方法
+### 12.5.2. contains()方法
 
-新创建的 MutationObserver 实例不会关联 DOM 的任何部分。要把这个 observer 与 DOM 关联起来，需要使用 observe()方法。这个方法接收两个必需的参数：要观察其变化的 DOM 节点，以及一个 MutationObserverInit 对象。
+DOM 编程中经常需要确定一个元素是不是另一个元素的后代。IE 首先引入了 contains()方法，让开发者可以在不遍历 DOM 的情况下获取这个信息。contains()方法应该在要搜索的祖先元素上调用，参数是待确定的目标节点。
 
-MutationObserverInit 对象用于控制观察哪些方面的变化，是一个键/值对形式配置选项的字典。例如，下面的代码会创建一个观察者（observer）并配置它观察`<body>`元素上的属性变化：
+如果目标节点是被搜索节点的后代，contains()返回 true，否则返回 false。下面看一个例子：
 
 ```javascript
-let observer = new MutationObserver(() => console.log('<body> 属性改变了'));
-observer.observe(document.body, { attributes: true });
+console.log(document.documentElement.contains(document.body)); // true
 ```
 
-执行以上代码后，`<body>`元素上任何属性发生变化都会被这个 MutationObserver 实例发现，然后就会异步执行注册的回调函数。`<body>`元素后代的修改或其他非属性修改都不会触发回调进入任务队列。可以通过以下代码来验证：
+这个例子测试`<html>`元素中是否包含`<body>`元素，在格式正确的 HTML 中会返回 true。
+
+另外，使用 DOM Level 3 的 compareDocumentPosition()方法也可以确定节点间的关系。这个方法会返回表示两个节点关系的位掩码。下表给出了这些位掩码的说明。
+
+| 掩 码 | 节点关系                                      |
+| ----- | --------------------------------------------- |
+| 0x1   | 断开（传入的节点不在文档中）                  |
+| 0x2   | 领先（传入的节点在 DOM 树中位于参考节点之前） |
+| 0x4   | 随后（传入的节点在 DOM 树中位于参考节点之后） |
+| 0x8   | 包含（传入的节点是参考节点的祖先）            |
+| 0x10  | 被包含（传入的节点是参考节点的后代）          |
+
+要模仿 contains()方法，就需要用到掩码 16（0x10）。compareDocumentPosition()方法的结果可以通过按位与来确定参考节点是否包含传入的节点，比如：
 
 ```javascript
-let observer = new MutationObserver(() =>
-  console.log('<body> attributes changed'),
-);
-observer.observe(document.body, { attributes: true });
-setTimeout(() => (document.body.className = 'foo'), 2000);
-console.log('Changed body class');
-// Changed body class
-// 2秒后
-// <body> attributes changed
+let result = document.documentElement.compareDocumentPosition(document.body);
+console.log(!!(result & 0x10));
 ```
 
-2. **回调与 MutationRecord**
+以上代码执行后 result 的值为 20（或 0x14，其中 0x4 表示“随后”，加上 0x10“被包含”）。对 result 和 0x10 应用按位与会返回非零值，而两个叹号将这个值转换成对应的布尔值。
 
-每个回调都会收到一个 MutationRecord 实例的数组。MutationRecord 实例包含的信息包括发生了什么变化，以及 DOM 的哪一部分受到了影响。因为回调执行之前可能同时发生多个满足观察条件的事件，所以每次执行回调都会传入一个包含按顺序入队的 MutationRecord 实例的数组。
+IE9 及之后的版本，以及所有现代浏览器都支持 contains()和 compareDocumentPosition()方法。
 
-下面展示了反映一个属性变化的 MutationRecord 实例的数组：
+### 12.5.3. 插入标记
+
+HTML5 将 IE 发明的 innerHTML 和 outerHTML 纳入了标准，但还有两个属性没有入选。这两个剩下的属性是 innerText 和 outerText。
+
+1. **innnerText 属性**
+
+innerText 属性对应元素中包含的所有文本内容，无论文本在子树中哪个层级。在用于读取值时，innerText 会按照深度优先的顺序将子树中所有文本节点的值拼接起来。在用于写入值时，innerText 会移除元素的所有后代并插入一个包含该值的文本节点。来看下面的 HTML 代码：
+
+```html
+<div id="content">
+  <p>
+    This is a
+    <strong>paragraph</strong>
+    with a list following it.
+  </p>
+  <ul>
+    <li>Item 1</li>
+    <li>Item 2</li>
+    <li>Item 3</li>
+  </ul>
+</div>
+```
+
+对这个例子中的`<div>`而言，innerText 属性会返回以下字符串：
 
 ```javascript
-let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords),
-);
-observer.observe(document.body, { attributes: true });
-document.body.setAttribute('foo', 'bar');
-// [
-//  {
-// addedNodes: NodeList [],
-// attributeName: 'foo',
-// attributeNamespace: null,
-// nextSibling: null,
-// oldValue: null,
-// previousSibling: null
-// removedNodes: NodeList [],
-// target: body
-// type: 'attributes'
-//  }
-// ]
+This is a paragraph with a list following it.
+Item 1
+Item 2
+Item 3
 ```
 
-下面是一次涉及命名空间的类似变化：
+注意不同浏览器对待空格的方式不同，因此格式化之后的字符串可能包含也可能不包含原始 HTML 代码中的缩进。
+
+下面再看一个使用 innerText 设置`<div>`元素内容的例子：
 
 ```javascript
-let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords),
-);
-observer.observe(document.body, { attributes: true });
-document.body.setAttributeNS('baz', 'foo', 'bar');
-// [
-// {
-// addedNodes: NodeList [],
-// attributeName: 'foo',
-// attributeNamespace: 'baz',
-// nextSibling: null,
-// oldValue: null,
-// previousSibling: null
-// removedNodes: NodeList [],
-// target: body
-// type: 'attributes'
-// }
-// ]
+div.innerText = 'Hello world!';
 ```
 
-连续修改会生成多个 MutationRecord 实例，下次回调执行时就会收到包含所有这些实例的数组，顺序为变化事件发生的顺序：
+执行这行代码后，HTML 页面中的这个`<div>`元素实际上会变成这个样子：
+
+```html
+<div id="content">Hello world!</div>
+```
+
+设置 innerText 会移除元素之前所有的后代节点，完全改变 DOM 子树。此外，设置 innerText 也会编码出现在字符串中的 HTML 语法字符（小于号、大于号、引号及和号）。下面是一个例子：
 
 ```javascript
-let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords),
-);
-observer.observe(document.body, { attributes: true });
-document.body.className = 'foo';
-document.body.className = 'bar';
-document.body.className = 'baz';
-// [MutationRecord, MutationRecord, MutationRecord]
+div.innerText = 'Hello & welcome, <b>'reader'!</b>';
 ```
 
-下表列出了 MutationRecord 实例的属性。
+执行之后的结果如下：
 
-| 属 性              | 说 明                                                                                                                                                                        |
-| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
-| target             | 被修改影响的目标节点                                                                                                                                                         |
-| type               | 字符串，表示变化的类型：'attributes'、'characterData'或'childList'                                                                                                           |
-| oldValue           | 如果在 MutationObserverInit 对象中启用（attributeOldValue 或 characterData OldValue 为 true），'attributes'或'characterData'的变化事件会设置这个属性为被替代的值 'childList' | 类型的变化始终将这个属性设置为 null |
-| attributeName      | 对于'attributes'类型的变化，这里保存被修改属性的名字其他变化事件会将这个属性设置为 null                                                                                      |
-| attributeNamespace | 对于使用了命名空间的'attributes'类型的变化，这里保存被修改属性的名字 其他变化事件会将这个属性设置为 null                                                                     |
-| addedNodes         | 对于'childList'类型的变化，返回包含变化中添加节点的 NodeList 默认为空 NodeList                                                                                               |
-| removedNodes       | 对于'childList'类型的变化，返回包含变化中删除节点的 NodeList 默认为空 NodeList                                                                                               |
-| previousSibling    | 对于'childList'类型的变化，返回变化节点的前一个同胞 Node 默认为 null                                                                                                         |
-| nextSibling        | 对于'childList'类型的变化，返回变化节点的后一个同胞 Node 默认为 null                                                                                                         |
+```html
+<div id="content">
+  Hello &amp; welcome, &lt;b&gt;&quot;reader&quot;!&lt;/b&gt;
+</div>
+```
 
-传给回调函数的第二个参数是观察变化的 MutationObserver 的实例，演示如下：
+因为设置 innerText 只能在容器元素中生成一个文本节点，所以为了保证一定是文本节点，就必须进行 HTML 编码。innerText 属性可以用于去除 HTML 标签。通过将 innerText 设置为等于 innerText，可以去除所有 HTML 标签而只剩文本，如下所示：
 
 ```javascript
-let observer = new MutationObserver((mutationRecords, mutationObserver) =>
-  console.log(mutationRecords, mutationObserver),
-);
-observer.observe(document.body, { attributes: true });
-document.body.className = 'foo';
-// [MutationRecord], MutationObserver
+div.innerText = div.innerText;
 ```
 
-3. **disconnect()方法**
+执行以上代码后，容器元素的内容只会包含原先的文本内容。
 
-默认情况下，只要被观察的元素不被垃圾回收，MutationObserver 的回调就会响应 DOM 变化事件，从而被执行。要提前终止执行回调，可以调用 disconnect()方法。下面的例子演示了同步调用 disconnect()之后，不仅会停止此后变化事件的回调，也会抛弃已经加入任务队列要异步执行的回调：
+注意 Firefox 45（2016 年 3 月发布）以前的版本中只支持 textContent 属性，与 innerText 的区别是返回的文本中也会返回行内样式或脚本代码。innerText 目前已经得到所有浏览器支持，应该作为取得和设置文本内容的首选方法使用。
+
+2. **outerText 属性**
+
+outerText 与 innerText 是类似的，只不过作用范围包含调用它的节点。要读取文本值时，outerText 与 innerText 实际上会返回同样的内容。但在写入文本值时，outerText 就大不相同了。写入文本值时，outerText 不止会移除所有后代节点，而是会替换整个元素。比如：
 
 ```javascript
-let observer = new MutationObserver(() =>
-  console.log('<body> attributes changed'),
-);
-observer.observe(document.body, { attributes: true });
-document.body.className = 'foo';
-observer.disconnect();
-document.body.className = 'bar';
-//（没有日志输出）
+div.outerText = 'Hello world!';
 ```
 
-要想让已经加入任务队列的回调执行，可以使用 setTimeout()让已经入列的回调执行完毕再调用 disconnect()：
+这行代码的执行效果就相当于以下两行代码：
 
 ```javascript
-let observer = new MutationObserver(() =>
-  console.log('<body> attributes changed'),
-);
-observer.observe(document.body, { attributes: true });
-document.body.className = 'foo';
-setTimeout(() => {
-  observer.disconnect();
-  document.body.className = 'bar';
-}, 0);
-// <body> attributes changed
+let text = document.createTextNode('Hello world!');
+div.parentNode.replaceChild(text, div);
 ```
 
-4. **复用 MutationObserver**
+本质上，这相当于用新的文本节点替代 outerText 所在的元素。此时，原来的元素会与文档脱离关系，因此也无法访问。
 
-多次调用 observe()方法，可以复用一个 MutationObserver 对象观察多个不同的目标节点。此时，MutationRecord 的 target 属性可以标识发生变化事件的目标节点。下面的示例演示了这个过程：
+outerText 是一个非标准的属性，而且也没有被标准化的前景。因此，不推荐依赖这个属性实现重要的操作。除 Firefox 之外所有主流浏览器都支持 outerText。
+
+### 12.5.4. 滚动
+
+如前所述，滚动是 HTML5 之前 DOM 标准没有涉及的领域。虽然 HTML5 把 scrollIntoView()标准化了， 但不同浏览器中仍然有其他专有方法。比如， scrollIntoViewIfNeeded() 作为 HTMLElement 类型的扩展可以在所有元素上调用。scrollIntoViewIfNeeded(alingCenter)会在元素不可见的情况下，将其滚动到窗口或包含窗口中，使其可见；如果已经在视口中可见，则这个方法什么也不做。如果将可选的参数 alingCenter 设置为 true，则浏览器会尝试将其放在视口中央。Safari、Chrome 和 Opera 实现了这个方法。
+
+下面使用 scrollIntoViewIfNeeded()方法的一个例子：
 
 ```javascript
-let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords.map((x) => x.target)),
-);
-// 向页面主体添加两个子节点
-let childA = document.createElement('div'),
-  childB = document.createElement('span');
-document.body.appendChild(childA);
-document.body.appendChild(childB);
-// 观察两个子节点
-observer.observe(childA, { attributes: true });
-observer.observe(childB, { attributes: true });
-// 修改两个子节点的属性
-childA.setAttribute('foo', 'bar');
-childB.setAttribute('foo', 'bar');
-// [<div>, <span>]
+// 如果不可见，则将元素可见
+document.images[0].scrollIntoViewIfNeeded();
 ```
 
-disconnect()方法是一个“一刀切”的方案，调用它会停止观察所有目标：
-
-```javascript
-let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords.map((x) => x.target)),
-);
-// 向页面主体添加两个子节点
-let childA = document.createElement('div'),
-  childB = document.createElement('span');
-document.body.appendChild(childA);
-document.body.appendChild(childB);
-// 观察两个子节点
-observer.observe(childA, { attributes: true });
-observer.observe(childB, { attributes: true });
-observer.disconnect();
-// 修改两个子节点的属性
-childA.setAttribute('foo', 'bar');
-childB.setAttribute('foo', 'bar');
-// （没有日志输出）
-```
-
-5. **重用 MutationObserver**
-
-调用 disconnect()并不会结束 MutationObserver 的生命。还可以重新使用这个观察者，再将它关联到新的目标节点。下面的示例在两个连续的异步块中先断开然后又恢复了观察者与`<body>`元素的关联：
-
-```javascript
-let observer = new MutationObserver(() => console.log('<body> attributes
-changed'));
-observer.observe(document.body, { attributes: true });
-// 这行代码会触发变化事件
-document.body.setAttribute('foo', 'bar');
-setTimeout(() => {
-observer.disconnect();
-// 这行代码不会触发变化事件
-document.body.setAttribute('bar', 'baz');
-}, 0);
-setTimeout(() => {
-// Reattach
-observer.observe(document.body, { attributes: true });
-// 这行代码会触发变化事件
-document.body.setAttribute('baz', 'qux');
-}, 0);
-// <body> attributes changed
-// <body> attributes changed
-```
-
-### 14.3.2. MutationObserverInit 与观察范围
-
-MutationObserverInit 对象用于控制对目标节点的观察范围。粗略地讲，观察者可以观察的事件包括属性变化、文本变化和子节点变化。
-
-下表列出了 MutationObserverInit 对象的属性。
-
-| 属 性                                                                   | 说 明                                                                                                                                              |
-| ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| subtree                                                                 | 布尔值，表示除了目标节点，是否观察目标节点的子树（后代）如果是 false，则只观察目标节点的变化；如果是 true，则观察目标节点及其整个子树 默认为 false |
-| attributes                                                              | 布尔值，表示是否观察目标节点的属性变化 默认为 false                                                                                                |
-| attributeFilter                                                         | 字符串数组，表示要观察哪些属性的变化 把这个值设置为 true 也会将 attributes 的值转换为 true 默认为观察所有属性                                      |
-| attributeOldValue                                                       | 布尔值，表示 MutationRecord 是否记录变化之前的属性值 把这个值设置为 true 也会将 attributes 的值转换为 true                                         |
-| 默认为 false                                                            |
-| characterData                                                           | 布尔值，表示修改字符数据是否触发变化事件 默认为 false                                                                                              |
-| characterDataOldValue                                                   | 布尔值，表示 MutationRecord 是否记录变化之前的字符数据 把这个值设置为 true 也会将 characterData 的值转换为 true 默认为 false                       |
-| childList 布尔值，表示修改目标节点的子节点是否触发变化事件 默认为 false |
-
-注意 在调用 observe()时，MutationObserverInit 对象中的 attribute、characterData 和 childList 属性必须至少有一项为 true（无论是直接设置这几个属性，还是通过设置 attributeOldValue 等属性间接导致它们的值转换为 true）。否则会抛出错误，因为没有任何变化事件可能触发回调。
-
-1. **观察属性**
-
-MutationObserver 可以观察节点属性的添加、移除和修改。要为属性变化注册回调，需要在 MutationObserverInit 对象中将 attributes 属性设置为 true，如下所示：
-
-```javascript
-let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords),
-);
-observer.observe(document.body, { attributes: true });
-// 添加属性
-document.body.setAttribute('foo', 'bar');
-// 修改属性
-document.body.setAttribute('foo', 'baz');
-// 移除属性
-document.body.removeAttribute('foo');
-// 以上变化都被记录下来了
-// [MutationRecord, MutationRecord, MutationRecord]
-```
-
-把 attributes 设置为 true 的默认行为是观察所有属性，但不会在 MutationRecord 对象中记录原来的属性值。如果想观察某个或某几个属性，可以使用 attributeFilter 属性来设置白名单，即一个属性名字符串数组：
-
-```javascript
-let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords),
-);
-observer.observe(document.body, { attributeFilter: ['foo'] });
-// 添加白名单属性
-document.body.setAttribute('foo', 'bar');
-// 添加被排除的属性
-document.body.setAttribute('baz', 'qux');
-// 只有foo 属性的变化被记录了
-// [MutationRecord]
-```
-
-如果想在变化记录中保存属性原来的值，可以将 attributeOldValue 属性设置为 true：
-
-```javascript
-let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords.map((x) => x.oldValue)),
-);
-observer.observe(document.body, { attributeOldValue: true });
-document.body.setAttribute('foo', 'bar');
-document.body.setAttribute('foo', 'baz');
-document.body.setAttribute('foo', 'qux');
-// 每次变化都保留了上一次的值
-// [null, 'bar', 'baz']
-```
-
-2. **观察字符数据**
-
-MutationObserver 可以观察文本节点（如 Text、Comment 或 ProcessingInstruction 节点）中字符的添加、删除和修改。要为字符数据注册回调，需要在 MutationObserverInit 对象中将 characterData 属性设置为 true，如下所示：
-
-```javascript
-let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords),
-);
-// 创建要观察的文本节点
-document.body.firstChild.textContent = 'foo';
-observer.observe(document.body.firstChild, { characterData: true });
-// 赋值为相同的字符串
-document.body.firstChild.textContent = 'foo';
-// 赋值为新字符串
-document.body.firstChild.textContent = 'bar';
-// 通过节点设置函数赋值
-document.body.firstChild.textContent = 'baz';
-// 以上变化都被记录下来了
-// [MutationRecord, MutationRecord, MutationRecord]
-```
-
-将 characterData 属性设置为 true 的默认行为不会在 MutationRecord 对象中记录原来的字符数据。如果想在变化记录中保存原来的字符数据，可以将 characterDataOldValue 属性设置为 true：
-
-```javascript
-let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords.map((x) => x.oldValue)),
-);
-document.body.innerText = 'foo';
-observer.observe(document.body.firstChild, { characterDataOldValue: true });
-document.body.innerText = 'foo';
-document.body.innerText = 'bar';
-document.body.firstChild.textContent = 'baz';
-// 每次变化都保留了上一次的值
-// ['foo', 'foo', 'bar']
-```
-
-3. **观察子节点**
-
-MutationObserver 可以观察目标节点子节点的添加和移除。要观察子节点，需要在 MutationObserverInit 对象中将 childList 属性设置为 true。下面的例子演示了添加子节点：
-
-```javascript
-let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords),
-);
-observer.observe(document.body, { childList: true });
-document.body.appendChild(document.createElement('div'));
-// [
-// {
-// addedNodes: NodeList [div]
-// attributeName: null
-// attributeNamespace: null
-// nextSibling: null
-// oldValue: null
-// previousSibling: script
-// removedNodes: NodeList []
-// target: body
-// type: 'childList'
-// },
-// {
-// addedNodes: NodeList [text]
-// attributeName: null
-// attributeNamespace: null
-// nextSibling: null
-// oldValue: null
-// previousSibling: div
-// removedNodes: NodeList []
-// target: body
-// type: 'childList'
-// }
-// ]
-```
-
-下面的例子演示了移除子节点：
-
-```javascript
-const div = document.createElement('div');
-document.body.qppendChild(div);
-let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords),
-);
-observer.observe(document.body, { childList: true });
-document.body.removeChild(document.body.firstChild);
-// [
-// {
-// addedNodes: NodeList []
-// attributeName: null
-// attributeNamespace: null
-// nextSibling: null
-// oldValue: null
-// previousSibling: null
-// removedNodes: NodeList [div]
-// target: body
-// type: 'childList'
-// },
-// {
-// addedNodes: NodeList [text]
-// attributeName: null
-// attributeNamespace: null
-// nextSibling: null
-// oldValue: null
-// previousSibling: div
-// removedNodes: NodeList []
-// target: body
-// type: 'childList'
-// }
-// ]
-```
-
-对子节点 **重新排序**（尽管调用一个方法即可实现）会报告两次变化事件，因为从技术上会涉及先移除和再添加：
-
-```javascript
-// 清空主体
-document.body.innerHTML = '';
-let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords)
-);
-// 创建两个初始子节点
-document.body.appendChild(document.createElement('div'));
-document.body.appendChild(document.createElement('span'));
-observer.observe(document.body, { childList: true });
-// 交换子节点顺序
-document.body.insertBefore(document.body.lastChild, document.body.firstChild);
-// 发生了两次变化：第一次是节点被移除，第二次是节点被添加
-// [
-// {
-// addedNodes: NodeList[],
-// attributeName: null,
-// attributeNamespace: null,
-// oldValue: null,
-// nextSibling: null,
-// previousSibling: div,
-// removedNodes: NodeList[span],
-// target: body,
-// type: childList,
-// },
-// {
-// addedNodes: NodeList[span],
-// attributeName: null,
-// attributeNamespace: null,
-// oldValue: null,
-// nextSibling: div,
-// previousSibling: null,
-// removedNodes: NodeList[],
-// target: body,
-// type: 'childList',
-// }
-// ]
-```
-
-4. **观察子树**
-
-默认情况下，MutationObserver 将观察的范围限定为一个元素及其子节点的变化。可以把观察的范围扩展到这个元素的子树（所有后代节点），这需要在 MutationObserverInit 对象中将 subtree 属性设置为 true。
-
-下面的代码展示了观察元素及其后代节点属性的变化：
-
-```javascript
-// 清空主体
-document.body.innerHTML = '';
-let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords)
-);
-// 创建一个后代
-document.body.appendChild(document.createElement('div'));
-// 观察<body>元素及其子树
-observer.observe(document.body, { attributes: true, subtree: true });
-// 修改<body>元素的子树
-document.body.firstChild.setAttribute('foo', 'bar');
-// 记录了子树变化的事件
-// [
-// {
-// addedNodes: NodeList[],
-// attributeName: 'foo',
-// attributeNamespace: null,
-// oldValue: null,
-// nextSibling: null,
-// previousSibling: null,
-// removedNodes: NodeList[],
-// target: div,
-// type: 'attributes',
-// }
-// ]
-```
-
-有意思的是，被观察子树中的节点被移出子树之后仍然能够触发变化事件。这意味着在子树中的节点离开该子树后，即使严格来讲该节点已经脱离了原来的子树，但它仍然会触发变化事件。
-
-下面的代码演示了这种情况：
-
-```javascript
-// 清空主体
-document.body.innerHTML = '';
-let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords)
-);
-let subtreeRoot = document.createElement('div'),
-  subtreeLeaf = document.createElement('span');
-// 创建包含两层的子树
-document.body.appendChild(subtreeRoot);
-subtreeRoot.appendChild(subtreeLeaf);
-// 观察子树
-observer.observe(subtreeRoot, { attributes: true, subtree: true });
-// 把节点转移到其他子树
-document.body.insertBefore(subtreeLeaf, subtreeRoot);
-subtreeLeaf.setAttribute('foo', 'bar');
-// 移出的节点仍然触发变化事件
-// [MutationRecord]
-```
-
-### 14.3.3. 异步回调与记录队列
-
-MutationObserver 接口是出于性能考虑而设计的，其核心是异步回调与记录队列模型。为了在大量变化事件发生时不影响性能，每次变化的信息（由观察者实例决定）会保存在 MutationRecord 实例中，然后添加到 **记录队列**。这个队列对每个 MutationObserver 实例都是唯一的，是所有 DOM 变化事件的有序列表。
-
-1. **记录队列**
-
-每次 MutationRecord 被添加到 MutationObserver 的记录队列时，仅当之前没有已排期的微任务回调时（队列中微任务长度为 0），才会将观察者注册的回调（在初始化 MutationObserver 时传入）作为微任务调度到任务队列上。这样可以保证记录队列的内容不会被回调处理两次。
-
-不过在回调的微任务异步执行期间，有可能又会发生更多变化事件。因此被调用的回调会接收到一个 MutationRecord 实例的数组，顺序为它们进入记录队列的顺序。回调要负责处理这个数组的每一个实例，因为函数退出之后这些实现就不存在了。回调执行后，这些 MutationRecord 就用不着了，因此记录队列会被清空，其内容会被丢弃。
-
-2. **takeRecords()方法**
-
-调用 MutationObserver 实例的 takeRecords()方法可以清空记录队列，取出并返回其中的所有 MutationRecord 实例。看这个例子：
-
-```javascript
-let observer = new MutationObserver((mutationRecords) =>
-  console.log(mutationRecords),
-);
-observer.observe(document.body, { attributes: true });
-document.body.className = 'foo';
-document.body.className = 'bar';
-document.body.className = 'baz';
-console.log(observer.takeRecords());
-console.log(observer.takeRecords());
-// [MutationRecord, MutationRecord, MutationRecord]
-// []
-```
-
-这在希望断开与观察目标的联系，但又希望处理由于调用 disconnect()而被抛弃的记录队列中的 MutationRecord 实例时比较有用。
-
-### 14.3.4. 性能，内存与垃圾回收
-
-DOM Level 2 规范中描述的 MutationEvent 定义了一组会在各种 DOM 变化时触发的事件。由于浏览器事件的实现机制，这个接口出现了严重的性能问题。因此，DOM Level 3 规定废弃了这些事件。MutationObserver 接口就是为替代这些事件而设计的更实用、性能更好的方案。
-
-将变化回调委托给微任务来执行可以保证事件同步触发，同时避免随之而来的混乱。为 MutationObserver 而实现的记录队列，可以保证即使变化事件被爆发式地触发，也不会显著地拖慢浏览器。无论如何，使用 MutationObserver 仍然 **不是没有代价** 的。因此理解什么时候避免出现这种情况就很重要了。
-
-1. **MutationObserver 的引用**
-
-MutationObserver 实例与目标节点之间的引用关系是非对称的。MutationObserver 拥有对要观察的目标节点的弱引用。因为是弱引用，所以不会妨碍垃圾回收程序回收目标节点。
-
-然而，目标节点却拥有对 MutationObserver 的强引用。如果目标节点从 DOM 中被移除，随后被垃圾回收，则关联的 MutationObserver 也会被垃圾回收。
-
-2. **MutationRecord 的引用**
-
-记录队列中的每个 MutationRecord 实例至少包含对已有 DOM 节点的一个引用。如果变化是 childList 类型，则会包含多个节点的引用。记录队列和回调处理的默认行为是耗尽这个队列，处理每个 MutationRecord，然后让它们超出作用域并被垃圾回收。
-
-有时候可能需要保存某个观察者的完整变化记录。保存这些 MutationRecord 实例，也就会保存它们引用的节点，因而会妨碍这些节点被回收。如果需要尽快地释放内存，建议从每个 MutationRecord 中抽取出最有用的信息，然后保存到一个新对象中，最后抛弃 MutationRecord。
+考虑到 scrollIntoView()是唯一一个所有浏览器都支持的方法，所以只用它就可以了。
