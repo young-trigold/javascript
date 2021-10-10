@@ -396,7 +396,7 @@ plan : 1 chapter/3 day
     - [17.3.2. 浏览器元数据](#1732-浏览器元数据)
     - [17.3.3. 硬件](#1733-硬件)
 - [18. 动画与 Canvas 图形](#18-动画与-canvas-图形)
-  - [18.1. 使用 requestAnimationFrame](#181-使用-requestanimationframe)
+  - [18.1. requestAnimationFrame](#181-requestanimationframe)
     - [18.1.1. 早期定时动画](#1811-早期定时动画)
     - [18.1.2. 事件间隔问题](#1812-事件间隔问题)
     - [18.1.3. requestAnimationFrame](#1813-requestanimationframe)
@@ -28400,7 +28400,7 @@ navigator.getBattery().then((battery) => {
 
 本章内容
 
-- 使用 requestAnimationFrame
+- requestAnimationFrame
 - 理解 `<canvas>` 元素
 - 绘制简单 2D 图形
 - 使用 WebGL 绘制 3D 图形
@@ -28418,7 +28418,7 @@ navigator.getBattery().then((battery) => {
 var $ = document.querySelector.bind(document);
 ```
 
-## 18.1. 使用 requestAnimationFrame
+## 18.1. requestAnimationFrame
 
 很长时间以来，计时器和定时执行都是 JavaScript 动画最先进的工具。虽然 CSS 过渡和动画方便了 Web 开发者实现某些动画，但 JavaScript 动画领域多年来进展甚微。Firefox 4 率先在浏览器中为 JavaScript 动画增加了一个名为 mozRequestAnimationFrame()方法的 API。这个方法会告诉浏览器要执行动画了，于是浏览器可以通过最优方式确定重绘的时序。自从出现之后，这个 API 被广泛采用，现在作为 requestAnimationFrame()方法已经得到各大浏览器的支持。
 

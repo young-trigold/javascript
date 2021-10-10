@@ -1,11 +1,11 @@
 **目录：**
 
-- [20. JavaScript API](#20-javascript-api)
-  - [20.1. Atomics 与 SharedArrayBuffer](#201-atomics-与-sharedarraybuffer)
-    - [20.1.1. SharedArrayBuffer](#2011-sharedarraybuffer)
-    - [原子操作基础](#原子操作基础)
+- [19. JavaScript API](#19-javascript-api)
+  - [19.1. Atomics 与 SharedArrayBuffer](#191-atomics-与-sharedarraybuffer)
+    - [19.1.1. SharedArrayBuffer](#1911-sharedarraybuffer)
+    - [19.1.2. 原子操作基础](#1912-原子操作基础)
 
-# 20. JavaScript API
+# 19. JavaScript API
 
 本章内容
 
@@ -27,13 +27,13 @@
 
 注意 Web API 的数量之多令人难以置信（参见 MDN 文档的 Web APIs 词条）。本章要介绍的 API 仅限于与大多数开发者有关、已经得到多个浏览器支持，且本书其他章节没有涵盖的部分。
 
-## 20.1. Atomics 与 SharedArrayBuffer
+## 19.1. Atomics 与 SharedArrayBuffer
 
 多个上下文访问 SharedArrayBuffer 时，如果同时对缓冲区执行操作，就可能出现资源争用问题。Atomics API 通过强制同一时刻只能对缓冲区执行一个操作，可以让多个上下文安全地读写一个 SharedArrayBuffer。Atomics API 是 ES2017 中定义的。
 
 仔细研究会发现 Atomics API 非常像一个简化版的指令集架构（ISA），这并非意外。原子操作的本质会排斥操作系统或计算机硬件通常会自动执行的优化（比如指令重新排序）。原子操作也让并发访问内存变得不可能，如果应用不当就可能导致程序执行变慢。为此，Atomics API 的设计初衷是在最少但很稳定的原子行为基础之上，构建复杂的多线程 JavaScript 程序。
 
-### 20.1.1. SharedArrayBuffer
+### 19.1.1. SharedArrayBuffer
 
 SharedArrayBuffer 与 ArrayBuffer 具有同样的 API。二者的主要区别是 ArrayBuffer 必须在不同执行上下文间切换，SharedArrayBuffer 则可以被任意多个执行上下文同时使用。
 
@@ -82,7 +82,7 @@ for (const worker of workers) {
 
 注意 SharedArrayBuffer API 等同于 ArrayBuffer API，后者在第 6 章介绍过。关于如何在多个上下文中使用 SharedArrayBuffer，可以参考第 27 章。
 
-### 原子操作基础
+### 19.1.2. 原子操作基础
 
 任何全局上下文中都有 Atomics 对象，这个对象上暴露了用于执行线程安全操作的一套静态方法，其中多数方法以一个 TypedArray 实例（一个 SharedArrayBuffer 的引用）作为第一个参数，以相关操作数作为后续参数。
 
@@ -302,4 +302,3 @@ setTimeout(() => Atomics.notify(view, 0, 1), 1000);
 Atomics.isLockFree()是一个优化原语。基本上，如果一个原子原语（compareExchange、load、store、add、sub、and、or、xor 或 exchange）在 n 字节大小的数据上的原子步骤在不调用代理在组成数据的 n 字节之外获得锁的情况下可以执行，则 Atomics.isLockFree(n)会返回 true。高性能算法会使用 Atomics.isLockFree 确定是否在关键部分使用锁或原子操作。如果原子原语需要加锁，则算法提供自己的锁会更高效。
 
 Atomics.isLockFree(4)始终返回 true，因为在所有已知的相关硬件上都是支持的。能够如此假设通常可以简化程序。
-

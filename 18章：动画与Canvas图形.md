@@ -1,7 +1,7 @@
 **目录：**
 
 - [18. 动画与 Canvas 图形](#18-动画与-canvas-图形)
-  - [18.1. 使用 requestAnimationFrame](#181-使用-requestanimationframe)
+  - [18.1. requestAnimationFrame](#181-requestanimationframe)
     - [18.1.1. 早期定时动画](#1811-早期定时动画)
     - [18.1.2. 事件间隔问题](#1812-事件间隔问题)
     - [18.1.3. requestAnimationFrame](#1813-requestanimationframe)
@@ -29,7 +29,7 @@
 
 本章内容
 
-- 使用 requestAnimationFrame
+- requestAnimationFrame
 - 理解 `<canvas>` 元素
 - 绘制简单 2D 图形
 - 使用 WebGL 绘制 3D 图形
@@ -47,7 +47,7 @@
 var $ = document.querySelector.bind(document);
 ```
 
-## 18.1. 使用 requestAnimationFrame
+## 18.1. requestAnimationFrame
 
 很长时间以来，计时器和定时执行都是 JavaScript 动画最先进的工具。虽然 CSS 过渡和动画方便了 Web 开发者实现某些动画，但 JavaScript 动画领域多年来进展甚微。Firefox 4 率先在浏览器中为 JavaScript 动画增加了一个名为 mozRequestAnimationFrame()方法的 API。这个方法会告诉浏览器要执行动画了，于是浏览器可以通过最优方式确定重绘的时序。自从出现之后，这个 API 被广泛采用，现在作为 requestAnimationFrame()方法已经得到各大浏览器的支持。
 
@@ -860,7 +860,7 @@ if (drawing.getContext) {
 可以像下面这样传入 options 对象：
 
 ```javascript
-const drawing = document.getElementById('drawing');
+const drawing = $('#drawing');
 
 // 确保浏览器支持<canvas>
 if (drawing.getContext) {
@@ -1054,8 +1054,8 @@ void main() {
 然后可以使用 text 属性提取`<script>`元素的内容：
 
 ```javascript
-const vertexGlsl = document.getElementById('vertexShader').text;
-const fragmentGlsl = document.getElementById('fragmentShader').text;
+const vertexGlsl = $('#vertexShader').text;
+const fragmentGlsl = $('#fragmentShader').text;
 ```
 
 更复杂的 WebGL 应用可以动态加载着色器。重点在于要使用着色器，必须先拿到 GLSL 代码的字符串。
