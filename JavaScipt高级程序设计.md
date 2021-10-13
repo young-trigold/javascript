@@ -442,6 +442,27 @@ plan : 1 chapter/3 day
     - [19.5.4. 检测编解码器](#1954-检测编解码器)
     - [19.5.5. 音频类型](#1955-音频类型)
   - [19.6. 原生拖放](#196-原生拖放)
+    - [19.6.1. 拖放事件](#1961-拖放事件)
+    - [19.6.2. 自定义放置目标](#1962-自定义放置目标)
+    - [19.6.3. dataTransfer 对象](#1963-datatransfer-对象)
+    - [19.6.4. dropEffect 与 effectAllowed](#1964-dropeffect-与-effectallowed)
+    - [19.6.5. 可拖动能力](#1965-可拖动能力)
+    - [19.6.6. 其他成员](#1966-其他成员)
+  - [19.7. Notification API](#197-notification-api)
+    - [19.7.1. 通知权限](#1971-通知权限)
+    - [19.7.2. 显示和隐藏通知](#1972-显示和隐藏通知)
+    - [19.7.3. 通知生命周期](#1973-通知生命周期)
+  - [19.8. Page Visibility API](#198-page-visibility-api)
+  - [19.9. Steams API](#199-steams-api)
+    - [19.9.1. 理解流](#1991-理解流)
+    - [19.9.2. 可读流](#1992-可读流)
+    - [19.9.3. 可写流](#1993-可写流)
+    - [19.9.4. 转换流](#1994-转换流)
+    - [19.9.5. 通过管道连接流](#1995-通过管道连接流)
+  - [19.10. 计时 API](#1910-计时-api)
+    - [19.10.1. High Resolution Time API](#19101-high-resolution-time-api)
+    - [19.10.2. Performance Timeline API](#19102-performance-timeline-api)
+  - [Web 组件](#web-组件)
 
 # 1. 什么是 JavaScript
 
@@ -30535,7 +30556,7 @@ filesList.addEventListener('change', (event) => {
 下面的例子会把拖放到页面放置目标上的文件信息打印出来：
 
 ```javascript
-const droptarget = document.getElementById('droptarget');
+const dragTarget = document.getElementById('dragTarget');
 
 const handleEvent = function handleEvent(event) {
   let info = '',
@@ -30557,9 +30578,9 @@ const handleEvent = function handleEvent(event) {
     output.innerHTML = info;
   }
 };
-droptarget.addEventListener('dragenter', handleEvent);
-droptarget.addEventListener('dragover', handleEvent);
-droptarget.addEventListener('drop', handleEvent);
+dragTarget.addEventListener('dragenter', handleEvent);
+dragTarget.addEventListener('dragover', handleEvent);
+dragTarget.addEventListener('drop', handleEvent);
 ```
 
 与后面要介绍的拖放的例子一样，必须取消 dragenter、dragover 和 drop 的默认行为。在 drop 事件处理程序中，可以通过 event.dataTransfer.files 读到文件，此时可以获取文件的相关信息。
@@ -30673,100 +30694,957 @@ droptarget.addEventListener('drop', handleEvent);
 
 ### 19.5.3. 自定义媒体播放器
 
-使用`<audio>`和`<video>`的play()和pause()方法，可以手动控制媒体文件的播放。综合使用属性、事件和这些方法，可以方便地创建自定义的媒体播放器，如下面的例子所示：
+使用`<audio>`和`<video>`的 play()和 pause()方法，可以手动控制媒体文件的播放。综合使用属性、事件和这些方法，可以方便地创建自定义的媒体播放器，如下面的例子所示：
 
 ```html
 <div class="mediaplayer">
-<div class="video">
-<video id="player" src="movie.mov" poster="mymovie.jpg"
-width="300" height="200">
-Video player not available.
-</video>
-</div>
-<div class="controls">
-<input type="button" value="Play" id="video-btn">
-<span id="curtime">0</span>/<span id="duration">0</span>
-</div>
+  <div class="video">
+    <video
+      id="player"
+      src="movie.mov"
+      poster="mymovie.jpg"
+      width="300"
+      height="200"
+    >
+      Video player not available.
+    </video>
+  </div>
+  <div class="controls">
+    <input type="button" value="Play" id="video-btn" />
+    <span id="curtime">0</span>
+    /
+    <span id="duration">0</span>
+  </div>
 </div>
 ```
 
-通过使用JavaScript 创建一个简单的视频播放器，上面这个基本的HTML 就可以被激活了，如下所示：
+通过使用 JavaScript 创建一个简单的视频播放器，上面这个基本的 HTML 就可以被激活了，如下所示：
 
 ```javascript
 // 取得元素的引用
-const player = document.getElementById("player"),
-btn = document.getElementById("video-btn"),
-curtime = document.getElementById("curtime"),
-duration = document.getElementById("duration");
+const player = document.getElementById('player'),
+  btn = document.getElementById('video-btn'),
+  curtime = document.getElementById('curtime'),
+  duration = document.getElementById('duration');
 // 更新时长
 duration.innerHTML = player.duration;
 // 为按钮添加事件处理程序
-btn.addEventListener( "click", (event) => {
-if (player.paused) {
-player.play();
-btn.value = "Pause";
-} else {
-player.pause();
-btn.value = "Play";
-}
+btn.addEventListener('click', (event) => {
+  if (player.paused) {
+    player.play();
+    btn.value = 'Pause';
+  } else {
+    player.pause();
+    btn.value = 'Play';
+  }
 });
 // 周期性更新当前时间
 setInterval(() => {
-curtime.innerHTML = player.currentTime;
+  curtime.innerHTML = player.currentTime;
 }, 250);
 ```
 
-这里的JavaScript 代码简单地为按钮添加了事件处理程序，可以根据当前状态播放和暂停视频。此外，还给`<video>`元素的load 事件添加了事件处理程序，以便显示视频的时长。最后，重复的计时器用于更新当前时间。通过监听更多事件以及使用更多属性，可以进一步扩展这个自定义的视频播放器。同样的代码也可以用于`<audio>`元素以创建自定义的音频播放器。
+这里的 JavaScript 代码简单地为按钮添加了事件处理程序，可以根据当前状态播放和暂停视频。此外，还给`<video>`元素的 load 事件添加了事件处理程序，以便显示视频的时长。最后，重复的计时器用于更新当前时间。通过监听更多事件以及使用更多属性，可以进一步扩展这个自定义的视频播放器。同样的代码也可以用于`<audio>`元素以创建自定义的音频播放器。
 
 ### 19.5.4. 检测编解码器
 
-如前所述，并不是所有浏览器都支持`<video>`和`<audio>`的所有编解码器，这通常意味着必须提供多个媒体源。为此，也有JavaScript API 可以用来检测浏览器是否支持给定格式和编解码器。这两个媒体元素都有一个名为canPlayType()的方法，该方法接收一个格式/编解码器字符串，返回一个字符串值："probably"、"maybe"或""（空字符串），其中空字符串就是假值，意味着可以在if 语句中像这样使用canPlayType()：
+如前所述，并不是所有浏览器都支持`<video>`和`<audio>`的所有编解码器，这通常意味着必须提供多个媒体源。为此，也有 JavaScript API 可以用来检测浏览器是否支持给定格式和编解码器。这两个媒体元素都有一个名为 canPlayType()的方法，该方法接收一个格式/编解码器字符串，返回一个字符串值："probably"、"maybe"或""（空字符串），其中空字符串就是假值，意味着可以在 if 语句中像这样使用 canPlayType()：
 
 ```javascript
-if (audio.canPlayType("audio/mpeg")) {
-// 执行某些操作
+if (audio.canPlayType('audio/mpeg')) {
+  // 执行某些操作
 }
 ```
 
-"probably"和"maybe"都是真值，在if 语句的上下文中可以转型为true。
+"probably"和"maybe"都是真值，在 if 语句的上下文中可以转型为 true。
 
-在只给canPlayType()提供一个MIME 类型的情况下，最可能返回的值是"maybe"和空字符串。这是因为文件实际上只是一个包装音频和视频数据的容器，而真正决定文件是否可以播放的是编码。在同时提供MIME 类型和编解码器的情况下，返回值的可能性会提高到"probably"。下面是几个例子：
+在只给 canPlayType()提供一个 MIME 类型的情况下，最可能返回的值是"maybe"和空字符串。这是因为文件实际上只是一个包装音频和视频数据的容器，而真正决定文件是否可以播放的是编码。在同时提供 MIME 类型和编解码器的情况下，返回值的可能性会提高到"probably"。下面是几个例子：
 
 ```javascript
-const audio = document.getElementById("audio-player");
+const audio = document.getElementById('audio-player');
 
 // 很可能是"maybe"
-if (audio.canPlayType("audio/mpeg")) {
-// 执行某些操作
+if (audio.canPlayType('audio/mpeg')) {
+  // 执行某些操作
 }
 
 // 可能是"probably"
-if (audio.canPlayType("audio/ogg; codecs=\"vorbis\"")) {
-// 执行某些操作
+if (audio.canPlayType('audio/ogg; codecs="vorbis"')) {
+  // 执行某些操作
 }
 ```
 
-注意，编解码器必须放到引号中。同样，也可以在视频元素上使用canPlayType()检测视频格式。
+注意，编解码器必须放到引号中。同样，也可以在视频元素上使用 canPlayType()检测视频格式。
 
 ### 19.5.5. 音频类型
 
-`<audio>` 元素还有一个名为Audio 的原生JavaScript 构造函数，支持在任何时候播放音频。Audio类型与Image 类似，都是DOM元素的对等体，只是不需插入文档即可工作。要通过Audio 播放音频，只需创建一个新实例并传入音频源文件：
+`<audio>` 元素还有一个名为 Audio 的原生 JavaScript 构造函数，支持在任何时候播放音频。Audio 类型与 Image 类似，都是 DOM 元素的对等体，只是不需插入文档即可工作。要通过 Audio 播放音频，只需创建一个新实例并传入音频源文件：
 
 ```javascript
-const audio = new Audio("sound.mp3");
+const audio = new Audio('sound.mp3');
 
-EventUtil.addHandler(audio, "canplaythrough", function(event) {
-audio.play();
+EventUtil.addHandler(audio, 'canplaythrough', function (event) {
+  audio.play();
 });
 ```
 
-创建Audio 的新实例就会开始下载指定的文件。下载完毕后，可以调用play()来播放音频。
+创建 Audio 的新实例就会开始下载指定的文件。下载完毕后，可以调用 play()来播放音频。
 
-在iOS 中调用play()方法会弹出一个对话框，请求用户授权播放声音。为了连续播放，必须在onfinish 事件处理程序中立即调用play()。
-
+在 iOS 中调用 play()方法会弹出一个对话框，请求用户授权播放声音。为了连续播放，必须在 onfinish 事件处理程序中立即调用 play()。
 
 ## 19.6. 原生拖放
 
-IE4 最早在网页中为JavaScript 引入了对拖放功能的支持。当时，网页中只有两样东西可以触发拖放：图片和文本。拖动图片就是简单地在图片上按住鼠标不放然后移动鼠标。而对于文本，必须先选中，然后再以同样的方式拖动。在IE4 中，唯一有效的放置目标是文本框。IE5 扩展了拖放能力，添加了新的事件，让网页中几乎一切都可以成为放置目标。IE5.5 又进一步，允许几乎一切都可以拖动（IE6 也支持这个功能）。HTML5 在IE 的拖放实现基础上标准化了拖放功能。所有主流浏览器都根据HTML5 规范实现了原生的拖放。
+IE4 最早在网页中为 JavaScript 引入了对拖放功能的支持。当时，网页中只有两样东西可以触发拖放：图片和文本。拖动图片就是简单地在图片上按住鼠标不放然后移动鼠标。而对于文本，必须先选中，然后再以同样的方式拖动。在 IE4 中，唯一有效的放置目标是文本框。IE5 扩展了拖放能力，添加了新的事件，让网页中几乎一切都可以成为放置目标。IE5.5 又进一步，允许几乎一切都可以拖动（IE6 也支持这个功能）。HTML5 在 IE 的拖放实现基础上标准化了拖放功能。所有主流浏览器都根据 HTML5 规范实现了原生的拖放。
 
 关于拖放最有意思的可能就是可以跨窗格、跨浏览器容器，有时候甚至可以跨应用程序拖动元素。浏览器对拖放的支持可以让我们实现这些功能。
+
+### 19.6.1. 拖放事件
+
+拖放事件几乎可以让开发者控制拖放操作的方方面面。关键的部分是确定每个事件是在哪里触发的。有的事件在被拖放元素上触发，有的事件则在放置目标上触发。在某个元素被拖动时，会（按顺序）触发以下事件：
+
+(1) dragstart
+(2) drag
+(3) dragend
+
+在按住鼠标键不放并开始移动鼠标的那一刻，被拖动元素上会触发 dragstart 事件。此时光标会变成非放置符号（圆环中间一条斜杠），表示元素不能放到自身上。拖动开始时，可以在 ondragstart 事件处理程序中通过 JavaScript 执行某些操作。
+
+dragstart 事件触发后，只要目标还被拖动就会持续触发 drag 事件。这个事件类似于 mousemove，即随着鼠标移动而不断触发。当拖动停止时（把元素放到有效或无效的放置目标上），会触发 dragend 事件。
+
+所有这 3 个事件的目标都是被拖动的元素。默认情况下，浏览器在拖动开始后不会改变被拖动元素的外观，因此是否改变外观由你来决定。不过，大多数浏览器此时会创建元素的一个半透明副本，始终跟随在光标下方。
+
+在把元素拖动到一个有效的放置目标上时，会依次触发以下事件：
+
+(1) dragenter
+(2) dragover
+(3) dragleave 或 drop
+
+只要一把元素拖动到放置目标上，dragenter 事件（类似于 mouseover 事件）就会触发。dragenter 事件触发之后，会立即触发 dragover 事件，并且元素在放置目标范围内被拖动期间此事件会持续触发。当元素被拖动到放置目标之外，dragover 事件停止触发，dragleave 事件触发（类似于 mouseout 事件）。如果被拖动元素被放到了目标上，则会触发 drop 事件而不是 dragleave 事件。这些事件的目标是放置目标元素。
+
+### 19.6.2. 自定义放置目标
+
+在把某个元素拖动到无效放置目标上时，会看到一个特殊光标（圆环中间一条斜杠）表示不能放下。即使所有元素都支持放置目标事件，这些元素默认也是不允许放置的。如果把元素拖动到不允许放置的目标上，无论用户动作是什么都不会触发 drop 事件。不过，通过覆盖 dragenter 和 dragover 事件的默认行为，可以把任何元素转换为有效的放置目标。例如，如果有一个 ID 为"dragTarget"的`<div>`元素，那么可以使用以下代码把它转换成一个放置目标：
+
+```javascript
+const dragTarget = document.getElementById('dragTarget');
+
+dragTarget.addEventListener('dragover', (event) => {
+  event.preventDefault();
+});
+
+dragTarget.addEventListener('dragenter', (event) => {
+  event.preventDefault();
+});
+```
+
+执行上面的代码之后，把元素拖动到这个`<div>`上应该可以看到光标变成了允许放置的样子。另外，drop 事件也会触发。
+
+在 Firefox 中，放置事件的默认行为是导航到放在放置目标上的 URL。这意味着把图片拖动到放置目标上会导致页面导航到图片文件，把文本拖动到放置目标上会导致无效 URL 错误。为阻止这个行为，在 Firefox 中必须取消 drop 事件的默认行为：
+
+```javascript
+droptarget.addEventListener('drop', (event) => {
+  event.preventDefault();
+});
+```
+
+### 19.6.3. dataTransfer 对象
+
+除非数据受影响，否则简单的拖放并没有实际意义。为实现拖动操作中的数据传输，IE5 在 event 对象上暴露了 dataTransfer 对象，用于从被拖动元素向放置目标传递字符串数据。因为这个对象是 event 的属性，所以在拖放事件的事件处理程序外部无法访问 dataTransfer。在事件处理程序内部，可以使用这个对象的属性和方法实现拖放功能。dataTransfer 对象现在已经纳入了 HTML5 工作草案。
+
+dataTransfer 对象有两个主要方法：getData()和 setData()。顾名思义，getData()用于获取 setData()存储的值。setData()的第一个参数以及 getData()的唯一参数是一个字符串，表示要设置的数据类型："text"或"URL"，如下所示：
+
+```javascript
+// 传递文本
+event.dataTransfer.setData('text', 'some text');
+const text = event.dataTransfer.getData('text');
+
+// 传递URL
+event.dataTransfer.setData('URL', 'http://www.wrox.com/');
+const url = event.dataTransfer.getData('URL');
+```
+
+虽然这两种数据类型是 IE 最初引入的，但 HTML5 已经将其扩展为允许任何 MIME 类型。为向后兼容，HTML5 还会继续支持"text"和"URL"，但它们会分别被映射到"text/plain"和"text/uri-list"。
+
+dataTransfer 对象实际上可以包含每种 MIME 类型的一个值，也就是说可以同时保存文本和 URL，两者不会相互覆盖。存储在 dataTransfer 对象中的数据只能在放置事件中读取。如果没有在 ondrop 事件处理程序中取得这些数据，dataTransfer 对象就会被销毁，数据也会丢失。
+
+在从文本框拖动文本时，浏览器会调用 setData()并将拖动的文本以"text"格式存储起来。类似地，在拖动链接或图片时，浏览器会调用 setData()并把 URL 存储起来。当数据被放置在目标上时，可以使用 getData()获取这些数据。当然，可以在 dragstart 事件中手动调用 setData()存储自定义数据，以便将来使用。
+
+作为文本的数据和作为 URL 的数据有一个区别。当把数据作为文本存储时，数据不会被特殊对待。而当把数据作为 URL 存储时，数据会被作为网页中的一个链接，意味着如果把它放到另一个浏览器窗口，浏览器会导航到该 URL。
+
+直到版本 5，Firefox 都不能正确地把"url"映射为"text/uri-list"或把"text"映射为"text/plain"。
+不过，它可以把"Text"（第一个字母大写）正确映射为"text/plain"。在通过 dataTransfer 获取
+数据时，为保持最大兼容性，需要对 URL 检测两个值并对文本使用"Text"：
+
+```javascript
+const dataTransfer = event.dataTransfer;
+
+// 读取URL
+const url =
+  dataTransfer.getData('url') || dataTransfer.getData('text/uri-list');
+
+// 读取文本
+const text = dataTransfer.getData('Text');
+```
+
+这里要注意，首先应该尝试短数据名。这是因为直到版本 10，IE 都不支持扩展的类型名，而且会在遇到无法识别的类型名时抛出错误。
+
+### 19.6.4. dropEffect 与 effectAllowed
+
+dataTransfer 对象不仅可以用于实现简单的数据传输，还可以用于确定能够对被拖动元素和放置目标执行什么操作。为此，可以使用两个属性：dropEffect 与 effectAllowed。
+
+dropEffect 属性可以告诉浏览器允许哪种放置行为。这个属性有以下 4 种可能的值。
+
+- "none"：被拖动元素不能放到这里。这是除文本框之外所有元素的默认值。
+- "move"：被拖动元素应该移动到放置目标。
+- "copy"：被拖动元素应该复制到放置目标。
+- "link"：表示放置目标会导航到被拖动元素（仅在它是 URL 的情况下）。
+
+在把元素拖动到放置目标上时，上述每种值都会导致显示一种不同的光标。不过，是否导致光标示意的动作还要取决于开发者。换句话说，如果没有代码参与，则没有什么会自动移动、复制或链接。唯一不用考虑的就是光标自己会变。为了使用 dropEffect 属性，必须在放置目标的 ondragenter 事件处理程序中设置它。
+
+除非同时设置 effectAllowed，否则 dropEffect 属性也没有用。effectAllowed 属性表示对被拖动元素是否允许 dropEffect。这个属性有如下几个可能的值。
+
+- "uninitialized"：没有给被拖动元素设置动作。
+- "none"：被拖动元素上没有允许的操作。
+- "copy"：只允许"copy"这种 dropEffect。
+- "link"：只允许"link"这种 dropEffect。
+- "move"：只允许"move"这种 dropEffect。
+- "copyLink"：允许"copy"和"link"两种 dropEffect。
+- "copyMove"：允许"copy"和"move"两种 dropEffect。
+- "linkMove"：允许"link"和"move"两种 dropEffect。
+- "all"：允许所有 dropEffect。
+
+必须在 ondragstart 事件处理程序中设置这个属性。
+
+假设我们想允许用户把文本从一个文本框拖动到一个`<div>`元素。那么必须同时把 dropEffect 和 effectAllowed 属性设置为"move"。因为`<div>`元素上放置事件的默认行为是什么也不做，所以文本不会自动地移动自己。如果覆盖这个默认行为，文本就会自动从文本框中被移除。然后是否把文本插入`<div>`元素就取决于你了。如果是把 dropEffect 和 effectAllowed 属性设置为"copy"，那么文本框中的文本不会自动被移除。
+
+### 19.6.5. 可拖动能力
+
+默认情况下，图片、链接和文本是可拖动的，这意味着无须额外代码用户便可以拖动它们。文本只有在被选中后才可以拖动，而图片和链接在任意时候都是可以拖动的。
+
+我们也可以让其他元素变得可以拖动。HTML5 在所有 HTML 元素上规定了一个 draggable 属性，表示元素是否可以拖动。图片和链接的 draggable 属性自动被设置为 true，而其他所有元素此属性的默认值为 false。如果想让其他元素可拖动，或者不允许图片和链接被拖动，都可以设置这个属性。例如：
+
+```html
+<!-- 禁止拖动图片 -->
+<img src="smile.gif" draggable="false" alt="Smiley face" />
+<!-- 让元素可以拖动 -->
+<div draggable="true">...</div>
+```
+
+### 19.6.6. 其他成员
+
+HTML5 规范还为 dataTransfer 对象定义了下列方法。
+
+- addElement(element)：为拖动操作添加元素。这纯粹是为了传输数据，不会影响拖动操作的外观。在本书写作时，还没有浏览器实现这个方法。
+- clearData(format)：清除以特定格式存储的数据。
+- setDragImage(element, x, y)：允许指定拖动发生时显示在光标下面的图片。这个方法接收 3 个参数：要显示的 HTML 元素及标识光标位置的图片上的 x 和 y 坐标。这里的 HTML 元素可以是一张图片，此时显示图片；也可以是其他任何元素，此时显示渲染后的元素。
+- types：当前存储的数据类型列表。这个集合类似数组，以字符串形式保存数据类型，比如"text"。
+
+## 19.7. Notification API
+
+Notifications API 用于向用户显示通知。无论从哪个角度看，这里的通知都很类似 alert()对话框：都使用 JavaScript API 触发页面外部的浏览器行为，而且都允许页面处理用户与对话框或通知弹层的交互。不过，通知提供更灵活的自定义能力。
+
+Notifications API 在 Service Worker 中非常有用。**渐进 Web 应用(PWA，Progressive Web Application)** 通过触发通知可以在页面不活跃时向用户显示消息，看起来就像原生应用。
+
+### 19.7.1. 通知权限
+
+Notifications API 有被滥用的可能，因此默认会开启两项安全措施：
+
+- 通知只能在运行在安全上下文的代码中被触发；
+- 通知必须按照每个源的原则明确得到用户允许。
+
+用户授权显示通知是通过浏览器内部的一个对话框完成的。除非用户没有明确给出允许或拒绝的答复，否则这个权限请求对每个域只会出现一次。浏览器会记住用户的选择，如果被拒绝则无法重来。
+
+页面可以使用全局对象 Notification 向用户请求通知权限。这个对象有一个 requestPemission()方法，该方法返回一个期约，用户在授权对话框上执行操作后这个期约会解决。
+
+```javascript
+Notification.requestPermission().then((permission) => {
+  console.log('User responded to permission request:', permission);
+});
+```
+
+"granted"值意味着用户明确授权了显示通知的权限。除此之外的其他值意味着显示通知会静默失败。如果用户拒绝授权，这个值就是"denied"。一旦拒绝，就无法通过编程方式挽回，因为不可能再触发授权提示。
+
+### 19.7.2. 显示和隐藏通知
+
+Notification 构造函数用于创建和显示通知。最简单的通知形式是只显示一个标题，这个标题内容可以作为第一个参数传给 Notification 构造函数。以下面这种方式调用 Notification，应该会立即显示通知：
+
+```javascript
+new Notification('Title text!');
+```
+
+可以通过 options 参数对通知进行自定义，包括设置通知的主体、图片和振动等：
+
+```javascript
+new Notification('Title text!', {
+  body: 'Body text!',
+  image: 'path/to/image.png',
+  vibrate: true,
+});
+```
+
+调用这个构造函数返回的 Notification 对象的 close()方法可以关闭显示的通知。下面的例子展示了显示通知后 1000 毫秒再关闭它：
+
+```javascript
+const notification = new Notification('I will close in 1000ms');
+setTimeout(() => notification.close(), 1000);
+```
+
+### 19.7.3. 通知生命周期
+
+通知并非只用于显示文本字符串，也可用于实现交互。Notifications API 提供了 4 个用于添加回调的生命周期方法：
+
+- onshow 在通知显示时触发；
+- onclick 在通知被点击时触发；
+- onclose 在通知消失或通过 close()关闭时触发；
+- onerror 在发生错误阻止通知显示时触发。
+
+下面的代码将每个生命周期事件都通过日志打印了出来：
+
+```javascript
+const n = new Notification('foo');
+n.onshow = () => console.log('Notification was shown!');
+n.onclick = () => console.log('Notification was clicked!');
+n.onclose = () => console.log('Notification was closed!');
+n.onerror = () => console.log('Notification experienced an error!');
+```
+
+## 19.8. Page Visibility API
+
+Web 开发中一个常见的问题是开发者不知道用户什么时候真正在使用页面。如果页面被最小化或隐藏在其他标签页后面，那么轮询服务器或更新动画等功能可能就没有必要了。Page Visibility API 旨在为开发者提供页面对用户是否可见的信息。
+
+这个 API 本身非常简单，由 3 部分构成。
+
+- document.visibilityState 值，表示下面 4 种状态之一。
+  - 页面在后台标签页或浏览器中最小化了。
+  - 页面在前台标签页中。
+  - 实际页面隐藏了，但对页面的预览是可见的（例如在 Windows 7 上，用户鼠标移到任务栏图标上会显示网页预览）。
+  - 页面在屏外预渲染。
+- visibilitychange 事件，该事件会在文档从隐藏变可见（或反之）时触发。
+- document.hidden 布尔值，表示页面是否隐藏。这可能意味着页面在后台标签页或浏览器中被最小化了。这个值是为了向后兼容才继续被浏览器支持的，应该优先使用 document.visibilityState 检测页面可见性。
+
+要想在页面从可见变为隐藏或从隐藏变为可见时得到通知，需要监听 visibilitychange 事件。document.visibilityState 的值是以下三个字符串之一：
+
+- "hidden"
+- "visible"
+- "prerender"
+
+## 19.9. Steams API
+
+Streams API 是为了解决一个简单但又基础的问题而生的：Web 应用如何消费有序的小信息块而不是大块信息？这种能力主要有两种应用场景。
+
+- 大块数据可能不会一次性都可用。网络请求的响应就是一个典型的例子。网络负载是以连续信息包形式交付的，而流式处理可以让应用在数据一到达就能使用，而不必等到所有数据都加载完毕。
+- 大块数据可能需要分小部分处理。视频处理、数据压缩、图像编码和 JSON 解析都是可以分成小部分进行处理，而不必等到所有数据都在内存中时再处理的例子。
+
+第 24 章在讨论网络请求和远程资源时会介绍 Streams API 在 fetch()中的应用，不过 Streams API 本身是通用的。实现 Observable 接口的 JavaScript 库共享了很多流的基础概念。
+
+注意 虽然 Fetch API 已经得到所有主流浏览器支持，但 Streams API 则没有那么快得到支持。
+
+### 19.9.1. 理解流
+
+提到流，可以把数据想像成某种通过管道输送的液体。JavaScript 中的流借用了管道相关的概念，因为原理是相通的。根据规范，“这些 API 实际是为映射低级 I/O 原语而设计，包括适当时候对字节流的规范化”。Stream API 直接解决的问题是处理网络请求和读写磁盘。
+
+Stream API 定义了三种流。
+
+- 可读流：可以通过某个公共接口读取数据块的流。数据在内部从底层源进入流，然后由 **消费者(consumer)** 进行处理。
+- 可写流：可以通过某个公共接口写入数据块的流。**生产者(producer)** 将数据写入流，数据在内部传入底层 **数据槽(sink)**。
+- 转换流：由两种流组成，可写流用于接收数据（可写端），可读流用于输出数据（可读端）。这两个流之间是 **转换程序(transformer)**，可以根据需要检查和修改流内容。
+
+**块、内部队列和反压**
+
+流的基本单位是块(chunk)。块可是任意数据类型，但通常是定型数组。每个块都是离散的流片段，可以作为一个整体来处理。更重要的是，块不是固定大小的，也不一定按固定间隔到达。在理想的流当中，块的大小通常近似相同，到达间隔也近似相等。不过好的流实现需要考虑边界情况。前面提到的各种类型的流都有入口和出口的概念。有时候，由于数据进出速率不同，可能会出现不匹配的情况。为此流平衡可能出现如下三种情形。
+
+- 流出口处理数据的速度比入口提供数据的速度快。流出口经常空闲（可能意味着流入口效率较
+  低），但只会浪费一点内存或计算资源，因此这种流的不平衡是可以接受的。
+- 流入和流出均衡。这是理想状态。
+- 流入口提供数据的速度比出口处理数据的速度快。这种流不平衡是固有的问题。此时一定会在
+
+某个地方出现数据积压，流必须相应做出处理。
+
+流不平衡是常见问题，但流也提供了解决这个问题的工具。所有流都会为已进入流但尚未离开流的块提供一个内部队列。对于均衡流，这个内部队列中会有零个或少量排队的块，因为流出口块出列的速度与流入口块入列的速度近似相等。这种流的内部队列所占用的内存相对比较小。
+
+如果块入列速度快于出列速度，则内部队列会不断增大。流不能允许其内部队列无限增大，因此它会使用 **反压(backpressure)** 通知流入口停止发送数据，直到队列大小降到某个既定的阈值之下。这个阈值由排列策略决定，这个策略定义了内部队列可以占用的最大内存，即 **高水位线(high water mark)**。
+
+### 19.9.2. 可读流
+
+可读流是对底层数据源的封装。底层数据源可以将数据填充到流中，允许消费者通过流的公共接口读取数据。
+
+1. **ReadableStreamDefaultController**
+
+```javascript
+async function* ints() {
+  // 每1000 毫秒生成一个递增的整数
+  for (let i = 0; i < 5; ++i) {
+    yield await new Promise((resolve) => setTimeout(resolve, 1000, i));
+  }
+}
+```
+
+这个生成器的值可以通过可读流的控制器传入可读流。访问这个控制器最简单的方式就是创建 ReadableStream 的一个实例，并在这个构造函数的 underlyingSource 参数（第一个参数）中定义 start()方法，然后在这个方法中使用作为参数传入的 controller。默认情况下，这个控制器参数是 ReadableStreamDefaultController 的一个实例：
+
+```javascript
+const readableStream = new ReadableStream({
+start(controller) {
+console.log(controller);\
+// >> ReadableStreamDefaultController {}
+}
+});
+```
+
+调用控制器的 enqueue()方法可以把值传入控制器。所有值都传完之后，调用 close()关闭流：
+
+```javascript
+async function* ints() {
+  // 每1000 毫秒生成一个递增的整数
+  for (let i = 0; i < 5; ++i) {
+    yield await new Promise((resolve) => setTimeout(resolve, 1000, i));
+  }
+}
+const readableStream = new ReadableStream({
+  async start(controller) {
+    for await (let chunk of ints()) {
+      controller.enqueue(chunk);
+    }
+    controller.close();
+  },
+});
+```
+
+2. **ReadableStreamDefaultReader**
+
+前面的例子把 5 个值加入了流的队列，但没有把它们从队列中读出来。为此，需要一个 ReadableStreamDefaultReader 的实例，该实例可以通过流的 getReader()方法获取。调用这个方法会获得流的锁，保证只有这个读取器可以从流中读取值：
+
+```javascript
+async function* ints() {
+// 每1000 毫秒生成一个递增的整数
+for (let i = 0; i < 5; ++i) {
+yield await new Promise((resolve) => setTimeout(resolve, 1000, i));
+}
+}
+const readableStream = new ReadableStream({
+async start(controller) {
+for await (let chunk of ints()) {
+controller.enqueue(chunk);
+}
+controller.close();
+}
+});
+console.log(readableStream.locked); // false
+const readableStreamDefaultReader = readableStream.getReader();
+console.log(readableStream.locked); // true
+消费者使用这个读取器实例的read()方法可以读出值：
+async function* ints() {
+// 每1000 毫秒生成一个递增的整数
+for (let i = 0; i < 5; ++i) {
+yield await new Promise((resolve) => setTimeout(resolve, 1000, i));
+}
+}
+const readableStream = new ReadableStream({
+async start(controller) {
+for await (let chunk of ints()) {
+controller.enqueue(chunk);
+}
+controller.close();
+}
+});
+console.log(readableStream.locked); // false
+const readableStreamDefaultReader = readableStream.getReader();
+console.log(readableStream.locked); // true
+// 消费者
+(async function() {
+while(true) {
+const { done, value } = await readableStreamDefaultReader.read();
+if (done) {
+break;
+} else {
+console.log(value);
+}
+}
+})();
+// 0
+// 1
+// 2
+// 3
+// 4
+```
+
+### 19.9.3. 可写流
+
+可写流是底层数据槽的封装。底层数据槽处理通过流的公共接口写入的数据。
+
+1. **创建 WritableStream**
+
+来看下面的生成器，它每 1000 毫秒就会生成一个递增的整数：
+
+```javascript
+async function* ints() {
+  // 每1000 毫秒生成一个递增的整数
+  for (let i = 0; i < 5; ++i) {
+    yield await new Promise((resolve) => setTimeout(resolve, 1000, i));
+  }
+}
+```
+
+这些值通过可写流的公共接口可以写入流。在传给 WritableStream 构造函数的 underlyingSink 参数中，通过实现 write()方法可以获得写入的数据：
+
+```javascript
+const readableStream = new ReadableStream({
+  write(value) {
+    console.log(value);
+  },
+});
+```
+
+2. **WritableStreamDefaultWriter**
+
+要把获得的数据写入流，可以通过流的 getWriter()方法获取 WritableStreamDefaultWriter 的实例。这样会获得流的锁，确保只有一个写入器可以向流中写入数据：
+
+```javascript
+async function* ints() {
+  // 每1000 毫秒生成一个递增的整数
+  for (let i = 0; i < 5; ++i) {
+    yield await new Promise((resolve) => setTimeout(resolve, 1000, i));
+  }
+}
+
+const writableStream = new WritableStream({
+  write(value) {
+    console.log(value);
+  },
+});
+
+console.log(writableStream.locked);
+// >> false
+
+const writableStreamDefaultWriter = writableStream.getWriter();
+console.log(writableStream.locked);
+// >> true
+```
+
+在向流中写入数据前，生产者必须确保写入器可以接收值。writableStreamDefaultWriter.ready 返回一个期约，此期约会在能够向流中写入数据时解决。然后，就可以把值传给 writableStreamDefaultWriter.write()方法。写入数据之后，调用 writableStreamDefaultWriter.close()将流关闭：
+
+```javascript
+async function* ints() {
+  // 每1000 毫秒生成一个递增的整数
+  for (let i = 0; i < 5; ++i) {
+    yield await new Promise((resolve) => setTimeout(resolve, 1000, i));
+  }
+}
+
+const writableStream = new WritableStream({
+  write(value) {
+    console.log(value);
+  },
+});
+
+console.log(writableStream.locked);
+// >> false
+
+const writableStreamDefaultWriter = writableStream.getWriter();
+console.log(writableStream.locked);
+// >> true
+
+// 生产者
+(async function () {
+  for await (let chunk of ints()) {
+    await writableStreamDefaultWriter.ready;
+    writableStreamDefaultWriter.write(chunk);
+  }
+  writableStreamDefaultWriter.close();
+})();
+```
+
+### 19.9.4. 转换流
+
+转换流用于组合可读流和可写流。数据块在两个流之间的转换是通过 transform()方法完成的。
+
+来看下面的生成器，它每 1000 毫秒就会生成一个递增的整数：
+
+```javascript
+async function* ints() {
+  // 每1000 毫秒生成一个递增的整数
+  for (let i = 0; i < 5; ++i) {
+    yield await new Promise((resolve) => setTimeout(resolve, 1000, i));
+  }
+}
+```
+
+下面的代码创建了一个 TransformStream 的实例，通过 transform()方法将每个值翻倍：
+
+```javascript
+async function* ints() {
+  // 每1000 毫秒生成一个递增的整数
+  for (let i = 0; i < 5; ++i) {
+    yield await new Promise((resolve) => setTimeout(resolve, 1000, i));
+  }
+}
+
+const {writable, readable} = new TransformStream({
+  transform(chunk, controller) {
+    controller.enqueue(chunk * 2);
+  },
+});
+```
+
+向转换流的组件流（可读流和可写流）传入数据和从中获取数据，与本章前面介绍的方法相同：
+
+```javascript
+async function* ints() {
+  // 每1000 毫秒生成一个递增的整数
+  for (let i = 0; i < 5; ++i) {
+    yield await new Promise((resolve) => setTimeout(resolve, 1000, i));
+  }
+}
+
+const {writable, readable} = new TransformStream({
+  transform(chunk, controller) {
+    controller.enqueue(chunk * 2);
+  },
+});
+
+const readableStreamDefaultReader = readable.getReader();
+const writableStreamDefaultWriter = writable.getWriter();
+
+// 消费者
+(async function () {
+  while (true) {
+    const {done, value} = await readableStreamDefaultReader.read();
+    if (done) {
+      break;
+    } else {
+      console.log(value);
+    }
+  }
+})();
+
+// 生产者
+(async function () {
+  for await (let chunk of ints()) {
+    await writableStreamDefaultWriter.ready;
+    writableStreamDefaultWriter.write(chunk);
+  }
+  writableStreamDefaultWriter.close();
+})();
+```
+
+### 19.9.5. 通过管道连接流
+
+流可以通过管道连接成一串。最常见的用例是使用 pipeThrough()方法把 ReadableStream 接入 TransformStream。从内部看，ReadableStream 先把自己的值传给 TransformStream 内部的 WritableStream，然后执行转换，接着转换后的值又在新的 ReadableStream 上出现。下面的例子将一个整数的 ReadableStream 传入 TransformStream，TransformStream 对每个值做加倍处理：
+
+```javascript
+async function* ints() {
+  // 每1000 毫秒生成一个递增的整数
+  for (let i = 0; i < 5; ++i) {
+    yield await new Promise((resolve) => setTimeout(resolve, 1000, i));
+  }
+}
+const integerStream = new ReadableStream({
+  async start(controller) {
+    for await (let chunk of ints()) {
+      controller.enqueue(chunk);
+    }
+    controller.close();
+  },
+});
+const doublingStream = new TransformStream({
+  transform(chunk, controller) {
+    controller.enqueue(chunk * 2);
+  },
+});
+// 通过管道连接流
+const pipedStream = integerStream.pipeThrough(doublingStream);
+// 从连接流的输出获得读取器
+const pipedStreamDefaultReader = pipedStream.getReader();
+// 消费者
+(async function () {
+  while (true) {
+    const {done, value} = await pipedStreamDefaultReader.read();
+    if (done) {
+      break;
+    } else {
+      console.log(value);
+    }
+  }
+})();
+// 0
+// 2
+// 4
+// 6
+// 8
+```
+
+另外，使用 pipeTo()方法也可以将 ReadableStream 连接到 WritableStream。整个过程与使用 pipeThrough()类似：
+
+```javascript
+async function* ints() {
+  // 每1000 毫秒生成一个递增的整数
+  for (let i = 0; i < 5; ++i) {
+    yield await new Promise((resolve) => setTimeout(resolve, 1000, i));
+  }
+}
+
+const integerStream = new ReadableStream({
+  async start(controller) {
+    for await (let chunk of ints()) {
+      controller.enqueue(chunk);
+    }
+    controller.close();
+  },
+});
+
+const writableStream = new WritableStream({
+  write(value) {
+    console.log(value);
+  },
+});
+
+const pipedStream = integerStream.pipeTo(writableStream);
+// 0
+// 1
+// 2
+// 3
+// 4
+```
+
+注意，这里的管道连接操作隐式从 ReadableStream 获得了一个读取器，并把产生的值填充到 WritableStream。
+
+## 19.10. 计时 API
+
+页面性能始终是 Web 开发者关心的话题。Performance 接口通过 JavaScript API 暴露了浏览器内部的度量指标，允许开发者直接访问这些信息并基于这些信息实现自己想要的功能。这个接口暴露在 window.performance 对象上。所有与页面相关的指标，包括已经定义和将来会定义的，都会存在于这个对象上。
+
+Performance 接口由多个 API 构成：
+
+- High Resolution Time API
+- Performance Timeline API
+- Navigation Timing API
+- User Timing API
+- Resource Timing API
+- Paint Timing API
+
+有关这些规范的更多信息以及新增的性能相关规范，可以关注 W3C 性能工作组的 GitHub 项目页面。
+
+注意 浏览器通常支持被废弃的 Level 1 和作为替代的 Level 2。本节尽量介绍 Level 2 级规范。
+
+### 19.10.1. High Resolution Time API
+
+Date.now()方法只适用于日期时间相关操作，而且是不要求计时精度的操作。在下面的例子中，函数 foo()调用前后分别记录了一个时间戳：
+
+```javascript
+const t0 = Date.now();
+foo();
+const t1 = Date.now();
+const duration = t1 – t0;
+console.log(duration);
+```
+
+考虑如下 duration 会包含意外值的情况。
+
+- duration 是 0。Date.now()只有毫秒级精度，如果 foo()执行足够快，则两个时间戳的值会相等。
+- duration 是负值或极大值。如果在 foo()执行时，系统时钟被向后或向前调整了（如切换到夏令时），则捕获的时间戳不会考虑这种情况，因此时间差中会包含这些调整。
+
+为此，必须使用不同的计时 API 来精确且准确地度量时间的流逝。High Resolution Time API 定义了 window.performance.now()，这个方法返回一个微秒精度的浮点值。因此，使用这个方法先后捕获的时间戳更不可能出现相等的情况。而且这个方法可以保证时间戳单调增长。
+
+```javascript
+const t0 = performance.now();
+const t1 = performance.now();
+console.log(t0);
+console.log.(t1);
+
+const duration = t1 – t0;
+console.log(duration); // 0.004999979864805937
+```
+
+performance.now()计时器采用相对度量。这个计时器在执行上下文创建时从 0 开始计时。例如，打开页面或创建工作线程时，performance.now()就会从 0 开始计时。由于这个计时器在不同上下文中初始化时可能存在时间差，因此不同上下文之间如果没有共享参照点则不可能直接比较 performance.now()。performance.timeOrigin 属性返回计时器初始化时全局系统时钟的值。
+
+```javascript
+const relativeTimestamp = performance.now();
+const absoluteTimestamp = performance.timeOrigin + relativeTimestamp;
+console.log(relativeTimestamp);
+// >> 244.43500000052154
+console.log(absoluteTimestamp);
+// >> 1561926208892.4001
+```
+
+注意 通过使用 performance.now()测量 L1 缓存与主内存的延迟差，幽灵漏洞（Spectre）可以执行缓存推断攻击。为弥补这个安全漏洞，所有的主流浏览器有的选择降低 performance.now()的精度，有的选择在时间戳里混入一些随机性。WebKit 博客上有一篇相关主题的不错的文章“What Spectre and Meltdown Mean For WebKit”，作者是 Filip Pizlo。
+
+### 19.10.2. Performance Timeline API
+
+Performance Timeline API 使用一套用于度量客户端延迟的工具扩展了 Performance 接口。性能度量将会采用计算结束与开始时间差的形式。这些开始和结束时间会被记录为 DOMHighResTimeStamp 值，而封装这个时间戳的对象是 PerformanceEntry 的实例。
+
+浏览器会自动记录各种 PerformanceEntry 对象，而使用 performance.mark()也可以记录自定义的 PerformanceEntry 对象。在一个执行上下文中被记录的所有性能条目可以通过 performance.getEntries()获取：
+
+```javascript
+console.log(performance.getEntries());
+// >> [PerformanceNavigationTiming, PerformanceResourceTiming, ... ]
+```
+
+这个返回的集合代表浏览器的 **性能时间线(performance timeline)**。每个 PerformanceEntry 对象都有 name、entryType、startTime 和 duration 属性：
+
+```javascript
+const entry = performance.getEntries()[0];
+console.log(entry.name);
+// >> "https://foo.com"
+
+console.log(entry.entryType);
+// >> navigation
+
+console.log(entry.startTime);
+// >> 0
+
+console.log(entry.duration);
+// >> 182.36500001512468
+```
+
+不过，PerformanceEntry 实际上是一个抽象基类。所有记录条目虽然都继承 PerformanceEntry，但最终还是如下某个具体类的实例：
+
+- PerformanceMark
+- PerformanceMeasure
+- PerformanceFrameTiming
+- PerformanceNavigationTiming
+- PerformanceResourceTiming
+- PerformancePaintTiming
+
+上面每个类都会增加大量属性，用于描述与相应条目有关的元数据。每个实例的 name 和 entryType 属性会因为各自的类不同而不同。
+
+1. **User Timing API**
+
+User Timing API 用于记录和分析自定义性能条目。如前所述，记录自定义性能条目要使用 performance.mark()方法：
+
+```javascript
+performance.mark('foo');
+console.log(performance.getEntriesByType('mark')[0]);
+// PerformanceMark {
+// name: "foo",
+// entryType: "mark",
+// startTime: 269.8800000362098,
+// duration: 0
+// }
+```
+
+在计算开始前和结束后各创建一个自定义性能条目可以计算时间差。最新的标记（mark）会被 push()进返回的数组：
+
+```javascript
+performance.mark('start');
+
+let date = '';
+
+for (let i = 0; i < 500000; i++) {
+  date = new Date();
+}
+
+performance.mark('end');
+
+const [startMark, endMark] = performance.getEntriesByType('mark');
+console.log(endMark.startTime - startMark.startTime);
+// >> 1225.0995998382568
+```
+
+除了自定义性能条目，还可以生成 PerformanceMeasure（性能度量）条目，对应由名字作为标识的两个标记之间的持续时间。PerformanceMeasure 的实例由 performance.measure()方法生成：
+
+```javascript
+performance.mark('start');
+
+let date = '';
+
+for (let i = 0; i < 5000000; i++) {
+  date = new Date();
+}
+
+performance.mark('end');
+
+performance.measure('measure', 'start', 'end');
+
+console.log(performance.getEntriesByType('measure')[0].duration);
+// >> 1279.3241000175476
+```
+
+2. **Navigation Timing API**
+
+Navigation Timing API 提供了高精度时间戳，用于度量当前页面加载速度。浏览器会在导航事件发生时自动记 PerformanceNavigationTiming 条目。这个对象会捕获大量时间戳，用于描述页面是何时以及如何加载的。
+
+下面的例子计算了loadEventStart 和loadEventEnd 时间戳之间的差：
+
+```javascript
+const [performanceNavigationTimingEntry] = performance.getEntriesByType('navigation');
+console.log(performanceNavigationTimingEntry);
+// PerformanceNavigationTiming {
+// connectEnd: 2.259999979287386
+// connectStart: 2.259999979287386
+// decodedBodySize: 122314
+// domComplete: 631.9899999652989
+// domContentLoadedEventEnd: 300.92499998863786
+// domContentLoadedEventStart: 298.8950000144541
+// domInteractive: 298.88499999651685
+// domainLookupEnd: 2.259999979287386
+// domainLookupStart: 2.259999979287386
+// duration: 632.819999998901
+// encodedBodySize: 21107
+// entryType: "navigation"
+// fetchStart: 2.259999979287386
+// initiatorType: "navigation"
+// loadEventEnd: 632.819999998901
+// loadEventStart: 632.0149999810383
+// name: " https://foo.com "
+// nextHopProtocol: "h2"
+// redirectCount: 0
+// redirectEnd: 0
+// redirectStart: 0
+// requestStart: 7.7099999762140214
+// responseEnd: 130.50999998813495
+// responseStart: 127.16999999247491
+// secureConnectionStart: 0
+// serverTiming: []
+// startTime: 0
+// transferSize: 21806
+// type: "navigate"
+// unloadEventEnd: 132.73999997181818
+// unloadEventStart: 132.41999997990206
+// workerStart: 0
+// }
+console.log(performanceNavigationTimingEntry.loadEventEnd –
+performanceNavigationTimingEntry.loadEventStart);
+// 0.805000017862767
+```
+
+3. **Resource Timing API**
+
+Resource Timing API 提供了高精度时间戳，用于度量当前页面加载时请求资源的速度。浏览器会在加载资源时自动记录PerformanceResourceTiming。这个对象会捕获大量时间戳，用于描述资源加载的速度。
+
+下面的例子计算了加载一个特定资源所花的时间：
+
+```javascript
+const performanceResourceTimingEntry = performance.getEntriesByType('resource')[0];
+
+console.log(performanceResourceTimingEntry);
+// PerformanceResourceTiming {
+// connectEnd: 138.11499997973442
+// connectStart: 138.11499997973442
+// decodedBodySize: 33808
+// domainLookupEnd: 138.11499997973442
+// domainLookupStart: 138.11499997973442
+// duration: 0
+// encodedBodySize: 33808
+// entryType: "resource"
+// fetchStart: 138.11499997973442
+// initiatorType: "link"
+// name: "https://static.foo.com/bar.png",
+// nextHopProtocol: "h2"
+// redirectEnd: 0
+// redirectStart: 0
+// requestStart: 138.11499997973442
+// responseEnd: 138.11499997973442
+// responseStart: 138.11499997973442
+// secureConnectionStart: 0
+// serverTiming: []
+// startTime: 138.11499997973442
+// transferSize: 0
+// workerStart: 0
+// }
+console.log(performanceResourceTimingEntry.responseEnd –
+performanceResourceTimingEntry.requestStart);
+// 493.9600000507198
+```
+
+通过计算并分析不同时间的差，可以更全面地审视浏览器加载页面的过程，发现可能存在的性能瓶颈。
+
+// TODO: tomorrow
+## Web 组件
+
