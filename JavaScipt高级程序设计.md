@@ -462,7 +462,8 @@ plan : 1 chapter/3 day
   - [19.10. 计时 API](#1910-计时-api)
     - [19.10.1. High Resolution Time API](#19101-high-resolution-time-api)
     - [19.10.2. Performance Timeline API](#19102-performance-timeline-api)
-  - [Web 组件](#web-组件)
+  - [19.11. Web 组件](#1911-web-组件)
+    - [19.11.1. HTML 模板](#19111-html-模板)
 
 # 1. 什么是 JavaScript
 
@@ -31645,6 +31646,22 @@ performanceResourceTimingEntry.requestStart);
 
 通过计算并分析不同时间的差，可以更全面地审视浏览器加载页面的过程，发现可能存在的性能瓶颈。
 
-// TODO: tomorrow
-## Web 组件
 
+## 19.11. Web 组件
+
+这里所说的Web 组件指的是一套用于增强DOM 行为的工具，包括影子DOM、自定义元素和HTML 模板。这一套浏览器API 特别混乱。
+
+- 并没有统一的“Web Components”规范：每个Web 组件都在一个不同的规范中定义。
+- 有些Web 组件如影子DOM和自定义元素，已经出现了向后不兼容的版本问题。
+- 浏览器实现极其不一致。
+
+由于存在这些问题，因此使用Web 组件通常需要引入一个Web 组件库，比如Polymer。这种库可以作为腻子脚本，模拟浏览器中缺失的Web 组件。
+
+注意 本章只介绍Web 组件的最新版本。
+
+### 19.11.1. HTML 模板
+
+在Web 组件之前，一直缺少基于HTML 解析构建DOM 子树，然后在需要时再把这个子树渲染出
+来的机制。一种间接方案是使用innerHTML 把标记字符串转换为DOM 元素，但这种方式存在严重的
+安全隐患。另一种间接方案是使用document.createElement()构建每个元素，然后逐个把它们添加
+到孤儿根节点（不是添加到DOM），但这样做特别麻烦，完全与标记无关。
