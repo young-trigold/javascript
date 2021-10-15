@@ -494,7 +494,12 @@ plan : 1 chapter/3 day
     - [20.4.3. 未知运行时错误](#2043-未知运行时错误)
     - [20.4.4. 语法错误](#2044-语法错误)
     - [20.4.5. 系统找不到指定资源](#2045-系统找不到指定资源)
-- [21. 处理 XML](#21-处理-xml)
+- [21. JSON](#21-json)
+  - [21.1. 语法](#211-语法)
+- [22. 处理 XML](#22-处理-xml)
+  - [22.1. 浏览器对XML DOM 的支持](#221-浏览器对xml-dom-的支持)
+    - [22.1.1. DOM Level 2 Core](#2211-dom-level-2-core)
+    - [22.1.2. DOMParser 类型](#2212-domparser-类型)
 
 # 1. 什么是 JavaScript
 
@@ -33794,7 +33799,32 @@ x.send(null);
 
 在这个例子中，XMLHttpRequest 对象尝试向超过 URL 长度限制的地址发送请求。在调用 open()方法时，错误会发生。为避免这种错误，一个办法是缩短请求成功所需的查询字符串，比如缩短参数名或去掉不必要的数据。另一个办法是改为使用 POST 请求，不用查询字符串而通过请求体发送数据。
 
-# 21. 处理 XML
+# 21. JSON
+
+本章内容
+- 理解JSON 语法
+- 解析JSON
+- JSON 序列化
+
+在JSON流行之前，XML 曾经一度成为互联网上传输数据的事实标准。第一代Web 服务很大程度上是以XML 为基础的，以服务器间通信为主要特征。可是，XML 也并非没有批评者。有的人认为XML过于冗余和啰唆。为解决这些问题，也出现了几种方案。不过Web 已经朝着它的新方向进发了。
+
+2006 年，Douglas Crockford 在国际互联网工程任务组（IETF，The Internet Engineering Task Force）制定了JavaScript 对象简谱（JSON，JavaScript Object Notation）标准，即RFC 4627。但实际上，JSON早在2001 年就开始使用了。JSON 是JavaScript 的严格子集，利用JavaScript 中的几种模式来表示结构化数据。Crockford 将JSON 作为替代XML 的一个方案提出，因为JSON 可以直接传给eval()而不需要创建DOM。
+
+理解JSON 最关键的一点是要把它当成一种数据格式，而不是编程语言。JSON 不属于JavaScript，它们只是拥有相同的语法而已。JSON 也不是只能在JavaScript 中使用，它是一种通用数据格式。很多语言都有解析和序列化JSON 的内置能力。
+
+## 21.1. 语法
+
+JSON 语法支持表示3 种类型的值。
+
+- 简单值：字符串、数值、布尔值和null 可以在JSON 中出现，就像在JavaScript 中一样。特殊值undefined 不可以。
+- 对象：第一种复杂数据类型，对象表示有序键/值对。每个值可以是简单值，也可以是复杂类型。
+- 数组：第二种复杂数据类型，数组表示可以通过数值索引访问的值的有序列表。数组的值可以是任意类型，包括简单值、对象，甚至其他数组。
+
+JSON 没有变量、函数或对象实例的概念。JSON 的所有记号都只为表示结构化数据，虽然它借用了JavaScript 的语法，但是千万不要把它跟JavaScript 语言混淆。
+
+
+
+# 22. 处理 XML
 
 本章内容
 - 浏览器对XML DOM 的支持
@@ -33802,4 +33832,54 @@ x.send(null);
 - 使用XSLT 处理器
 
 XML 曾一度是在互联网上存储和传输结构化数据的标准。XML 的发展反映了Web 的发展，因为DOM 标准不仅是为了在浏览器中使用，而且还为了在桌面和服务器应用程序中处理XML 数据结构。在没有DOM 标准的时候，很多开发者使用JavaScript 编写自己的XML 解析器。自从有了DOM 标准，所有浏览器都开始原生支持XML、XML DOM及很多其他相关技术。
+
+## 22.1. 浏览器对XML DOM 的支持
+
+因为很多浏览器在正式标准问世之前就开始实现XML 解析方案，所以不同浏览器对标准的支持不仅有级别上的差异，也有实现上的差异。DOM Level 3 增加了解析和序列化能力。不过，在DOM Level 3制定完成时，大多数浏览器也已实现了自己的解析方案。
+
+### 22.1.1. DOM Level 2 Core
+
+正如第13 章所述，DOM Level 2 增加了document.implementation 的createDocument()方法。有读者可能还记得，可以像下面这样创建空XML 文档：
+
+```javascript
+const xmldom = document.implementation.createDocument(namespaceUri, root, doctype);
+```
+
+在JavaScript 中处理XML 时，root 参数通常只会使用一次，因为这个参数定义的是XML DOM中document 元素的标签名。namespaceUri 参数用得很少，因为在JavaScript 中很难管理命名空间。doctype 参数则更是少用。
+
+要创建一个document 对象标签名为`<root>`的新XML 文档，可以使用以下代码：
+
+```javascript
+const xmldom = document.implementation.createDocument("", "root", null);
+console.log(xmldom.documentElement.tagName);
+// >> 'root'
+const child = xmldom.createElement("child");
+xmldom.documentElement.appendChild(child);
+```
+
+这个例子创建了一个XML DOM文档，该文档没有默认的命名空间和文档类型。注意，即使不指定命名空间和文档类型，参数还是要传的。命名空间传入空字符串表示不应用命名空间，文档类型传入null 表示没有文档类型。xmldom 变量包含DOM Level 2 Document 类型的实例，包括第13 章介绍的
+所有DOM 方法和属性。在这个例子中，我们打印了document 元素的标签名，然后又为它创建并添加了一个新的子元素。
+
+要检查浏览器是否支持DOM Level 2 XML，可以使用如下代码：
+
+```javascript
+const hasXmlDom = document.implementation.hasFeature("XML", "2.0");
+```
+
+实践中，很少需要凭空创建XML 文档，然后使用DOM 方法来系统创建XML 数据结构。更多是把XML文档解析为DOM结构，或者相反。因为DOM Level 2 并未提供这种功能，所以出现了一些事实标准。
+
+### 22.1.2. DOMParser 类型
+
+Firefox 专门为把XML 解析为DOM文档新增了DOMParser 类型，后来所有其他浏览器也实现了该类型。要使用DOMParser，需要先创建它的一个实例，然后再调用parseFromString()方法。这个方法接收两个参数：要解析的XML 字符串和内容类型（始终应该是"text/html"）。返回值是Document的实例。来看下面的例子：
+
+```javascript
+let parser = new DOMParser();
+let xmldom = parser.parseFromString("<root><child/></root>", "text/xml");
+console.log(xmldom.documentElement.tagName); // "root"
+console.log(xmldom.documentElement.firstChild.tagName); // "child"
+let anotherChild = xmldom.createElement("child");
+xmldom.documentElement.appendChild(anotherChild);
+let children = xmldom.getElementsByTagName("child");
+console.log(children.length); // 2
+```
 
