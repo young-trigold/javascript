@@ -518,6 +518,9 @@ plan : 1 chapter/3 day
     - [22.3.1. XSLTProcessor 类型](#2231-xsltprocessor-类型)
     - [22.3.2. 使用参数](#2232-使用参数)
     - [22.3.3. 重置处理器](#2233-重置处理器)
+- [23. 网络请求与远程资源](#23-网络请求与远程资源)
+  - [23.1. XMLHttpRequest 对象](#231-xmlhttprequest-对象)
+    - [23.1.1. 使用XHR](#2311-使用xhr)
 
 # 1. 什么是 JavaScript
 
@@ -34597,3 +34600,35 @@ processor.importStylesheet(xsltdom2);
 ```
 
 在使用多个样式表执行转换时，重用一个 XSLTProcessor 可以节省内存。
+
+# 23. 网络请求与远程资源
+
+本章内容
+- 使用XMLHttpRequest 对象
+- 处理XMLHttpRequest 事件
+- 源域Ajax 限制
+- Fetch API
+- Streams API
+
+2005 年，Jesse James Garrett 撰写了一篇文章，“Ajax—A New Approach to Web Applications”。这篇文章中描绘了一个被他称作Ajax（Asynchronous JavaScript+XML，即异步JavaScript 加XML）的技术。这个技术涉及发送服务器请求额外数据而不刷新页面，从而实现更好的用户体验。Garrett 解释了这个技术怎样改变自Web 诞生以来就一直延续的传统单击等待的模式。
+
+把Ajax 推到历史舞台上的关键技术是XMLHttpRequest（XHR）对象。这个对象最早由微软发明，然后被其他浏览器所借鉴。在XHR 出现之前，Ajax 风格的通信必须通过一些黑科技实现，主要是使用隐藏的窗格或内嵌窗格。XHR 为发送服务器请求和获取响应提供了合理的接口。这个接口可以实现异步从服务器获取额外数据，意味着用户点击不用页面刷新也可以获取数据。通过XHR 对象获取数据后，可以使用DOM 方法把数据插入网页。虽然Ajax 这个名称中包含XML，但实际上Ajax 通信与数据格式无关。这个技术主要是可以实现在不刷新页面的情况下从服务器获取数据，格式并不一定是XML。
+
+实际上，Garrett 所称的这种Ajax 技术已经出现很长时间了。在Garrett 那篇文章之前，一般称这种技术为远程脚本。这种浏览器与服务器的通信早在1998 年就通过不同方式实现了。最初，JavaScript 对服务器的请求可以通过中介（如Java 小程序或Flash 影片）来发送。后来XHR 对象又为开发者提供了原生的浏览器通信能力，减少了实现这个目的的工作量。
+
+XHR 对象的API 被普遍认为比较难用，而Fetch API 自从诞生以后就迅速成为了XHR 更现代的替代标准。Fetch API 支持期约（promise）和服务线程（service worker），已经成为极其强大的Web 开发工具。
+
+注意 本章会全面介绍XMLHttpRequest，但它实际上是过时Web 规范的产物，应该只在旧版本浏览器中使用。实际开发中，应该尽可能使用fetch()。
+
+## 23.1. XMLHttpRequest 对象
+
+IE5 是第一个引入XHR 对象的浏览器。这个对象是通过ActiveX 对象实现并包含在MSXML 库中的。为此，XHR 对象的3 个版本在浏览器中分别被暴露为MSXML2.XMLHttp、MSXML2.XMLHttp.3.0和MXSML2.XMLHttp.6.0。
+
+所有现代浏览器都通过XMLHttpRequest 构造函数原生支持XHR 对象：
+
+```javascript
+const xhr = new XMLHttpRequest();
+```
+
+### 23.1.1. 使用XHR
+
