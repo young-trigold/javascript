@@ -106,7 +106,7 @@ const values = [25, 'hi', true];
 
 同样，这里没有变量，也没有分号。数组和对象可以组合使用，以表示更加复杂的数据结构，比如：
 
-```javascript
+```json
 [
   {
     title: 'Professional JavaScript',
