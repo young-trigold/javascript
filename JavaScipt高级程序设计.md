@@ -34599,7 +34599,7 @@ let result = processor.transformToDocument(xmldom);
 每个 XSLTProcessor 实例都可以重用于多个转换，只是要使用不同的 XSLT 样式表。处理器的 reset()方法可以删除所有参数和样式表。然后，可以使用 importStylesheet()方法加载不同的 XSLT 样表，如下所示：
 
 ```javascript
-let processor = new XSLTProcessor();
+const processor = new XSLTProcessor();
 processor.importStylesheet(xsltdom);
 // 执行某些转换
 processor.reset();
@@ -34738,7 +34738,8 @@ xhr.abort();
 
 ```javascript
 const xhr = new XMLHttpRequest();
-xhr.onreadystatechange = function () {
+
+xhr.onreadystatechange = function onreadystatechange() {
   if (xhr.readyState == 4) {
     if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
       console.log(xhr.responseText);
@@ -34747,6 +34748,7 @@ xhr.onreadystatechange = function () {
     }
   }
 };
+
 xhr.open('get', 'example.php', true);
 xhr.setRequestHeader('MyHeader', 'MyValue');
 xhr.send(null);
@@ -34826,7 +34828,8 @@ xhr.open('post', 'example.php', true);
 ```javascript
 const submitData = function submitData() {
   const xhr = new XMLHttpRequest();
-  xhr.onreadystatechange = function () {
+
+  xhr.onreadystatechange = function onreadystatechange() {
     if (xhr.readyState == 4) {
       if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
         console.log(xhr.responseText);
@@ -34835,6 +34838,7 @@ const submitData = function submitData() {
       }
     }
   };
+
   xhr.open('post', 'postexample.php', true);
   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
   const form = document.getElementById('user-info');
@@ -34881,15 +34885,17 @@ const data = new FormData(document.forms[0]);
 
 ```javascript
 const xhr = new XMLHttpRequest();
+
 xhr.onreadystatechange = functionon readystatechange() {
-if (xhr.readyState == 4) {
-if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
-console.log(xhr.responseText);
-} else {
-console.log("Request was unsuccessful: " + xhr.status);
-}
-}
+  if (xhr.readyState == 4) {
+    if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
+      console.log(xhr.responseText);
+    } else {
+      console.log("Request was unsuccessful: " + xhr.status);
+    }
+  }
 };
+
 xhr.open("post", "postexample.php", true);
 const form = document.getElementById("user-info");
 xhr.send(new FormData(form));
@@ -34920,10 +34926,12 @@ xhr.onreadystatechange = function onreadystatechange() {
     }
   }
 };
+
 xhr.open('get', 'timeout.php', true);
 xhr.timeout = 1000; // 设置1 秒超时
-xhr.ontimeout = function () {
-  alert('Request did not return in a second.');
+
+xhr.ontimeout = function ontimeout() {
+  console.log('Request did not return in a second.');
 };
 xhr.send(null);
 ```
@@ -34966,6 +34974,7 @@ Firefox 最初在实现 XHR 的时候，曾致力于简化交互模式。最终�
 
 ```javascript
 const xhr = new XMLHttpRequest();
+
 xhr.onload = function onload() {
   if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
     console.log(xhr.responseText);
@@ -34973,6 +34982,7 @@ xhr.onload = function onload() {
     console.log('Request was unsuccessful: ' + xhr.status);
   }
 };
+
 xhr.open('get', 'altevents.php', true);
 xhr.send(null);
 ```
@@ -34985,6 +34995,7 @@ Mozilla 在 XHR 对象上另一个创新是 progress 事件，在浏览器接收
 
 ```javascript
 const xhr = new XMLHttpRequest();
+
 xhr.onload = function onload(event) {
   if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
     alert(xhr.responseText);
@@ -34992,6 +35003,7 @@ xhr.onload = function onload(event) {
     alert('Request was unsuccessful: ' + xhr.status);
   }
 };
+
 xhr.onprogress = function onprogress(event) {
   const divStatus = document.getElementById('status');
   if (event.lengthComputable) {
@@ -34999,6 +35011,7 @@ xhr.onprogress = function onprogress(event) {
       'Received ' + event.position + ' of ' + event.totalSize + ' bytes';
   }
 };
+
 xhr.open('get', 'altevents.php', true);
 xhr.send(null);
 ```
@@ -35029,7 +35042,8 @@ Access-Control-Allow-Origin: http://www.nczonline.net
 
 ```javascript
 const xhr = new XMLHttpRequest();
-xhr.onreadystatechange = function () {
+
+xhr.onreadystatechange = function onreadystatechange() {
   if (xhr.readyState == 4) {
     if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
       console.log(xhr.responseText);
@@ -35038,6 +35052,7 @@ xhr.onreadystatechange = function () {
     }
   }
 };
+
 xhr.open('get', 'http://www.somewhere-else.com/page/', true);
 xhr.send(null);
 ```
