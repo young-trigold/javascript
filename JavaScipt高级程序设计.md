@@ -547,6 +547,11 @@ plan : 1 chapter/3 day
     - [23.7.2. 发送和接收数据](#2372-发送和接收数据)
     - [23.7.3. 其他事件](#2373-其他事件)
   - [23.8. 安全](#238-安全)
+- [24. 客户端存储](#24-客户端存储)
+  - [24.1. cookie](#241-cookie)
+    - [24.1.1. 限制](#2411-限制)
+    - [24.1.2. cookie 的构成](#2412-cookie-的构成)
+    - [24.1.3. JavaScript 中的 cookie](#2413-javascript-中的-cookie)
 
 # 1. 什么是 JavaScript
 
@@ -36630,3 +36635,179 @@ socket.onclose = function (event) {
 - 要求 POST 而非 GET 请求（很容易修改请求方法）。
 - 使用来源 URL 验证来源（来源 URL 很容易伪造）。
 - 基于 cookie 验证（同样很容易伪造）。
+
+# 24. 客户端存储
+
+本章内容
+
+- cookie
+- 浏览器存储 API
+- IndexedDB
+
+随着 Web 应用程序的出现，直接在客户端存储用户信息的需求也随之出现。这背后的想法是合理的：与特定用户相关的信息应该保存在用户的机器上。无论是登录信息、个人偏好，还是其他数据，Web 应用程序提供者都需要有办法把它们保存在客户端。对该问题的第一个解决方案就是 cookie，cookie 由古老的网景公司发明，由一份名为 Persistent Client State: HTTP Cookies 的规范定义。今天，cookie 只是在客户端存储数据的一个选项。
+
+## 24.1. cookie
+
+HTTP cookie 通常也叫作 cookie，最初用于在客户端存储会话信息。这个规范要求服务器在响应 HTTP 请求时，通过发送 Set-Cookie HTTP 头部包含会话信息。例如，下面是包含这个头部的一个 HTTP 响应：
+
+```http
+HTTP/1.1 200 OK
+Content-type: text/html
+Set-Cookie: name=value
+Other-header: other-header-value
+```
+
+这个 HTTP 响应会设置一个名为"name"，值为"value"的 cookie。名和值在发送时都会经过 URL 编码。浏览器会存储这些会话信息，并在之后的每个请求中都会通过 HTTP 头部 cookie 再将它们发回服务器，比如：
+
+```http
+GET /index.jsl HTTP/1.1
+Cookie: name=value
+Other-header: other-header-value
+```
+
+这些发送回服务器的额外信息可用于唯一标识发送请求的客户端。
+
+### 24.1.1. 限制
+
+cookie 是与特定域绑定的。设置 cookie 后，它会与请求一起发送到创建它的域。这个限制能保证 cookie 中存储的信息只对被认可的接收者开放，不被其他域访问。
+
+因为 cookie 存储在客户端机器上，所以为保证它不会被恶意利用，浏览器会施加限制。同时，cookie 也不会占用太多磁盘空间。
+
+通常，只要遵守以下大致的限制，就不会在任何浏览器中碰到问题：
+
+- 不超过 300 个 cookie；
+- 每个 cookie 不超过 4096 字节；
+- 每个域不超过 20 个 cookie；
+- 每个域不超过 81 920 字节。
+
+每个域能设置的 cookie 总数也是受限的，但不同浏览器的限制不同。例如：
+
+- 最新版 IE 和 Edge 限制每个域不超过 50 个 cookie；
+- 最新版 Firefox 限制每个域不超过 150 个 cookie；
+- 最新版 Opera 限制每个域不超过 180 个 cookie；
+- Safari 和 Chrome 对每个域的 cookie 数没有硬性限制。
+
+如果 cookie 总数超过了单个域的上限，浏览器就会删除之前设置的 cookie。IE 和 Opera 会按照最近最少使用（LRU，Least Recently Used）原则删除之前的 cookie，以便为新设置的 cookie 腾出空间。Firefox 好像会随机删除之前的 cookie，因此为避免不确定的结果，最好不要超出限制。
+
+浏览器也会限制 cookie 的大小。大多数浏览器对 cookie 的限制是不超过 4096 字节，上下可以有一个字节的误差。为跨浏览器兼容，最好保证 cookie 的大小不超过 4095 字节。这个大小限制适用于一个域的所有 cookie，而不是单个 cookie。
+
+如果创建的 cookie 超过最大限制，则该 cookie 会被静默删除。注意，一个字符通常会占 1 字节。如果使用多字节字符（如 UTF-8 Unicode 字符），则每个字符最多可能占 4 字节。
+
+### 24.1.2. cookie 的构成
+
+cookie 在浏览器中是由以下参数构成的。
+
+- 名称：唯一标识 cookie 的名称。cookie 名不区分大小写，因此 myCookie 和 MyCookie 是同一个名称。不过，实践中最好将 cookie 名当成区分大小写来对待，因为一些服务器软件可能这样对待它们。cookie 名必须经过 URL 编码。
+- 值：存储在 cookie 里的字符串值。这个值必须经过 URL 编码。
+- 域：cookie 有效的域。发送到这个域的所有请求都会包含对应的 cookie。这个值可能包含子域（如www.wrox.com），也可以不包含（如.wrox.com 表示对 wrox.com 的所有子域都有效）。如果不明确设置，则默认为设置 cookie 的域。
+- 路径：请求 URL 中包含这个路径才会把 cookie 发送到服务器。例如，可以指定 cookie 只能由 http://www.wrox.com/books/ 访问，因此访问 http://www.wrox.com/ 下的页面就不会发送 cookie，即使请求的是同一个域。
+- 过期时间：表示何时删除 cookie 的时间戳（即什么时间之后就不发送到服务器了）。默认情况下，浏览器会话结束后会删除所有 cookie。不过，也可以设置删除 cookie 的时间。这个值是 GMT 格式（Wdy, DD-Mon-YYYY HH:MM:SS GMT），用于指定删除 cookie 的具体时间。这样即使关闭浏览器 cookie 也会保留在用户机器上。把过期时间设置为过去的时间会立即删除 cookie。
+- 安全标志：设置之后，只在使用 SSL 安全连接的情况下才会把 cookie 发送到服务器。例如，请求https://www.wrox.com 会发送 cookie，而请求 http://www.wrox.com 则不会。这些参数在 Set-Cookie 头部中使用分号加空格隔开，比如：
+
+```http
+HTTP/1.1 200 OK
+Content-type: text/html
+Set-Cookie: name=value; expires=Mon, 22-Jan-07 07:10:24 GMT; domain=.wrox.com
+Other-header: other-header-value
+```
+
+这个头部设置一个名为"name"的 cookie，这个 cookie 在 2007 年 1 月 22 日 7:10:24 过期，对www.wrox.com 及其他 wrox.com 的子域（如 p2p.wrox.com）有效。
+
+安全标志 secure 是 cookie 中唯一的非名/值对，只需一个 secure 就可以了。比如：
+
+```http
+HTTP/1.1 200 OK
+Content-type: text/html
+Set-Cookie: name=value; domain=.wrox.com; path=/; secure
+Other-header: other-header-value
+```
+
+这里创建的 cookie 对所有 wrox.com 的子域及该域中的所有页面有效（通过 path=/指定）。不过，这个 cookie 只能在 SSL 连接上发送，因为设置了 secure 标志。
+
+要知道，域、路径、过期时间和 secure 标志用于告诉浏览器什么情况下应该在请求中包含 cookie。这些参数并不会随请求发送给服务器，实际发送的只有 cookie 的名/值对。
+
+### 24.1.3. JavaScript 中的 cookie
+
+在 JavaScript 中处理 cookie 比较麻烦，因为接口过于简单，只有 BOM 的 document.cookie 属性。根据用法不同，该属性的表现迥异。要使用该属性获取值时，document.cookie 返回包含页面中所有有效 cookie 的字符串（根据域、路径、过期时间和安全设置），以分号分隔，如下面的例子所示：
+
+```javascript
+name1 = value1;
+name2 = value2;
+name3 = value3;
+```
+
+所有名和值都是 URL 编码的，因此必须使用 decodeURIComponent()解码。
+
+在设置值时，可以通过 document.cookie 属性设置新的 cookie 字符串。这个字符串在被解析后会添加到原有 cookie 中。设置 document.cookie 不会覆盖之前存在的任何 cookie，除非设置了已有的 cookie。设置 cookie 的格式如下，与 Set-Cookie 头部的格式一样：
+
+```javascript
+name = value;
+expires = expiration_time;
+path = domain_path;
+domain = domain_name;
+secure;
+```
+
+在所有这些参数中，只有 cookie 的名称和值是必需的。下面是个简单的例子：
+
+```javascript
+document.cookie = 'name=Nicholas';
+```
+
+这行代码会创建一个名为"name"的会话 cookie，其值为"Nicholas"。这个 cookie 在每次客户端向服务器发送请求时都会被带上，在浏览器关闭时就会被删除。虽然这样直接设置也可以，因为不需要在名称或值中编码任何字符，但最好还是使用 encodeURIComponent()对名称和值进行编码，比如：
+
+```javascript
+document.cookie =
+  encodeURIComponent('name') + '=' + encodeURIComponent('Nicholas');
+```
+
+要为创建的 cookie 指定额外的信息，只要像 Set-Cookie 头部一样直接在后面追加相同格式的字符串即可：
+
+```javascript
+document.cookie =
+  encodeURIComponent('name') +
+  '=' +
+  encodeURIComponent('Nicholas') +
+  '; domain=.wrox.com; path=/';
+```
+
+因为在 JavaScript 中读写 cookie 不是很直观，所以可以通过辅助函数来简化相应的操作。与 cookie 相关的基本操作有读、写和删除。这些在 CookieUtil 对象中表示如下：
+
+```javascript
+class CookieUtil {
+  static get(name) {
+    let cookieName = `${encodeURIComponent(name)}=`,
+      cookieStart = document.cookie.indexOf(cookieName),
+      cookieValue = null;
+    if (cookieStart > -1) {
+      let cookieEnd = document.cookie.indexOf(';', cookieStart);
+      if (cookieEnd == -1) {
+        cookieEnd = document.cookie.length;
+      }
+      cookieValue = decodeURIComponent(
+        document.cookie.substring(cookieStart + cookieName.length, cookieEnd),
+      );
+    }
+    return cookieValue;
+  }
+  static set(name, value, expires, path, domain, secure) {
+    let cookieText = `${encodeURIComponent(name)}=${encodeURIComponent(value)}`;
+    if (expires instanceof Date) {
+      cookieText += `; expires=${expires.toGMTString()}`;
+    }
+    if (path) {
+      cookieText += `; path=${path}`;
+    }
+    if (domain) {
+      cookieText += `; domain=${domain}`;
+    }
+    if (secure) {
+      cookieText += '; secure';
+    }
+    document.cookie = cookieText;
+  }
+  static unset(name, path, domain, secure) {
+    CookieUtil.set(name, '', new Date(0), path, domain, secure);
+  }
+}
+```
