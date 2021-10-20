@@ -532,10 +532,14 @@ plan : 1 chapter/3 day
     - [23.3.1. 预检请求](#2331-预检请求)
     - [23.3.2. 凭据请求](#2332-凭据请求)
   - [23.4. 替代性跨源技术](#234-替代性跨源技术)
-    - [23.4.1. JSONP](#2341-jsonp)
+    - [23.4.1. 图片探测](#2341-图片探测)
+    - [23.4.2. JSONP](#2342-jsonp)
   - [23.5. Fetch API](#235-fetch-api)
     - [23.5.1. 基本用法](#2351-基本用法)
-    - [23.5.2. 常见Fetch 请求模式](#2352-常见fetch-请求模式)
+    - [23.5.2. 常见 Fetch 请求模式](#2352-常见-fetch-请求模式)
+    - [23.5.3. Headers 对象](#2353-headers-对象)
+    - [23.5.4. Request 对象](#2354-request-对象)
+    - [23.5.5. Response 对象](#2355-response-对象)
 
 # 1. 什么是 JavaScript
 
@@ -30440,12 +30444,13 @@ File API 仍然以表单中的文件输入字段为基础，但是增加了直�
 例如，通过监听 change 事件然后遍历 files 集合可以取得每个选中文件的信息：
 
 ```javascript
-let filesList = $('#files-list');
+const filesList = $('#files-list');
 
 filesList.addEventListener('change', (event) => {
-  let files = event.target.files,
-    i = 0,
-    len = files.length;
+  const files = event.target.files;
+  let i = 0;
+  const len = files.length;
+
   while (i < len) {
     const f = files[i];
     console.log(`${f.name} (${f.type}, ${f.size} bytes)`);
@@ -35121,7 +35126,7 @@ Access-Control-Allow-Credentials: true
 
 CORS 出现之前，实现跨源 Ajax 通信是有点麻烦的。开发者需要依赖能够执行跨源请求的 DOM 特性，在不使用 XHR 对象情况下发送某种类型的请求。虽然 CORS 目前已经得到广泛支持，但这些技术仍然没有过时，因为它们不需要修改服务器。
 
-1. **图片探测**
+### 23.4.1. 图片探测
 
 图片探测是利用`<img>`标签实现跨域通信的最早的一种技术。任何页面都可以跨域加载图片而不必担心限制，因此这也是在线广告跟踪的主要方式。可以动态创建图片，然后通过它们的 onload 和 onerror 事件处理程序得知何时收到响应。
 
@@ -35139,7 +35144,7 @@ img.src = 'http://www.example.com/test?name=Nicholas';
 
 图片探测频繁用于跟踪用户在页面上的点击操作或动态显示广告。当然，图片探测的缺点是只能发送 GET 请求和无法获取服务器响应的内容。这也是只能利用图片探测实现浏览器与服务器单向通信的原因。
 
-### 23.4.1. JSONP
+### 23.4.2. JSONP
 
 JSONP 是“JSON with padding”的简写，是在 Web 服务上流行的一种 JSON 变体。JSONP 看起来跟 JSON 一样，只是会被包在一个函数调用里，比如：
 
@@ -35342,10 +35347,9 @@ fetch('https://qux.com').then((response) => console.log(response.url));
 
 只使用 URL 时，fetch()会发送 GET 请求，只包含最低限度的请求头。要进一步配置如何发送请求，需要传入可选的第二个参数 init 对象。init 对象要按照下面的所述的键值对规则进行填充。
 
-
 1. **body**
 
-指定使用请求体时请求体的内容必须是 Blob、BufferSource、FormData、URLSearchParams、ReadableStream 或 String 的实例
+指定使用请求体时请求体的内容必须是 Blob、BufferSource、FormData、URLSearchParams、ReadableStream 或 String 的实例。
 
 2. **cache**
 
@@ -35357,7 +35361,7 @@ fetch('https://qux.com').then((response) => console.log(response.url));
   - 未命中缓存会发送请求，并缓存响应。然后 fetch()返回响应
 - no-store
   - 浏览器不检查缓存，直接发送请求
-  - 不缓存响应，直接通过 fetch()返回reload
+  - 不缓存响应，直接通过 fetch()返回 reload
   - 浏览器不检查缓存，直接发送请求
   - 缓存响应，再通过 fetch()返回
 - no-cache
@@ -35377,19 +35381,19 @@ fetch('https://qux.com').then((response) => console.log(response.url));
 - omit：不发送 cookie
 - same-origin：只在请求 URL 与发送 fetch()请求的页面同源时发送 cookie
 - include：无论同源还是跨源都包含 cookie
-  在支持 Credential Management API 的浏览器中， 也可以是一个 FederatedCredential 或 PasswordCredential 的实例默认为same-origin
+  在支持 Credential Management API 的浏览器中， 也可以是一个 FederatedCredential 或 PasswordCredential 的实例默认为 same-origin
 
 4. **headers**
 
-用于指定请求头部，必须是 Headers 对象实例或包含字符串格式键/值对的常规对象，默认值为不包含键/值对的 Headers 对象。这不意味着请求不包含任何头部，浏览器仍然会随请求发送一些头部。虽然这些头部对 JavaScript 不可见，但浏览器的网络检查器可以观察到
+用于指定请求头部，必须是 Headers 对象实例或包含字符串格式键/值对的常规对象，默认值为不包含键/值对的 Headers 对象。这不意味着请求不包含任何头部，浏览器仍然会随请求发送一些头部。虽然这些头部对 JavaScript 不可见，但浏览器的网络检查器可以观察到。
 
 5. **integrity**
 
-用于强制子资源完整性，必须是包含子资源完整性标识符的字符串，默认为空字符串
+用于强制子资源完整性，必须是包含子资源完整性标识符的字符串，默认为空字符串。
 
 6. **keepalive**
 
-用于指示浏览器允许请求存在时间超出页面生命周期。适合报告事件或分析，比如页面在 fetch()请求后很快卸载。设置 keepalive 标志的 fetch()请求可用于替代 Navigator.sendBeacon()必须是布尔值，默认为 false
+用于指示浏览器允许请求存在时间超出页面生命周期。适合报告事件或分析，比如页面在 fetch()请求后很快卸载。设置 keepalive 标志的 fetch()请求可用于替代 Navigator.sendBeacon()必须是布尔值，默认为 false。
 
 7. **method**
 
@@ -35405,21 +35409,21 @@ fetch('https://qux.com').then((response) => console.log(response.url));
 - CONNECT
 - TARCE
 
-默认为 GET
+默认为 GET。
 
 8. **mode**
 
 用于指定请求模式。这个模式决定来自跨源请求的响应是否有效，以及客户端可以读取多少响应。违反这里指定模式的请求会抛出错误，必须是下列字符串值之一：
 
 - cors：允许遵守 CORS 协议的跨源请求。响应是“CORS 过滤的响应”，意思是响应中可以访问的浏览器头部是经过浏览器强制白名单过滤的
-- no-cors：允许不需要发送预检请求的跨源请求（HEAD、GET 和只带有满足 CORS 请求头部的POST）。响应类型是 opaque，意思是不能读取响应内容
+- no-cors：允许不需要发送预检请求的跨源请求（HEAD、GET 和只带有满足 CORS 请求头部的 POST）。响应类型是 opaque，意思是不能读取响应内容
 - same-origin：任何跨源请求都不允许发送
-- navigate：用于支持 HTML 导航，只在文档间导航时使用。基本用不到
-  在通过构造函数手动创建 Request 实例时，默认为 cors；否则，默认为 no-cors|
+- navigate：用于支持 HTML 导航，只在文档间导航时使用。基本用不到在通过构造函数手动创建 Request 实例时，默认为 cors；否则，默认为 no-cors
 
 9. **redirect**
 
 用于指定如何处理重定向响应（状态码为 301、302、303、307 或 308），必须是下列字符串值之一
+
 - follow：跟踪重定向请求，以最终非重定向 URL 的响应作为最终响应
 - error：重定向请求会抛出错误
 - manual：不跟踪重定向请求，而是返回 opaqueredirect 类型的响应，同时仍然暴露期望的重定向 URL。允许以手动方式跟踪重定向，默认为 follow|
@@ -35427,6 +35431,7 @@ fetch('https://qux.com').then((response) => console.log(response.url));
 10. **referrer**
 
 用于指定 HTTP 的 Referer 头部的内容，必须是下列字符串值之一
+
 - no-referrer：以 no-referrer 作为值
 - client/about:client：以当前 URL 或 no-referrer（取决于来源策略 referrerPolicy）作为值
 - `<URL>`：以伪造 URL 作为值。伪造 URL 的源必须与执行脚本的源匹配，默认为 client/about:client
@@ -35458,30 +35463,30 @@ fetch('https://qux.com').then((response) => console.log(response.url));
 
 12. **signal**
 
-用于支持通过 AbortController 中断进行中的 fetch()请求必须是 AbortSignal 的实例，默认为未关联控制器的 AbortSignal 实例
+用于支持通过 AbortController 中断进行中的 fetch()请求必须是 AbortSignal 的实例，默认为未关联控制器的 AbortSignal 实例。
 
-### 23.5.2. 常见Fetch 请求模式
+### 23.5.2. 常见 Fetch 请求模式
 
-与XMLHttpRequest 一样，fetch()既可以发送数据也可以接收数据。使用init 对象参数，可以配置fetch()在请求体中发送各种序列化的数据。
+与 XMLHttpRequest 一样，fetch()既可以发送数据也可以接收数据。使用 init 对象参数，可以配置 fetch()在请求体中发送各种序列化的数据。
 
-1. **发送JSON 数据**
+1. **发送 JSON 数据**
 
-可以像下面这样发送简单JSON 字符串：
+可以像下面这样发送简单 JSON 字符串：
 
 ```javascript
 const payload = JSON.stringify({
-foo: 'bar'
+  foo: 'bar',
 });
 
 const jsonHeaders = new Headers({
-'Content-Type': 'application/json'
+  'Content-Type': 'application/json',
 });
 
 fetch('/send-me-json', {
-// 发送请求体时必须使用一种HTTP 方法
-method: 'POST',
-body: payload,
-headers: jsonHeaders
+  // 发送请求体时必须使用一种HTTP 方法
+  method: 'POST',
+  body: payload,
+  headers: jsonHeaders,
 });
 ```
 
@@ -35493,31 +35498,31 @@ headers: jsonHeaders
 const payload = 'foo=bar&baz=qux';
 
 const paramHeaders = new Headers({
-'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+  'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
 });
 
 fetch('/send-me-params', {
-method: 'POST', // 发送请求体时必须使用一种HTTP 方法
-body: payload,
-headers: paramHeaders
+  method: 'POST', // 发送请求体时必须使用一种HTTP 方法
+  body: payload,
+  headers: paramHeaders,
 });
 ```
 
 3. **发送文件**
 
-因为请求体支持FormData 实现，所以fetch()也可以序列化并发送文件字段中的文件：
+因为请求体支持 FormData 实现，所以 fetch()也可以序列化并发送文件字段中的文件：
 
 ```javascript
 const imageFormData = new FormData();
 const imageInput = document.querySelector("input[type='file']");
 imageFormData.append('image', imageInput.files[0]);
 fetch('/img-upload', {
-method: 'POST',
-body: imageFormData
+  method: 'POST',
+  body: imageFormData,
 });
 ```
 
-这个fetch()实现可以支持多个文件：
+这个 fetch()实现可以支持多个文件：
 
 ```javascript
 const imageFormData = new FormData();
@@ -35525,31 +35530,31 @@ const imageFormData = new FormData();
 const imageInput = document.querySelector("input[type='file'][multiple]");
 
 for (let i = 0; i < imageInput.files.length; ++i) {
-imageFormData.append('image', imageInput.files[i]);
+  imageFormData.append('image', imageInput.files[i]);
 }
 
 fetch('/img-upload', {
-method: 'POST',
-body: imageFormData
+  method: 'POST',
+  body: imageFormData,
 });
 ```
 
-4. **加载Blob 文件**
+4. **加载 Blob 文件**
 
-Fetch API 也能提供Blob 类型的响应，而Blob 又可以兼容多种浏览器API。一种常见的做法是明确将图片文件加载到内存，然后将其添加到HTML图片元素。为此，可以使用响应对象上暴露的blob()方法。这个方法返回一个期约，解决为一个Blob 的实例。然后，可以将这个实例传给URL.createObjectUrl()以生成可以添加给图片元素src 属性的值：
+Fetch API 也能提供 Blob 类型的响应，而 Blob 又可以兼容多种浏览器 API。一种常见的做法是明确将图片文件加载到内存，然后将其添加到 HTML 图片元素。为此，可以使用响应对象上暴露的 blob()方法。这个方法返回一个期约，解决为一个 Blob 的实例。然后，可以将这个实例传给 URL.createObjectUrl()以生成可以添加给图片元素 src 属性的值：
 
 ```javascript
 const imageElement = document.querySelector('img');
 fetch('my-image.png')
-.then((response) => response.blob())
-.then((blob) => {
-imageElement.src = URL.createObjectURL(blob);
-});
+  .then((response) => response.blob())
+  .then((blob) => {
+    imageElement.src = URL.createObjectURL(blob);
+  });
 ```
 
 5. **发送跨源请求**
 
-从不同的源请求资源，响应要包含CORS 头部才能保证浏览器收到响应。没有这些头部，跨源请求会失败并抛出错误。
+从不同的源请求资源，响应要包含 CORS 头部才能保证浏览器收到响应。没有这些头部，跨源请求会失败并抛出错误。
 
 ```javascript
 // TypeError: Failed to fetch
@@ -35557,17 +35562,18 @@ imageElement.src = URL.createObjectURL(blob);
 fetch('//cross-origin.com');
 ```
 
-如果代码不需要访问响应，也可以发送no-cors 请求。此时响应的type 属性值为opaque，因此无法读取响应内容。这种方式适合发送探测请求或者将响应缓存起来供以后使用。
+如果代码不需要访问响应，也可以发送 no-cors 请求。此时响应的 type 属性值为 opaque，因此无法读取响应内容。这种方式适合发送探测请求或者将响应缓存起来供以后使用。
 
 ```javascript
-fetch('//cross-origin.com', { method: 'no-cors' })
-.then((response) => console.log(response.type));
+fetch('//cross-origin.com', {method: 'no-cors'}).then((response) =>
+  console.log(response.type),
+);
 // >> 'opaque'
 ```
 
 6. **中断请求**
 
-Fetch API 支持通过AbortController/AbortSignal 对中断请求。调用AbortController.abort()会中断所有网络传输，特别适合希望停止传输大型负载的情况。中断进行中的fetch()请求会导致包含错误的拒绝。
+Fetch API 支持通过 AbortController/AbortSignal 对中断请求。调用 AbortController.abort()会中断所有网络传输，特别适合希望停止传输大型负载的情况。中断进行中的 fetch()请求会导致包含错误的拒绝。
 
 ```javascript
 const abortController = new AbortController();
@@ -35578,3 +35584,346 @@ setTimeout(() => abortController.abort(), 10);
 // 已经中断
 ```
 
+### 23.5.3. Headers 对象
+
+Headers 对象是所有外发请求和入站响应头部的容器。每个外发的 Request 实例都包含一个空的 Headers 实例，可以通过 Request.prototype.headers 访问，每个入站 Response 实例也可以通过 Response.prototype.headers 访问包含着响应头部的 Headers 对象。这两个属性都是可修改属性。另外，使用 new Headers()也可以创建一个新实例。
+
+1. **Headers 与 Map 的相似之处**
+
+Headers 对象与 Map 对象极为相似。这是合理的，因为 HTTP 头部本质上是序列化后的键/值对，它们的 JavaScript 表示则是中间接口。Headers 与 Map 类型都有 get()、set()、has()和 delete()等实例方法，如下面的代码所示：
+
+```javascript
+let header = new Headers();
+let m = new Map();
+
+// 设置键
+header.set('foo', 'bar');
+m.set('foo', 'bar');
+
+// 检查键
+console.log(header.has('foo'));
+// >> true
+
+console.log(m.has('foo'));
+// >> true
+
+console.log(header.has('qux'));
+// >> false
+
+console.log(m.has('qux'));
+// >> false
+
+// 获取值
+console.log(header.get('foo'));
+// >> 'bar'
+
+console.log(m.get('foo'));
+// >> 'bar'
+
+// 更新值
+header.set('foo', 'baz');
+m.set('foo', 'baz');
+// 取得更新的值
+
+console.log(header.get('foo'));
+// >> 'baz'
+
+console.log(m.get('foo'));
+// >> 'baz'
+
+// 删除值
+header.delete('foo');
+m.delete('foo');
+
+// 确定值已经删除
+console.log(header.get('foo'));
+// >> undefined
+
+console.log(m.get('foo'));
+// >> undefined
+```
+
+Headers 和 Map 都可以使用一个可迭代对象来初始化，比如：
+
+```javascript
+let seed = [['foo', 'bar']];
+let h = new Headers(seed);
+let m = new Map(seed);
+console.log(h.get('foo'));
+// >> 'bar
+
+console.log(m.get('foo'));
+// >> 'bar'
+```
+
+而且，它们也都有相同的 keys()、values()和 entries()迭代器接口：
+
+```javascript
+let seed = [
+  ['foo', 'bar'],
+  ['baz', 'qux'],
+];
+let h = new Headers(seed);
+let m = new Map(seed);
+console.log(...h.keys());
+// >> 'foo', 'baz'
+
+console.log(...m.keys());
+// >> 'foo', 'baz'
+
+console.log(...h.values());
+// >> 'bar', 'qux'
+
+console.log(...m.values());
+// >> 'bar', 'qux'
+
+console.log(...h.entries());
+// >> ['foo', 'bar'], ['baz', 'qux']
+
+console.log(...m.entries());
+// >> ['foo', 'bar'], ['baz', 'qux']
+```
+
+2. **Headers 独有的特性**
+
+Headers 并不是与 Map 处处都一样。在初始化 Headers 对象时，也可以使用键/值对形式的对象，而 Map 则不可以：
+
+```javascript
+let seed = {foo: 'bar'};
+let h = new Headers(seed);
+console.log(h.get('foo'));
+// >> 'bar'
+
+let m = new Map(seed);
+// TypeError: object is not iterable
+```
+
+一个 HTTP 头部字段可以有多个值，而 Headers 对象通过 append()方法支持添加多个值。在 Headers 实例中还不存在的头部上调用 append()方法相当于调用 set()。后续调用会以逗号为分隔符拼接多个值：
+
+```javascript
+let h = new Headers();
+h.append('foo', 'bar');
+console.log(h.get('foo'));
+// >> 'bar'
+h.append('foo', 'baz');
+console.log(h.get('foo'));
+// >> 'bar, baz'
+```
+
+3. **头部护卫**
+
+某些情况下，并非所有 HTTP 头部都可以被客户端修改，而 Headers 对象使用护卫来防止不被允许的修改。不同的护卫设置会改变 set()、append()和 delete()的行为。违反护卫限制会抛出 TypeError。
+
+Headers 实例会因来源不同而展现不同的行为，它们的行为由护卫来控制。JavaScript 可以决定 Headers 实例的护卫设置。下表列出了不同的护卫设置和每种设置对应的行为。
+
+| 护 卫           | 适用情形                                                         | 限 制                                                                                 |
+| --------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| none            | 在通过构造函数创建 Headers 实例时激活                            | 无                                                                                    |
+| request         | 在通过构造函数初始化 Request 对象，且 mode 值为非 no-cors 时激活 | 不允许修改禁止修改的头部（参见 MDN 文档中的 forbidden header name 词条）              |
+| request-no-cors | 在通过构造函数初始化 Request 对象，且 mode 值为 no-cors 时激活   | 不允许修改非简单头部（参见 MDN 文档中的 simple header 词条）                          |
+| response        | 在通过构造函数初始化 Response 对象时激活                         | 不允许修改禁止修改的响应头部（参见 MDN 文档中的 forbidden response header name 词条） |
+| immutable       | 在通过 error()或 redirect()静态方法初始化 Response 对象时激活    | 不允许修改任何头部                                                                    |
+
+### 23.5.4. Request 对象
+
+顾名思义，Request 对象是获取资源请求的接口。这个接口暴露了请求的相关信息，也暴露了使用请求体的不同方式。
+
+注意 与请求体相关的属性和方法将在本章 5.6 节介绍。
+
+1. **创建 Request 对象**
+
+可以通过构造函数初始化 Request 对象。为此需要传入一个 input 参数，一般是 URL：
+
+```javascript
+let r = new Request('https://foo.com');
+console.log(r);
+// Request {...}
+```
+
+Request 构造函数也接收第二个参数——一个 init 对象。这个 init 对象与前面介绍的 fetch()的 init 对象一样。没有在 init 对象中涉及的值则会使用默认值：
+
+```javascript
+// 用所有默认值创建Request 对象
+console.log(new Request(''));
+// Request {
+// bodyUsed: false
+// cache: "default"
+// credentials: "same-origin"
+// destination: ""
+// headers: Headers {}
+// integrity: ""
+// keepalive: false
+// method: "GET"
+// mode: "cors"
+// redirect: "follow"
+// referrer: "about:client"
+// referrerPolicy: ""
+// signal: AbortSignal {aborted: false, onabort: null}
+// url: "<current URL>"
+// }
+
+// 用指定的初始值创建Request 对象
+console.log(new Request('https://foo.com', {method: 'POST'}));
+// Request {
+// bodyUsed: false
+// cache: "default"
+// credentials: "same-origin"
+// destination: ""
+// headers: Headers {}
+// integrity: ""
+// keepalive: false
+// method: "POST"
+// mode: "cors"
+// redirect: "follow"
+// referrer: "about:client"
+// referrerPolicy: ""
+// signal: AbortSignal {aborted: false, onabort: null}
+// url: "https://foo.com/"
+// }
+```
+
+2. **克隆 Request 对象**
+
+Fetch API 提供了两种不太一样的方式用于创建 Request 对象的副本：使用 Request 构造函数和使用 clone()方法。
+
+将 Request 实例作为 input 参数传给 Request 构造函数，会得到该请求的一个副本：
+
+```javascript
+const r1 = new Request('https://foo.com');
+const r2 = new Request(r1);
+console.log(r2.url);
+// >> 'https://foo.com/'
+```
+
+如果再传入 init 对象，则 init 对象的值会覆盖源对象中同名的值：
+
+```javascript
+let r1 = new Request('https://foo.com');
+let r2 = new Request(r1, {method: 'POST'});
+console.log(r1.method);
+// >> 'GET'
+
+console.log(r2.method);
+// >> 'POST'
+```
+
+这种克隆方式并不总能得到一模一样的副本。最明显的是，第一个请求的请求体会被标记为“已使用”：
+
+```javascript
+let r1 = new Request('https://foo.com', {method: 'POST', body: 'foobar'});
+let r2 = new Request(r1);
+console.log(r1.bodyUsed);
+// >> true
+
+console.log(r2.bodyUsed);
+// >> false
+```
+
+如果源对象与创建的新对象不同源，则 referrer 属性会被清除。此外，如果源对象的 mode 为 navigate，则会被转换为 same-origin。
+
+第二种克隆 Request 对象的方式是使用 clone()方法，这个方法会创建一模一样的副本，任何值都不会被覆盖。与第一种方式不同，这种方法不会将任何请求的请求体标记为“已使用”：
+
+```javascript
+let r1 = new Request('https://foo.com', {method: 'POST', body: 'foobar'});
+let r2 = r1.clone();
+console.log(r1.url);
+// >> 'https://foo.com/'
+
+console.log(r2.url);
+// >> 'https://foo.com/'
+
+console.log(r1.bodyUsed);
+// >> false
+
+console.log(r2.bodyUsed);
+// >> false
+```
+
+如果请求对象的 bodyUsed 属性为 true（即请求体已被读取），那么上述任何一种方式都不能用来创建这个对象的副本。在请求体被读取之后再克隆会导致抛出 TypeError。
+
+```javascript
+let r = new Request('https://foo.com');
+r.clone();
+new Request(r);
+// 没有错误
+r.text(); // 设置bodyUsed 为true
+r.clone();
+// TypeError: Failed to execute 'clone' on 'Request': Request body is already used
+
+new Request(r);
+// TypeError: Failed to construct 'Request': Cannot construct a Request with aRequest object that has already been used.
+```
+
+3. **在 fetch()中使用 Request 对象**
+
+fetch()和 Request 构造函数拥有相同的函数签名并不是巧合。在调用 fetch()时，可以传入已经创建好的 Request 实例而不是 URL。与 Request 构造函数一样，传给 fetch()的 init 对象会覆盖传入请求对象的值：
+
+```javascript
+const r = new Request('https://foo.com');
+// 向foo.com 发送GET 请求
+fetch(r);
+// 向foo.com 发送POST 请求
+fetch(r, {method: 'POST'});
+```
+
+fetch()会在内部克隆传入的 Request 对象。与克隆 Request 一样，fetch()也不能拿请求体已经用过的 Request 对象来发送请求：
+
+```javascript
+const r = new Request('https://foo.com', {method: 'POST', body: 'foobar'});
+r.text();
+fetch(r);
+// TypeError: Cannot construct a Request with a Request object that has already been used.
+```
+
+关键在于，通过 fetch 使用 Request 会将请求体标记为已使用。也就是说，有请求体的 Request 只能在一次 fetch 中使用。（不包含请求体的请求不受此限制。）演示如下：
+
+```javascript
+const r = new Request('https://foo.com', {method: 'POST', body: 'foobar'});
+fetch(r);
+fetch(r);
+// TypeError: Cannot construct a Request with a Request object that has already been used.
+```
+
+要想基于包含请求体的相同 Request 对象多次调用 fetch()，必须在第一次发送 fetch()请求前调用 clone()：
+
+```javascript
+const r = new Request('https://foo.com', {method: 'POST', body: 'foobar'});
+// 3 个都会成功
+fetch(r.clone());
+fetch(r.clone());
+fetch(r);
+```
+
+### 23.5.5. Response 对象
+
+顾名思义，Response 对象是获取资源响应的接口。这个接口暴露了响应的相关信息，也暴露了使用响应体的不同方式。
+
+注意 与响应体相关的属性和方法将在本章 5.6 节介绍。
+
+1. **创建 Response 对象**
+
+可以通过构造函数初始化 Response 对象且不需要参数。此时响应实例的属性均为默认值，因为它并不代表实际的 HTTP 响应：
+
+```javascript
+let r = new Response();
+console.log(r);
+// Response {
+// body: (...)
+// bodyUsed: false
+// headers: Headers {}
+// ok: true
+// redirected: false
+// status: 200
+// statusText: "OK"
+// type: "default"
+// url: ""
+// }
+```
+
+Response 构造函数接收一个可选的 body 参数。这个 body 可以是 null，等同于 fetch()参数 init 中的 body。还可以接收一个可选的 init 对象，这个对象可以包含下表所列的键和值。
+
+| 键         | 值                                                                                        |
+| ---------- | ----------------------------------------------------------------------------------------- |
+| headers    | 必须是 Headers 对象实例或包含字符串键/值对的常规对象实例 默认为没有键/值对的 Headers 对象 |
+| status     | 表示 HTTP 响应状态码的整数 默认为 200                                                     |
+| statusText | 表示 HTTP 响应状态的字符串 默认为空字符串                                                 |
