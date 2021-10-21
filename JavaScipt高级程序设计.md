@@ -26005,6 +26005,152 @@ $('#list').addEventListener('click', (event) => {
 
 ### 16.5.3. 防抖和节流
 
+防抖和节流经常用于连续触发的事件回调，如 resize，scroll，mousemove 的回调，防抖和节流可以有效地减少这些事件回调被执行的次数，但是减少的程度是符合实践的，因为用户往往不需要那么高频率的事件触发。所谓 **防抖(debounce)** 就是保证回调在一定时间后才会被执行，而如果在这个时间内触发了回调，则会重新计时。所谓 **节流(throttle)** 就是保证回调在连续执行时，每隔一定时间执行一次，如果在这个时间内触发了回调，则不予执行。
+
+1. **防抖**
+
+防抖可以保证连续的事件，只需触发一次回调，防抖适用场景有：
+
+- 搜索框搜索输入。只需用户最后一次输入完成，再发送请求
+- 手机号、邮箱验证输入检测
+- 窗口 resize。只需窗口调整完成后，计算窗口大小。防止重复渲染。
+
+下面我们以 mousemove 事件为例，保证 mousemove 的回调在用户第 1 次触发后的 1000ms（或者更长时间）之后再执行，如果在 1000ms 内触发了回调则重新计时。
+
+html 如下：
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Debounce Demo</title>
+    <style>
+      body {
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      #target {
+        border: 2px solid yellow;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="target">move the cursor in me</div>
+    <script src="main.js"></script>
+  </body>
+</html>
+```
+
+main.js 如下：
+
+```javascript
+const clg = console.log.bind(console);
+const $ =
+  typeof document === 'undefined'
+    ? null
+    : document.querySelectorAll.bind(document);
+
+const debounce = function debounce(callback, delay) {
+  // 第一次回调是否已经执行
+  let haveFirst = true;
+
+  // 上次回调执行时间
+  let preCallTime = 0;
+
+  // 本次回调执行时间
+  let curCallTime = 0;
+
+  return function onmousemove() {
+    // 如果第一次没有执行，则执行 1 次
+    if (haveFirst) {
+      callback();
+
+      // 第 1 次已经被执行
+      haveFirst = false;
+
+      // 本次回调执行时间
+      curCallTime = Date.now();
+    } else {
+      // 更新上次回调时间
+      preCallTime = curCallTime;
+
+      // 更新本次回调时间
+      curCallTime = Date.now();
+
+      // 如果本次和上次的回调时间差大于 delay，则执行
+      if (curCallTime - preCallTime > delay) {
+        callback();
+      } else {
+        // 否则，重置上次回调时间
+        preCallTime = Date.now();
+      }
+    }
+  };
+};
+
+const target = $('#target')[0];
+
+target.addEventListener(
+  'mousemove',
+  debounce(() => clg('mouse moved!', new Date()), 1000),
+);
+```
+
+效果如下图所示：
+
+![14-12-防抖](illustrations/14-12-防抖.png)
+
+2. **节流**
+
+节流可以保证每隔一段时间，只执行一次回调。节流适用于以下场景：
+
+- 滚动加载，加载更多或滚到底部监听
+- 搜索框，搜索联想功能
+- 高频点击提交，表单重复提交
+
+我们继续防抖的 html 模板，下面是改写的 main.js：
+
+```javascript
+const clg = console.log.bind(console);
+const $ =
+  typeof document === 'undefined'
+    ? null
+    : document.querySelectorAll.bind(document);
+
+const throttle = function throttle(callback, delay) {
+  // 默认上次回调时间为 0
+  let preCallTime = 0;
+
+  return function onmousemove() {
+    // 本次回调时间
+    const curCallTime = Date.now();
+
+    // 如果本次回调时间与上次回调时间差大于 delay，则执行
+    if (curCallTime - preCallTime > delay) {
+      callback();
+
+      // 重置上次回调时间为本次回调
+      preCallTime = curCallTime;
+    }
+  };
+};
+
+const target = $('#target')[0];
+
+target.addEventListener(
+  'mousemove',
+  throttle(() => clg('mouse moved!', new Date().getSeconds()), 1000),
+);
+```
+
+效果如下：
+
+![14-13-节流](illustrations/14-13-节流.png)
+
 ## 16.6. 模拟事件
 
 事件就是为了表示网页中某个有意义的时刻。通常，事件都是由用户交互或浏览器功能触发。事实上，可能很少有人知道可以通过 JavaScript 在任何时候触发任意事件，而这些事件会被当成浏览器创建的事件。这意味着同样会有事件冒泡，因而也会触发相应的事件处理程序。这种能力在测试 Web 应用时特别有用。DOM3 规范指明了模拟特定类型事件的方式。IE8 及更早版本也有自己模拟事件的方式。
