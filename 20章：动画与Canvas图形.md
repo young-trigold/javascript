@@ -1,31 +1,31 @@
 **目录：**
 
-- [18. 动画与 Canvas 图形](#18-动画与-canvas-图形)
-  - [18.1. requestAnimationFrame](#181-requestanimationframe)
-    - [18.1.1. 早期定时动画](#1811-早期定时动画)
-    - [18.1.2. 事件间隔问题](#1812-事件间隔问题)
-    - [18.1.3. requestAnimationFrame](#1813-requestanimationframe)
-    - [18.1.4. cancelAnimationFrame](#1814-cancelanimationframe)
-    - [18.1.5. 通过 requestAnimationFrame 节流](#1815-通过-requestanimationframe-节流)
-  - [18.2. 基本的画布功能](#182-基本的画布功能)
-  - [18.3. 2D 绘图上下文](#183-2d-绘图上下文)
-    - [18.3.1. 填充与描边](#1831-填充与描边)
-    - [18.3.2. 绘制矩形](#1832-绘制矩形)
-    - [18.3.3. 绘制路径](#1833-绘制路径)
-    - [18.3.4. 绘制文本](#1834-绘制文本)
-    - [18.3.5. 变换](#1835-变换)
-    - [18.3.6. 绘制图像](#1836-绘制图像)
-    - [18.3.7. 阴影](#1837-阴影)
-    - [18.3.8. 渐变](#1838-渐变)
-    - [18.3.9. 图案](#1839-图案)
-    - [18.3.10. 图像数据](#18310-图像数据)
-    - [18.3.11. 合成](#18311-合成)
-  - [18.4. WebGL](#184-webgl)
-    - [18.4.1. WebGL 上下文](#1841-webgl-上下文)
-    - [18.4.2. WebGL 基础](#1842-webgl-基础)
-    - [18.4.3. WebGL1 与 WebGL2](#1843-webgl1-与-webgl2)
+- [20. 动画与 Canvas 图形](#20-动画与-canvas-图形)
+  - [20.1. requestAnimationFrame](#201-requestanimationframe)
+    - [20.1.1. 早期定时动画](#2011-早期定时动画)
+    - [20.1.2. 事件间隔问题](#2012-事件间隔问题)
+    - [20.1.3. requestAnimationFrame](#2013-requestanimationframe)
+    - [20.1.4. cancelAnimationFrame](#2014-cancelanimationframe)
+    - [20.1.5. 通过 requestAnimationFrame 节流](#2015-通过-requestanimationframe-节流)
+  - [20.2. 基本的画布功能](#202-基本的画布功能)
+  - [20.3. 2D 绘图上下文](#203-2d-绘图上下文)
+    - [20.3.1. 填充与描边](#2031-填充与描边)
+    - [20.3.2. 绘制矩形](#2032-绘制矩形)
+    - [20.3.3. 绘制路径](#2033-绘制路径)
+    - [20.3.4. 绘制文本](#2034-绘制文本)
+    - [20.3.5. 变换](#2035-变换)
+    - [20.3.6. 绘制图像](#2036-绘制图像)
+    - [20.3.7. 阴影](#2037-阴影)
+    - [20.3.8. 渐变](#2038-渐变)
+    - [20.3.9. 图案](#2039-图案)
+    - [20.3.10. 图像数据](#20310-图像数据)
+    - [20.3.11. 合成](#20311-合成)
+  - [20.4. WebGL](#204-webgl)
+    - [20.4.1. WebGL 上下文](#2041-webgl-上下文)
+    - [20.4.2. WebGL 基础](#2042-webgl-基础)
+    - [20.4.3. WebGL1 与 WebGL2](#2043-webgl1-与-webgl2)
 
-# 18. 动画与 Canvas 图形
+# 20. 动画与 Canvas 图形
 
 本章内容
 
@@ -47,11 +47,11 @@
 var $ = document.querySelector.bind(document);
 ```
 
-## 18.1. requestAnimationFrame
+## 20.1. requestAnimationFrame
 
 很长时间以来，计时器和定时执行都是 JavaScript 动画最先进的工具。虽然 CSS 过渡和动画方便了 Web 开发者实现某些动画，但 JavaScript 动画领域多年来进展甚微。Firefox 4 率先在浏览器中为 JavaScript 动画增加了一个名为 mozRequestAnimationFrame()方法的 API。这个方法会告诉浏览器要执行动画了，于是浏览器可以通过最优方式确定重绘的时序。自从出现之后，这个 API 被广泛采用，现在作为 requestAnimationFrame()方法已经得到各大浏览器的支持。
 
-### 18.1.1. 早期定时动画
+### 20.1.1. 早期定时动画
 
 以前，在 JavaScript 中创建动画基本上就是使用 setInterval()来控制动画的执行。下面的例子展示了使用 setInterval()的基本模式：
 
@@ -74,7 +74,7 @@ var $ = document.querySelector.bind(document);
 
 虽然使用 setInterval()的定时动画比使用多个 setTimeout()实现循环效率更高，但也不是没有问题。无论 setInterval()还是 setTimeout()都是不能保证时间精度的。作为第二个参数的延时只能保证何时会把代码添加到浏览器的任务队列，不能保证添加到队列就会立即运行。如果队列前面还有其他任务，那么就要等这些任务执行完再执行。简单来讲，这里毫秒延时并不是说何时这些代码会执行，而只是说到时候会把回调加到任务队列。如果添加到队列后，主线程还被其他任务占用，比如正在处理用户操作，那么回调就不会马上执行。
 
-### 18.1.2. 事件间隔问题
+### 20.1.2. 事件间隔问题
 
 知道何时绘制下一帧是创造平滑动画的关键。直到几年前，都没有办法确切保证何时能让浏览器把下一帧绘制出来。随着`<canvas>`的流行和 HTML5 游戏的兴起，开发者发现 setInterval()和 setTimeout()的不精确是个大问题。
 
@@ -87,7 +87,7 @@ var $ = document.querySelector.bind(document);
 
 IE9 之前版本的计时器精度是 15.625 毫秒，意味着 0 ～ 15 范围内的任何值最终要么是 0，要么是 15，不可能是别的数。IE9 把计时器精度改进为 4 毫秒，但这对于动画而言还是不够精确。Chrome 计时器精度是 4 毫秒，而 Firefox 和 Safari 是 10 毫秒。更麻烦的是，浏览器又开始对切换到后台或不活跃标签页中的计时器执行限流。因此即使将时间间隔设定为最优，也免不了只能得到近似的结果。
 
-### 18.1.3. requestAnimationFrame
+### 20.1.3. requestAnimationFrame
 
 Mozilla 的 Robert O’Callahan 一直在思考这个问题，并提出了一个独特的方案。他指出，浏览器知道 CSS 过渡和动画应该什么时候开始，并据此计算出正确的时间间隔，到时间就去刷新用户界面。但对于 JavaScript 动画，浏览器不知道动画什么时候开始。他给出的方案是创造一个名为 mozRequestAnimationFrame()的新方法，用以通知浏览器某些 JavaScript 代码要执行动画了。这样浏览器就可以在运行某些代码后进行适当的优化。目前所有浏览器都支持这个方法不带前缀的版本，即 requestAnimationFrame()。
 
@@ -112,7 +112,7 @@ requestAnimationFrame(updateProgress);
 
 传给 requestAnimationFrame()的函数实际上可以接收一个参数，此参数是一个 DOMHighResTimeStamp 的实例（比如 performance.now()返回的值），表示下次重绘的时间。这一点非常重要：requestAnimationFrame()实际上把重绘任务安排在了未来一个已知的时间点上，而且通过这个参数告诉了开发者。基于这个参数，就可以更好地决定如何调优动画了。
 
-### 18.1.4. cancelAnimationFrame
+### 20.1.4. cancelAnimationFrame
 
 与 setTimeout()类似，requestAnimationFrame()也返回一个请求 ID，可以用于通过另一个方法 cancelAnimationFrame()来取消重绘任务。下面的例子展示了刚把一个任务加入队列又立即将其取消：
 
@@ -123,7 +123,7 @@ const requestID = window.requestAnimationFrame(() => {
 window.cancelAnimationFrame(requestID);
 ```
 
-### 18.1.5. 通过 requestAnimationFrame 节流
+### 20.1.5. 通过 requestAnimationFrame 节流
 
 requestAnimationFrame 这个名字有时候会让人误解，因为看不出来它跟排期任务有关。支持这个方法的浏览器实际上会暴露出作为钩子的回调队列。所谓钩子（hook），就是浏览器在执行下一次重绘之前的一个点。这个回调队列是一个可修改的函数列表，包含应该在重绘之前调用的函数。每次调用 requestAnimationFrame()都会在队列上推入一个回调函数，队列的长度没有限制。
 
@@ -189,7 +189,7 @@ window.addEventListener('scroll', () => {
 });
 ```
 
-## 18.2. 基本的画布功能
+## 20.2. 基本的画布功能
 
 创建`<canvas>`元素时至少要设置其 width 和 height 属性，这样才能告诉浏览器在多大面积上绘图。出现在开始和结束标签之间的内容是后备数据，会在浏览器不支持`<canvas>`元素时显示。比如：
 
@@ -234,11 +234,11 @@ if (drawing.getContext) {
 
 注意 如果画布中的图像是其他域绘制过来的，toDataURL()方法就会抛出错误。相关内容本章后面会讨论。
 
-## 18.3. 2D 绘图上下文
+## 20.3. 2D 绘图上下文
 
 2D 绘图上下文提供了绘制 2D 图形的方法，包括矩形、弧形和路径。2D 上下文的坐标原点(0, 0)在`<canvas>`元素的左上角。所有坐标值都相对于该点计算，因此 x 坐标向右增长，y 坐标向下增长。默认情况下，width 和 height 表示两个方向上像素的最大值。
 
-### 18.3.1. 填充与描边
+### 20.3.1. 填充与描边
 
 2D 上下文有两个基本绘制操作：填充和描边。填充以指定样式（颜色、渐变或图像）自动填充形状，而描边只为图形边界着色。大多数 2D 上下文操作有填充和描边的变体，显示效果取决于两个属性：fillStyle 和 strokeStyle。
 
@@ -257,7 +257,7 @@ if (drawing.getContext) {
 
 这里把 strokeStyle 设置为"red"（CSS 颜色名称），把 fillStyle 设置为"#0000ff"（蓝色）。所有与描边和填充相关的操作都会使用这两种样式，除非再次修改。这两个属性也可以是渐变或图案，本章后面会讨论。
 
-### 18.3.2. 绘制矩形
+### 20.3.2. 绘制矩形
 
 矩形是唯一一个可以直接在 2D 绘图上下文中绘制的形状。与绘制矩形相关的方法有 3 个：fillRect()、strokeRect()和 clearRect()。这些方法都接收 4 个参数：矩形 x 坐标、矩形 y 坐标、矩形宽度和矩形高度。这几个参数的单位都是像素。
 
@@ -334,7 +334,7 @@ if (drawing.getContext) {
 
 ![18-3-clearRect()](<illustrations/18-3-clearRect().png>)
 
-### 18.3.3. 绘制路径
+### 20.3.3. 绘制路径
 
 2D 绘图上下文支持很多在画布上绘制路径的方法。通过路径可以创建复杂的形状和线条。要绘制路径，必须首先调用 beginPath()方法以表示要开始绘制新路径。然后，再调用下列方法来绘制路径。
 
@@ -392,7 +392,7 @@ if (context.isPointInPath(250, 250)) {
 
 2D 上下文的路径 API 非常可靠，可用于创建涉及各种填充样式、描述样式等的复杂图像。
 
-### 18.3.4. 绘制文本
+### 20.3.4. 绘制文本
 
 文本和图像混合也是常见的绘制需求，因此 2D 绘图上下文还提供了绘制文本的方法，即 fillText()和 strokeText()。这两个方法都接收 4 个参数：要绘制的字符串、x 坐标、y 坐标和可选的最大像素宽度。而且，这两个方法最终绘制的结果都取决于以下 3 个属性。
 
@@ -459,7 +459,7 @@ fillText()和 strokeText()方法还有第四个参数，即文本的最大宽度
 
 绘制文本是一项比较复杂的操作，因此支持`<canvas>`元素的浏览器不一定全部实现了相关的文本绘制 API。
 
-### 18.3.5. 变换
+### 20.3.5. 变换
 
 上下文变换可以操作绘制在画布上的图像。2D 绘图上下文支持所有常见的绘制变换。在创建绘制上下文时，会以默认值初始化变换矩阵，从而让绘制操作如实应用到绘制结果上。对绘制上下文应用变换，可以导致以不同的变换矩阵应用绘制操作，从而产生不同的结果。
 
@@ -575,7 +575,7 @@ context.fillRect(0, 0, 100, 200);
 
 注意，save()方法只保存应用到绘图上下文的设置和变换，不保存绘图上下文的内容。
 
-### 18.3.6. 绘制图像
+### 20.3.6. 绘制图像
 
 2D 绘图上下文内置支持操作图像。如果想把现有图像绘制到画布上，可以使用 drawImage()方法。这个方法可以接收 3 组不同的参数，并产生不同的结果。最简单的调用是传入一个 HTML 的`<img>`元素，以及表示绘制目标的 x 和 y 坐标，结果是把图像绘制到指定位置。比如：
 
@@ -604,7 +604,7 @@ context.drawImage(image, 0, 10, 50, 50, 0, 100, 40, 60);
 
 结合其他一些方法，drawImage()方法可以方便地实现常见的图像操作。操作的结果可以使用 toDataURL()方法获取。不过有一种情况例外：如果绘制的图像来自其他域而非当前页面，则不能获取其数据。此时，调用 toDataURL()将抛出错误。比如，如果来自www.example.com 的页面上绘制的是来自www.wrox.com的图像，则上下文就是“脏的”，获取数据时会抛出错误。
 
-### 18.3.7. 阴影
+### 20.3.7. 阴影
 
 2D 上下文可以根据以下属性的值自动为已有形状或路径生成阴影。
 
@@ -631,7 +631,7 @@ context.fillRect(30, 30, 50, 50);
 
 ![18-9-阴影](illustrations/18-9-阴影.png)
 
-### 18.3.8. 渐变
+### 20.3.8. 渐变
 
 渐变通过 CanvasGradient 的实例表示，在 2D 上下文中创建和修改都非常简单。要创建一个新的线性渐变，可以调用上下文的 createLinearGradient()方法。这个方法接收 4 个参数：起点 x 坐标、起点 y 坐标、终点 x 坐标和终点 y 坐标。调用之后，该方法会以指定大小创建一个新的 CanvasGradient 对象并返回实例。
 
@@ -682,7 +682,7 @@ context.fill();
 
 因为创建起来要复杂一些，所以径向渐变比较难处理。不过，通常情况下，起点和终点的圆形都是同心圆，只要定义好圆心坐标，剩下的就是调整各自半径的问题了。
 
-### 18.3.9. 图案
+### 20.3.9. 图案
 
 图案是用于填充和描画图形的重复图像。要创建新图案，可以调用 createPattern()方法并传入两个参数：一个 HTML `<img>`元素和一个表示该如何重复图像的字符串。第二个参数的值与 CSS 的 background-repeat 属性是一样的，包括"repeat"、"repeat-x"、"repeat-y"和"no-repeat"。比如：
 
@@ -701,7 +701,7 @@ context.fillRect(10, 10, 150, 150);
 
 传给 createPattern()方法的第一个参数也可以是`<video>`元素或者另一个`<canvas>`元素。
 
-### 18.3.10. 图像数据
+### 20.3.10. 图像数据
 
 2D 上下文中比较强大的一种能力是可以使用 getImageData()方法获取原始图像数据。这个方法接收 4 个参数：要取得数据中第一个像素的左上角坐标和要取得的像素宽度及高度。例如，要从(10, 5)开始取得 50 像素宽、50 像素高的区域对应的数据，可以这样写：
 
@@ -761,7 +761,7 @@ context.putImageData(imageData, 0, 0);
 
 当然，灰阶过滤只是基于原始像素值可以实现的其中一种操作。要了解基于原始图像数据还可以实现哪些操作，可以参考 Ilmari Heikkinen 的文章“Making Image Filters with Canvas”。
 
-### 18.3.11. 合成
+### 20.3.11. 合成
 
 2D 上下文中绘制的所有内容都会应用两个属性：globalAlpha 和 globalComposition Operation，其中，globalAlpha 属性是一个范围在 0~1 的值（包括 0 和 1），用于指定所有绘制内容的透明度，默认值为 0。如果所有后来的绘制都需要使用同样的透明度，那么可以将 globalAlpha 设置为适当的值，执行绘制，然后再把 globalAlpha 设置为 0。比如：
 
@@ -814,7 +814,7 @@ context.fillRect(30, 30, 50, 50);
 
 使用 globalCompositeOperation 属性时，一定记得要在不同浏览器上进行测试。不同浏览器在实现这些选项时可能存在差异。这些操作在 Safari 和 Chrome 中仍然有些问题，可以参考 MDN 文档上的 CanvasRenderingContext2D.globalCompositeOperation，比较它们与 IE 或 Firefox 渲染的差异。
 
-## 18.4. WebGL
+## 20.4. WebGL
 
 WebGL 是画布的 3D 上下文。与其他 Web 技术不同，WebGL 不是 W3C 制定的标准，而是 KhronosGroup 的标准。根据官网描述，“Khronos Group 是非营利性、会员资助的联盟，专注于多平台和设备下并行计算、图形和动态媒体的无专利费开放标准”。Khronos Group 也制定了其他图形 API，包括作为浏览器中 WebGL 基础的 OpenGL ES 2.0。
 
@@ -824,7 +824,7 @@ OpenGL 这种 3D 图形语言很复杂，本书不会涉及过多相关概念。
 
 注意 定型数组是在 WebGL 中执行操作的重要数据结构。第 6 章中讨论了定型数组。
 
-### 18.4.1. WebGL 上下文
+### 20.4.1. WebGL 上下文
 
 在完全支持的浏览器中，WebGL 2.0 上下文的名字叫"webgl2"，WebGL 1.0 上下文的名字叫"webgl1"。如果浏览器不支持 WebGL，则尝试访问 WebGL 上下文会返回 null。在使用上下文之前，应该先检测返回值是否存在：
 
@@ -842,7 +842,7 @@ if (drawing.getContext) {
 
 这里把 WebGL context 对象命名为 gl。大多数 WebGL 应用和例子遵循这个约定，因为 OpenGL ES 2.0 方法和值通常以"gl"开头。这样可以让 JavaScript 代码看起来更接近 OpenGL 程序。
 
-### 18.4.2. WebGL 基础
+### 20.4.2. WebGL 基础
 
 取得 WebGL 上下文后，就可以开始 3D 绘图了。如前所述，因为 WebGL 是 OpenGL ES 2.0 的 Web 版，所以本节讨论的概念实际上是 JavaScript 所实现的 OpenGL 概念。
 
@@ -1252,7 +1252,7 @@ const gl = drawing.getContext("webgl", { preserveDrawingBuffer: true; });
 
 设置这个标志可以强制帧缓冲区在下一次绘制之前保持上一次绘制的状态。这个选项可能会影响性能，因此尽量不要使用。
 
-### 18.4.3. WebGL1 与 WebGL2
+### 20.4.3. WebGL1 与 WebGL2
 
 WebGL1 代码几乎完全与 WebGL2 兼容。在使用 WebGL2 上下文时，唯一可能涉及修改代码以保证兼容性的就是扩展。在 WebGL2 中，很多扩展都变成了默认功能。
 

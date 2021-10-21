@@ -1,22 +1,22 @@
 **目录：**
 
-- [22. 处理 XML](#22-处理-xml)
-  - [22.1. 浏览器对 XML DOM 的支持](#221-浏览器对-xml-dom-的支持)
-    - [22.1.1. DOM Level 2 Core](#2211-dom-level-2-core)
-    - [22.1.2. DOMParser 类型](#2212-domparser-类型)
-    - [22.1.3. XMLSerializer 类型](#2213-xmlserializer-类型)
-  - [22.2. 浏览器对 XPath 的支持](#222-浏览器对-xpath-的支持)
-    - [22.2.1. DOM Level 3 XPath](#2221-dom-level-3-xpath)
-    - [22.2.2. 单个节点结果](#2222-单个节点结果)
-    - [22.2.3. 简单类型结果](#2223-简单类型结果)
-    - [22.2.4. 默认类型结果](#2224-默认类型结果)
-    - [22.2.5. 命名空间支持](#2225-命名空间支持)
-  - [22.3. 浏览器对 XSLT 的支持](#223-浏览器对-xslt-的支持)
-    - [22.3.1. XSLTProcessor 类型](#2231-xsltprocessor-类型)
-    - [22.3.2. 使用参数](#2232-使用参数)
-    - [22.3.3. 重置处理器](#2233-重置处理器)
+- [23. 处理 XML](#23-处理-xml)
+  - [23.1. 浏览器对 XML DOM 的支持](#231-浏览器对-xml-dom-的支持)
+    - [23.1.1. DOM Level 2 Core](#2311-dom-level-2-core)
+    - [23.1.2. DOMParser 类型](#2312-domparser-类型)
+    - [23.1.3. XMLSerializer 类型](#2313-xmlserializer-类型)
+  - [23.2. 浏览器对 XPath 的支持](#232-浏览器对-xpath-的支持)
+    - [23.2.1. DOM Level 3 XPath](#2321-dom-level-3-xpath)
+    - [23.2.2. 单个节点结果](#2322-单个节点结果)
+    - [23.2.3. 简单类型结果](#2323-简单类型结果)
+    - [23.2.4. 默认类型结果](#2324-默认类型结果)
+    - [23.2.5. 命名空间支持](#2325-命名空间支持)
+  - [23.3. 浏览器对 XSLT 的支持](#233-浏览器对-xslt-的支持)
+    - [23.3.1. XSLTProcessor 类型](#2331-xsltprocessor-类型)
+    - [23.3.2. 使用参数](#2332-使用参数)
+    - [23.3.3. 重置处理器](#2333-重置处理器)
 
-# 22. 处理 XML
+# 23. 处理 XML
 
 本章内容
 
@@ -26,11 +26,11 @@
 
 XML 曾一度是在互联网上存储和传输结构化数据的标准。XML 的发展反映了 Web 的发展，因为 DOM 标准不仅是为了在浏览器中使用，而且还为了在桌面和服务器应用程序中处理 XML 数据结构。在没有 DOM 标准的时候，很多开发者使用 JavaScript 编写自己的 XML 解析器。自从有了 DOM 标准，所有浏览器都开始原生支持 XML、XML DOM 及很多其他相关技术。
 
-## 22.1. 浏览器对 XML DOM 的支持
+## 23.1. 浏览器对 XML DOM 的支持
 
 因为很多浏览器在正式标准问世之前就开始实现 XML 解析方案，所以不同浏览器对标准的支持不仅有级别上的差异，也有实现上的差异。DOM Level 3 增加了解析和序列化能力。不过，在 DOM Level 3 制定完成时，大多数浏览器也已实现了自己的解析方案。
 
-### 22.1.1. DOM Level 2 Core
+### 23.1.1. DOM Level 2 Core
 
 正如第 13 章所述，DOM Level 2 增加了 document.implementation 的 createDocument()方法。有读者可能还记得，可以像下面这样创建空 XML 文档：
 
@@ -65,7 +65,7 @@ const hasXmlDom = document.implementation.hasFeature('XML', '2.0');
 
 实践中，很少需要凭空创建 XML 文档，然后使用 DOM 方法来系统创建 XML 数据结构。更多是把 XML 文档解析为 DOM 结构，或者相反。因为 DOM Level 2 并未提供这种功能，所以出现了一些事实标准。
 
-### 22.1.2. DOMParser 类型
+### 23.1.2. DOMParser 类型
 
 Firefox 专门为把 XML 解析为 DOM 文档新增了 DOMParser 类型，后来所有其他浏览器也实现了该类型。要使用 DOMParser，需要先创建它的一个实例，然后再调用 parseFromString()方法。这个方法接收两个参数：要解析的 XML 字符串和内容类型（始终应该是"text/html"）。返回值是 Document 的实例。来看下面的例子：
 
@@ -110,7 +110,7 @@ try {
 
 这个例子中解析的 XML 字符串少一个`</root>`标签，因此会导致解析错误。IE 此时会抛出错误。Firefox 和 Opera 此时会返回 document 元素为`<parsererror>`的文档，而在 Chrome 和 Safari 返回的文档中，`<parsererror>`是`<root>`的第一个子元素。调用 getElementsByTagName("parsererror")可适用于后两种情况。如果该方法返回了任何元素，就说明有错误，会弹警告框给出提示。当然，此时可以进一步解析出错误信息并显示出来。
 
-### 22.1.3. XMLSerializer 类型
+### 23.1.3. XMLSerializer 类型
 
 与 DOMParser 相对，Firefox 也增加了 XMLSerializer 类型用于提供相反的功能：把 DOM 文档序列化为 XML 字符串。此后，XMLSerializer 也得到了所有主流浏览器的支持。
 
@@ -126,11 +126,11 @@ serializeToString()方法返回的值是打印效果不好的字符串，因此�
 
 注意 如果给 serializeToString()传入非 DOM 对象，就会导致抛出错误。
 
-## 22.2. 浏览器对 XPath 的支持
+## 23.2. 浏览器对 XPath 的支持
 
 XPath 是为了在 DOM 文档中定位特定节点而创建的，因此它对 XML 处理很重要。在 DOM Level 3 之前，XPath 相关的 API 没有被标准化。DOM Level 3 开始着手标准化 XPath。很多浏览器实现了 DOMLevel 3 XPath 标准，但 IE 决定按照自己的方式实现。
 
-### 22.2.1. DOM Level 3 XPath
+### 23.2.1. DOM Level 3 XPath
 
 DOM Level 3 XPath 规范定义了接口，用于在 DOM 中求值 XPath 表达式。要确定浏览器是否支持 DOM Level 3 XPath，可以使用以下代码：
 
@@ -199,7 +199,7 @@ if (result !== null) {
 
 这个例子中，snapshotLength 返回快照中节点的数量，而 snapshotItem()返回快照中给定位置的节点（类似于 NodeList 中的 length 和 item()）。
 
-### 22.2.2. 单个节点结果
+### 23.2.2. 单个节点结果
 
 XPathResult.FIRST_ORDERED_NODE_TYPE 结果类型返回匹配的第一个节点，可以通过结果的 singleNodeValue 属性获取。比如：
 
@@ -218,7 +218,7 @@ if (result !== null) {
 
 与其他查询一样，如果没有匹配的节点，evaluate()返回 null。如果有一个匹配的节点，则要使用 singleNodeValue 属性取得该节点。这对 XPathResult.FIRST_ORDERED_NODE_TYPE 也一样。
 
-### 22.2.3. 简单类型结果
+### 23.2.3. 简单类型结果
 
 使用布尔值、数值和字符串 XPathResult 类型，可以根据 XPath 获取简单、非节点数据类型。这些结果类型返回的值需要分别使用 booleanValue、numberValue 和 stringValue 属性获取。对于布尔值类型，如果至少有一个节点匹配 XPath 表达式，booleanValue 就是 true；否则，booleanValue 为 false。比如：
 
@@ -265,7 +265,7 @@ console.log(result.stringValue);
 
 这个例子输出了与"employee/name"匹配的第一个元素中第一个文本节点包含的文本字符串。
 
-### 22.2.4. 默认类型结果
+### 23.2.4. 默认类型结果
 
 所有 XPath 表达式都会自动映射到特定类型的结果。设置特定结果类型会限制表达式的输出。不过，可以使用 XPathResult.ANY_TYPE 类型让求值自动返回默认类型结果。通常，默认类型结果是布尔值、数值、字符串或无序节点迭代器。要确定返回的结果类型，可以访问求值结果的 resultType 属性，如下例所示：
 
@@ -300,7 +300,7 @@ if (result !== null) {
 
 使用 XPathResult.ANY_TYPE 可以让使用 XPath 变得更自然，但在返回结果后则需要增加额外的判断和处理。
 
-### 22.2.5. 命名空间支持
+### 23.2.5. 命名空间支持
 
 对于使用命名空间的 XML 文档，必须告诉 XPathEvaluator 命名空间信息，才能进行正确求值。处理命名空间的方式有很多，看下面的示例 XML 代码：
 
@@ -358,11 +358,11 @@ console.log(result.numberValue);
 
 在并不知晓文档的哪个节点包含命名空间定义时，可以采用这种定义命名空间解析函数的方式。只要知道前缀和 URI，就可以定义这样一个函数，然后把它作为第三个参数传给 evaluate()。
 
-## 22.3. 浏览器对 XSLT 的支持
+## 23.3. 浏览器对 XSLT 的支持
 
 可扩展样式表语言转换（XSLT，Extensible Stylesheet Language Transformations）是与 XML 相伴的一种技术，可以利用 XPath 将一种文档表示转换为另一种文档表示。与 XML 和 XPath 不同，XSLT 没有与之相关的正式 API，正式的 DOM 中也没有涵盖它。因此浏览器都以自己的方式实现 XSLT。率先在 JavaScript 中支持 XSLT 的是 IE。
 
-### 22.3.1. XSLTProcessor 类型
+### 23.3.1. XSLTProcessor 类型
 
 Mozilla 通过增加了一个新类型 XSLTProcessor，在 JavaScript 中实现了对 XSLT 的支持。通过使用 XSLTProcessor 类型，开发者可以使用 XSLT 转换 XML 文档，其方式类似于在 IE 中使用 XSL 处理器。自从 XSLTProcessor 首次实现以来，所有浏览器都照抄了其实现，从而使 XSLTProcessor 成了通过 JavaScript 完成 XSLT 转换的事实标准。
 
@@ -404,7 +404,7 @@ console.log(text);`
 
 这种方式在所有支持的浏览器中都可以正确返回转换后的输出文本。
 
-### 22.3.2. 使用参数
+### 23.3.2. 使用参数
 
 XSLTProcessor 还允许使用 setParameter()方法设置 XSLT 参数。该方法接收三个参数：命名空间 URI、参数本地名称和要设置的值。通常，命名空间 URI 是 null，本地名称就是参数名称。setParameter()方法必须在调用 transformToDocument()或 transformToFragment()之前调用。例子如下：
 
@@ -428,12 +428,12 @@ let result = processor.transformToDocument(xmldom);
 
 这几个方法并不常用，只是为了操作方便。
 
-### 22.3.3. 重置处理器
+### 23.3.3. 重置处理器
 
 每个 XSLTProcessor 实例都可以重用于多个转换，只是要使用不同的 XSLT 样式表。处理器的 reset()方法可以删除所有参数和样式表。然后，可以使用 importStylesheet()方法加载不同的 XSLT 样表，如下所示：
 
 ```javascript
-let processor = new XSLTProcessor();
+const processor = new XSLTProcessor();
 processor.importStylesheet(xsltdom);
 // 执行某些转换
 processor.reset();
