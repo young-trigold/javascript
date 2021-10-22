@@ -3911,7 +3911,7 @@ console.log(foo[Symbol.toStringTag]);
 // >> undefined
 
 class Bar {
-  constructor() {
+  get [Symbol.toStringTag] {
     this[Symbol.toStringTag] = 'Bar';
   }
 }
@@ -11998,6 +11998,7 @@ let book = {
   year_: 2020,
   edition: 4,
 };
+
 Object.defineProperty(book, 'year', {
   get() {
     return this.year_;
@@ -12093,6 +12094,7 @@ ECMAScript 2017 新增了 Object.getOwnPropertyDescriptors()静态方法。这�
 
 ```javascript
 let book = {};
+
 Object.defineProperties(book, {
   year_: {
     value: 2017,
@@ -26005,7 +26007,68 @@ $('#list').addEventListener('click', (event) => {
 
 ### 16.5.3. 防抖和节流
 
-防抖和节流经常用于连续触发的事件回调，如 resize，scroll，mousemove 的回调，防抖和节流可以有效地减少这些事件回调被执行的次数，但是减少的程度是符合实践的，因为用户往往不需要那么高频率的事件触发。所谓 **防抖(debounce)** 就是保证回调在一定时间后才会被执行，而如果在这个时间内触发了回调，则会重新计时。所谓 **节流(throttle)** 就是保证回调在连续执行时，每隔一定时间执行一次，如果在这个时间内触发了回调，则不予执行。
+防抖和节流经常用于频繁触发的事件回调，如 resize，scroll，mousemove 的回调。
+
+为了使读者感受回调执行的频率，我们准备了以下这个示例：
+
+这是 html：
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>High Frequency Callbacks Demo</title>
+    <style>
+      body{
+          width: 100vw;
+          height: 100vh;
+          margin: 0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+      }
+      #target{
+        width: 100%;
+        height: 200px;
+        line-height: 200px;
+        text-align: center;
+        color: #fff;
+        background-color: #444;
+        font-size: 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="target"></div>
+    <script src="main.js"></script>
+  </body>
+</html>
+```
+
+这是 main.js：
+
+```javascript
+const $ =
+  typeof document === 'undefined'
+    ? null
+    : document.querySelectorAll.bind(document);
+const clg = console.log.bind(console);
+
+let callCount = 0;
+const target = $('#target')[0];
+
+const onmousemove = function onmousemove() {
+  target.innerHTML = callCount++;
+};
+
+target.addEventListener('mousemove', onmousemove);
+```
+
+当我们在中间灰色区域上用鼠标划动的时候，就会触发 mousemove 事件回调，中间的白色数字展示了回调的次数，我们可以看到就是简单的一次划动，回调次数也非常高：
+
+![14-12-高频率回调](illustrations/14-12-高频率回调.png)
+
+防抖和节流可以有效地减少这些事件回调被执行的次数，但是减少的程度是符合实践的，因为用户往往不需要那么高频率的事件触发。所谓 **防抖(debounce)** 就是保证回调在一定时间后才会被执行，而如果在这个时间内触发了回调，则会重新计时。所谓 **节流(throttle)** 就是保证回调在连续执行时，每隔一定时间执行一次，如果在这个时间内触发了回调，则不予执行。
 
 1. **防抖**
 
@@ -26048,6 +26111,10 @@ html 如下：
 main.js 如下：
 
 ```javascript
+
+```
+
+```javascript
 const clg = console.log.bind(console);
 const $ =
   typeof document === 'undefined'
@@ -26064,10 +26131,10 @@ const debounce = function debounce(callback, delay) {
   // 本次回调执行时间
   let curCallTime = 0;
 
-  return function onmousemove() {
+  return function onmousemove(...args) {
     // 如果第一次没有执行，则执行 1 次
     if (haveFirst) {
-      callback();
+      callback.apply(this, args);
 
       // 第 1 次已经被执行
       haveFirst = false;
@@ -26083,7 +26150,7 @@ const debounce = function debounce(callback, delay) {
 
       // 如果本次和上次的回调时间差大于 delay，则执行
       if (curCallTime - preCallTime > delay) {
-        callback();
+        callback.apply(this, args);
       } else {
         // 否则，重置上次回调时间
         preCallTime = Date.now();
@@ -26125,13 +26192,13 @@ const throttle = function throttle(callback, delay) {
   // 默认上次回调时间为 0
   let preCallTime = 0;
 
-  return function onmousemove() {
+  return function onmousemove(...args) {
     // 本次回调时间
     const curCallTime = Date.now();
 
     // 如果本次回调时间与上次回调时间差大于 delay，则执行
     if (curCallTime - preCallTime > delay) {
-      callback();
+      callback.apply(this, args);
 
       // 重置上次回调时间为本次回调
       preCallTime = curCallTime;
