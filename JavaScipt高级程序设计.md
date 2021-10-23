@@ -1603,7 +1603,7 @@ const foo = function foo() {
 
 foo();
 console.log(message);
-// >> ReferenceError: message is not defined
+// -> ReferenceError: message is not defined
 ```
 
 这里，message 变量是在函数内部使用 var 定义的。函数叫 test()，调用它会创建这个变量并给它赋值。调用之后变量随即被销毁，因此示例中的最后一行会导致错误。不过，在函数内定义变量时省略 var 操作符，可以创建一个全局变量：
@@ -1616,7 +1616,7 @@ const foo = function foo() {
 
 foo();
 console.log(message);
-// >> 'hi'
+// -> 'hi'
 ```
 
 去掉之前的 var 操作符之后，message 就变成了全局变量。只要调用一次函数 test()，就会定义这个变量，并且可以在函数外部访问到。
@@ -1636,7 +1636,7 @@ const foo = function foo() {
 };
 
 foo();
-// >> undefined
+// -> undefined
 ```
 
 之所以不会报错，是因为 ECMAScript 运行时把它看成等价于如下代码：
@@ -1649,7 +1649,7 @@ const foo = function foo() {
 };
 
 foo();
-// >> undefined
+// -> undefined
 ```
 
 这就是所谓的“提升”（hoist），也就是把所有变量声明都拉到函数作用域的顶部。
@@ -1669,7 +1669,7 @@ const foo = function foo() {
 };
 
 foo();
-// >> 36
+// -> 36
 ```
 
 这是因为，由于 var 声明提升，所有的 age 变量会被提升至函数作用域顶部，之后合并相同的变量声明，以上代码实际上等价于：
@@ -1684,7 +1684,7 @@ const foo = function foo() {
 };
 
 foo();
-// >> 36
+// -> 36
 ```
 
 ### 3.3.2. let
@@ -1696,21 +1696,21 @@ let 跟 var 的作用差不多，但有着非常重要的区别。最明显的�
   var name = 'Matt';
 
   console.log(name);
-  // >> 'Matt'
+  // -> 'Matt'
 }
 
 console.log(name);
-// >> 'Matt'
+// -> 'Matt'
 
 {
   let age = 26;
 
   console.log(age);
-  // >> 26
+  // -> 26
 }
 
 console.log(age);
-// >> ReferenceError: age is not defined
+// -> ReferenceError: age is not defined
 ```
 
 在这里，age 变量之所以不能在 if 块外部被引用，是因为它的作用域仅限于该块内部。块作用域是函数作用域的子集，因此适用于 var 的作用域限制同样也适用于 let。
@@ -1727,7 +1727,7 @@ if (true) {
 
 let bar;
 let bar;
-// >> SyntaxError: Identifier 'bar' has already been declared
+// -> SyntaxError: Identifier 'bar' has already been declared
 ```
 
 当然，JavaScript 引擎会记录用于变量声明的标识符及其所在的块作用域，因此嵌套使用相同的标识符不会报错，而这是因为同一个块中没有重复声明：
@@ -1735,22 +1735,22 @@ let bar;
 ```javascript
 var name = 'Nicholas';
 console.log(name);
-// >> 'Nicholas'
+// -> 'Nicholas'
 
 (function () {
   var name = 'Matt';
   console.log(name);
-  // >> 'Matt'
+  // -> 'Matt'
 })();
 
 let age = 30;
 console.log(age);
-// >> 30
+// -> 30
 
 if (true) {
   let age = 26;
   console.log(age);
-  // >> 26
+  // -> 26
 }
 ```
 
@@ -1762,7 +1762,7 @@ if (true) {
 }
 
 let name;
-// >> SyntaxError: Identifier 'name' has already been declared
+// -> SyntaxError: Identifier 'name' has already been declared
 ```
 
 let 与 var 的另一个重要的区别，就是 let 声明的变量不会在作用域中被提升。
@@ -1770,13 +1770,13 @@ let 与 var 的另一个重要的区别，就是 let 声明的变量不会在作
 ```javascript
 // name 会被提升
 console.log(name);
-// >> undefined
+// -> undefined
 
 var name = 'Matt';
 
 // age 不会被提升
 console.log(age);
-// >> ReferenceError: Cannot access 'age' before initialization
+// -> ReferenceError: Cannot access 'age' before initialization
 
 let age = 26;
 ```
@@ -1792,7 +1792,7 @@ let foo = 'foo';
 
 {
   console.log(foo);
-  // >> 'foo'
+  // -> 'foo'
 }
 ```
 
@@ -1803,7 +1803,7 @@ let foo = 'foo';
 
 {
   console.log(foo);
-  // >> ReferenceError: Cannot access 'foo' before initialization
+  // -> ReferenceError: Cannot access 'foo' before initialization
 
   let foo;
 }
@@ -1819,7 +1819,7 @@ let foo = 'foo';
 {
   // TDZ 开始
   console.log(foo);
-  // >> ReferenceError: Cannot access 'foo' before initialization
+  // -> ReferenceError: Cannot access 'foo' before initialization
 
   console.log(bar);
   let bar = 'bar';
@@ -1834,10 +1834,10 @@ let foo = 'foo';
 ```javascript
 // OK
 console.log(typeof something);
-// >> undefined
+// -> undefined
 
 console.log(typeof otherthing);
-// >> ReferenceError: Cannot access 'otherthing' before initialization
+// -> ReferenceError: Cannot access 'otherthing' before initialization
 
 let otherthing;
 ```
@@ -1851,11 +1851,11 @@ let otherthing;
 ```javascript
 var name = 'Matt';
 console.log(window.name);
-// >> 'Matt'
+// -> 'Matt'
 
 let age = 26;
 console.log(window.age);
-// >> undefined
+// -> undefined
 ```
 
 不过，let 声明仍然是在全局作用域中发生的，相应变量会在页面的生命周期内存续。因此，为了避免 SyntaxError，必须确保页面不会重复声明同一个变量。
@@ -1924,7 +1924,7 @@ for (var i = 0; i < 3; i++) {
 }
 
 console.log(i);
-// >> 3
+// -> 3
 ```
 
 改成使用 let 之后，这个问题就消失了，因为迭代变量的作用域仅限于 for 循环块内部：
@@ -1935,7 +1935,7 @@ for (let i = 0; i < 3; i++) {
 }
 
 console.log(i);
-// >> ReferenceError: i is not defined
+// -> ReferenceError: i is not defined
 ```
 
 在使用 var 的时候，最常见的问题就是对迭代变量的奇特声明和修改：
@@ -1944,7 +1944,7 @@ console.log(i);
 for (var i = 0; i < 3; i++) {
   // 你可能以为会输出 0, 1, 2
   setTimeout(() => console.log(i), 0);
-  // >> 3, 3, 3
+  // -> 3, 3, 3
 }
 ```
 
@@ -1971,7 +1971,7 @@ setTimeout 是异步执行的代码，同步代码先执行，后再执行异步
 ```javascript
 for (var i = 0; i < 3; i++) {
   ((i) => setTimeout(() => console.log(i), 0))(i);
-  // >> 0, 1, 2
+  // -> 0, 1, 2
 }
 ```
 
@@ -2008,7 +2008,7 @@ for (var i = 0; i < 3; ) {
 ```javascript
 for (let i = 0; i < 3; i++) {
   setTimeout(() => console.log(i), 0);
-  // >> 0, 1, 2
+  // -> 0, 1, 2
 }
 ```
 
@@ -2021,12 +2021,12 @@ const 的行为与 let 基本相同，唯一一个重要的区别是用它声明
 ```javascript
 const age = 26;
 age = 36;
-// >> TypeError: Assignment to constant variable.
+// -> TypeError: Assignment to constant variable.
 
 // const 也不允许重复声明
 const name = 'Matt';
 const name = 'Nicholas';
-// >> SyntaxError: Identifier 'name' has already been declared
+// -> SyntaxError: Identifier 'name' has already been declared
 
 // const 声明的作用域也是块
 const name = 'Matt';
@@ -2036,7 +2036,7 @@ if (true) {
 }
 
 console.log(name);
-// >> 'Matt'
+// -> 'Matt'
 ```
 
 const 声明的限制只适用于它指向的变量的引用。换句话说，如果 const 变量引用的是一个对象，那么修改这个对象内部的属性并不违反 const 的限制。
@@ -2052,7 +2052,7 @@ JavaScript 引擎会为 for 循环中的 let 声明分别创建独立的变量�
 
 ```javascript
 for (const i = 0; i < 10; i++) {}
-// >> TypeError: Assignment to constant variable.
+// -> TypeError: Assignment to constant variable.
 ```
 
 不过，如果你只想用 const 声明一个不会被修改的 for 循环变量，那也是可以的。也就是说，每次迭代只是创建一个新变量。这对 for-of 和 for-in 循环特别有意义：
@@ -2061,19 +2061,19 @@ for (const i = 0; i < 10; i++) {}
 let i = 0;
 
 for (const j = 7; i < 5; i++) {
-  // >> 7, 7, 7, 7, 7
+  // -> 7, 7, 7, 7, 7
   console.log(j);
 }
 
 const object = {a: 1, b: 2};
 
 for (const key in object) {
-  // >> a, b
+  // -> a, b
   console.log(key);
 }
 
 for (const value of [1, 2, 3, 4, 5]) {
-  // >> 1, 2, 3, 4, 5
+  // -> 1, 2, 3, 4, 5
   console.log(value);
 }
 ```
@@ -2111,10 +2111,10 @@ ECMAScript 有 6 种简单数据类型（也称为 **原始类型**）：Undefin
 ```javascript
 const message = 'some string';
 console.log(typeof message);
-// >> 'string'
+// -> 'string'
 
 console.log(typeof 0);
-// >> 'number'
+// -> 'number'
 ```
 
 在这个例子中，我们把一个变量（message）和一个数值字面量传给了 typeof 操作符。注意，因为 typeof 是一个操作符而不是函数，所以不需要参数（但可以使用参数）。
@@ -2130,7 +2130,7 @@ Undefined 类型只有一个值，就是特殊值 undefined。当使用 var 或 
 ```javascript
 let message;
 console.log(message == undefined);
-// >> true
+// -> true
 ```
 
 在这个例子中，变量 message 在声明的时候并未初始化。而在比较它和 undefined 的字面值时，两者是相等的。这个例子等同于如下示例：
@@ -2138,7 +2138,7 @@ console.log(message == undefined);
 ```javascript
 let message = undefined;
 console.log(message == undefined);
-// >> true
+// -> true
 ```
 
 这里，变量 message 显式地以 undefined 来初始化。但这是不必要的，因为默认情况下，任何未经初始化的变量都会取得 undefined 值。
@@ -2151,11 +2151,11 @@ console.log(message == undefined);
 // 这个变量被声明了，只是值为 undefined
 let message;
 console.log(message);
-// >> 'undefined'
+// -> 'undefined'
 
 // 确保没有声明过这个变量
 console.log(age);
-// >> ReferenceError: age is not defined
+// -> ReferenceError: age is not defined
 ```
 
 在上面的例子中，第一个 console.log 会指出变量 message 的值，即 'undefined'。而第二个 console.log 要输出一个未声明的变量 age 的值，因此会导致报错。对未声明的变量，只能执行一个有用的操作，就是对它调用 typeof。（对未声明的变量调用 delete 也不会报错，但这个操作没什么用，实际上在严格模式下会抛出错误。）
@@ -2168,10 +2168,10 @@ let message;
 
 // 确保没有声明过这个变量
 console.log(typeof message);
-// >> 'undefined'
+// -> 'undefined'
 
 console.log(typeof age);
-// >> 'undefined'
+// -> 'undefined'
 ```
 
 无论是声明还是未声明，typeof 返回的都是字符串'undefined'。逻辑上讲这是对的，因为虽然严格来讲这两个变量存在根本性差异，但它们都无法执行实际操作。
@@ -2208,7 +2208,7 @@ if (!message) {
 }
 
 if (age) {
-  // >> ReferenceError: age is not defined
+  // -> ReferenceError: age is not defined
 }
 ```
 
@@ -2220,7 +2220,7 @@ Null 类型同样只有一个值，即特殊值 null。逻辑上讲，null 值�
 let car = null;
 
 console.log(typeof car);
-// >> 'object'
+// -> 'object'
 ```
 
 在定义将来要保存对象值的变量时，建议使用 null 来初始化，不要使用其他值。这样，只要检查这个变量的值是不是 null 就可以知道这个变量是否在后来被重新赋予了一个对象的引用，比如：
@@ -2235,7 +2235,7 @@ undefined 值是由 null 值派生而来的，因此 ECMA-262 将它们定义为
 
 ```javascript
 console.log(null == undefined);
-// >> true
+// -> true
 ```
 
 用等于操作符（==）比较 null 和 undefined 始终返回 true。但要注意，这个操作符会为了比较而转换它的操作数（本章后面将详细介绍）。
@@ -2301,7 +2301,7 @@ let i = 3;
 while (i--) {
   console.log(i);
 }
-// >> 2, 1, 0
+// -> 2, 1, 0
 ```
 
 在这个例子中，i 每次的自减结果都会转换为布尔值，当 i 自减到 0 时，布尔值为 false，因此退出了循环。像这样利用数字的隐式布尔转换在 JavaScript 中是很常见的。
@@ -2377,7 +2377,7 @@ const floatNum = 3.125e7;
 
 ```javascript
 console.log(0.1 + 0.2 === 0.3);
-// >> false
+// -> false
 ```
 
 2. **舍入误差**
@@ -2422,7 +2422,7 @@ IEEE 754 规定，为了最大限度提高精确度，可以要求尾数规范�
 
 然后找到第 52 位：
 
-100110011001100110011001100110011001100110011001100>>1<<100(1100)+
+100110011001100110011001100110011001100110011001100->1<<100(1100)+
 
 但注意到第 52 位后面的数字为 100。于是这个数字舍入后变为：
 
@@ -2463,7 +2463,7 @@ const equals = function equals(d0, d1) {
 
 const result = 0.1 + 0.2;
 equals(result, 0.3);
-// >> true
+// -> true
 ```
 
 3. **值的范围**
@@ -2475,7 +2475,7 @@ equals(result, 0.3);
 ```javascript
 const result = Number.MAX_VALUE + Number.MAX_VALUE;
 console.log(isFinite(result));
-// >> false
+// -> false
 ```
 
 虽然超出有限数值范围的计算并不多见，但总归还是有可能的。因此在计算非常大或非常小的数值时，有必要监测一下计算结果是否超出范围。
@@ -2488,27 +2488,27 @@ console.log(isFinite(result));
 
 ```javascript
 console.log(0 / 0);
-// >> NaN
+// -> NaN
 
 console.log(-0 / +0);
-// >> NaN
+// -> NaN
 ```
 
 如果分子是非 0 值，分母是有符号 0 或无符号 0，则会返回 Infinity 或-Infinity：
 
 ```javascript
 console.log(5 / 0);
-// >> Infinity
+// -> Infinity
 
 console.log(5 / -0);
-// >> -Infinity
+// -> -Infinity
 ```
 
 NaN 有几个独特的属性。首先，任何涉及 NaN 的操作始终返回 NaN（如 NaN/10），在连续多步计算时这可能是个问题。其次，NaN 不等于包括 NaN 在内的任何值。例如，下面的比较操作会返回 false：
 
 ```javascript
 console.log(NaN === NaN);
-// >> false
+// -> false
 ```
 
 利用 NaN 这个特性可以方便的判断一个值是不是 NaN，例如：
@@ -2517,30 +2517,30 @@ console.log(NaN === NaN);
 const any = NaN;
 
 console.log(any === any);
-// >> false
+// -> false
 ```
 
 为此，ECMAScript 提供了 isNaN()函数。该函数接收一个参数，可以是任意数据类型，然后判断这个参数是否“不是数值”。把一个值传给 isNaN()后，该函数会尝试把它转换为数值。某些非数值的值可以直接转换成数值，如字符串'10'或布尔值。任何不能转换为数值的值都会导致这个函数返回 true。举例如下：
 
 ```javascript
 console.log(isNaN(NaN));
-// >> true
+// -> true
 
 // 10 是数值
 console.log(isNaN(10));
-// >> false
+// -> false
 
 // 可以转换为数值 10
 console.log(isNaN('10'));
-// >> false
+// -> false
 
 // 不可以转换为数值
 console.log(isNaN('blue'));
-// >> true
+// -> true
 
 // 可以转换为数值 1
 console.log(isNaN(true));
-// >> false
+// -> false
 ```
 
 上述的例子测试了 5 个不同的值。首先测试的是 NaN 本身，显然会返回 true。接着测试了数值 10 和字符串'10'，都返回 false，因为它们的数值都是 10。字符串'blue'不能转换为数值，因此函数返回 true。布尔值 true 可以转换为数值 1，因此返回 false。
@@ -2549,10 +2549,10 @@ console.log(isNaN(true));
 
 ```javascript
 console.log(Number.isNaN(NaN));
-// >> true
+// -> true
 
 console.log(Number.isNaN('blue'));
-// >> false
+// -> false
 ```
 
 5. **数值转换**
@@ -2570,13 +2570,13 @@ Number()函数基于如下规则执行转换。
 
 ```javascript
 console.log(Number(false));
-// >> 0
+// -> 0
 
 console.log(Number(null));
-// >> 0
+// -> 0
 
 console.log(Number(undefined));
-// >> NaN
+// -> NaN
 ```
 
 - 字符串，应用以下规则：
@@ -2591,31 +2591,31 @@ console.log(Number(undefined));
 
 ```javascript
 console.log(Number(''));
-// >> 0
+// -> 0
 
 console.log(Number('+1'));
-// >> 1
+// -> 1
 
 console.log(Number('-01'));
-// >> -1
+// -> -1
 
 console.log(Number('+1.1'));
-// >> 1.1
+// -> 1.1
 
 console.log(Number('-00.1'));
-// >> -0.1
+// -> -0.1
 
 console.log(Number('0xffffff'));
-// >> 16777215
+// -> 16777215
 
 console.log(Number('1 2'));
-// >> NaN
+// -> NaN
 
 console.log(Number('0a'));
-// >> NaN
+// -> NaN
 
 console.log(Number('foo'));
-// >> NaN
+// -> NaN
 ```
 
 - 对象，应用以下规则：
@@ -2634,13 +2634,13 @@ console.log(Number('foo'));
 
   ```javascript
   console.log(Number(new Date()));
-  // >> 1630672520298
+  // -> 1630672520298
 
   console.log(Number(new Boolean(true)));
-  // >> 1
+  // -> 1
 
   console.log(Number(new String('foo')));
-  // >> NaN
+  // -> NaN
   ```
 
   2. 如果 valueOf()方法返回对象，则调用对象自身的 toString()方法。如果 toString()方法返回原始类型的值，则直接对该值使用上述规则，不再进行后续步骤。
@@ -2652,15 +2652,15 @@ console.log(Number('foo'));
   ```javascript
   // emptyArr.valueOf() 返回数组本身，继续应用 emptyArr.toString()，空数组返回空字符串 ''，因此为 0。
   console.log(Number([]));
-  // >> 0
+  // -> 0
 
   // oneEleArr.valueOf() 返回数组本身，继续应用 oneEleArr.toString()，单个元素数组返回第一个元素 toString() 的结果，在这个例子中就是 '1'，因此结果为 1。
   console.log(Number(['1']));
-  // >> 1
+  // -> 1
 
   // moreEleArr.valueOf() 返回数组本身，继续应用 moreEleArr.toString()，返回 '1,2'，因此结果为 NaN。
   console.log(Number([1, 2]));
-  // >> NaN
+  // -> NaN
   ```
 
   - 对象的 valueOf() 方法返回对象本身，继续应用 toString() 方法，返回字符串 '[Object Object]'，之后再应用字符串的转换规则，因此结果为 NaN。对于不同的对象有不同的 toString() 结果，但正则表达式，Math 对象，函数，映射，集合的默认数值转换结果都是 NaN。
@@ -2669,19 +2669,19 @@ console.log(Number('foo'));
 
   ```javascript
   console.log(Number({}));
-  // >> NaN
+  // -> NaN
 
   console.log(Number(/e/g));
-  // >> NaN
+  // -> NaN
 
   console.log(Number(Math));
-  // >> NaN
+  // -> NaN
 
   console.log(Number(() => {}));
-  // >> NaN
+  // -> NaN
 
   console.log(Number(new Map()));
-  // >> NaN
+  // -> NaN
   ```
 
   3. 如果 toString()方法返回的是对象，则报错。
@@ -2694,7 +2694,7 @@ console.log(Number('foo'));
   };
 
   console.log(Number(foo));
-  // >> TypeError: Cannot convert object to primitive value
+  // -> TypeError: Cannot convert object to primitive value
   ```
 
 考虑到用 Number()函数转换字符串时相对复杂且有点反常规，通常在需要得到整数时可以优先使用 parseInt()函数。parseInt()函数更专注于字符串是否包含数值模式。字符串最前面的空格会被忽略，从第一个非空格字符开始转换。如果第一个字符不是数值字符、加号或减号，parseInt()立即返回 NaN。这意味着空字符串也会返回 NaN（这一点跟 Number()不一样，它返回 0）。如果第一个字符是数值字符、加号或减号，则继续依次检测每个字符，直到字符串末尾，或碰到非数值字符。比如，'1234blue'会被转换为 1234，因为'blue'会被完全忽略。类似地，'22.5'会被转换为 22，因为小数点不是有效的整数字符。
@@ -2705,35 +2705,35 @@ console.log(Number('foo'));
 
 ```javascript
 console.log(parseInt('1234blue'));
-// >> 1234
+// -> 1234
 
 console.log(parseInt(''));
-// >> NaN
+// -> NaN
 
 //解释为十六进制整数
 console.log(parseInt('0xA'));
-// >> 10
+// -> 10
 
 console.log(parseInt(22.5));
-// >> 22
+// -> 22
 ```
 
 不同的数值格式很容易混淆，因此 parseInt()也接收第二个参数，用于指定底数（进制数）。如果知道要解析的值是十六进制，那么可以传入 16 作为第二个参数，以便正确解析：
 
 ```javascript
 console.log(parseInt('0xAF', 16));
-// >> 175
+// -> 175
 ```
 
 事实上，如果提供了十六进制参数，那么字符串前面的'0x'可以省掉：
 
 ```javascript
 console.log(parseInt('AF', 16));
-// >> 175
+// -> 175
 
 // 相当于 parseInt('AF', 10)
 console.log(parseInt('AF'));
-// >> NaN
+// -> NaN
 ```
 
 在这个例子中，第一个转换是正确的，而第二个转换失败了。区别在于第一次传入了进制数作为参数，告诉 parseInt()要解析的是一个十六进制字符串。而第二个转换检测到第一个字符就是非数值字符，随即自动停止并返回 NaN。
@@ -2743,19 +2743,19 @@ console.log(parseInt('AF'));
 ```javascript
 // 按二进制解析
 console.log(parseInt('10', 2));
-// >> 2
+// -> 2
 
 // 按八进制解析
 console.log(parseInt('10', 8));
-// >> 8
+// -> 8
 
 // 按十进制解析
 console.log(parseInt('10', 10));
-// >> 10
+// -> 10
 
 // 按十六进制解析
 console.log(parseInt('10', 16));
-// >> 16
+// -> 16
 ```
 
 因为不传底数参数相当于让 parseInt()自己决定如何解析，所以为避免解析出错，建议始终传给它第二个参数。
@@ -2767,22 +2767,22 @@ parseFloat()函数的另一个不同之处在于，它始终忽略字符串开�
 ```javascript
 // 按整数解析
 console.log(parseFloat('1234blue'));
-// >> 1234
+// -> 1234
 
 console.log(parseFloat('0xA'));
-// >> 0
+// -> 0
 
 console.log(parseFloat('22.5'));
-// >> 22.5
+// -> 22.5
 
 console.log(parseFloat('22.34.5'));
-// >> 22.34
+// -> 22.34
 
 console.log(parseFloat('0908.5'));
-// >> 908.5
+// -> 908.5
 
 console.log(parseFloat('3.125e7'));
-// >> 31250000
+// -> 31250000
 ```
 
 ### 3.4.6. String 类型
@@ -2827,7 +2827,7 @@ const str = 'This is the letter sigma: \u03a3.';
 
 ```javascript
 console.log(str.length);
-// >> 28
+// -> 28
 ```
 
 这个属性返回字符串中 16 位字符的个数。
@@ -2850,11 +2850,11 @@ lang = lang + 'Script';
 ```javascript
 const age = 11;
 const ageAsString = age.toString();
-// >> '11'
+// -> '11'
 
 const found = true;
 const foundAsString = found.toString();
-// >> 'true'
+// -> 'true'
 ```
 
 toString()方法可用于数值、布尔值、对象和字符串值。（没错，字符串值也有 toString()方法，该方法只是简单地返回自身的一个副本。）null 和 undefined 以及符号没有 toString()方法。
@@ -2864,19 +2864,19 @@ toString()方法可用于数值、布尔值、对象和字符串值。（没错�
 ```javascript
 const num = 10;
 console.log(num.toString());
-// >> '10'
+// -> '10'
 
 console.log(num.toString(2));
-// >> '1010'
+// -> '1010'
 
 console.log(num.toString(8));
-// >> '12'
+// -> '12'
 
 console.log(num.toString(10));
-// >> '10'
+// -> '10'
 
 console.log(num.toString(16));
-// >> 'a'
+// -> 'a'
 ```
 
 这个例子展示了传入底数参数时，toString()输出的字符串值也会随之改变。数值 10 可以输出为任意数值格式。注意，默认情况下（不传参数）的输出与传入参数 10 得到的结果相同。
@@ -2896,13 +2896,13 @@ const undef;
 const symbol = Symbol();
 
 console.log(String(nullValue));
-// >> 'null'
+// -> 'null'
 
 console.log(String(undef));
-// >> 'undefined'
+// -> 'undefined'
 
 console.log(String(symbol));
-// >> 'Symbol()'
+// -> 'Symbol()'
 ```
 
 4. **模板字面量**
@@ -2914,15 +2914,15 @@ const multiLineString = 'first line\nsecond line';
 const multiLineTemplateLiteral = `first line
 second line`;
 console.log(multiLineString);
-// >> 'first line
-// >> second line'
+// -> 'first line
+// -> second line'
 
 console.log(multiLineTemplateLiteral);
-// >> 'first line
-// >> second line'
+// -> 'first line
+// -> second line'
 
 console.log(multiLineString === multiLineTemplateLiteral);
-// >> true
+// -> true
 ```
 
 顾名思义，模板字面量在定义模板时特别有用，比如下面这个 HTML 模板：
@@ -2943,21 +2943,21 @@ const pageHTML = `
 const templateLiteral0 = `first line
 second line`;
 console.log(templateLiteral.length);
-// >> 47
+// -> 47
 
 // 这个模板字面量以一个换行符开头
 const templateLiteral1 = `
 first line
 second line`;
 console.log(templateLiteral1[0] === '\n');
-// >> true
+// -> true
 
 // 这个模板字面量没有意料之外的字符
 const templateLiteral2 = `first line
 second line`;
 console.log(templateLiteral2);
-// >> 'first line
-// >> second line'
+// -> 'first line
+// -> second line'
 ```
 
 5. **字符串插值**
@@ -2979,17 +2979,17 @@ const interpolatedTemplateLiteral = `${value} 的 ${exponent} 次方是 ${
   value ** exponent
 }`;
 console.log(interpolatedString);
-// >> '5 的 2 次方是 25'
+// -> '5 的 2 次方是 25'
 
 console.log(interpolatedTemplateLiteral);
-// >> '5 的 2 次方是 25'
+// -> '5 的 2 次方是 25'
 ```
 
 所有插入的值都会使用 toString() 强制转型为字符串，而且任何 JavaScript 表达式都可以用于插值。嵌套的模板字符串无须转义：
 
 ```javascript
 console.log(`Hello, ${`World`}!`);
-// >> 'Hello, World!'
+// -> 'Hello, World!'
 ```
 
 将表达式转换为字符串时会调用 toString()：
@@ -2997,7 +2997,7 @@ console.log(`Hello, ${`World`}!`);
 ```javascript
 const foo = {toString: () => 'World'};
 console.log(`Hello, ${foo}!`);
-// >> 'Hello, World!'
+// -> 'Hello, World!'
 ```
 
 在插值表达式中可以调用函数和方法：
@@ -3008,7 +3008,7 @@ const capitalize = function capitalize(word) {
 };
 
 console.log(`${capitalize('hello')}, ${capitalize('world')}!`);
-// >> 'Hello, World!'
+// -> 'Hello, World!'
 ```
 
 此外，模板也可以插入自己之前的值：
@@ -3022,13 +3022,13 @@ const append = function append() {
 };
 
 append();
-// >> 'abc'
+// -> 'abc'
 
 append();
-// >> 'abcabc'
+// -> 'abcabc'
 
 append();
-// >> 'abcabcabc'
+// -> 'abcabcabc'
 ```
 
 6. **模板字面量标签函数**
@@ -3059,16 +3059,16 @@ const simpleTag = function simpleTag(
 
 const untaggedResult = `${a} + ${b} = ${a + b}`;
 const taggedResult = simpleTag`${a} + ${b} = ${a + b}`;
-// >> ['', ' + ', ' = ', '']
-// >> 6
-// >> 9
-// >> 15
+// -> ['', ' + ', ' = ', '']
+// -> 6
+// -> 9
+// -> 15
 
 console.log(untaggedResult);
-// >> '6 + 9 = 15'
+// -> '6 + 9 = 15'
 
 console.log(taggedResult);
-// >> 'foobar'
+// -> 'foobar'
 ```
 
 因为表达式参数的数量是可变的，所以通常应该使用剩余操作符(rest operator)将它们收集到一个数组中：
@@ -3088,13 +3088,13 @@ const simpleTag = function simpleTag(strings, ...expressions) {
 };
 
 const taggedResult = simpleTag`${a} + ${b} = ${a + b}`;
-// >> ['', ' + ', ' = ', '']
-// >> 6
-// >> 9
-// >> 15
+// -> ['', ' + ', ' = ', '']
+// -> 6
+// -> 9
+// -> 15
 
 console.log(taggedResult);
-// >> 'foobar'
+// -> 'foobar'
 ```
 
 对于有 n 个插值的模板字面量，传给标签函数的表达式参数的个数始终是 n，而传给标签函数的第一个参数所包含的字符串个数则始终是 n+1。因此，如果你想把这些字符串和对表达式求值的结果拼接起来作为默认返回的字符串，可以这样做：
@@ -3112,10 +3112,10 @@ const zipTag = function zipTag(strings, ...expressions) {
 const untaggedResult = `${a} + ${b} = ${a + b}`;
 const taggedResult = zipTag`${a} + ${b} = ${a + b}`;
 console.log(untaggedResult);
-// >> '6 + 9 = 15'
+// -> '6 + 9 = 15'
 
 console.log(taggedResult);
-// >> '6 + 9 = 15'
+// -> '6 + 9 = 15'
 ```
 
 7. **原始字符串**
@@ -3126,30 +3126,30 @@ console.log(taggedResult);
 // Unicode 示例
 // \u00A9 是版权符号
 console.log(`\u00A9`);
-// >> '©'
+// -> '©'
 
 console.log(String.raw`\u00A9`);
-// >> '\u00A9'
+// -> '\u00A9'
 
 // 换行符示例
 console.log(`first line\nsecond line`);
-// >> 'first line
-// >> second line'
+// -> 'first line
+// -> second line'
 
 console.log(String.raw`first line\nsecond line`);
-// >> 'first line\nsecond line'
+// -> 'first line\nsecond line'
 
 // 对实际的换行符来说是不行的
 // 它们不会被转换成转义序列的形式
 console.log(`first line
 second line`);
-// >> 'first line
-// >> second line'
+// -> 'first line
+// -> second line'
 
 console.log(String.raw`first line
 second line`);
-// >> 'first line
-// >> second line'
+// -> 'first line
+// -> second line'
 ```
 
 另外，也可以通过标签函数的第一个参数，即字符串数组的.raw 属性取得每个字符串的原始内容：
@@ -3170,12 +3170,12 @@ const printRaw = function printRaw(strings) {
 };
 
 printRaw`\u00A9${'and'}\n`;
-// >> 'Actual characters:'
-// >> '©'
-// >>（换行符）
-// >> 'Escaped characters:'
-// >> '\u00A9'
-// >> '\n'
+// -> 'Actual characters:'
+// -> '©'
+// ->（换行符）
+// -> 'Escaped characters:'
+// -> '\u00A9'
+// -> '\n'
 ```
 
 ### 3.4.7. Symbol 类型
@@ -3191,7 +3191,7 @@ Symbol（符号）是 ECMAScript 6 新增的数据类型。符号是原始值，
 ```javascript
 const sym = Symbol();
 console.log(typeof sym);
-// >> 'symbol'
+// -> 'symbol'
 ```
 
 调用 Symbol()函数时，也可以传入一个字符串参数作为对符号的描述（description），将来可以通过这个字符串来调试代码。但是，这个字符串参数与符号定义或标识完全无关：
@@ -3203,10 +3203,10 @@ const fooSymbol = Symbol('foo');
 const otherFooSymbol = Symbol('foo');
 
 console.log(genericSymbol == otherGenericSymbol);
-// >> false
+// -> false
 
 console.log(fooSymbol == otherFooSymbol);
-// >> false
+// -> false
 ```
 
 符号没有字面量语法，这也是它们发挥作用的关键。按照规范，你只要创建 Symbol()实例并将其用作对象的新属性，就可以保证它不会覆盖已有的对象属性，无论是符号属性还是字符串属性。
@@ -3214,11 +3214,11 @@ console.log(fooSymbol == otherFooSymbol);
 ```javascript
 const genericSymbol = Symbol();
 console.log(genericSymbol);
-// >> Symbol()
+// -> Symbol()
 
 const fooSymbol = Symbol('foo');
 console.log(fooSymbol);
-// >> Symbol(foo)
+// -> Symbol(foo)
 ```
 
 最重要的是，Symbol()函数不能与 new 关键字一起作为构造函数使用。这样做是为了避免创建符号包装对象，像使用 Boolean、String 或 Number 那样，它们都支持构造函数且可用于初始化包含原始值的包装对象：
@@ -3226,18 +3226,18 @@ console.log(fooSymbol);
 ```javascript
 const myBoolean = new Boolean();
 console.log(typeof myBoolean);
-// >> 'object'
+// -> 'object'
 
 const myString = new String();
 console.log(typeof myString);
-// >> 'object'
+// -> 'object'
 
 const myNumber = new Number();
 console.log(typeof myNumber);
-// >> 'object'
+// -> 'object'
 
 const mySymbol = new Symbol();
-// >> TypeError: Symbol is not a constructor
+// -> TypeError: Symbol is not a constructor
 ```
 
 如果你确实想使用符号包装对象，可以借用 Object()函数：
@@ -3246,7 +3246,7 @@ const mySymbol = new Symbol();
 const mySymbol = Symbol();
 const myWrappedSymbol = Object(mySymbol);
 console.log(typeof myWrappedSymbol);
-// >> 'object'
+// -> 'object'
 ```
 
 2. **使用全局符号注册表**
@@ -3258,7 +3258,7 @@ console.log(typeof myWrappedSymbol);
 ```javascript
 const fooGlobalSymbol = Symbol.for('foo');
 console.log(typeof fooGlobalSymbol);
-// >> 'symbol'
+// -> 'symbol'
 ```
 
 Symbol.for()对每个字符串键都执行幂等操作。第一次使用某个字符串调用时，它会检查全局运行时注册表，发现不存在对应的符号，于是就会生成一个新符号实例并添加到注册表中。后续使用相同字符串的调用同样会检查注册表，发现存在与该字符串对应的符号，然后就会返回该符号实例。
@@ -3271,7 +3271,7 @@ const fooGlobalSymbol = Symbol.for('foo');
 const otherFooGlobalSymbol = Symbol.for('foo');
 
 console.log(fooGlobalSymbol === otherFooGlobalSymbol);
-// >> true
+// -> true
 ```
 
 即使采用相同的符号描述，在全局注册表中定义的符号跟使用 Symbol()定义的符号也并不等同：
@@ -3280,7 +3280,7 @@ console.log(fooGlobalSymbol === otherFooGlobalSymbol);
 const localSymbol = Symbol('foo');
 const globalSymbol = Symbol.for('foo');
 console.log(localSymbol === globalSymbol);
-// >> false
+// -> false
 ```
 
 全局注册表中的符号必须使用字符串键来创建，因此作为参数传给 Symbol.for()的任何值都会被转换为字符串。此外，注册表中使用的键同时也会被用作符号描述。
@@ -3288,7 +3288,7 @@ console.log(localSymbol === globalSymbol);
 ```javascript
 const emptyGlobalSymbol = Symbol.for();
 console.log(emptyGlobalSymbol);
-// >> Symbol(undefined)
+// -> Symbol(undefined)
 ```
 
 还可以使用 Symbol.keyFor()来查询全局注册表，这个方法接收符号，返回该全局符号对应的字符串键。如果查询的不是全局符号，则返回 undefined。
@@ -3297,19 +3297,19 @@ console.log(emptyGlobalSymbol);
 // 创建全局符号
 const s = Symbol.for('foo');
 console.log(Symbol.keyFor(s));
-// >> 'foo'
+// -> 'foo'
 
 // 创建普通符号
 const s2 = Symbol('bar');
 console.log(Symbol.keyFor(s2));
-// >> undefined
+// -> undefined
 ```
 
 如果传给 Symbol.keyFor()的不是符号，则该方法抛出 TypeError：
 
 ```javascript
 Symbol.keyFor(123);
-// >> TypeError: 123 is not a symbol
+// -> TypeError: 123 is not a symbol
 ```
 
 3. **使用符号作为属性**
@@ -3328,7 +3328,7 @@ const object = {
 
 // 这样也可以：o[s1] = 'foo val';
 console.log(object);
-// >> {Symbol(foo): foo val}
+// -> {Symbol(foo): foo val}
 
 Object.defineProperty(object, s2, {value: 'bar val'});
 console.log(object);
@@ -3340,8 +3340,8 @@ Object.defineProperties(object, {
 });
 
 console.log(object);
-// >> {Symbol(foo): foo val, Symbol(bar): bar val,
-// >> Symbol(baz): baz val, Symbol(qux): qux val}
+// -> {Symbol(foo): foo val, Symbol(bar): bar val,
+// -> Symbol(baz): baz val, Symbol(qux): qux val}
 ```
 
 类似于 Object.getOwnPropertyNames()返回对象实例的常规属性数组，Object.getOwnPropertySymbols()返回对象实例的符号属性数组。这两个方法的返回值彼此互斥。Object.getOwnPropertyDescriptors()会返回同时包含常规和符号属性描述符的对象。Reflect.ownKeys()会返回两种类型的键：
@@ -3358,16 +3358,16 @@ const object = {
 };
 
 console.log(Object.getOwnPropertySymbols(object));
-// >> [Symbol(foo), Symbol(bar)]
+// -> [Symbol(foo), Symbol(bar)]
 
 console.log(Object.getOwnPropertyNames(object));
-// >> ['baz', 'qux']
+// -> ['baz', 'qux']
 
 console.log(Reflect.ownKeys(object));
-// >> ['baz', 'qux', Symbol(foo), Symbol(bar)]
+// -> ['baz', 'qux', Symbol(foo), Symbol(bar)]
 
 console.log(Object.getOwnPropertyDescriptors(object));
-// >> {baz: {...}, qux: {...}, Symbol(foo): {...}, Symbol(bar): {...}}
+// -> {baz: {...}, qux: {...}, Symbol(foo): {...}, Symbol(bar): {...}}
 ```
 
 因为符号属性是对内存中符号的一个引用，所以直接创建并用作属性的符号不会丢失。但是，如果没有显式地保存对这些属性的引用，那么必须遍历对象的所有符号属性才能找到相应的属性键：
@@ -3379,13 +3379,13 @@ const object = {
 };
 
 console.log(object);
-// >> {Symbol(foo): 'foo val', Symbol(bar): 'bar val'}
+// -> {Symbol(foo): 'foo val', Symbol(bar): 'bar val'}
 
 const barSymbol = Object.getOwnPropertySymbols(object).find((symbol) =>
   symbol.toString().match(/bar/),
 );
 console.log(barSymbol);
-// >> Symbol(bar)
+// -> Symbol(bar)
 ```
 
 4. **常用内置符号**
@@ -3412,7 +3412,7 @@ class Foo {
 const f = new Foo();
 
 console.log(f[Symbol.asyncIterator]());
-// >> AsyncGenerator {<suspended>}
+// -> AsyncGenerator {<suspended>}
 ```
 
 技术上，这个由 Symbol.asyncIterator 函数生成的对象应该通过其 next()方法陆续返回 Promise 实例。可以通过显式地调用 next()方法返回，也可以隐式地通过异步生成器函数返回：
@@ -3440,7 +3440,7 @@ const asyncCount = async function () {
 };
 
 asyncCount();
-// >> 0, 1, 2, 3, 4
+// -> 0, 1, 2, 3, 4
 ```
 
 注意: Symbol.asyncIterator 是 ES2018 规范定义的，因此只有版本非常新的浏览器支持它。
@@ -3455,14 +3455,14 @@ const Foo = function () {};
 const f = new Foo();
 
 console.log(f instanceof Foo);
-// >> true
+// -> true
 
 class Bar {}
 
 const b = new Bar();
 
 console.log(b instanceof Bar);
-// >> true
+// -> true
 ```
 
 在 ES6 中，instanceof 操作符会使用 Symbol.hasInstance 函数来确定关系。以 Symbol.hasInstance 为键的函数会执行同样的操作，只是操作数对调了一下：
@@ -3472,13 +3472,13 @@ const Foo = function () {};
 
 const foo = new Foo();
 console.log(Foo[Symbol.hasInstance](foo));
-// >> true
+// -> true
 
 class Bar {}
 
 const bar = new Bar();
 console.log(Bar[Symbol.hasInstance](bar));
-// >> true
+// -> true
 ```
 
 这个属性定义在 Function 的原型上，因此默认在所有函数和类上都可以调用。由于 instanceof 操作符会在原型链上寻找这个属性定义，就跟在原型链上寻找其他属性一样，因此可以在继承的类上通过静态方法重新定义这个函数：
@@ -3494,16 +3494,16 @@ class Baz extends Bar {
 
 const baz = new Baz();
 console.log(Bar[Symbol.hasInstance](baz));
-// >> true
+// -> true
 
 console.log(baz instanceof Bar);
-// >> true
+// -> true
 
 console.log(Baz[Symbol.hasInstance](baz));
-// >> false
+// -> false
 
 console.log(baz instanceof Baz);
-// >> false
+// -> false
 ```
 
 7. **Symbol.isConcatSpreadable**
@@ -3526,10 +3526,10 @@ const arrLikeObject = {
 
 ```javascript
 console.log(arrLikeObject[0]);
-// >> foo
+// -> foo
 
 console.log(arrLikeObject.length);
-// >> 2
+// -> 2
 ```
 
 类数组对象可以用作数组的 concat() 方法的参数，可以用作 Array.from() 的方法的参数。
@@ -3538,7 +3538,7 @@ console.log(arrLikeObject.length);
 
 ```javascript
 console.log([...arrLikeObject]);
-// >> TypeError: arrLikeObject is not iterable
+// -> TypeError: arrLikeObject is not iterable
 ```
 
 数组对象默认情况下会被打平到已有的数组，false 或假值会导致整个对象被追加到数组末尾。类数组对象默认情况下会被追加到数组末尾，true 或真值会导致这个类数组对象被打平到数组实例。其他不是类数组对象的对象在 Symbol.isConcatSpreadable 被设置为 true 的情况下将被忽略。
@@ -3547,36 +3547,36 @@ console.log([...arrLikeObject]);
 const initial = ['foo'];
 const array = ['bar'];
 console.log(array[Symbol.isConcatSpreadable]);
-// >> undefined
+// -> undefined
 
 console.log(initial.concat(array));
-// >> ['foo', 'bar']
+// -> ['foo', 'bar']
 
 array[Symbol.isConcatSpreadable] = false;
 console.log(initial.concat(array));
-// >> ['foo', Array(1)]
+// -> ['foo', Array(1)]
 
 const arrayLikeObject = {length: 1, 0: 'baz'};
 console.log(arrayLikeObject[Symbol.isConcatSpreadable]);
-// >> undefined
+// -> undefined
 
 console.log(initial.concat(arrayLikeObject));
-// >> ['foo', {...}]
+// -> ['foo', {...}]
 
 arrayLikeObject[Symbol.isConcatSpreadable] = true;
 console.log(initial.concat(arrayLikeObject));
-// >> ['foo', 'baz']
+// -> ['foo', 'baz']
 
 const otherObject = new Set().add('qux');
 console.log(otherObject[Symbol.isConcatSpreadable]);
-// >> undefined
+// -> undefined
 
 console.log(initial.concat(otherObject));
-// >> ['foo', Set(1)]
+// -> ['foo', Set(1)]
 
 otherObject[Symbol.isConcatSpreadable] = true;
 console.log(initial.concat(otherObject));
-// >> ['foo']
+// -> ['foo']
 ```
 
 8. **Symbol.iterator**
@@ -3592,7 +3592,7 @@ class Foo {
 
 const foo = new Foo();
 console.log(f[Symbol.iterator]());
-// >> Generator {<suspended>}
+// -> Generator {<suspended>}
 ```
 
 技术上，这个由 Symbol.iterator 函数生成的对象应该通过其 next()方法陆续返回值。可以通过显式地调用 next()方法返回，也可以隐式地通过生成器函数返回：
@@ -3620,7 +3620,7 @@ const count = function count() {
 };
 
 count();
-// >> 0, 1, 2, 3, 4
+// -> 0, 1, 2, 3, 4
 ```
 
 9. **Symbol.match**
@@ -3629,10 +3629,10 @@ count();
 
 ```javascript
 console.log(RegExp.prototype[Symbol.match]);
-// >> ƒ [Symbol.match]() { [native code] }
+// -> ƒ [Symbol.match]() { [native code] }
 
 console.log('foobar'.match(/bar/));
-// >> ['bar', index: 3, input: 'foobar', groups: undefined]
+// -> ['bar', index: 3, input: 'foobar', groups: undefined]
 ```
 
 给这个方法传入非正则表达式值会导致该值被转换为 RegExp 对象。如果想改变这种行为，让方法直接使用参数，则可以重新定义 Symbol.match 函数以取代默认对正则表达式求值的行为，从而让 match()方法使用非正则表达式实例。Symbol.match 函数接收一个参数，就是调用 match()方法的字符串实例。返回的值没有限制：
@@ -3645,10 +3645,10 @@ class FooMatcher {
 }
 
 console.log('foobar'.match(FooMatcher));
-// >> true
+// -> true
 
 console.log('barbaz'.match(FooMatcher));
-// >> false
+// -> false
 
 class StringMatcher {
   constructor(str) {
@@ -3661,10 +3661,10 @@ class StringMatcher {
 }
 
 console.log('foobar'.match(new StringMatcher('foo')));
-// >> true
+// -> true
 
 console.log('barbaz'.match(new StringMatcher('qux')));
-// >> false
+// -> false
 ```
 
 10. **Symbol.replace**
@@ -3673,10 +3673,10 @@ console.log('barbaz'.match(new StringMatcher('qux')));
 
 ```javascript
 console.log(RegExp.prototype[Symbol.replace]);
-// >> ƒ [Symbol.replace]() { [native code] }
+// -> ƒ [Symbol.replace]() { [native code] }
 
 console.log('foobarbaz'.replace(/bar/, 'qux'));
-// >> 'fooquxbaz'
+// -> 'fooquxbaz'
 ```
 
 给这个方法传入非正则表达式值会导致该值被转换为 RegExp 对象。如果想改变这种行为，让方法直接使用参数，可以重新定义 Symbol.replace 函数以取代默认对正则表达式求值的行为，从而让 replace()方法使用非正则表达式实例。Symbol.replace 函数接收两个参数，即调用 replace()方法的字符串实例和替换字符串。返回的值没有限制：
@@ -3689,7 +3689,7 @@ class FooReplacer {
 }
 
 console.log('barfoobaz'.replace(FooReplacer, 'qux'));
-// >> 'barquxbaz'
+// -> 'barquxbaz'
 
 class StringReplacer {
   constructor(str) {
@@ -3702,7 +3702,7 @@ class StringReplacer {
 }
 
 console.log('barfoobaz'.replace(new StringReplacer('foo'), 'qux'));
-// >> 'barquxbaz'
+// -> 'barquxbaz'
 ```
 
 11. **Symbol.search**
@@ -3711,10 +3711,10 @@ console.log('barfoobaz'.replace(new StringReplacer('foo'), 'qux'));
 
 ```javascript
 console.log(RegExp.prototype[Symbol.search]);
-// >> ƒ [Symbol.search]() { [native code] }
+// -> ƒ [Symbol.search]() { [native code] }
 
 console.log('foobar'.search(/bar/));
-// >> 3
+// -> 3
 ```
 
 给这个方法传入非正则表达式值会导致该值被转换为 RegExp 对象。如果想改变这种行为，让方法直接使用参数，可以重新定义 Symbol.search 函数以取代默认对正则表达式求值的行为，从而让 search()方法使用非正则表达式实例。Symbol.search 函数接收一个参数，就是调用 match()方法的字符串实例。返回的值没有限制：
@@ -3727,13 +3727,13 @@ class FooSearcher {
 }
 
 console.log('foobar'.search(FooSearcher));
-// >> 0
+// -> 0
 
 console.log('barfoo'.search(FooSearcher));
-// >> 3
+// -> 3
 
 console.log('barbaz'.search(FooSearcher));
-// >> -1
+// -> -1
 
 class StringSearcher {
   constructor(str) {
@@ -3746,13 +3746,13 @@ class StringSearcher {
 }
 
 console.log('foobar'.search(new StringSearcher('foo')));
-// >> 0
+// -> 0
 
 console.log('barfoo'.search(new StringSearcher('foo')));
-// >> 3
+// -> 3
 
 console.log('barbaz'.search(new StringSearcher('qux')));
-// >> -1
+// -> -1
 ```
 
 12. **Symbol.species**
@@ -3770,31 +3770,31 @@ class Baz extends Array {
 
 const bar = new Bar();
 console.log(bar instanceof Array);
-// >> true
+// -> true
 
 console.log(bar instanceof Bar);
-// >> true
+// -> true
 
 bar = bar.concat('bar');
 console.log(bar instanceof Array);
-// >> true
+// -> true
 
 console.log(bar instanceof Bar);
-// >> true
+// -> true
 
 const baz = new Baz();
 console.log(baz instanceof Array);
-// >> true
+// -> true
 
 console.log(baz instanceof Baz);
-// >> true
+// -> true
 
 baz = baz.concat('baz');
 console.log(baz instanceof Array);
-// >> true
+// -> true
 
 console.log(baz instanceof Baz);
-// >> false
+// -> false
 ```
 
 13. **Symbol.split**
@@ -3803,10 +3803,10 @@ console.log(baz instanceof Baz);
 
 ```javascript
 console.log(RegExp.prototype[Symbol.split]);
-// >> ƒ [Symbol.split]() { [native code] }
+// -> ƒ [Symbol.split]() { [native code] }
 
 console.log('foobarbaz'.split(/bar/));
-// >> ['foo', 'baz']
+// -> ['foo', 'baz']
 ```
 
 给这个方法传入非正则表达式值会导致该值被转换为 RegExp 对象。如果想改变这种行为，让方法直接使用参数，可以重新定义 Symbol.split 函数以取代默认对正则表达式求值的行为，从而让 split()方法使用非正则表达式实例。Symbol.split 函数接收一个参数，就是调用 match()方法的字符串实例。返回的值没有限制：
@@ -3819,7 +3819,7 @@ class FooSplitter {
 }
 
 console.log('barfoobaz'.split(FooSplitter));
-// >> ['bar', 'baz']
+// -> ['bar', 'baz']
 
 class StringSplitter {
   constructor(str) {
@@ -3832,7 +3832,7 @@ class StringSplitter {
 }
 
 console.log('barfoobaz'.split(new StringSplitter('foo')));
-// >> ['bar', 'baz']
+// -> ['bar', 'baz']
 ```
 
 14. **Symbol.toPrimitive**
@@ -3846,13 +3846,13 @@ class Foo {}
 
 const foo = new Foo();
 console.log(3 + foo);
-// >> '3[object Object]'
+// -> '3[object Object]'
 
 console.log(3 - foo);
-// >> NaN
+// -> NaN
 
 console.log(String(foo));
-// >> '[object Object]'
+// -> '[object Object]'
 
 class Bar {
   constructor() {
@@ -3872,13 +3872,13 @@ class Bar {
 
 const bar = new Bar();
 console.log(3 + bar);
-// >> '3default bar'
+// -> '3default bar'
 
 console.log(3 - bar);
-// >> 0
+// -> 0
 
 console.log(String(bar));
-// >> 'string bar'
+// -> 'string bar'
 ```
 
 15. **Symbol.toStringTag**
@@ -3890,25 +3890,25 @@ console.log(String(bar));
 ```javascript
 let set = new Set();
 console.log(set);
-// >> Set(0) {}
+// -> Set(0) {}
 
 console.log(set.toString());
-// >> '[object Set]'
+// -> '[object Set]'
 
 console.log(set[Symbol.toStringTag]);
-// >> 'Set'
+// -> 'Set'
 
 class Foo {}
 
 const foo = new Foo();
 console.log(foo);
-// >> Foo {}
+// -> Foo {}
 
 console.log(foo.toString());
-// >> '[object Object]'
+// -> '[object Object]'
 
 console.log(foo[Symbol.toStringTag]);
-// >> undefined
+// -> undefined
 
 class Bar {
   get [Symbol.toStringTag] {
@@ -3918,13 +3918,13 @@ class Bar {
 
 const bar = new Bar();
 console.log(bar);
-// >> Bar {}
+// -> Bar {}
 
 console.log(bar.toString());
-// >> '[object Bar]'
+// -> '[object Bar]'
 
 console.log(bar[Symbol.toStringTag]);
-// >> 'Bar'
+// -> 'Bar'
 ```
 
 ### 3.4.8. Object 类型
@@ -3990,11 +3990,11 @@ let age = 29;
 let age = 29;
 age++;
 console.log(age);
-// >> 30
+// -> 30
 
 age--;
 console.log(age);
-// >> 29
+// -> 29
 ```
 
 注意 涉及递增/递减操作符的语句也是表达式。有时会带来意想不到的结果。请看下面的例子：
@@ -4003,17 +4003,17 @@ console.log(age);
 let age = 29;
 ++age;
 console.log(++age);
-// >> 31
+// -> 31
 
 console.log(age);
-// >> 31
+// -> 31
 
 age--;
 console.log(age--);
-// >> 30
+// -> 30
 
 console.log(age);
-// >> 29
+// -> 29
 ```
 
 要理解上面的例子，我们需要理解 `++age` 不仅是一条语句，也是一个表达式。`++age` 在作为语句时的效果是将 age 的值增加 1，作为表达式时，`++age` 的值是 `age + 1`。
@@ -4034,13 +4034,13 @@ let object = {
 };
 
 console.log(object++);
-// >> -1
+// -> -1
 
 console.log(typeof object);
-// >> 'number'
+// -> 'number'
 
 console.log(object);
-// >> 0
+// -> 0
 ```
 
 2. **正/负操作符**
@@ -4051,7 +4051,7 @@ console.log(object);
 let num = 25;
 num = +num;
 console.log(num);
-// >> 25
+// -> 25
 ```
 
 如果将正号应用到非数值，则会执行与使用 Number()转型函数一样的类型转换。
@@ -4066,7 +4066,7 @@ const object = {
 };
 
 console.log(+object);
-// >> -1
+// -> -1
 ```
 
 负号由一个（-）表示，放在变量前头，主要用于把数值变成负值，如把 1 转换为-1。示例如下：
@@ -4075,7 +4075,7 @@ console.log(+object);
 let num = 25;
 num = -num;
 console.log(num);
-// >> -25
+// -> -25
 ```
 
 对数值使用负号会将其变成相应的负值（如上面的例子所示）。在应用到非数值时，负号会遵循与一元加同样的规则，先对它们进行转换，然后再取负值：
@@ -4088,7 +4088,7 @@ const object = {
 };
 
 console.log(-object);
-// >> 1
+// -> 1
 ```
 
 正号和负号操作符主要用于基本的算术，但也可以像上面的例子那样，用于数据类型转换。
@@ -4120,10 +4120,10 @@ const result = 1 + 2;
 
 ```javascript
 console.log(null + false);
-// >> 0
+// -> 0
 
 console.log(0 + undefined);
-// >> NaN
+// -> NaN
 ```
 
 - 不过，如果有一个操作数是字符串或者对象，则要对两个操作数都使用 String() 进行转型，之后再将产生的两个字符串拼接。
@@ -4455,11 +4455,11 @@ let newValue = oldValue << 5; // 等于二进制1000000，即十进制64
 
 6. **有符号右移**
 
-有符号右移由两个大于号（>>）表示，会将数值的所有 32 位都向右移，同时保留符号（正或负）。有符号右移实际上是左移的逆运算。比如，如果将 64 右移 5 位，那就是 2：
+有符号右移由两个大于号（->）表示，会将数值的所有 32 位都向右移，同时保留符号（正或负）。有符号右移实际上是左移的逆运算。比如，如果将 64 右移 5 位，那就是 2：
 
 ```javascript
 let oldValue = 64; // 等于二进制1000000
-let newValue = oldValue >> 5; // 等于二进制10，即十进制2
+let newValue = oldValue -> 5; // 等于二进制10，即十进制2
 ```
 
 同样，移位后就会出现空位。不过，右移后空位会出现在左侧，且在符号位之后（见下图）。ECMAScript 会用符号位的值来填充这些空位，以得到完整的数值。
@@ -4468,18 +4468,18 @@ let newValue = oldValue >> 5; // 等于二进制10，即十进制2
 
 7. **无符号右移**
 
-无符号右移用 3 个大于号表示（>>>），会将数值的所有 32 位都向右移。对于正数，无符号右移与有符号右移结果相同。仍然以前面有符号右移的例子为例，64 向右移动 5 位，会变成 2：
+无符号右移用 3 个大于号表示（->>），会将数值的所有 32 位都向右移。对于正数，无符号右移与有符号右移结果相同。仍然以前面有符号右移的例子为例，64 向右移动 5 位，会变成 2：
 
 ```javascript
 let oldValue = 64; // 等于二进制1000000
-let newValue = oldValue >>> 5; // 等于二进制10，即十进制2
+let newValue = oldValue ->> 5; // 等于二进制10，即十进制2
 ```
 
 对于负数，有时候差异会非常大。与有符号右移不同，无符号右移会给空位补 0，而不管符号位是什么。对正数来说，这跟有符号右移效果相同。但对负数来说，结果就差太多了。无符号右移操作符将负数的二进制表示当成正数的二进制表示来处理。因为负数是其绝对值的二补数，所以右移之后结果变得非常之大，如下面的例子所示：
 
 ```javascript
 let oldValue = -64; // 等于二进制11111111111111111111111111000000
-let newValue = oldValue >>> 5; // 等于十进制134217726
+let newValue = oldValue ->> 5; // 等于十进制134217726
 ```
 
 在对-64 无符号右移 5 位后，结果是 134 217 726。这是因为-64 的二进制表示是 11111111111111111111111111000000，无符号右移却将它当成正值，也就是 4 294 967 232。把这个值右移 5 位后，结果是 00000111111111111111111111111110，即 134 217 726。
@@ -4790,8 +4790,8 @@ num += 10;
 - 加后赋值（+=）
 - 减后赋值（-=）
 - 左移后赋值（<<=）
-- 右移后赋值（>>=）
-- 无符号右移后赋值（>>>=）
+- 右移后赋值（->=）
+- 无符号右移后赋值（->>=）
 
 这些操作符仅仅是简写语法，使用它们不会提升性能。
 
@@ -6069,7 +6069,7 @@ vectorList.push(vector);
 对象被认为是某个特定引用类型的实例。新对象通过使用 new 操作符后跟一个 **构造函数(constructor)** 来创建。构造函数就是用来创建新对象的函数，比如下面这行代码：
 
 ```javascript
-let now = new Date();
+const now = new Date();
 ```
 
 这行代码创建了引用类型 Date 的一个新实例，并将它保存在变量 now 中。Date()在这里就是构造函数，它负责创建一个只有默认属性和方法的简单对象。ECMAScript 提供了很多像 Date 这样的原生引用类型，帮助开发者实现常见的任务。
@@ -8594,23 +8594,23 @@ const colors = ['red', 'green', 'blue'];
 // 删除第一项
 let removed = colors.splice(0, 1);
 console.log(colors);
-// >> ['green', 'blue']
+// -> ['green', 'blue']
 
 console.log(removed);
-// >> ['red']
+// -> ['red']
 
 // 在位置 1 插入两个元素
 removed = colors.splice(1, 0, 'yellow', 'orange');
 console.log(colors);
-// >> ['green', 'yellow', 'orange', 'blue']
+// -> ['green', 'yellow', 'orange', 'blue']
 
 console.log(removed);
-// >> []
+// -> []
 
 // 插入两个值，删除一个元素
 removed = colors.splice(1, 1, 'red', 'purple');
 console.log(colors);
-// >> ['green', 'red', 'purple', 'orange', 'blue']
+// -> ['green', 'red', 'purple', 'orange', 'blue']
 
 console.log(removed);
 // ['yellow']
@@ -12226,11 +12226,11 @@ Person.prototype.sayName = function () {
 };
 let person = new Person();
 console.log(hasPrototypeProperty(person, 'name'));
-// >> true
+// -> true
 
 person.name = 'Greg';
 console.log(hasPrototypeProperty(person, 'name'));
-// >> false
+// -> false
 ```
 
 在这里，name 属性首先只存在于原型上，所以 hasPrototypeProperty()返回 true。而在实例上重写这个属性后，实例上也有了这个属性，因此 hasPrototypeProperty()返回 false。即便此时原型对象还有 name 属性，但因为实例上的属性遮蔽了它，所以不会用到。
@@ -19649,16 +19649,16 @@ image.src = 'doesnotexist.gif';
 
 ```javascript
 console.log(5 == '5');
-// >> true
+// -> true
 
 console.log(5 === '5');
-// >> false
+// -> false
 
 console.log(1 == true);
-// >> true
+// -> true
 
 console.log(1 === true);
-// >> false
+// -> false
 ```
 
 这个例子分别使用了相等和严格相等操作符比较了数值 5 和字符串"5"。相等操作符会把字符串"5"转换为数值 5，然后再进行比较，结果是 true。严格相等操作符发现两个值的数据类型不同，因而直接返回 false。同样，对于 1 和 true 的比较也类似。相等操作符认为它们相等，但严格相等操作符认为它们不相等。使用严格相等和严格不相等操作符可以避免比较过程的类型转换错误，强烈推荐用它们代替相等和不相等操作符。
@@ -22267,10 +22267,10 @@ DOM2 HTML 模块也为 document.implamentation 对象添加了 createHTMLDocumen
 ```javascript
 const htmldoc = document.implementation.createHTMLDocument('New Doc');
 console.log(htmldoc.title);
-// >> 'New Doc'
+// -> 'New Doc'
 
 console.log(typeof htmldoc.body);
-// >> 'object'
+// -> 'object'
 ```
 
 createHTMLDocument()方法创建的对象是 HTMLDocument 类型的实例，因此包括该类型所有相关的方法和属性，包括 title 和 body 属性。
@@ -22285,13 +22285,13 @@ div1.setAttribute('class', 'box');
 const div2 = document.createElement('div');
 div2.setAttribute('class', 'box');
 console.log(div1.isSameNode(div1));
-// >> true
+// -> true
 
 console.log(div1.isEqualNode(div2));
-// >> true
+// -> true
 
 console.log(div1.isSameNode(div2));
-// >> false
+// -> false
 ```
 
 这里创建了包含相同属性的两个`<div>`元素。这两个元素相等，但不相同。
@@ -22325,7 +22325,7 @@ div.setUserData(
 
 const newDiv = div.cloneNode(true);
 console.log(newDiv.getUserData('name'));
-// >> 'Nicholas'
+// -> 'Nicholas'
 ```
 
 这里先创建了一个`<div>`元素，然后给它添加了一些数据，包含用户的名字。在使用 cloneNode()复制这个元素时，就会调用处理函数，从而将同样的数据再附加给复制得到的目标节点。然后，在副本节点上调用 getUserData()能够取得附加到源节点上的数据。
@@ -22392,13 +22392,13 @@ setTimeout(() => {
 
 ```javascript
 console.log(myDiv.style.backgroundColor);
-// >> 'blue'
+// -> 'blue'
 
 console.log(myDiv.style.width);
-// >> '10px'
+// -> '10px'
 
 console.log(myDiv.style.height);
-// >> '25px'
+// -> '25px'
 ```
 
 如果元素上没有 style 属性，则 style 对象包含所有可能的 CSS 属性的空值。
@@ -22492,16 +22492,16 @@ style 对象中包含支持 style 属性的元素为这个属性设置的样式�
 const myDiv = document.getElementById('myDiv');
 const computedStyle = document.defaultView.getComputedStyle(myDiv, null);
 console.log(computedStyle.backgroundColor);
-// >> 'red'
+// -> 'red'
 
 console.log(computedStyle.width);
-// >> '100px'
+// -> '100px'
 
 console.log(computedStyle.height);
-// >> '200px'
+// -> '200px'
 
 console.log(computedStyle.border);
-// >> '1px solid black'（在某些浏览器中）
+// -> '1px solid black'（在某些浏览器中）
 ```
 
 在取得这个元素的计算样式时，得到的背景颜色是'red'，宽度为'100px'，高度为'200px'。背景颜色不是'blue'，因为元素样式覆盖了它。border 属性不一定返回样式表中实际的 border 规则（某些浏览器会）。这种不一致性是因浏览器解释简写样式的方式造成的，比如 border 实际上会设置一组别的属性。在设置 border 时，实际上设置的是 4 条边的线条宽度、颜色和样式（border-left-width、border-top-color、border-bottom-style 等）。因此，即使 computedStyle.border 在所有浏览器中都不会返回值，computedStyle.borderLeftWidth 也一定会返回值。
@@ -23306,10 +23306,10 @@ range2.selectNodeContents(p1);
 range2.setEndBefore(p1.lastChild);
 
 console.log(range1.compareBoundaryPoints(Range.START_TO_START, range2));
-// >> 0
+// -> 0
 
 console.log(range1.compareBoundaryPoints(Range.END_TO_END, range2));
-// >> 1
+// -> 1
 ```
 
 在这段代码中，两个范围的起点是相等的，因为它们都是 selectNodeContents()默认返回的值。因此，比较二者起点的方法返回 0。不过，因为 range2 的终点被使用 setEndBefore()修改了，所以导致 range1 的终点位于 range2 的终点之后，结果这个方法返回了 1。
@@ -24176,7 +24176,7 @@ $('#myBtn').onclick = function onclick() {
 ```javascript
 $('#myBtn').onclick = function onclick() {
   console.log(this.id);
-  // >> 'myBtn'
+  // -> 'myBtn'
 };
 ```
 
@@ -24288,7 +24288,7 @@ $('#myBtn').attachEvent('onclick', function () {
 ```javascript
 $('#myBtn').attachEvent('onclick', function () {
   console.log(this === window);
-  // >> true
+  // -> true
 });
 ```
 
@@ -24393,14 +24393,14 @@ const btn = $('#myBtn');
 
 btn.onclick = function onclick(event) {
   console.log(event.type);
-  // >> 'click'
+  // -> 'click'
 };
 
 btn.addEventListener(
   'click',
   (event) => {
     console.log(event.type);
-    // >> 'click'
+    // -> 'click'
   },
   false,
 );
@@ -24439,10 +24439,10 @@ btn.addEventListener(
 ```javascript
 $('#myBtn').onclick = function onclick(event) {
   console.log(event.currentTarget === this);
-  // >> true
+  // -> true
 
   console.log(event.target === this);
-  // >> true
+  // -> true
 };
 ```
 
@@ -24451,13 +24451,13 @@ $('#myBtn').onclick = function onclick(event) {
 ```javascript
 document.body.onclick = function onclick(event) {
   console.log(event.currentTarget === document.body);
-  // >> true
+  // -> true
 
   console.log(this === document.body);
-  // >> true
+  // -> true
 
   console.log(event.target === $('#myBtn'));
-  // >> true
+  // -> true
 };
 ```
 
@@ -24524,9 +24524,9 @@ const handler = function handler(event) {
 $('#myBtn').onclick = handler;
 document.body.addEventListener('click', handler, true);
 document.body.onclick = handler;
-// >> 1, 'BODY'
-// >> 2, 'BUTTON'
-// >> 3, 'BODY'
+// -> 1, 'BODY'
+// -> 2, 'BUTTON'
+// -> 3, 'BODY'
 ```
 
 在这个例子中，点击按钮首先会触发注册在捕获阶段的 document.body 上的事件处理程序，显示 eventPhase 为 1。接着，会触发按钮本身的事件处理程序（尽管是注册在冒泡阶段），此时显示 eventPhase 等于 2。最后触发的是注册在冒泡阶段的 document.body 上的事件处理程序，显示 eventPhase 为 3。而当 eventPhase 等于 2 时，this、target 和 currentTarget 三者相等。
@@ -24541,7 +24541,7 @@ document.body.onclick = handler;
 $('#myBtn').onclick = function onclick() {
   const event = window.event;
   console.log(event.type);
-  // >> 'event'
+  // -> 'event'
 };
 ```
 
@@ -24550,7 +24550,7 @@ $('#myBtn').onclick = function onclick() {
 ```javascript
 $('#myBtn').attachEvent('onclick', function (event) {
   console.log(event.type);
-  // >> 'click'
+  // -> 'click'
 });
 ```
 
@@ -24577,12 +24577,12 @@ IE 事件对象也包含与导致其创建的特定事件相关的属性和方�
 var btn = $('#myBtn');
 btn.onclick = function onclick() {
   console.log(window.event.srcElement === this);
-  // >> true
+  // -> true
 };
 
 btn.attachEvent('onclick', function (event) {
   console.log(event.srcElement === this);
-  // >> false
+  // -> false
 });
 ```
 
@@ -26659,12 +26659,12 @@ const fieldCount = form.elements.length;
 const form = $('#myForm');
 const colorFields = form.elements['color'];
 console.log(colorFields.length);
-// >> 3
+// -> 3
 
 const firstColorField = colorFields[0];
 const firstFormField = form.elements[0];
 console.log(firstColorField === firstFormField);
-// >> true
+// -> true
 ```
 
 以上代码表明，使用`form.elements[0]`获取的表单的第一个字段就是`form.elements['color']`中包含的第一个元素。
@@ -26694,7 +26694,7 @@ field.value = 'Another value';
 
 // 检查字段所属的表单
 console.log(field.form === form);
-// >> true
+// -> true
 
 // 给字段设置焦点
 field.focus();
@@ -26924,15 +26924,15 @@ textbox.value = 'Hello world!';
 
 // 选择所有文本
 textbox.setSelectionRange(0, textbox.value.length);
-// >> 'Hello world!'
+// -> 'Hello world!'
 
 // 选择前3 个字符
 textbox.setSelectionRange(0, 3);
-// >> 'Hel'
+// -> 'Hel'
 
 // 选择第4~6 个字符
 textbox.setSelectionRange(4, 7);
-// >> 'o w'
+// -> 'o w'
 ```
 
 如果想看到选择，则必须在调用 setSelectionRange()之前或之后给文本框设置焦点。这个方法在 IE9、Firefox、Safari、Chrome 和 Opera 中都可以使用。
@@ -26947,7 +26947,7 @@ var range = textbox.createTextRange();
 range.collapse(true);
 range.moveStart('character', 0);
 range.moveEnd('character', textbox.value.length);
-// >> 'Hello world!'
+// -> 'Hello world!'
 
 range.select();
 
@@ -26956,7 +26956,7 @@ range.collapse(true);
 range.moveStart('character', 0);
 range.moveEnd('character', 3);
 range.select();
-// >> 'Hel'
+// -> 'Hel'
 
 // 选择第4~6 个字符
 range.collapse(true);
@@ -31304,7 +31304,7 @@ const encodedText = textEncoder.encode(decodedText);
 // f 的UTF-8 编码是0x66（即十进制102）
 // o 的UTF-8 编码是0x6F（即十进制111）
 console.log(encodedText);
-// >> Uint8Array(3) [102, 111, 111]
+// -> Uint8Array(3) [102, 111, 111]
 ```
 
 编码器是用于处理字符的，有些字符（如表情符号）在最终返回的数组中可能会占多个索引：
@@ -31316,7 +31316,7 @@ const encodedText = textEncoder.encode(decodedText);
 
 // ☺的UTF-8 编码是0xF0 0x9F 0x98 0x8A（即十进制240、159、152、138）
 console.log(encodedText);
-// >> Uint8Array(4) [240, 159, 152, 138]
+// -> Uint8Array(4) [240, 159, 152, 138]
 ```
 
 编码器实例还有一个 encodeInto()方法，该方法接收一个字符串和目标 Unit8Array，返回一个字典，该字典包含 read 和 written 属性，分别表示成功从源字符串读取了多少字符和向目标数组写入了多少字符。如果定型数组的空间不够，编码就会提前终止，返回的字典会体现这个结果：
@@ -31328,16 +31328,16 @@ const barArr = new Uint8Array(2);
 const fooResult = textEncoder.encodeInto('foo', fooArr);
 const barResult = textEncoder.encodeInto('bar', barArr);
 console.log(fooArr);
-// >> Uint8Array(3) [102, 111, 111]
+// -> Uint8Array(3) [102, 111, 111]
 
 console.log(fooResult);
-// >> { read: 3, written: 3 }
+// -> { read: 3, written: 3 }
 
 console.log(barArr);
-// >> Uint8Array(2) [98, 97]
+// -> Uint8Array(2) [98, 97]
 
 console.log(barResult);
-// >> { read: 2, written: 2 }
+// -> { read: 2, written: 2 }
 ```
 
 encode()要求分配一个新的 Unit8Array，encodeInto()则不需要。对于追求性能的应用，这个差别可能会带来显著不同。
@@ -31382,9 +31382,9 @@ const readableStreamDefaultReader = encodedTextStream.getReader();
     }
   }
 })();
-// >> Uint8Array[102]
-// >> Uint8Array[111]
-// >> Uint8Array[111]
+// -> Uint8Array[102]
+// -> Uint8Array[111]
+// -> Uint8Array[111]
 ```
 
 ### 21.3.2. 文本解码
@@ -31411,7 +31411,7 @@ const textDecoder = new TextDecoder();
 const encodedText = Uint8Array.of(102, 111, 111);
 const decodedText = textDecoder.decode(encodedText);
 console.log(decodedText);
-// >> 'foo'
+// -> 'foo'
 ```
 
 解码器不关心传入的是哪种定型数组，它只会专心解码整个二进制表示。在下面这个例子中，只包含 8 位字符的 32 位值被解码为 UTF-8 格式，解码得到的字符串中填充了空格：
@@ -31424,7 +31424,7 @@ const textDecoder = new TextDecoder();
 const encodedText = Uint32Array.of(102, 111, 111);
 const decodedText = textDecoder.decode(encodedText);
 console.log(decodedText);
-// >> 'f o o '
+// -> 'f o o '
 ```
 
 解码器是用于处理定型数组中分散在多个索引上的字符的，包括表情符号：
@@ -31436,7 +31436,7 @@ const textDecoder = new TextDecoder();
 const encodedText = Uint8Array.of(240, 159, 152, 138);
 const decodedText = textDecoder.decode(encodedText);
 console.log(decodedText);
-// >> '☺'
+// -> '☺'
 ```
 
 与 TextEncoder 不同，TextDecoder 可以兼容很多字符编码。比如下面的例子就使用了 UTF-16 而非默认的 UTF-8：
@@ -31449,7 +31449,7 @@ const textDecoder = new TextDecoder('utf-16');
 const encodedText = Uint16Array.of(102, 111, 111);
 const decodedText = textDecoder.decode(encodedText);
 console.log(decodedText);
-// >> 'foo'
+// -> 'foo'
 ```
 
 2. **流解码**
@@ -31490,9 +31490,9 @@ const readableStreamDefaultReader = decodedTextStream.getReader();
     }
   }
 })();
-// >> 'f'
-// >> 'o'
-// >> 'o'
+// -> 'f'
+// -> 'o'
+// -> 'o'
 ```
 
 文本解码器流能够识别可能分散在不同块上的代理对。解码器流会保持块片段直到取得完整的字符。比如在下面的例子中，流解码器在解码流并输出字符之前会等待传入 4 个块：
@@ -31531,7 +31531,7 @@ const readableStreamDefaultReader = decodedTextStream.getReader();
     }
   }
 })();
-// >> '☺'
+// -> '☺'
 ```
 
 文本解码器流经常与 fetch()一起使用，因为响应体可以作为 ReadableStream 来处理。比如：
@@ -31653,7 +31653,7 @@ filesList.addEventListener('change', (event) => {
 self.omessage = (messageEvent) => {
   const syncReader = new FileReaderSync();
   console.log(syncReader);
-  // >> FileReaderSync {}
+  // -> FileReaderSync {}
 
   // 读取文件时阻塞工作线程
   const result = syncReader.readAsDataUrl(messageEvent.data);
@@ -31674,13 +31674,13 @@ blob 表示 **二进制大对象(binary larget object)**，是 JavaScript 对不
 
 ```javascript
 console.log(new Blob(['foo']));
-// >> Blob {size: 3, type: ""}
+// -> Blob {size: 3, type: ""}
 
 console.log(new Blob(['{"a": "b"}'], {type: 'application/json'}));
-// >> {size: 10, type: "application/json"}
+// -> {size: 10, type: "application/json"}
 
 console.log(new Blob(['<p>Foo</p>', '<p>Bar</p>'], {type: 'text/html'}));
-// >> {size: 20, type: "text/html"}
+// -> {size: 20, type: "text/html"}
 ```
 
 Blob 对象有一个 size 属性和一个 type 属性，还有一个 slice()方法用于进一步切分数据。另外也可以使用 FileReader 从 Blob 中读取数据。下面的例子只会读取文件的前 32 字节：
@@ -32279,7 +32279,7 @@ async function* ints() {
 const readableStream = new ReadableStream({
 start(controller) {
 console.log(controller);\
-// >> ReadableStreamDefaultController {}
+// -> ReadableStreamDefaultController {}
 }
 });
 ```
@@ -32407,11 +32407,11 @@ const writableStream = new WritableStream({
 });
 
 console.log(writableStream.locked);
-// >> false
+// -> false
 
 const writableStreamDefaultWriter = writableStream.getWriter();
 console.log(writableStream.locked);
-// >> true
+// -> true
 ```
 
 在向流中写入数据前，生产者必须确保写入器可以接收值。writableStreamDefaultWriter.ready 返回一个期约，此期约会在能够向流中写入数据时解决。然后，就可以把值传给 writableStreamDefaultWriter.write()方法。写入数据之后，调用 writableStreamDefaultWriter.close()将流关闭：
@@ -32431,11 +32431,11 @@ const writableStream = new WritableStream({
 });
 
 console.log(writableStream.locked);
-// >> false
+// -> false
 
 const writableStreamDefaultWriter = writableStream.getWriter();
 console.log(writableStream.locked);
-// >> true
+// -> true
 
 // 生产者
 (async function () {
@@ -32653,9 +32653,9 @@ performance.now()计时器采用相对度量。这个计时器在执行上下文
 const relativeTimestamp = performance.now();
 const absoluteTimestamp = performance.timeOrigin + relativeTimestamp;
 console.log(relativeTimestamp);
-// >> 244.43500000052154
+// -> 244.43500000052154
 console.log(absoluteTimestamp);
-// >> 1561926208892.4001
+// -> 1561926208892.4001
 ```
 
 注意 通过使用 performance.now()测量 L1 缓存与主内存的延迟差，幽灵漏洞（Spectre）可以执行缓存推断攻击。为弥补这个安全漏洞，所有的主流浏览器有的选择降低 performance.now()的精度，有的选择在时间戳里混入一些随机性。WebKit 博客上有一篇相关主题的不错的文章“What Spectre and Meltdown Mean For WebKit”，作者是 Filip Pizlo。
@@ -32668,7 +32668,7 @@ Performance Timeline API 使用一套用于度量客户端延迟的工具扩展�
 
 ```javascript
 console.log(performance.getEntries());
-// >> [PerformanceNavigationTiming, PerformanceResourceTiming, ... ]
+// -> [PerformanceNavigationTiming, PerformanceResourceTiming, ... ]
 ```
 
 这个返回的集合代表浏览器的 **性能时间线(performance timeline)**。每个 PerformanceEntry 对象都有 name、entryType、startTime 和 duration 属性：
@@ -32676,16 +32676,16 @@ console.log(performance.getEntries());
 ```javascript
 const entry = performance.getEntries()[0];
 console.log(entry.name);
-// >> "https://foo.com"
+// -> "https://foo.com"
 
 console.log(entry.entryType);
-// >> navigation
+// -> navigation
 
 console.log(entry.startTime);
-// >> 0
+// -> 0
 
 console.log(entry.duration);
-// >> 182.36500001512468
+// -> 182.36500001512468
 ```
 
 不过，PerformanceEntry 实际上是一个抽象基类。所有记录条目虽然都继承 PerformanceEntry，但最终还是如下某个具体类的实例：
@@ -32729,7 +32729,7 @@ performance.mark('end');
 
 const [startMark, endMark] = performance.getEntriesByType('mark');
 console.log(endMark.startTime - startMark.startTime);
-// >> 1225.0995998382568
+// -> 1225.0995998382568
 ```
 
 除了自定义性能条目，还可以生成 PerformanceMeasure（性能度量）条目，对应由名字作为标识的两个标记之间的持续时间。PerformanceMeasure 的实例由 performance.measure()方法生成：
@@ -32748,7 +32748,7 @@ performance.mark('end');
 performance.measure('measure', 'start', 'end');
 
 console.log(performance.getEntriesByType('measure')[0].duration);
-// >> 1279.3241000175476
+// -> 1279.3241000175476
 ```
 
 2. **Navigation Timing API**
@@ -32881,7 +32881,7 @@ performanceResourceTimingEntry.requestStart);
 
 ```javascript
 console.log(document.querySelector('#foo').content);
-// >> #document-fragment
+// -> #document-fragment
 ```
 
 此时的 DocumentFragment 就像一个对应子树的最小化 document 对象。换句话说，DocumentFragment 上的 DOM 匹配方法可以查询其子树中的节点：
@@ -32889,10 +32889,10 @@ console.log(document.querySelector('#foo').content);
 ```javascript
 const fragment = document.querySelector('#foo').content;
 console.log(document.querySelector('p'));
-// >> null
+// -> null
 
 console.log(fragment.querySelector('p'));
-// >> <p>...<p>
+// -> <p>...<p>
 ```
 
 DocumentFragment 也是批量向 HTML 中添加元素的高效工具。比如，我们想以最快的方式给某个 HTML 元素添加多个子元素。如果连续调用 document.appendChild()，则不仅费事，还会导致多次布局重排。而使用 DocumentFragment 可以一次性添加所有子节点，最多只会有一次布局重排：// 开始状态：
@@ -32915,10 +32915,10 @@ fragment.appendChild(document.createElement('p'));
 fragment.appendChild(document.createElement('p'));
 fragment.appendChild(document.createElement('p'));
 console.log(fragment.children.length);
-// >> 3
+// -> 3
 foo.appendChild(fragment);
 console.log(fragment.children.length);
-// >> 0
+// -> 0
 
 console.log(document.body.innerHTML);
 /*
@@ -33099,16 +33099,16 @@ const bar = document.querySelector('#bar');
 const openShadowDOM = foo.attachShadow({mode: 'open'});
 const closedShadowDOM = bar.attachShadow({mode: 'closed'});
 console.log(openShadowDOM);
-// >> #shadow-root (open)
+// -> #shadow-root (open)
 
 console.log(closedShadowDOM);
-// >> #shadow-root (closed)
+// -> #shadow-root (closed)
 
 console.log(foo.shadowRoot);
-// >> #shadow-root (open)
+// -> #shadow-root (open)
 
 console.log(bar.shadowRoot);
-// >> null
+// -> null
 ```
 
 一般来说，需要创建保密（closed）影子 DOM 的场景很少。虽然这可以限制通过影子宿主访问影子 DOM，但恶意代码有很多方法绕过这个限制，恢复对影子 DOM 的访问。简言之，不能为了安全而创建保密影子 DOM。
@@ -33218,7 +33218,7 @@ shadowDOM.appendChild(pElement);
 // 检查元素是否移动到了影子DOM 中
 
 console.log(shadowDOM.innerHTML);
-// >> <p id="foo">Move me</p>
+// -> <p id="foo">Move me</p>
 ```
 
 4. **合成与影子 DOM 槽位**
@@ -33354,14 +33354,14 @@ document.body.innerHTML = `
 <x-foo >I'm inside a nonsense element.</x-foo >
 `;
 console.log(document.querySelector('x-foo') instanceof HTMLElement);
-// >> true
+// -> true
 ```
 
 自定义元素在此基础上更进一步。利用自定义元素，可以在`<x-foo>`标签出现时为它定义复杂的行为，同样也可以在 DOM 中将其纳入元素生命周期管理。自定义元素要使用全局属性 customElements，这个属性会返回 CustomElementRegistry 对象。
 
 ```javascript
 console.log(customElements);
-// >> CustomElementRegistry {}
+// -> CustomElementRegistry {}
 ```
 
 调用 customElements.define()方法可以创建自定义元素。下面的代码创建了一个简单的自定义元素，这个元素继承 HTMLElement：
@@ -33373,7 +33373,7 @@ document.body.innerHTML = `
 <x-foo >I'm inside a nonsense element.</x-foo >
 `;
 console.log(document.querySelector('x-foo') instanceof FooElement);
-// >> true
+// -> true
 ```
 
 注意 自定义元素名必须至少包含一个不在名称开头和末尾的连字符，而且元素标签不能自关闭。
@@ -33531,7 +33531,7 @@ class FooElement extends HTMLElement {
 }
 customElements.define('x-foo', FooElement);
 console.log(document.body.innerHTML);
-// >> <x-foo bar="true"></x-foo>
+// -> <x-foo bar="true"></x-foo>
 ```
 
 另一个方向的反射（从 DOM 到 JavaScript 对象）需要给相应的属性添加监听器。为此，可以使用 observedAttributes()获取函数让自定义元素的属性值每次改变时都调用 attributeChangedCallback()：
@@ -33653,7 +33653,7 @@ Web Cryptography API 重头特性都暴露在了 SubtleCrypto 对象上，可以
 
 ```javascript
 console.log(crypto.subtle);
-// >> SubtleCrypto {}
+// -> SubtleCrypto {}
 ```
 
 这个对象包含一组方法，用于执行常见的密码学功能，如加密、散列、签名和生成密钥。因为所有密码学操作都在原始二进制数据上执行，所以 SubtleCrypto 的每个方法都要用到 ArrayBuffer 和 ArrayBufferView 类型。由于字符串是密码学操作的重要应用场景，因此 TextEncoder 和
@@ -34502,7 +34502,7 @@ const xmldom = document.implementation.createDocument(
 ```javascript
 const xmldom = document.implementation.createDocument('', 'root', null);
 console.log(xmldom.documentElement.tagName);
-// >> 'root'
+// -> 'root'
 const child = xmldom.createElement('child');
 xmldom.documentElement.appendChild(child);
 ```
@@ -35472,7 +35472,7 @@ fetch()只有一个必需的参数 input。多数情况下，这个参数是要�
 ```javascript
 const fetchingData = fetch('/bar');
 console.log(fetchingData);
-// >> Promise <pending>
+// -> Promise <pending>
 ```
 
 URL 的格式（相对路径、绝对路径等）的解释与 XHR 对象一样。
@@ -35515,10 +35515,10 @@ Fetch API 支持通过 Response 的 status（状态码）和 statusText（状态
 ```javascript
 fetch('/bar').then((response) => {
   console.log(response.status);
-  // >> 200
+  // -> 200
 
   console.log(response.statusText);
-  // >> OK
+  // -> OK
 });
 ```
 
@@ -35527,9 +35527,9 @@ fetch('/bar').then((response) => {
 ```javascript
 fetch('/does-not-exist').then((response) => {
   console.log(response.status);
-  // >> 404
+  // -> 404
   console.log(response.statusText);
-  // >> Not Found
+  // -> Not Found
 });
 ```
 
@@ -35538,10 +35538,10 @@ fetch('/does-not-exist').then((response) => {
 ```javascript
 fetch('/throw-server-error').then((response) => {
   console.log(response.status);
-  // >> 500
+  // -> 500
 
   console.log(response.statusText);
-  // >> Internal Server Error
+  // -> Internal Server Error
 });
 ```
 
@@ -35553,13 +35553,13 @@ fetch('/permanent-redirect').then((response) => {
   // 这个例子会出现至少两轮网络请求
   // <origin url>/permanent-redirect -> <redirect url>
   console.log(response.status);
-  // >> 200
+  // -> 200
 
   console.log(response.statusText);
-  // >> OK
+  // -> OK
 
   console.log(response.redirected);
-  // >> true
+  // -> true
 });
 ```
 
@@ -35570,17 +35570,17 @@ fetch('/permanent-redirect').then((response) => {
 ```javascript
 fetch('/bar').then((response) => {
   console.log(response.status);
-  // >> 200
+  // -> 200
 
   console.log(response.ok);
-  // >> true
+  // -> true
 });
 fetch('/does-not-exist').then((response) => {
   console.log(response.status);
-  // >> 404
+  // -> 404
 
   console.log(response.ok);
-  // >> false
+  // -> false
 });
 ```
 
@@ -35607,16 +35607,16 @@ fetch('/hangs-forever').then(
 // foo.com/bar/baz 发送的请求
 console.log(window.location.href); // https://foo.com/bar/baz
 fetch('qux').then((response) => console.log(response.url));
-// >> https://foo.com/bar/qux
+// -> https://foo.com/bar/qux
 
 fetch('/qux').then((response) => console.log(response.url));
-// >> https://foo.com/qux
+// -> https://foo.com/qux
 
 fetch('//qux.com').then((response) => console.log(response.url));
-// >> https://qux.com
+// -> https://qux.com
 
 fetch('https://qux.com').then((response) => console.log(response.url));
-// >> https://qux.com
+// -> https://qux.com
 ```
 
 4. **自定义选项**
@@ -35844,7 +35844,7 @@ fetch('//cross-origin.com');
 fetch('//cross-origin.com', {method: 'no-cors'}).then((response) =>
   console.log(response.type),
 );
-// >> 'opaque'
+// -> 'opaque'
 ```
 
 6. **中断请求**
@@ -35878,23 +35878,23 @@ m.set('foo', 'bar');
 
 // 检查键
 console.log(header.has('foo'));
-// >> true
+// -> true
 
 console.log(m.has('foo'));
-// >> true
+// -> true
 
 console.log(header.has('qux'));
-// >> false
+// -> false
 
 console.log(m.has('qux'));
-// >> false
+// -> false
 
 // 获取值
 console.log(header.get('foo'));
-// >> 'bar'
+// -> 'bar'
 
 console.log(m.get('foo'));
-// >> 'bar'
+// -> 'bar'
 
 // 更新值
 header.set('foo', 'baz');
@@ -35902,10 +35902,10 @@ m.set('foo', 'baz');
 // 取得更新的值
 
 console.log(header.get('foo'));
-// >> 'baz'
+// -> 'baz'
 
 console.log(m.get('foo'));
-// >> 'baz'
+// -> 'baz'
 
 // 删除值
 header.delete('foo');
@@ -35913,10 +35913,10 @@ m.delete('foo');
 
 // 确定值已经删除
 console.log(header.get('foo'));
-// >> undefined
+// -> undefined
 
 console.log(m.get('foo'));
-// >> undefined
+// -> undefined
 ```
 
 Headers 和 Map 都可以使用一个可迭代对象来初始化，比如：
@@ -35926,10 +35926,10 @@ let seed = [['foo', 'bar']];
 let h = new Headers(seed);
 let m = new Map(seed);
 console.log(h.get('foo'));
-// >> 'bar
+// -> 'bar
 
 console.log(m.get('foo'));
-// >> 'bar'
+// -> 'bar'
 ```
 
 而且，它们也都有相同的 keys()、values()和 entries()迭代器接口：
@@ -35942,22 +35942,22 @@ let seed = [
 let h = new Headers(seed);
 let m = new Map(seed);
 console.log(...h.keys());
-// >> 'foo', 'baz'
+// -> 'foo', 'baz'
 
 console.log(...m.keys());
-// >> 'foo', 'baz'
+// -> 'foo', 'baz'
 
 console.log(...h.values());
-// >> 'bar', 'qux'
+// -> 'bar', 'qux'
 
 console.log(...m.values());
-// >> 'bar', 'qux'
+// -> 'bar', 'qux'
 
 console.log(...h.entries());
-// >> ['foo', 'bar'], ['baz', 'qux']
+// -> ['foo', 'bar'], ['baz', 'qux']
 
 console.log(...m.entries());
-// >> ['foo', 'bar'], ['baz', 'qux']
+// -> ['foo', 'bar'], ['baz', 'qux']
 ```
 
 2. **Headers 独有的特性**
@@ -35968,7 +35968,7 @@ Headers 并不是与 Map 处处都一样。在初始化 Headers 对象时，也�
 let seed = {foo: 'bar'};
 let h = new Headers(seed);
 console.log(h.get('foo'));
-// >> 'bar'
+// -> 'bar'
 
 let m = new Map(seed);
 // TypeError: object is not iterable
@@ -35980,10 +35980,10 @@ let m = new Map(seed);
 let h = new Headers();
 h.append('foo', 'bar');
 console.log(h.get('foo'));
-// >> 'bar'
+// -> 'bar'
 h.append('foo', 'baz');
 console.log(h.get('foo'));
-// >> 'bar, baz'
+// -> 'bar, baz'
 ```
 
 3. **头部护卫**
@@ -36068,7 +36068,7 @@ Fetch API 提供了两种不太一样的方式用于创建 Request 对象的副�
 const r1 = new Request('https://foo.com');
 const r2 = new Request(r1);
 console.log(r2.url);
-// >> 'https://foo.com/'
+// -> 'https://foo.com/'
 ```
 
 如果再传入 init 对象，则 init 对象的值会覆盖源对象中同名的值：
@@ -36077,10 +36077,10 @@ console.log(r2.url);
 let r1 = new Request('https://foo.com');
 let r2 = new Request(r1, {method: 'POST'});
 console.log(r1.method);
-// >> 'GET'
+// -> 'GET'
 
 console.log(r2.method);
-// >> 'POST'
+// -> 'POST'
 ```
 
 这种克隆方式并不总能得到一模一样的副本。最明显的是，第一个请求的请求体会被标记为“已使用”：
@@ -36089,10 +36089,10 @@ console.log(r2.method);
 let r1 = new Request('https://foo.com', {method: 'POST', body: 'foobar'});
 let r2 = new Request(r1);
 console.log(r1.bodyUsed);
-// >> true
+// -> true
 
 console.log(r2.bodyUsed);
-// >> false
+// -> false
 ```
 
 如果源对象与创建的新对象不同源，则 referrer 属性会被清除。此外，如果源对象的 mode 为 navigate，则会被转换为 same-origin。
@@ -36103,16 +36103,16 @@ console.log(r2.bodyUsed);
 let r1 = new Request('https://foo.com', {method: 'POST', body: 'foobar'});
 let r2 = r1.clone();
 console.log(r1.url);
-// >> 'https://foo.com/'
+// -> 'https://foo.com/'
 
 console.log(r2.url);
-// >> 'https://foo.com/'
+// -> 'https://foo.com/'
 
 console.log(r1.bodyUsed);
-// >> false
+// -> false
 
 console.log(r2.bodyUsed);
-// >> false
+// -> false
 ```
 
 如果请求对象的 bodyUsed 属性为 true（即请求体已被读取），那么上述任何一种方式都不能用来创建这个对象的副本。在请求体被读取之后再克隆会导致抛出 TypeError。
