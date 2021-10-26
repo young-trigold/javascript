@@ -282,6 +282,10 @@ plan : 1 chapter/3 day
     - [12.4.2. 模块加载](#1242-模块加载)
     - [12.4.3. 模块行为](#1243-模块行为)
     - [12.4.4. 模块导出](#1244-模块导出)
+    - [12.4.5. 模块导入](#1245-模块导入)
+    - [12.4.6. 模块转移导出](#1246-模块转移导出)
+    - [12.4.7. 工作者模块](#1247-工作者模块)
+    - [12.4.8. 向后兼容](#1248-向后兼容)
 - [13. 错误处理与调试](#13-错误处理与调试)
   - [13.1. 浏览器错误报告](#131-浏览器错误报告)
     - [13.1.1. 桌面控制台](#1311-桌面控制台)
@@ -8658,8 +8662,9 @@ console.log(countedLetters);
 - **数组去重**
 
 ```javascript
-let myArray = ['a', 'b', 'a', 'b', 'c', 'e', 'e', 'c', 'd', 'd', 'd', 'd'];
-let uniqueArr = myArray.reduce(function (uniqueArr, cur) {
+const myArray = ['a', 'b', 'a', 'b', 'c', 'e', 'e', 'c', 'd', 'd', 'd', 'd'];
+
+const uniqueArr = myArray.reduce((uniqueArr, cur) => {
   if (uniqueArr.indexOf(cur) === -1) {
     uniqueArr.push(cur);
   }
@@ -8673,7 +8678,7 @@ console.log(uniqueArr);
 当然这种方法对 NaN 就有问题了，这是因为 indexOf 在进行搜索的比较时会使用 ===，而 NaN === NaN 返回 false。来看下面的例子：
 
 ```javascript
-let NaNs = [NaN, NaN];
+const NaNs = [NaN, NaN];
 console.log(NaNs.indexOf(NaN)); // -1
 ```
 
@@ -8682,12 +8687,16 @@ console.log(NaNs.indexOf(NaN)); // -1
 此时，使用 includes() 就可以避免这个问题：
 
 ```javascript
-let arr = [1, 1, NaN, NaN];
-let uniaueArr = arr.reduce(
-  (pre, cur) => (pre.includes(cur) ? pre : [...pre, cur]),
+const arr = [1, 1, NaN, NaN];
+
+const uniqueArr = arr.reduce(
+  (uniqueArr, cur) =>
+    uniqueArr.includes(cur) ? uniqueArr : [...uniqueArr, cur],
   [],
 );
-console.log(uniaueArr); // [1, NaN]
+
+console.log(uniqueArr);
+// -> [1, NaN]
 ```
 
 在这个例子中，第 1 次执行时，previousValue 为 []，currentValue 为 1，previousValue 中不包含 1，因此结果为 `[1]`。第 2 次执行时，previousValue 为 `[1]`，currentValue 为 1，此时包含 1 ，因此结果返回 `[1]`，同样的，第 4 次执行完后，得到 [1, NaN]。
@@ -19676,6 +19685,307 @@ ES6 模块系统也增加了一些新行为。
 浏览器运行时在知道应该把某个文件当成模块时，会有条件地按照上述 ECMAScript 6 模块行为来施加限制。与`<script type="module">`关联或者通过 import 语句加载的 JavaScript 文件会被认定为模块。
 
 ### 12.4.4. 模块导出
+
+ES6 模块的公共导出系统与 CommonJS 非常相似。控制模块的哪些部分对外部可见的是 export 关键字。ES6 模块支持两种导出：命名导出和默认导出。不同的导出方式对应不同的导入方式，下一节会介绍导入。
+
+export 关键字用于声明一个值为命名导出。导出语句必须在模块顶级，不能嵌套在某个块中：
+
+```javascript
+// 允许
+export ...
+// 不允许
+if (condition) {
+export ...
+}
+```
+
+导出值对模块内部 JavaScript 的执行没有直接影响，因此 export 语句与导出值的相对位置或者 export 关键字在模块中出现的顺序没有限制。export 语句甚至可以出现在它要导出的值之前：
+
+```javascript
+// 允许
+const foo = 'foo';
+export {foo};
+// 允许
+export const foo = 'foo';
+// 允许，但应该避免
+export {foo};
+const foo = 'foo';
+```
+
+**命名导出(named export)** 就好像模块是被导出值的容器。行内命名导出，顾名思义，可以在同一行执行变量声明。下面展示了一个声明变量同时又导出变量的例子。外部模块可以导入这个模块，而 foo 将成为这个导入模块的一个属性：
+
+```javascript
+export const foo = 'foo';
+```
+
+变量声明跟导出可以不在一行。可以在 export 子句中执行声明并将标识符导出到模块的其他地方：
+
+```javascript
+const foo = 'foo';
+export {foo};
+```
+
+导出时也可以提供别名，别名必须在 export 子句的大括号语法中指定。因此，声明值、导出值和为导出值提供别名不能在一行完成。在下面的例子中，导入这个模块的外部模块可以使用 myFoo 访问导出的值：
+
+```javascript
+const foo = 'foo';
+export {foo as myFoo};
+```
+
+因为 ES6 命名导出可以将模块作为容器，所以可以在一个模块中声明多个命名导出。导出的值可以在导出语句中声明，也可以在导出之前声明：
+
+```javascript
+export const foo = 'foo';
+export const bar = 'bar';
+export const baz = 'baz';`
+```
+
+考虑到导出多个值是常见的操作，ES6 模块也支持对导出声明分组，可以同时为部分或全部导出值指定别名：
+
+```javascript
+const foo = 'foo';
+const bar = 'bar';
+const baz = 'baz';
+export {foo, bar as myBar, baz};
+```
+
+**默认导出(default export)** 就好像模块与被导出的值是一回事。默认导出使用 default 关键字将一个值声明为默认导出，每个模块只能有一个默认导出。重复的默认导出会导致 SyntaxError。
+
+```javascript
+const foo = 'foo';
+export default foo;
+```
+
+另外，ES6 模块系统会识别作为别名提供的 default 关键字。此时，虽然对应的值是使用命名语法导出的，实际上则会成为默认导出：
+
+```javascript
+const foo = 'foo';
+// 等同于export default foo;
+export {foo as default};
+```
+
+因为命名导出和默认导出不会冲突，所以 ES6 支持在一个模块中同时定义这两种导出：
+
+```javascript
+const foo = 'foo';
+const bar = 'bar';
+export {bar};
+export default foo;
+```
+
+这两个 export 语句可以组合为一行：
+
+```javascript
+const foo = 'foo';
+const bar = 'bar';
+export {foo as default, bar};
+```
+
+ES6 规范对不同形式的 export 语句中可以使用什么不可以使用什么规定了限制。某些形式允许声明和赋值，某些形式只允许表达式，而某些形式则只允许简单标识符。注意，有的形式使用了分号，有的则没有：
+
+```javascript
+// 命名行内导出
+export const baz = 'baz';
+export const foo = 'foo', bar = 'bar';
+export function foo() {}
+export function* foo() {}
+export class Foo {}
+// 命名子句导出
+export { foo };
+export { foo, bar };
+export { foo as myFoo, bar };
+// 默认导出
+export default 'foo';
+export default 123;
+export default /[a-z]*/;
+export default { foo: 'foo' };
+export { foo, bar as default };
+export default foo
+export default function() {}
+export default function foo() {}
+export default function*() {}
+export default class {}
+// 会导致错误的不同形式：
+// 行内默认导出中不能出现变量声明
+export default const foo = 'bar';
+// 只有标识符可以出现在export 子句中
+export { 123 as foo }
+// 别名只能在export 子句中出现
+export const foo = 'foo' as myFoo;
+```
+
+注意 什么可以或不可以与 exprot 关键字出现在同一行可能很难记住。一般来说，声明、赋值和导出标识符最好分开。这样就不容易搞错了，同时也可以让 export 语句集中在一块。
+
+### 12.4.5. 模块导入
+
+模块可以通过使用 import 关键字使用其他模块导出的值。与 export 类似，import 必须出现在模块的顶级：
+
+```javascript
+// 允许
+import ...
+// 不允许
+if (condition) {
+import ...
+}
+```
+
+import 语句被提升到模块顶部。因此，与 export 关键字类似，import 语句与使用导入值的语句的相对位置并不重要。不过，还是推荐把导入语句放在模块顶部。
+
+```javascript
+// 允许
+import {foo} from './fooModule.js';
+console.log(foo); // 'foo'
+// 允许，但应该避免
+console.log(foo); // 'foo'
+import {foo} from './fooModule.js';
+```
+
+模块标识符可以是相对于当前模块的相对路径，也可以是指向模块文件的绝对路径。它必须是纯字符串，不能是动态计算的结果。例如，不能是拼接的字符串。
+
+如果在浏览器中通过标识符原生加载模块，则文件必须带有.js 扩展名，不然可能无法正确解析。不过，如果是通过构建工具或第三方模块加载器打包或解析的 ES6 模块，则可能不需要包含文件扩展名。
+
+```javascript
+// 解析为/components/bar.js
+import ... from './bar.js';
+// 解析为/bar.js
+import ... from '../bar.js';
+// 解析为/bar.js
+import ... from '/bar.js';
+```
+
+不是必须通过导出的成员才能导入模块。如果不需要模块的特定导出，但仍想加载和执行模块以利用其副作用，可以只通过路径加载它：
+
+```javascript
+import './foo.js';
+```
+
+导入对模块而言是只读的，实际上相当于 const 声明的变量。在使用\*执行批量导入时，赋值给别名的命名导出就好像使用 Object.freeze()冻结过一样。直接修改导出的值是不可能的，但可以修改导出对象的属性。同样，也不能给导出的集合添加或删除导出的属性。要修改导出的值，必须使用有内部变量和属性访问权限的导出方法。
+
+```javascript
+import foo, * as Foo './foo.js';
+foo = 'foo'; // 错误
+Foo.foo = 'foo'; // 错误
+foo.bar = 'bar'; // 允许
+```
+
+命名导出和默认导出的区别也反映在它们的导入上。命名导出可以使用\*批量获取并赋值给保存导出集合的别名，而无须列出每个标识符：
+
+```javascript
+const foo = 'foo',
+  bar = 'bar',
+  baz = 'baz';
+export {foo, bar, baz};
+import * as Foo from './foo.js';
+console.log(Foo.foo); // foo
+console.log(Foo.bar); // bar
+console.log(Foo.baz); // baz
+```
+
+要指名导入，需要把标识符放在 import 子句中。使用 import 子句可以为导入的值指定别名：
+
+```javascript
+import {foo, bar, baz as myBaz} from './foo.js';
+console.log(foo); // foo
+console.log(bar); // bar
+console.log(myBaz); // baz
+```
+
+默认导出就好像整个模块就是导出的值一样。可以使用 default 关键字并提供别名来导入。也可以不使用大括号，此时指定的标识符就是默认导出的别名：
+
+```javascript
+// 等效
+import {default as foo} from './foo.js';
+import foo from './foo.js';
+```
+
+如果模块同时导出了命名导出和默认导出，则可以在 import 语句中同时取得它们。可以依次列出特定导出的标识符来取得，也可以使用\*来取得：
+
+```javascript
+import foo, {bar, baz} from './foo.js';
+import {default as foo, bar, baz} from './foo.js';
+import foo, * as Foo from './foo.js';
+```
+
+注意 本书写作时，有一个动态导入模块的提案处在第三阶段（stage 3），参见 GitHub 上的 tc39/proposals 页面。
+
+### 12.4.6. 模块转移导出
+
+模块导入的值可以直接通过管道转移到导出。此时，也可以将默认导出转换为命名导出，或者相反。如果想把一个模块的所有命名导出集中在一块，可以像下面这样在 bar.js 中使用\*导出：
+
+```javascript
+export * from './foo.js';
+```
+
+这样，foo.js 中的所有命名导出都会出现在导入 bar.js 的模块中。如果 foo.js 有默认导出，则该语法会忽略它。使用此语法也要注意导出名称是否冲突。如果 foo.js 导出 baz，bar.js 也导出 baz，则最终导出的是 bar.js 中的值。这个“重写”是静默发生的：
+
+```javascript
+foo.js;
+export const baz = 'origin:foo';
+bar.js;
+export * from './foo.js';
+export const baz = 'origin:bar';
+main.js;
+import {baz} from './bar.js';
+console.log(baz); // origin:bar
+```
+
+此外也可以明确列出要从外部模块转移本地导出的值。该语法支持使用别名：
+
+```javascript
+export {foo, bar as myBar} from './foo.js';
+```
+
+类似地，外部模块的默认导出可以重用为当前模块的默认导出：
+
+```javascript
+export {default} from './foo.js';
+```
+
+这样不会复制导出的值，只是把导入的引用传给了原始模块。在原始模块中，导入的值仍然是可用的，与修改导入相关的限制也适用于再次导出的导入。
+
+在重新导出时，还可以在导入模块修改命名或默认导出的角色。比如，可以像下面这样将命名导出指定为默认导出：
+
+```javascript
+export {foo as default} from './foo.js';
+```
+
+### 12.4.7. 工作者模块
+
+ECMAScript 6 模块与 Worker 实例完全兼容。在实例化时，可以给工作者传入一个指向模块文件的路径，与传入常规脚本文件一样。Worker 构造函数接收第二个参数，用于说明传入的是模块文件。
+
+下面是两种类型的 Worker 的实例化行为：
+
+```javascript
+// 第二个参数默认为{ type: 'classic' }
+const scriptWorker = new Worker('scriptWorker.js');
+const moduleWorker = new Worker('moduleWorker.js', {type: 'module'});
+```
+
+### 12.4.8. 向后兼容
+
+在基于模块的工作者内部，self.importScripts()方法通常用于在基于脚本的工作者中加载外部脚本，调用它会抛出错误。这是因为模块的 import 行为包含了 importScripts()。
+
+ECMAScript 模块的兼容是个渐进的过程，能够同时兼容支持和不支持的浏览器对早期采用者是有价值的。对于想要尽可能在浏览器中原生使用 ECMAScript 6 模块的用户，可以提供两个版本的代码：基于模块的版本与基于脚本的版本。如果嫌麻烦，可以使用第三方模块系统（如 SystemJS）或在构建时将 ES6 模块进行转译，这都是不错的方案。
+
+第一种方案涉及在服务器上检查浏览器的用户代理，与支持模块的浏览器名单进行匹配，然后基于匹配结果决定提供哪个版本的 JavaScript 文件。这个方法不太可靠，而且比较麻烦，不推荐。更好、更优雅的方案是利用脚本的 type 属性和 nomodule 属性。
+
+浏览器在遇到<script>标签上无法识别的 type 属性时会拒绝执行其内容。对于不支持模块的浏览器，这意味着<script type="module">不会被执行。因此，可以在<script type="module">标签旁边添加一个回退<script>标签：
+
+```html
+// 不支持模块的浏览器不会执行这里的代码
+<script type="module" src="module.js"></script>
+// 不支持模块的浏览器会执行这里的代码
+<script src="script.js"></script>
+```
+
+当然，这样一来支持模块的浏览器就有麻烦了。此时，前面的代码会执行两次，显然这不是我们想要的结果。为了避免这种情况，原生支持 ECMAScript 6 模块的浏览器也会识别 nomodule 属性。此属性通知支持 ES6 模块的浏览器不执行脚本。不支持模块的浏览器无法识别该属性，从而忽略这个属性的存在。因此，下面代码会生成一个设置，在这个设置中，支持模块和不支持模块的浏览器都只会执行一段脚本：
+
+```html
+// 支持模块的浏览器会执行这段脚本 // 不支持模块的浏览器不会执行这段脚本
+<script type="module" src="module.js"></script>
+// 支持模块的浏览器不会执行这段脚本 // 不支持模块的浏览器会执行这段脚本
+<script nomodule src="script.js"></script>
+```
 
 # 13. 错误处理与调试
 
