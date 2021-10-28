@@ -27524,7 +27524,7 @@ textbox.addEventListener('focus', (event) => {
   const bgColor = target.style.backgroundColor;
 
   if (bgColor !== 'red') {
-    bgColor = 'yellow';
+    target.style.backgroundColor = 'yellow';
   }
 });
 
@@ -27533,15 +27533,14 @@ textbox.addEventListener('blur', (event) => {
   const bgColor = target.style.backgroundColor;
 
   if (bgColor !== 'red') {
-    bgColor = '';
+    target.style.backgroundColor = '';
   }
 });
 
 // 更好的做法是监听 input 事件
 textbox.addEventListener('change', (event) => {
   const target = event.target;
-  const bgColor = target.style.backgroundColor;
-  bgColor = /^\d*$/.test(target.value) ? 'yellow' : 'red';
+  target.style.backgroundColor = /^\d*$/.test(target.value) ? 'yellow' : 'red';
 });
 ```
 
