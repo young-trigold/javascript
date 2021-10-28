@@ -77,7 +77,7 @@ plan : 1 chapter/3 day
     - [4.1.1. 动态属性](#411-动态属性)
     - [4.1.2. 复制值](#412-复制值)
     - [4.1.3. 传递参数](#413-传递参数)
-    - [4.1.4. 确定类型](#414-确定类型)
+    - [4.1.4. 类型判断](#414-类型判断)
   - [4.2. 执行上下文](#42-执行上下文)
     - [4.2.1. 执行上下文栈](#421-执行上下文栈)
     - [4.2.2. 词法环境](#422-词法环境)
@@ -5498,24 +5498,39 @@ console.log(person.name); // 'Nicholas'
 
 这个例子前后唯一的变化就是 setName()中多了两行代码，将 obj 重新定义为一个有着不同 name 的新对象。当 person 传入 setName()时，其 name 属性被设置为'Nicholas'。然后变量 obj 被设置为一个新对象且 name 属性被设置为'Greg'。如果 person 是按引用传递的，那么 person 应该自动将指针改为指向 name 为'Greg'的对象。可是，当我们再次访问 person.name 时，它的值是'Nicholas'，这表明函数中参数的值改变之后，原始的引用仍然没变。当 obj 在函数内部被重写时，它变成了一个指向本地对象的指针。而那个本地对象在函数执行结束时就被销毁了。
 
-### 4.1.4. 确定类型
+### 4.1.4. 类型判断
+
+1. **typeof**
 
 前一章提到的 typeof 操作符最适合用来判断一个变量是否为原始类型。更确切地说，它是判断一个变量是否为字符串、数值、布尔值或 undefined 的最好方式。如果值是对象或 null，那么 typeof 返回'object'，如下面的例子所示：
 
 ```javascript
-let s = 'Nicholas';
-let b = true;
-let i = 22;
-let u;
-let n = null;
-let o = new Object();
-console.log(typeof s); // string
-console.log(typeof i); // number
-console.log(typeof b); // boolean
-console.log(typeof u); // undefined
-console.log(typeof n); // object
-console.log(typeof o); // object
+const string = 'Nicholas';
+console.log(typeof string);
+// -> 'string'
+
+const bool = true;
+console.log(typeof bool);
+// -> 'boolean'
+
+const number = 22;
+console.log(typeof number);
+// -> 'number'
+
+let unde;
+console.log(typeof unde);
+// -> 'undefined'
+
+const nullValue = null;
+console.log(typeof nullValue);
+// -> 'object'
+
+const object = new Object();
+console.log(typeof object);
+// -> 'object'
 ```
+
+2. **instanceof**
 
 typeof 虽然对原始值很有用，但它对引用值的用处不大。我们通常不关心一个值是不是对象，而是想知道它是什么类型的对象。为了解决这个问题，ECMAScript 提供了 instanceof 操作符，语法如下：
 
@@ -5526,14 +5541,76 @@ result = variable instanceof constructor;
 如果变量是给定引用类型（由其原型链决定，将在第 8 章详细介绍）的实例，则 instanceof 操作符返回 true。来看下面的例子：
 
 ```javascript
-console.log(person instanceof Object); // 变量person 是Object 吗？
-console.log(colors instanceof Array); // 变量colors 是Array 吗？
-console.log(pattern instanceof RegExp); // 变量pattern 是RegExp 吗？
+// 变量person 是Object 吗？
+console.log(person instanceof Object);
+
+// 变量colors 是Array 吗？
+console.log(colors instanceof Array);
+
+// 变量pattern 是RegExp 吗？
+console.log(pattern instanceof RegExp);
 ```
 
 按照定义，所有引用值都是 Object 的实例，因此通过 instanceof 操作符检测任何引用值和 Object 构造函数都会返回 true。类似地，如果用 instanceof 检测原始值，则始终会返回 false，因为原始值不是对象。
 
 注意 typeof 操作符在用于检测函数时也会返回'function'。当在 Safari（直到 Safari 5）和 Chrome（直到 Chrome 7）中用于检测正则表达式时，由于实现细节的原因，typeof 也会返回'function'。ECMA-262 规定，任何实现内部[[Call]]方法的对象都应该在 typeof 检测时返回'function'。因为上述浏览器中的正则表达式实现了这个方法，所以 typeof 对正则表达式也返回'function'。在 IE 和 Firefox 中，typeof 对正则表达式返回'object'。
+
+3. **Object.prototype.toString.call()**
+
+调用 Object 原型上的 toString() 方法，会返回值的一个字符串表示：`'[object Type]'`。其中的 Type 值由JavaScript引擎识别。这个方法不但可以识别由构造函数创建出的对象，还能识别一些特殊对象。
+
+```javascript
+const getTag = function getTag(any) {
+  return Object.prototype.toString.call(any).slice(8, -1);
+}
+
+console.log(getTag(Math));
+// -> 'Math'
+
+const map = new Map();
+console.log(getTag(map));
+// -> 'Map'
+```
+
+4. **getType() 方法**
+
+综合以上各种方法，我们可以写出一个较为完善的 getType() 函数，用以获取一个值的类型。
+
+```javascript
+const getType = function getType(any) {
+  const typeofAny = typeof any;
+
+  if (any === null) {
+    return 'null';
+  } else if (typeofAny !== 'object') {
+    return typeofAny;
+  } else {
+    return Object.prototype.toString.call(any).slice(8, -1);
+  }
+};
+
+console.loh(getType(null));
+// -> 'null'
+
+console.log(getType(undefined));
+// -> 'undefined'
+
+console.log(getType(''));
+// -> 'string'
+
+console.log(getType(new String()));
+// -> 'String'
+
+console.log(getType(Math));
+// -> 'Math'
+
+// 在浏览器环境下
+console.log(getType(this));
+// -> 'Window'
+
+console.log(getType(new Map()));
+// -> 'Map'
+```
 
 ## 4.2. 执行上下文
 
