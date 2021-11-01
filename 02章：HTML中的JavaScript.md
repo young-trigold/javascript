@@ -42,7 +42,7 @@
 <script>
   const sayHi = function () {
     console.log('Hi!');
-  }
+  };
 </script>
 ```
 
@@ -64,7 +64,7 @@
 <script>
   const sayScript = function () {
     console.log('<\/script>');
-  }
+  };
 </script>
 ```
 
