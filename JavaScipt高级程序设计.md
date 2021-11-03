@@ -252,18 +252,17 @@
     - [10.3.4. 参数验证](#1034-参数验证)
     - [10.3.5. 数据绑定](#1035-数据绑定)
 - [11. 异步编程](#11-异步编程)
-  - [11.1. JavaScript 异步机制](#111-javascript-异步机制)
-    - [11.1.1. 消息队列](#1111-消息队列)
-    - [11.1.2. 宏任务与微任务](#1112-宏任务与微任务)
-    - [11.1.3. 同步与异步](#1113-同步与异步)
-  - [11.2. 回调方案](#112-回调方案)
-  - [11.3. 期约方案](#113-期约方案)
+  - [11.1. 阻塞问题](#111-阻塞问题)
+  - [11.2. 异步回调](#112-异步回调)
+    - [11.2.1. 事件循环](#1121-事件循环)
+    - [11.2.2. 微任务队列](#1122-微任务队列)
+  - [11.3. 期约](#113-期约)
     - [11.3.1. 期约基础](#1131-期约基础)
     - [11.3.2. 期约实例的方法](#1132-期约实例的方法)
     - [11.3.3. 期约连锁与期约合成](#1133-期约连锁与期约合成)
     - [11.3.4. 期约扩展](#1134-期约扩展)
-  - [11.4. 生成器方案](#114-生成器方案)
-  - [11.5. 异步函数方案](#115-异步函数方案)
+  - [11.4. 生成器](#114-生成器)
+  - [11.5. 异步函数](#115-异步函数)
     - [11.5.1. 异步函数](#1151-异步函数)
     - [11.5.2. await](#1152-await)
     - [11.5.3. 异步函数策略](#1153-异步函数策略)
@@ -17318,103 +17317,157 @@ proxy.push('Jacob');
 ```
 
 // @TODO
+
 # 11. 异步编程
 
 本章内容
 
-- 理解异步任务
-- 回调方案
-- 期约方案
-- 生成器方案
-- 异步函数方案
+- 阻塞问题
+- 异步回调
+- 期约
+- 生成器
+- 异步函数
 
-ECMAScript 6 及之后的几个版本逐步加大了对异步编程机制的支持，提供了令人眼前一亮的新特性。ECMAScript 6 新增了正式的 Promise（期约）引用类型，支持优雅地定义和组织异步逻辑。ECMAScript 7增加了使用 async 和 await 关键字定义异步函数的机制。
+ECMAScript 6 及之后的几个版本逐步加大了对异步编程机制的支持，提供了令人眼前一亮的新特性。ECMAScript 6 新增了正式的 Promise（期约）引用类型，支持优雅地定义和组织异步逻辑。ECMAScript 7 增加了使用 async 和 await 关键字定义异步函数的机制。
 
 注意 本章示例将大量使用异步日志输出的方式 setTimeout(console.log, 0, ...params)，旨在演示执行顺序及其他异步行为。异步输出的内容看起来虽然像是同步输出的，但实际上是异步打印的。这样可以让期约等返回的值达到其最终状态。此外，浏览器控制台的输出经常能打印出 JavaScript 运行中无法获取的对象信息（比如期约的状态）。这个特性在示例中广泛使用，以便辅助读者理解相关概念。
 
-## 11.1. JavaScript 异步机制
+## 11.1. 阻塞问题
 
-JavaScript 的异步执行机制是在单线程执行的基础上增加了事件循环。
+JavaScript 被设计为单线程执行的语言。假设 JavaScript 被设计为多线程执行，那么各个线程都可以操作 DOM，如果 a 线程向 DOM 中增加了一个元素，同时 b 线程在 DOM 中删除了一个元素，那么这就会造成 DOM 操作的复杂性。
 
-1. **单线程**
+单线程执行意味着所有的任务都必须按照顺序执行，这就是所谓的 **同步执行**。但同步执行就会带来一个显著的问题： **阻塞(blocking)**。
 
-JavaScript 被设计为单线程执行的语言。假设JavaScript 被设计为多线程执行，那么各个线程都可以操作DOM，如果 a线程向DOM中增加了一个元素，同时 b 线程在 DOM 中删除了一个元素，那么这就会造成DOM操作的复杂性。
-
-单线程执行意味着所有的任务都必须按照顺序执行，这就是所谓的 **同步执行**。
-
-例如，这里有3个函数 func1，func2，func3：
+来看这个例子：
 
 ```javascript
-const func1 = function func1() {
-  console.log('func1 executed!');
+const processImage = (image) => {
+  /**
+   * doing some operations on image
+   **/
+  console.log('Image processed');
 };
-
-const func2 = function func2() {
-  console.log('func2 executed!');
+const networkRequest = (url) => {
+  /**
+   * requesting network resource
+   **/
+  return someData;
 };
-
-const func3 = function func3() {
-  console.log('func3 executed!');
+const greeting = () => {
+  console.log('Hello World');
 };
-
-func1();
-func2();
-func3();
-// -> 'func1 executed!'
-// -> 'func2 executed!'
-// -> 'func3 executed'
+processImage(logo.jpg);
+networkRequest('www.somerandomurl.com');
+greeting();
 ```
 
-这样子执行一般情况下没有问题，可是当遇到 IO 任务时，这就浪费了时间。例如，我们有一个IO任务是请求服务器上的一个资源，这个任务执行时，大部分时间都浪费在了等待资源的返回上。如果我们可以在这个等待的间隙，执行其他和这个返回的资源不相关的任务，等到不相关的任务执行完成。再去查看返回的资源，并执行和这个资源相关的任务。这种方式就避免了等待IO资源返回结果的时间浪费。
+做图像处理和网络请求需要时间。因此，当 processImage()函数被调用时，它将花费一些时间，取决于图像的大小。
+当 processImage()函数完成后，它将从堆栈中删除。之后，networkRequest()函数被调用并推送到堆栈。同样，它也要花一些时间来完成执行。
 
-例如，这里有一个IO任务，请求web服务器上的一个资源，当这个请求资源返回后，再使用这个资源：
+最后，当 networkRequest()函数完成后，greeting()函数被调用，由于它只包含一个 console.log 语句，而 console.log 语句一般都很快，所以 greeting()函数被立即执行并返回。
+
+所以你看，我们必须等到函数（如 processImage()或 networkRequest()）完成。这意味着这些函数阻塞了调用栈或主线程。因此，在上述代码执行时，我们不能执行任何其他操作，这并不理想。
+
+## 11.2. 异步回调
+
+解决阻塞问题的最简单的方法就是 **异步回调(asynchronus callback)**。
+
+来看这个例子：
 
 ```javascript
-const func1 = function func1(){
-  console.log('func1 executed!');
+const networkRequest = () => {
+  setTimeout(() => {
+    console.log('Async Code');
+  }, 2000);
 };
 
-const fetchingResource = () => fetch('http://www.example.com/resource');
-
-const useResource = function useResource(image){
-  console.log('image used!');
-};
-
-const func2  = function func2(){
-  console.log('image used');
-};
-
-func1();
-fetchingResource().then((image) => useResource(image));
-func2();
+console.log('Hello World');
+networkRequest();
 ```
 
-// @TODO
-2. **运行时**
+这里我使用了 setTimeout 方法来模拟网络请求。请记住，setTimeout 不是 JavaScript 引擎的一部分，它是被称为 Web APIs（在浏览器中）和 C/C++ APIs（在 node.js 中）的一部分。
 
+为了理解这段代码是如何执行的，我们还必须了解一些概念，如 **事件循环(event loop)** 和 回调队列（也被称为任务队列或 **消息队列(message queue)**）。
 
+![11-1-事件循环](illustrations/11-1-事件循环.png)
 
-### 11.1.1. 消息队列
+事件循环、网络 API 和消息队列/任务队列不是 JavaScript 引擎的一部分，它们是浏览器的 JavaScript 运行环境或 Nodejs JavaScript 运行环境的一部分（如果是 Nodejs）。在 Nodejs 中，网络 API 被 C/C++ API 所取代。
 
-### 11.1.2. 宏任务与微任务
+现在让我们回到上面的代码，看看它是如何以异步方式执行的。
 
-### 11.1.3. 同步与异步
+当上述代码在浏览器中加载时，console.log('Hello World')被推到堆栈中，完成后从堆栈中弹出。接下来，遇到了对 networkRequest()的调用，所以它被推到了栈顶。
 
-## 11.2. 回调方案
+接下来 setTimeout()函数被调用，所以它被推到了堆栈的顶部。setTimeout()有两个参数。1）回调和 2）时间，单位是毫秒（ms）。
 
-异步行为是 JavaScript 的基础，但以前的实现不理想。在早期的 JavaScript 中，只支持定义回调函数来表明异步操作完成。串联多个异步操作是一个常见的问题，通常需要深度嵌套的回调函数（俗称“回调地狱”）来解决。
+setTimeout()方法在 Web APIs 环境中启动一个 2s 的计时器。此时，setTimeout()已经完成，它从堆栈中跳出。在它之后，console.log('The End')被推送到堆栈，执行完毕后从堆栈中删除。
 
-假设有以下异步函数，使用了 setTimeout 在一秒钟之后执行某些操作：
+同时，定时器已经过期，现在回调被推送到消息队列中。但是回调并没有立即执行，这时事件循环就开始了。
+
+### 11.2.1. 事件循环
+
+事件循环的工作是查看调用栈并确定调用栈是否为空。如果调用栈是空的，它就会查看消息队列，看是否有任何等待执行的回调。
+
+在这种情况下，消息队列包含一个回调，而调用栈在此时是空的。所以事件循环将回调推到堆栈的顶部。
+
+之后，console.log('Async Code')被推到栈顶，执行并从栈中跳出。在这一点上，回调已经完成，所以它被从栈中移除，程序最终完成。
+
+### 11.2.2. 微任务队列
+
+ES6 引入了 **微任务(micro-task queue)** 的概念，这个概念被 JavaScript 中的 Promises 使用。消息队列和作业队列的区别在于，作业队列比消息队列有更高的优先级，这意味着作业队列/微任务队列中的期约作业将在消息队列中的回调之前被执行。
+
+例如：
 
 ```javascript
-function double(value) {
-  setTimeout(() => setTimeout(console.log, 0, value * 2), 1000);
-}
-double(3);
-// 6（大约1000 毫秒之后）
+console.log('Script start');
+setTimeout(() => {
+  console.log('setTimeout');
+}, 0);
+new Promise((resolve, reject) => {
+  resolve('Promise resolved');
+})
+  .then((res) => console.log(res))
+  .catch((err) => console.log(err));
+console.log('Script End');
+// -> 'Script start'
+// -> 'Script End'
+// -> 'Promise resolved'
+// -> 'setTimeout'
 ```
 
-这里的代码没什么神秘的，但关键是理解为什么说它是一个异步函数。setTimeout 可以定义一个在指定时间之后会被调度执行的回调函数。对这个例子而言，1000 毫秒之后，JavaScript 运行时会把回调函数推到自己的消息队列上去等待执行。推到队列之后，回调什么时候出列被执行对 JavaScript 代码就完全不可见了。还有一点，double()函数在 setTimeout 成功调度异步操作之后会立即退出。
+我们可以看到，期约在 setTimeout 之前被执行，因为期约的响应被存储在微任务队列中，而微任务队列的优先级比消息队列高。
+
+让我们再举个例子，这次有两个期约和两个 setTimeout。比如说:
+
+```javascript
+console.log('Script start');
+setTimeout(() => {
+  console.log('setTimeout 1');
+}, 0);
+setTimeout(() => {
+  console.log('setTimeout 2');
+}, 0);
+new Promise((resolve, reject) => {
+  resolve('Promise 1 resolved');
+})
+  .then((res) => console.log(res))
+  .catch((err) => console.log(err));
+new Promise((resolve, reject) => {
+  resolve('Promise 2 resolved');
+})
+  .then((res) => console.log(res))
+  .catch((err) => console.log(err));
+console.log('Script End');
+// -> 'Script start'
+// -> 'Script End'
+// -> 'Promise 1 resolved'
+// -> 'Promise 2 resolved'
+// -> 'setTimeout 1'
+// -> 'setTimeout 2'
+```
+
+我们可以看到，这两个期约是在 setTimeout 中的回调之前执行的，因为事件循环将微任务队列中的任务优先于消息队列/任务队列中的任务。
+
+当事件循环在执行微任务队列中的任务时，如果这时有另一个期约被解决，它将被添加到同一个微任务队列的末尾，并且它将在消息队列中的回调之前被执行，不管回调等待执行的时间是多少。
 
 1. **异步返回值**
 
@@ -17484,7 +17537,7 @@ double(3, successCallback, failureCallback);
 
 显然，随着代码越来越复杂，回调策略是不具有扩展性的。“回调地狱”这个称呼可谓名至实归。嵌套回调的代码维护起来就是噩梦。
 
-## 11.3. 期约方案
+## 11.3. 期约
 
 期约是对尚不存在结果的一个替身。期约（promise）这个名字最早是由 Daniel Friedman 和 David Wise 在他们于 1976 年发表的论文“The Impact of Applicative Programming on Multiprocessing”中提出来的。但直到十几年以后，Barbara Liskov 和 Liuba Shrira 在 1988 年发表了论文“Promises: Linguistic Support for Efficient Asynchronous Procedure Calls in Distributed Systems”，这个概念才真正确立下来。同一时期的计算机科学家还使用了“终局”（eventual）、“期许”（future）、“延迟”（delay）和“迟付”（deferred）等术语指代同样的概念。所有这些概念描述的都是一种异步程序执行的机制。
 
@@ -18664,9 +18717,9 @@ p.then(() => setTimeout(console.log, 0, 'completed'));
 
 注意 ES6 不支持取消期约和进度通知，一个主要原因就是这样会导致期约连锁和期约合成过度复杂化。比如在一个期约连锁中，如果某个被其他期约依赖的期约被取消了或者发出了通知，那么接下来应该发生什么完全说不清楚。毕竟，如果取消了 Promise.all()中的一个期约，或者期约连锁中前面的期约发送了一个通知，那么接下来应该怎么办才比较合理呢？
 
-## 11.4. 生成器方案
+## 11.4. 生成器
 
-## 11.5. 异步函数方案
+## 11.5. 异步函数
 
 异步函数，也称为“async/await”（语法关键字），是 ES6 期约模式在 ECMAScript 函数中的应用。async/await 是 ES8 规范新增的。这个特性从行为和语法上都增强了 JavaScript，让以同步方式写的代码能够异步执行。下面来看一个最简单的例子，这个期约在超时之后会解决为一个值：
 
@@ -39406,6 +39459,7 @@ channel.onmessage = ({data}) => {
 这里，页面在通过 BroadcastChannel 发送消息之前会先等 1 秒钟。因为这种信道没有端口所有权的概念，所以如果没有实体监听这个信道，广播的消息就不会有人处理。在这种情况下，如果没有 setTimeout()，则由于初始化工作者线程的延迟，就会导致消息已经发送了，但工作者线程上的消息处理程序还没有就位。
 
 // @TODO
+
 ### 26.2.10. 工作者线程数据传输
 
 使用工作者线程时，经常需要为它们提供某种形式的数据负载。工作者线程是独立的上下文，因此在上下文之间传输数据就会产生消耗。在支持传统多线程模型的语言中，可以使用锁、互斥量，以及 volatile 变量。在 JavaScript 中，有三种在上下文间转移信息的方式：结构化克隆算法（structured clonealgorithm）、可转移对象（transferable objects）和共享数组缓冲区（shared array buffers）。
