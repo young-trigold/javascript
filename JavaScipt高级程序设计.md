@@ -12024,11 +12024,11 @@ Object.defineProperty(person, 'name', {
 - `[[Get]]`：获取函数，在读取属性时调用。默认值为 undefined。
 - `[[Set]]`：设置函数，在写入属性时调用。默认值为 undefined。
 
-访问器属性是不能直接定义的，必须使用 Object.defineProperty()。下面是一个例子：
+你可以使用 Object.defineProperty()来定义访问器属性，下面是一个例子：
 
 ```javascript
 // 定义一个对象，包含伪私有成员year_和公共成员edition
-let book = {
+const book = {
   year_: 2020,
   edition: 4,
 };
@@ -12056,7 +12056,7 @@ console.log(book.edition); // 2
 
 注意 在 ECMAScript 5 以前，开发者会使用两个非标准的访问创建访问器属性：\_\_defineGetter\_\_() 和 \_\_defineSetter\_\_()。这两个方法最早是 Firefox 引入的，后来 Safari、Chrome 和 Opera 也实现了。
 
-3. **定义多个属性**
+1. **定义多个属性**
 
 在一个对象上同时定义多个属性的可能性是非常大的。为此，ECMAScript 提供了 Object.defineProperties()方法。这个方法可以通过多个描述符一次性定义多个属性。它接收两个参数：要为之添加或修改属性的对象和另一个描述符对象，其属性与要添加或修改的属性一一对应。比如：
 
