@@ -1392,7 +1392,7 @@ range = null;
 MutationObserver 的实例要通过调用 MutationObserver 构造函数并传入一个回调函数来创建：
 
 ```javascript
-let observer = new MutationObserver(() => console.log('DOM 改动了！'));
+const observer = new MutationObserver(() => console.log('DOM 改动了！'));
 ```
 
 1. **observe()** 方法
@@ -1402,16 +1402,17 @@ let observer = new MutationObserver(() => console.log('DOM 改动了！'));
 MutationObserverInit 对象用于控制观察哪些方面的变化，是一个键/值对形式配置选项的字典。例如，下面的代码会创建一个观察者（observer）并配置它观察`<body>`元素上的属性变化：
 
 ```javascript
-let observer = new MutationObserver(() => console.log('<body> 属性改变了'));
+const observer = new MutationObserver(() => console.log('<body> 属性改变了'));
 observer.observe(document.body, {attributes: true});
 ```
 
 执行以上代码后，`<body>`元素上任何属性发生变化都会被这个 MutationObserver 实例发现，然后就会异步执行注册的回调函数。`<body>`元素后代的修改或其他非属性修改都不会触发回调进入任务队列。可以通过以下代码来验证：
 
 ```javascript
-let observer = new MutationObserver(() =>
+const observer = new MutationObserver(() =>
   console.log('<body> attributes changed'),
 );
+
 observer.observe(document.body, {attributes: true});
 setTimeout(() => (document.body.className = 'foo'), 2000);
 console.log('Changed body class');
@@ -1427,9 +1428,10 @@ console.log('Changed body class');
 下面展示了反映一个属性变化的 MutationRecord 实例的数组：
 
 ```javascript
-let observer = new MutationObserver((mutationRecords) =>
+const observer = new MutationObserver((mutationRecords) =>
   console.log(mutationRecords),
 );
+
 observer.observe(document.body, {attributes: true});
 document.body.setAttribute('foo', 'bar');
 // [
@@ -1450,9 +1452,10 @@ document.body.setAttribute('foo', 'bar');
 下面是一次涉及命名空间的类似变化：
 
 ```javascript
-let observer = new MutationObserver((mutationRecords) =>
+const observer = new MutationObserver((mutationRecords) =>
   console.log(mutationRecords),
 );
+
 observer.observe(document.body, {attributes: true});
 document.body.setAttributeNS('baz', 'foo', 'bar');
 // [
@@ -1473,9 +1476,10 @@ document.body.setAttributeNS('baz', 'foo', 'bar');
 连续修改会生成多个 MutationRecord 实例，下次回调执行时就会收到包含所有这些实例的数组，顺序为变化事件发生的顺序：
 
 ```javascript
-let observer = new MutationObserver((mutationRecords) =>
+const observer = new MutationObserver((mutationRecords) =>
   console.log(mutationRecords),
 );
+
 observer.observe(document.body, {attributes: true});
 document.body.className = 'foo';
 document.body.className = 'bar';
@@ -1500,9 +1504,10 @@ document.body.className = 'baz';
 传给回调函数的第二个参数是观察变化的 MutationObserver 的实例，演示如下：
 
 ```javascript
-let observer = new MutationObserver((mutationRecords, mutationObserver) =>
+const observer = new MutationObserver((mutationRecords, mutationObserver) =>
   console.log(mutationRecords, mutationObserver),
 );
+
 observer.observe(document.body, {attributes: true});
 document.body.className = 'foo';
 // [MutationRecord], MutationObserver

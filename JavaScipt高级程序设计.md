@@ -17421,7 +17421,86 @@ proxy.push('Jacob');
 // 2
 ```
 
-// @TODO
+配合 MutationObserver 可以实现 Model 和 View 的双向绑定，下面给出了一个简单的例子。
+
+这是 html:
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+  </head>
+  <body>
+    <p>p</p>
+    <p>p</p>
+    <script src="main.js"></script>
+  </body>
+</html>
+```
+
+这是 main.js：
+
+```javascript
+// 要绑定的两个元素
+const [ele1, ele2] = document.querySelectorAll('p');
+
+// 状态
+const state = {
+  text: '',
+};
+
+
+const proxyForState = new Proxy(state, {
+  set(target, prop, v) {
+    // 当 state 改变时，就改变元素的文本内容
+    ele1.textContent = v;
+    ele2.textContent = v;
+    return Reflect.set(...arguments);
+  },
+});
+
+const mutationObserver = new MutationObserver((record) => {
+  if (
+    record[0].removedNodes[0].nodeValue !== record[0].addedNodes[0].nodeValue
+  ) {
+    // 当元素的文本内容改变时，就改变状态
+    proxyForState.text = record[0].addedNodes[0].nodeValue;
+  }
+});
+
+mutationObserver.observe(ele1, {childList: true});
+
+// 该变元素的文本内容
+const changeEleText = () =>
+  new Promise((resolve, reject) => {
+    setTimeout(() => {
+      ele1.textContent = 'changeEleText';
+      resolve();
+    }, 1000);
+  });
+
+// 改变状态
+const changeState = () =>
+  new Promise((resolve, reject) => {
+    setTimeout(() => {
+      proxyForState.text = 'changeState';
+      resolve();
+    }, 2000);
+  });
+
+changeEleText().then(() => {
+  console.log(state.text);
+}, null);
+// -> 'changeEleText'
+
+
+changeState().then(() => {
+  console.log(state.text);
+}, null);
+// -> 'changeState'
+```
 
 # 11. 异步编程
 
