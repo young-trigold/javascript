@@ -17735,8 +17735,9 @@ ECMAScript 6 增加了对 Promises/A+规范的完善支持，即 Promise 类型�
 ECMAScript 6 新增的引用类型 Promise，可以通过 new 操作符来实例化。创建新期约时需要传入执行器（executor）函数作为参数（后面马上会介绍），下面的例子使用了一个空函数对象来应付一下解释器：
 
 ```javascript
-let p = new Promise(() => {});
-setTimeout(console.log, 0, p); // Promise <pending>
+const p = new Promise(() => {});
+setTimeout(console.log, 0, p);
+// -> Promise {<pending>}
 ```
 
 之所以说是应付解释器，是因为如果不提供执行器函数，就会抛出 SyntaxError。
@@ -17768,10 +17769,13 @@ setTimeout(console.log, 0, p); // Promise <pending>
 由于期约的状态是私有的，所以只能在内部进行操作。内部操作在期约的执行器函数中完成。执行器函数主要有两项职责：初始化期约的异步行为和控制状态的最终转换。其中，控制期约状态的转换是通过调用它的两个函数参数实现的。这两个函数参数通常都命名为 resolve()和 reject()。调用 resolve()会把状态切换为兑现，调用 reject()会把状态切换为拒绝。另外，调用 reject()也会抛出错误（后面会讨论这个错误）。
 
 ```javascript
-let p1 = new Promise((resolve, reject) => resolve());
-setTimeout(console.log, 0, p1); // Promise <resolved>
-let p2 = new Promise((resolve, reject) => reject());
-setTimeout(console.log, 0, p2); // Promise <rejected>
+const p1 = new Promise((resolve, reject) => resolve());
+setTimeout(console.log, 0, p1);
+// -> Promise {<resolved>: undefined}
+
+const p2 = new Promise((resolve, reject) => reject());
+setTimeout(console.log, 0, p2);
+// -> Promise { <rejected> }
 // Uncaught error (in promise)
 ```
 
@@ -17781,40 +17785,50 @@ setTimeout(console.log, 0, p2); // Promise <rejected>
 console.log(1);
 setTimeout(console.log, 0, 3);
 new Promise(() => console.log(2));
-// 1
-// 2
-// 3
+// -> 1
+// -> 2
+// -> 3
 ```
 
 添加 setTimeout 可以推迟切换状态：
 
 ```javascript
-let p = new Promise((resolve, reject) => setTimeout(resolve, 1000));
+const p = new Promise((resolve, reject) => setTimeout(resolve, 1000));
+
 // 在console.log 打印期约实例的时候，还不会执行超时回调（即resolve()）
-setTimeout(console.log, 0, p); // Promise <pending>
+setTimeout(console.log, 0, p);
+// -> Promise {<pending>}
 ```
 
 无论 resolve()和 reject()中的哪个被调用，状态转换都不可撤销了。于是继续修改状态会静默失败，如下所示：
 
 ```javascript
-let p = new Promise((resolve, reject) => {
+const p = new Promise((resolve, reject) => {
   resolve();
-  reject(); // 没有效果
+
+  // 没有效果
+  reject();
 });
-setTimeout(console.log, 0, p); // Promise <resolved>
+
+setTimeout(console.log, 0, p);
+// -> Promise {<resolved>: undefined}
 ```
 
 为避免期约卡在待定状态，可以添加一个定时退出功能。比如，可以通过 setTimeout 设置一个 10 秒钟后无论如何都会拒绝期约的回调：
 
 ```javascript
-let p = new Promise((resolve, reject) => {
-  setTimeout(reject, 10000); // 10 秒后调用reject()
+const p = new Promise((resolve, reject) => {
+  // 10 秒后调用 reject()
+  setTimeout(reject, 10000);
   // 执行函数的逻辑
 });
-setTimeout(console.log, 0, p); // Promise <pending>
+
+setTimeout(console.log, 0, p);
+// -> Promise {<pending>}
+
 setTimeout(console.log, 11000, p); // 11 秒后再检查状态
 // (After 10 seconds) Uncaught error
-// (After 11 seconds) Promise <rejected>
+// (After 11 seconds) Promise {<rejected>: undefined}
 ```
 
 因为期约的状态只能改变一次，所以这里的超时拒绝逻辑中可以放心地设置让期约处于待定状态的最长时间。如果执行器中的代码在超时之前已经解决或拒绝，那么超时回调再尝试拒绝也会静默失败。
@@ -17824,28 +17838,31 @@ setTimeout(console.log, 11000, p); // 11 秒后再检查状态
 期约并非一开始就必须处于待定状态，然后通过执行器函数才能转换为落定状态。通过调用 Promise.resolve()静态方法，可以实例化一个解决的期约。下面两个期约实例实际上是一样的：
 
 ```javascript
-let p1 = new Promise((resolve, reject) => resolve());
-let p2 = Promise.resolve();
+const p1 = new Promise((resolve, reject) => resolve());
+const p2 = Promise.resolve();
 ```
 
 这个解决的期约的值对应着传给 Promise.resolve()的第一个参数。使用这个静态方法，实际上可以把任何值都转换为一个期约：
 
 ```javascript
 setTimeout(console.log, 0, Promise.resolve());
-// Promise <resolved>: undefined
+// -> Promise {<resolved>: undefined}
+
 setTimeout(console.log, 0, Promise.resolve(3));
-// Promise <resolved>: 3
+// -> Promise {<resolved>: 3}
+
 // 多余的参数会忽略
 setTimeout(console.log, 0, Promise.resolve(4, 5, 6));
-// Promise <resolved>: 4
+// -> Promise {<resolved>: 4}
 ```
 
 对这个静态方法而言，如果传入的参数本身是一个期约，那它的行为就类似于一个空包装。因此，Promise.resolve()可以说是一个幂等方法，如下所示：
 
 ```javascript
-let p = Promise.resolve(7);
+const p = Promise.resolve(7);
 setTimeout(console.log, 0, p === Promise.resolve(p));
 // true
+
 setTimeout(console.log, 0, p === Promise.resolve(Promise.resolve(p)));
 // true
 ```
@@ -17853,18 +17870,23 @@ setTimeout(console.log, 0, p === Promise.resolve(Promise.resolve(p)));
 这个幂等性会保留传入期约的状态：
 
 ```javascript
-let p = new Promise(() => {});
-setTimeout(console.log, 0, p); // Promise <pending>
-setTimeout(console.log, 0, Promise.resolve(p)); // Promise <pending>
-setTimeout(console.log, 0, p === Promise.resolve(p)); // true
+const p = new Promise(() => {});
+setTimeout(console.log, 0, p);
+// -> Promise {<pending>}
+
+setTimeout(console.log, 0, Promise.resolve(p));
+// -> Promise {<pending>}
+
+setTimeout(console.log, 0, p === Promise.resolve(p));
+// true
 ```
 
 注意，这个静态方法能够包装任何非期约值，包括错误对象，并将其转换为解决的期约。因此，也可能导致不符合预期的行为：
 
 ```javascript
-let p = Promise.resolve(new Error('foo'));
+const p = Promise.resolve(new Error('foo'));
 setTimeout(console.log, 0, p);
-// Promise <resolved>: Error: foo
+// -> Promise {<resolved>: Error: foo}
 ```
 
 5. **Promise.reject()**
@@ -17872,23 +17894,26 @@ setTimeout(console.log, 0, p);
 与 Promise.resolve()类似，Promise.reject()会实例化一个拒绝的期约并抛出一个异步错误（这个错误不能通过 try/catch 捕获，而只能通过拒绝处理程序捕获）。下面的两个期约实例实际上是一样的：
 
 ```javascript
-let p1 = new Promise((resolve, reject) => reject());
-let p2 = Promise.reject();
+const p1 = new Promise((resolve, reject) => reject());
+const p2 = Promise.reject();
 ```
 
 这个拒绝的期约的理由就是传给 Promise.reject()的第一个参数。这个参数也会传给后续的拒绝处理程序：
 
 ```javascript
 let p = Promise.reject(3);
-setTimeout(console.log, 0, p); // Promise <rejected>: 3
-p.then(null, (e) => setTimeout(console.log, 0, e)); // 3
+setTimeout(console.log, 0, p);
+// -> Promise {<rejected>: 3}
+
+p.then(null, (e) => setTimeout(console.log, 0, e));
+// -> 3
 ```
 
 关键在于，Promise.reject()并没有照搬 Promise.resolve()的幂等逻辑。如果给它传一个期约对象，则这个期约会成为它返回的拒绝期约的理由：
 
 ```javascript
 setTimeout(console.log, 0, Promise.reject(Promise.resolve()));
-// Promise <rejected>: Promise <resolved>
+// Promise {<rejected>: Promise {<resolved>}}
 ```
 
 6. **同步/异步执行的二元性**
@@ -17899,7 +17924,8 @@ Promise 的设计很大程度上会导致一种完全不同于 JavaScript 的计
 try {
   throw new Error('foo');
 } catch (e) {
-  console.log(e); // Error: foo
+  console.log(e);
+  // -> Error: foo
 }
 try {
   Promise.reject(new Error('bar'));
@@ -17939,15 +17965,19 @@ Promise.prototype.then() 是为期约实例添加处理程序的主要方法。�
 function onResolved(id) {
   setTimeout(console.log, 0, id, 'resolved');
 }
+
 function onRejected(id) {
   setTimeout(console.log, 0, id, 'rejected');
 }
-let p1 = new Promise((resolve, reject) => setTimeout(resolve, 3000));
-let p2 = new Promise((resolve, reject) => setTimeout(reject, 3000));
+
+const p1 = new Promise((resolve, reject) => setTimeout(resolve, 3000));
+const p2 = new Promise((resolve, reject) => setTimeout(reject, 3000));
+
 p1.then(
   () => onResolved('p1'),
   () => onRejected('p1'),
 );
+
 p2.then(
   () => onResolved('p2'),
   () => onRejected('p2'),
@@ -17982,9 +18012,13 @@ Promise.prototype.then()方法返回一个新的期约实例：
 ```javascript
 let p1 = new Promise(() => {});
 let p2 = p1.then();
-setTimeout(console.log, 0, p1); // Promise <pending>
-setTimeout(console.log, 0, p2); // Promise <pending>
-setTimeout(console.log, 0, p1 === p2); // false
+setTimeout(console.log, 0, p1);
+// -> Promise {<pending>}
+
+setTimeout(console.log, 0, p2);
+// -> Promise {<pending>}
+setTimeout(console.log, 0, p1 === p2);
+// -> false
 ```
 
 这个新期约实例基于 onResovled 处理程序的返回值构建。换句话说，该处理程序的返回值会通过 Promise.resolve()包装来生成新期约。如果没有提供这个处理程序，则 Promise.resolve()就会包装上一个期约解决之后的值。如果没有显式的返回语句，则 Promise.resolve()会包装默认的返回值 undefined。
@@ -17993,14 +18027,14 @@ setTimeout(console.log, 0, p1 === p2); // false
 let p1 = Promise.resolve('foo');
 // 若调用then()时不传处理程序，则原样向后传
 let p2 = p1.then();
-setTimeout(console.log, 0, p2); // Promise <resolved>: foo
+setTimeout(console.log, 0, p2); // Promise {<resolved>}: foo
 // 这些都一样
 let p3 = p1.then(() => undefined);
 let p4 = p1.then(() => {});
 let p5 = p1.then(() => Promise.resolve());
-setTimeout(console.log, 0, p3); // Promise <resolved>: undefined
-setTimeout(console.log, 0, p4); // Promise <resolved>: undefined
-setTimeout(console.log, 0, p5); // Promise <resolved>: undefined
+setTimeout(console.log, 0, p3); // Promise {<resolved>}: undefined
+setTimeout(console.log, 0, p4); // Promise {<resolved>}: undefined
+setTimeout(console.log, 0, p5); // Promise {<resolved>}: undefined
 ```
 
 如果有显式的返回值，则 Promise.resolve()会包装这个值：
@@ -18010,13 +18044,13 @@ setTimeout(console.log, 0, p5); // Promise <resolved>: undefined
 // 这些都一样
 let p6 = p1.then(() => 'bar');
 let p7 = p1.then(() => Promise.resolve('bar'));
-setTimeout(console.log, 0, p6); // Promise <resolved>: bar
-setTimeout(console.log, 0, p7); // Promise <resolved>: bar
+setTimeout(console.log, 0, p6); // Promise {<resolved>}: bar
+setTimeout(console.log, 0, p7); // Promise {<resolved>}: bar
 // Promise.resolve()保留返回的期约
 let p8 = p1.then(() => new Promise(() => {}));
 let p9 = p1.then(() => Promise.reject());
 // Uncaught (in promise): undefined
-setTimeout(console.log, 0, p8); // Promise <pending>
+setTimeout(console.log, 0, p8); // Promise {<pending>}
 setTimeout(console.log, 0, p9); // Promise <rejected>: undefined
 ```
 
@@ -18034,7 +18068,7 @@ setTimeout(console.log, 0, p10); // Promise <rejected> baz
 ```javascript
 ...
 let p11 = p1.then(() => Error('qux'));
-setTimeout(console.log, 0, p11); // Promise <resolved>: Error: qux
+setTimeout(console.log, 0, p11); // Promise {<resolved>}: Error: qux
 ```
 
 onRejected 处理程序也与之类似：onRejected 处理程序返回的值也会被 Promise.resolve()包装。乍一看这可能有点违反直觉，但是想一想，onRejected 处理程序的任务不就是捕获异步错误吗？因此，拒绝处理程序在捕获错误后不抛出异常是符合期约的行为，应该返回一个解决期约。
@@ -18051,19 +18085,19 @@ setTimeout(console.log, 0, p2); // Promise <rejected>: foo
 let p3 = p1.then(null, () => undefined);
 let p4 = p1.then(null, () => {});
 let p5 = p1.then(null, () => Promise.resolve());
-setTimeout(console.log, 0, p3); // Promise <resolved>: undefined
-setTimeout(console.log, 0, p4); // Promise <resolved>: undefined
-setTimeout(console.log, 0, p5); // Promise <resolved>: undefined
+setTimeout(console.log, 0, p3); // Promise {<resolved>}: undefined
+setTimeout(console.log, 0, p4); // Promise {<resolved>}: undefined
+setTimeout(console.log, 0, p5); // Promise {<resolved>}: undefined
 // 这些都一样
 let p6 = p1.then(null, () => 'bar');
 let p7 = p1.then(null, () => Promise.resolve('bar'));
-setTimeout(console.log, 0, p6); // Promise <resolved>: bar
-setTimeout(console.log, 0, p7); // Promise <resolved>: bar
+setTimeout(console.log, 0, p6); // Promise {<resolved>}: bar
+setTimeout(console.log, 0, p7); // Promise {<resolved>}: bar
 // Promise.resolve()保留返回的期约
 let p8 = p1.then(null, () => new Promise(() => {}));
 let p9 = p1.then(null, () => Promise.reject());
 // Uncaught (in promise): undefined
-setTimeout(console.log, 0, p8); // Promise <pending>
+setTimeout(console.log, 0, p8); // Promise {<pending>}
 setTimeout(console.log, 0, p9); // Promise <rejected>: undefined
 let p10 = p1.then(null, () => {
   throw 'baz';
@@ -18071,7 +18105,7 @@ let p10 = p1.then(null, () => {
 // Uncaught (in promise) baz
 setTimeout(console.log, 0, p10); // Promise <rejected>: baz
 let p11 = p1.then(null, () => Error('qux'));
-setTimeout(console.log, 0, p11); // Promise <resolved>: Error: qux
+setTimeout(console.log, 0, p11); // Promise {<resolved>}: Error: qux
 ```
 
 3. **Promise.prototype.catch()**
@@ -18095,8 +18129,8 @@ Promise.prototype.catch()返回一个新的期约实例：
 ```javascript
 let p1 = new Promise(() => {});
 let p2 = p1.catch();
-setTimeout(console.log, 0, p1); // Promise <pending>
-setTimeout(console.log, 0, p2); // Promise <pending>
+setTimeout(console.log, 0, p1); // Promise {<pending>}
+setTimeout(console.log, 0, p2); // Promise {<pending>}
 setTimeout(console.log, 0, p1 === p2); // false
 ```
 
@@ -18121,8 +18155,8 @@ Promise.prototype.finally()方法返回一个新的期约实例：
 ```javascript
 let p1 = new Promise(() => {});
 let p2 = p1.finally();
-setTimeout(console.log, 0, p1); // Promise <pending>
-setTimeout(console.log, 0, p2); // Promise <pending>
+setTimeout(console.log, 0, p1); // Promise {<pending>}
+setTimeout(console.log, 0, p2); // Promise {<pending>}
 setTimeout(console.log, 0, p1 === p2); // false
 ```
 
@@ -18138,13 +18172,13 @@ let p5 = p1.finally(() => Promise.resolve());
 let p6 = p1.finally(() => 'bar');
 let p7 = p1.finally(() => Promise.resolve('bar'));
 let p8 = p1.finally(() => Error('qux'));
-setTimeout(console.log, 0, p2); // Promise <resolved>: foo
-setTimeout(console.log, 0, p3); // Promise <resolved>: foo
-setTimeout(console.log, 0, p4); // Promise <resolved>: foo
-setTimeout(console.log, 0, p5); // Promise <resolved>: foo
-setTimeout(console.log, 0, p6); // Promise <resolved>: foo
-setTimeout(console.log, 0, p7); // Promise <resolved>: foo
-setTimeout(console.log, 0, p8); // Promise <resolved>: foo
+setTimeout(console.log, 0, p2); // Promise {<resolved>}: foo
+setTimeout(console.log, 0, p3); // Promise {<resolved>}: foo
+setTimeout(console.log, 0, p4); // Promise {<resolved>}: foo
+setTimeout(console.log, 0, p5); // Promise {<resolved>}: foo
+setTimeout(console.log, 0, p6); // Promise {<resolved>}: foo
+setTimeout(console.log, 0, p7); // Promise {<resolved>}: foo
+setTimeout(console.log, 0, p8); // Promise {<resolved>}: foo
 ```
 
 如果返回的是一个待定的期约，或者 onFinally 处理程序抛出了错误（显式抛出或返回了一个拒绝期约），则会返回相应的期约（待定或拒绝），如下所示：
@@ -18155,7 +18189,7 @@ setTimeout(console.log, 0, p8); // Promise <resolved>: foo
 let p9 = p1.finally(() => new Promise(() => {}));
 let p10 = p1.finally(() => Promise.reject());
 // Uncaught (in promise): undefined
-setTimeout(console.log, 0, p9); // Promise <pending>
+setTimeout(console.log, 0, p9); // Promise {<pending>}
 setTimeout(console.log, 0, p10); // Promise <rejected>: undefined
 let p11 = p1.finally(() => { throw 'baz'; });
 // Uncaught (in promise) baz
@@ -18170,10 +18204,10 @@ let p1 = Promise.resolve('foo');
 let p2 = p1.finally(
   () => new Promise((resolve, reject) => setTimeout(() => resolve('bar'), 100)),
 );
-setTimeout(console.log, 0, p2); // Promise <pending>
+setTimeout(console.log, 0, p2); // Promise {<pending>}
 setTimeout(() => setTimeout(console.log, 0, p2), 200);
 // 200 毫秒后：
-// Promise <resolved>: foo
+// Promise {<resolved>}: foo
 ```
 
 5. **非重入期约方法**
@@ -18367,7 +18401,7 @@ let p = new Promise((resolve, reject) => {
   } catch (e) {}
   resolve('bar');
 });
-setTimeout(console.log, 0, p); // Promise <resolved>: bar
+setTimeout(console.log, 0, p); // Promise {<resolved>}: bar
 ```
 
 then()和 catch()的 onRejected 处理程序在语义上相当于 try/catch。出发点都是捕获错误之后将其隔离，同时不影响正常逻辑执行。为此，onRejected 处理程序的任务应该是在捕获异步错误之后返回一个解决的期约。下面的例子中对比了同步错误处理与异步错误处理：
@@ -18579,7 +18613,7 @@ let p = Promise.all([
   Promise.resolve(),
   new Promise((resolve, reject) => setTimeout(resolve, 1000)),
 ]);
-setTimeout(console.log, 0, p); // Promise <pending>
+setTimeout(console.log, 0, p); // Promise {<pending>}
 p.then(() => setTimeout(console.log, 0, 'all() resolved!'));
 // all() resolved!（大约1 秒后）
 ```
@@ -18589,7 +18623,7 @@ p.then(() => setTimeout(console.log, 0, 'all() resolved!'));
 ```javascript
 // 永远待定
 let p1 = Promise.all([new Promise(() => {})]);
-setTimeout(console.log, 0, p1); // Promise <pending>
+setTimeout(console.log, 0, p1); // Promise {<pending>}
 // 一次拒绝会导致最终期约拒绝
 let p2 = Promise.all([Promise.resolve(), Promise.reject(), Promise.resolve()]);
 setTimeout(console.log, 0, p2); // Promise <rejected>
@@ -18644,7 +18678,7 @@ let p1 = Promise.race([
   Promise.resolve(3),
   new Promise((resolve, reject) => setTimeout(reject, 1000)),
 ]);
-setTimeout(console.log, 0, p1); // Promise <resolved>: 3
+setTimeout(console.log, 0, p1); // Promise {<resolved>}: 3
 // 拒绝先发生，超时后的解决被忽略
 let p2 = Promise.race([
   Promise.reject(4),
@@ -18657,7 +18691,7 @@ let p3 = Promise.race([
   Promise.resolve(6),
   Promise.resolve(7),
 ]);
-setTimeout(console.log, 0, p3); // Promise <resolved>: 5
+setTimeout(console.log, 0, p3); // Promise {<resolved>}: 5
 ```
 
 如果有一个期约拒绝，只要它是第一个落定的，就会成为拒绝合成期约的理由。之后再拒绝的期约不会影响最终期约的拒绝理由。不过，这并不影响所有包含期约正常的拒绝操作。与 Promise.all()类似，合成的期约会静默处理所有包含期约的拒绝操作，如下所示：
