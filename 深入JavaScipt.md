@@ -1,12 +1,3 @@
-```json
-{
-  "item": "JavaScript 高级程序设计",
-  "priority": 2,
-  "span": "3 months",
-  "plan": "1 chapter/3 day"
-}
-```
-
 **目录：**
 
 - [1. 什么是 JavaScript](#1-什么是-javascript)
