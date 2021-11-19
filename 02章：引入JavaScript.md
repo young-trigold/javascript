@@ -1,23 +1,21 @@
 **目录：**
 
-- [2. HTML 中的 JavaScript](#2-html-中的-javascript)
+- [2. 引入 JavaScript](#2-引入-javascript)
   - [2.1. `<script>` 元素](#21-script-元素)
     - [2.1.1. 标签位置](#211-标签位置)
     - [2.1.2. 推迟执行脚本](#212-推迟执行脚本)
     - [2.1.3. 异步执行脚本](#213-异步执行脚本)
     - [2.1.4. 动态加载脚本](#214-动态加载脚本)
   - [2.2. 行内脚本与外部脚本](#22-行内脚本与外部脚本)
-  - [2.3. 文档模式](#23-文档模式)
   - [2.4. `<noscript>` 元素](#24-noscript-元素)
 
-# 2. HTML 中的 JavaScript
+# 2. 引入 JavaScript
 
 本章内容:
 
 - `<script>` 元素
-- 行内脚本与外部脚本的比较
-- 文档模式对 JavaScript 有什么影响
-- 确保 JavaScript 不可用时的用户体验
+- 行内脚本与外部脚本
+- `<onscript>` 元素
 
 将 JavaScript 引入网页，首先要解决它与网页的主导语言 HTML 的关系问题。在 JavaScript 早期，网景公司的工作人员希望在将 JavaScript 引入 HTML 页面的同时，不会导致页面在其他浏览器中渲染出问题。通过反复试错和讨论，他们最终做出了一些决定，并达成了向网页中引入通用脚本能力的共识。当初他们的很多工作得到了保留，并且最终形成了 HTML 规范。
 
@@ -245,39 +243,6 @@ document.head.appendChild(script);
 
 当然，这里假设浏览器支持 SPDY/HTTP2，只有比较新的浏览器才满足。如果你还想支持那些比较老的浏览器，可能还是用一个大文件更合适。
 
-## 2.3. 文档模式
-
-IE5.5 发明了文档模式的概念，即可以使用 doctype 切换文档模式。最初的文档模式有两种：**混杂模式(quirks mode)** 和 **标准模式(standards mode)**。前者让 IE 像 IE5 一样（支持一些非标准的特性），后者让 IE 具有兼容标准的行为。虽然这两种模式的主要区别只体现在通过 CSS 渲染的内容方面，但对 JavaScript 也有一些关联影响，或称为副作用。本书会经常提到这些副作用。
-
-IE 初次支持文档模式切换以后，其他浏览器也跟着实现了。随着浏览器的普遍实现，又出现了第三种文档模式：**准标准模式(almost standards mode)**。这种模式下的浏览器支持很多标准的特性，但是没有标准规定得那么严格。主要区别在于如何对待图片元素周围的空白（在表格中使用图片时最明显）。
-
-混杂模式在所有浏览器中都以省略文档开头的 doctype 声明作为开关。这种约定并不合理，因为混杂模式在不同浏览器中的差异非常大，不使用黑科技基本上就没有浏览器一致性可言。
-
-标准模式通过下列几种文档类型声明开启：
-
-```html
-<!-- HTML 4.01 Strict -->
-<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01//EN' 'http://www.w3.org/TR/html4/strict.dtd'>
-<!-- XHTML 1.0 Strict -->
-<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
-<!-- HTML5 -->
-<!DOCTYPE html>
-```
-
-准标准模式通过过渡性文档类型（Transitional）和框架集文档类型（Frameset）来触发：
-
-```html
-<!-- HTML 4.01 Transitional -->
-<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>
-<!-- HTML 4.01 Frameset -->
-<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01 Frameset//EN' 'http://www.w3.org/TR/html4/frameset.dtd'>
-<!-- XHTML 1.0 Transitional -->
-<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
-<!-- XHTML 1.0 Frameset -->
-<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Frameset//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd'>
-```
-
-准标准模式与标准模式非常接近，很少需要区分。人们在说到“标准模式”时，可能指其中任何一个。而对文档模式的检测（本书后面会讨论）也不会区分它们。本书后面所说的标准模式，指的就是除混杂模式以外的模式。
 
 ## 2.4. `<noscript>` 元素
 

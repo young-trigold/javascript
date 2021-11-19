@@ -1,24 +1,28 @@
 **目录：**
 
-- [1. 什么是 JavaScript](#1-什么是-javascript)
-  - [1.1. 历史回顾](#11-历史回顾)
+- [1. JavaScript 简介](#1-javascript-简介)
+  - [1.1. JavaScript 历史](#11-javascript-历史)
     - [1.1.1. 诞生](#111-诞生)
     - [1.1.2. JavaScript 与 Java](#112-javascript-与-java)
     - [1.1.3. JavaScript 与 ECMAScript](#113-javascript-与-ecmascript)
     - [1.1.4. 周边大事记](#114-周边大事记)
   - [1.2. JavaScript 实现](#12-javascript-实现)
     - [1.2.1. ECMAScript](#121-ecmascript)
+      - [1.2.1.1. ECMAScript 版本](#1211-ecmascript-版本)
+      - [1.2.1.2. 符合性](#1212-符合性)
+      - [1.2.1.3. 浏览器对 ECMAScipt 的支持](#1213-浏览器对-ecmascipt-的支持)
     - [1.2.2. DOM](#122-dom)
+      - [1.2.2.1. DOM 级别](#1221-dom-级别)
+      - [1.2.2.2. 其他 DOM](#1222-其他-dom)
+      - [1.2.2.3. Web 浏览器对 DOM 的支持](#1223-web-浏览器对-dom-的支持)
     - [1.2.3. BOM](#123-bom)
 
-# 1. 什么是 JavaScript
+# 1. JavaScript 简介
 
 本章内容
 
-- JavaScript 历史回顾
-- ECMAScript 介绍
-- DOM 介绍
-- BOM 介绍
+- JavaScript 的历史
+- JavaScript 的实现
 
 1995 年，JavaScript 问世。当时，它的主要用途是代替 Perl 等服务器端语言处理输入验证。在此之前，要验证某个必填字段是否已填写，或者某个输入的值是否有效，需要与服务器的一次往返通信。网景公司希望通过在其 Navigator 浏览器中加入 JavaScript 来改变这个局面。在那个普遍通过电话拨号上网的年代，由客户端处理某些基本的验证是让人兴奋的新功能。缓慢的网速让页面每次刷新都考验着人们的耐心。
 
@@ -26,7 +30,7 @@
 
 从简单的输入验证脚本到强大的编程语言，JavaScript 的崛起没有任何人预测到。它很简单，学会用只要几分钟；它又很复杂，掌握它要很多年。要真正学好用好 JavaScript，理解其本质、历史及局限性是非常重要的。
 
-## 1.1. 历史回顾
+## 1.1. JavaScript 历史
 
 ### 1.1.1. 诞生
 
@@ -211,7 +215,7 @@ ECMAScript，即 ECMA-262 定义的语言，并不局限于 Web 浏览器。事�
 
 ECMAScript 只是对实现这个规范描述的所有方面的一门语言的称呼。JavaScript 实现了 ECMAScript，而 Adobe ActionScript 同样也实现了 ECMAScript。
 
-1. **ECMAScript 版本**
+#### 1.2.1.1. ECMAScript 版本
 
 ECMAScript 不同的版本以“edition”表示（也就是描述特定实现的 ECMA-262 的版本）。ECMA-262 最近的版本是第 12 版，发布于 2021 年 6 月。ECMA-262 的第 1 版本质上跟网景的 JavaScript 1.1 相同， 只不过删除了所有浏览器特定的代码，外加少量细微的修改。ECMA-262 要求支持 Unicode 标准（以支持多语言），而且对象要与平台无关（Netscape JavaScript 1.1 的对象不是这样，比如它的 Date 对象就依赖平台）。这也是 JavaScript 1.1 和 JavaScript 1.2 不符合 ECMA-262 第 1 版要求的原因。
 
@@ -239,7 +243,7 @@ ECMA-262 第 11 版，即 ECMAScript 2020，于 2020 年 6 月发布。除了新
 
 最新(2021 年)的第 12 版于 2021 年 6 月发布。第 12 版新增了字符串方法 replaceALL()，逻辑赋值操作符(??==, &&==, ||==)，Promise.any 方法，一种新的错误类型 AggregateError 表示同时发生多个错误。
 
-2. **符合性**
+#### 1.2.1.2. 符合性
 
 ECMA-262 阐述了什么是 ECMAScript 符合性。要成为 ECMAScript 实现，必须满足下列条件：
 
@@ -253,7 +257,7 @@ ECMA-262 阐述了什么是 ECMAScript 符合性。要成为 ECMAScript 实现�
 
 以上条件为实现开发者基于 ECMAScript 开发语言提供了极大的权限和灵活度，也是其广受欢迎的原因之一。
 
-3. **浏览器对 ECMAScipt 的支持**
+#### 1.2.1.3. 浏览器对 ECMAScipt 的支持
 
 1996 年，Netscape Navigator 3 发布时包含了 JavaScript 1.1。JavaScript 1.1 规范随后被提交给 Ecma， 作为对新的 ECMA-262 标准的建议。随着 JavaScript 迅速走红，网景非常愿意开发 1.2 版。可是有个问题：Ecma 尚未接受网景的建议。
 
@@ -324,13 +328,9 @@ JScript 的再次更新出现在 IE4 中的 JScript 3.0（2.0 版是在 Microsof
 
 DOM 通过创建表示文档的树，让开发者可以随心所欲地控制网页的内容和结构。使用 DOM API， 可以轻松地删除、添加、替换、修改节点。
 
-1. **为什么 DOM 是必需的**
 
-在 IE4 和 Netscape Navigator 4 支持不同形式的动态 HTML（DHTML）的情况下，开发者首先可以做到不刷新页面而修改页面外观和内容。这代表了 Web 技术的一个巨大进步，但也暴露了很大的问题。由于网景和微软采用不同思路开发 DHTML，开发者写一个 HTML 页面就可以在任何浏览器中运行的好日子就此终结。
 
-为了保持 Web 跨平台的本性，必须要做点什么。人们担心如果无法控制网景和微软各行其是，那么 Web 就会发生分裂，导致人们面向浏览器开发网页。就在这时，万维网联盟（W3C，World Wide Web Consortium）开始了制定 DOM 标准的进程。
-
-2. **DOM 级别**
+#### 1.2.2.1. DOM 级别
 
 1998 年 10 月，DOM Level 1 成为 W3C 的推荐标准。这个规范由两个模块组成：DOM Core 和 DOM HTML。前者提供了一种映射 XML 文档，从而方便访问和操作文档任意部分的方式；后者扩展了前者，并增加了特定于 HTML 的对象和方法。
 
@@ -347,7 +347,7 @@ DOM Level 3 进一步扩展了 DOM，增加了以统一的方式加载和保存�
 
 目前，W3C 不再按照 Level 来维护 DOM 了，而是作为 DOM Living Standard 来维护，其快照称为 DOM4。DOM4 新增的内容包括替代 Mutation Events 的 Mutation Observers。
 
-3. **其他 DOM**
+#### 1.2.2.2. 其他 DOM
 
 除了 DOM Core 和 DOM HTML 接口，有些其他语言也发布了自己的 DOM 标准。下面列出的语言是基于 XML 的，每一种都增加了该语言独有的 DOM 方法和接口：
 
@@ -357,7 +357,7 @@ DOM Level 3 进一步扩展了 DOM，增加了以统一的方式加载和保存�
 
 此外，还有一些语言开发了自己的 DOM 实现，比如 Mozilla 的 XML 用户界面语言（XUL，XML User Interface Language）。不过，只有前面列表中的语言是 W3C 推荐标准。
 
-4. **Web 浏览器对 DOM 的支持情况**
+#### 1.2.2.3. Web 浏览器对 DOM 的支持
 
 DOM 标准在 Web 浏览器实现它之前就已经作为标准发布了。IE 在第 5 版中尝试支持 DOM，但直到 5.5 版才开始真正支持，该版本实现了 DOM Level 1 的大部分。IE 在第 6 版和第 7 版中都没有实现新特性，第 8 版中修复了一些问题。
 
