@@ -1,8 +1,3 @@
-**目录：**
-
-- [1. 推迟执行脚本](#1-推迟执行脚本)
-- [2. 异步执行脚本](#2-异步执行脚本)
-
 ## 1. 推迟执行脚本
 
 HTML 4.01 为`<script>`元素定义了一个叫 defer 的属性。当浏览器解析到带有 defer 属性的脚本时，浏览器会并行地下载该脚本，并行的意思是它不会像正常脚本那样在下载时阻塞后面的 HTML 解析，当整个 HTML 文件解析完毕时，带有 defer 属性的脚本才会按照他们出现的顺序执行。
@@ -51,4 +46,4 @@ HTML5 为`<script>`元素定义了 async 属性。当浏览器解析到带有 as
 
 下图总结了普通脚本，异步脚本和延迟脚本的特点：
 
-![2-3-async-defer](illustrations/2-3-async-defer.svg)
+![2-3-async-defer](/static/images/illustrations_javascript/2-3-async-defer.svg)
