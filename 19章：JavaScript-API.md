@@ -1,56 +1,51 @@
-**目录：**
-
-- [21. JavaScript API](#21-javascript-api)
-  - [21.1. Atomics 与 SharedArrayBuffer](#211-atomics-与-sharedarraybuffer)
-    - [21.1.1. SharedArrayBuffer](#2111-sharedarraybuffer)
-    - [21.1.2. 原子操作基础](#2112-原子操作基础)
-  - [21.2. 跨上下文通信](#212-跨上下文通信)
-  - [21.3. Encoding API](#213-encoding-api)
-    - [21.3.1. 文本编码](#2131-文本编码)
-    - [21.3.2. 文本解码](#2132-文本解码)
-  - [21.4. File API 与 Blob API](#214-file-api-与-blob-api)
-    - [21.4.1. File 类型](#2141-file-类型)
-    - [21.4.2. FileReader 类型](#2142-filereader-类型)
-    - [21.4.3. FileReaderSync 类型](#2143-filereadersync-类型)
-    - [21.4.4. Blob 与部分读取](#2144-blob-与部分读取)
-    - [21.4.5. 对象 URL 与 Blob](#2145-对象-url-与-blob)
-    - [21.4.6. 读取拖放文件](#2146-读取拖放文件)
-  - [21.5. 媒体元素](#215-媒体元素)
-    - [21.5.1. 属性](#2151-属性)
-    - [21.5.2. 事件](#2152-事件)
-    - [21.5.3. 自定义媒体播放器](#2153-自定义媒体播放器)
-    - [21.5.4. 检测编解码器](#2154-检测编解码器)
-    - [21.5.5. 音频类型](#2155-音频类型)
-  - [21.6. 原生拖放](#216-原生拖放)
-    - [21.6.1. 拖放事件](#2161-拖放事件)
-    - [21.6.2. 自定义放置目标](#2162-自定义放置目标)
-    - [21.6.3. dataTransfer 对象](#2163-datatransfer-对象)
-    - [21.6.4. dropEffect 与 effectAllowed](#2164-dropeffect-与-effectallowed)
-    - [21.6.5. 可拖动能力](#2165-可拖动能力)
-    - [21.6.6. 其他成员](#2166-其他成员)
-  - [21.7. Notification API](#217-notification-api)
-    - [21.7.1. 通知权限](#2171-通知权限)
-    - [21.7.2. 显示和隐藏通知](#2172-显示和隐藏通知)
-    - [21.7.3. 通知生命周期](#2173-通知生命周期)
-  - [21.8. Page Visibility API](#218-page-visibility-api)
-  - [21.9. Steams API](#219-steams-api)
-    - [21.9.1. 理解流](#2191-理解流)
-    - [21.9.2. 可读流](#2192-可读流)
-    - [21.9.3. 可写流](#2193-可写流)
-    - [21.9.4. 转换流](#2194-转换流)
-    - [21.9.5. 通过管道连接流](#2195-通过管道连接流)
-  - [21.10. 计时 API](#2110-计时-api)
-    - [21.10.1. High Resolution Time API](#21101-high-resolution-time-api)
-    - [21.10.2. Performance Timeline API](#21102-performance-timeline-api)
-  - [21.11. Web 组件](#2111-web-组件)
-    - [21.11.1. HTML 模板](#21111-html-模板)
-    - [21.11.2. 影子 DOM](#21112-影子-dom)
-    - [21.11.3. 自定义元素](#21113-自定义元素)
-  - [21.12. Web Cryptography API](#2112-web-cryptography-api)
-    - [21.12.1. 生成随机数](#21121-生成随机数)
-    - [21.12.2. 使用 SubtleCrypto 对象](#21122-使用-subtlecrypto-对象)
-
-# 21. JavaScript API
+- [1.1. Atomics 与 SharedArrayBuffer](#11-atomics-与-sharedarraybuffer)
+  - [1.1.1. SharedArrayBuffer](#111-sharedarraybuffer)
+  - [1.1.2. 原子操作基础](#112-原子操作基础)
+- [1.2. 跨上下文通信](#12-跨上下文通信)
+- [1.3. Encoding API](#13-encoding-api)
+  - [1.3.1. 文本编码](#131-文本编码)
+  - [1.3.2. 文本解码](#132-文本解码)
+- [1.4. File API 与 Blob API](#14-file-api-与-blob-api)
+  - [1.4.1. File 类型](#141-file-类型)
+  - [1.4.2. FileReader 类型](#142-filereader-类型)
+  - [1.4.3. FileReaderSync 类型](#143-filereadersync-类型)
+  - [1.4.4. Blob 与部分读取](#144-blob-与部分读取)
+  - [1.4.5. 对象 URL 与 Blob](#145-对象-url-与-blob)
+  - [1.4.6. 读取拖放文件](#146-读取拖放文件)
+- [1.5. 媒体元素](#15-媒体元素)
+  - [1.5.1. 属性](#151-属性)
+  - [1.5.2. 事件](#152-事件)
+  - [1.5.3. 自定义媒体播放器](#153-自定义媒体播放器)
+  - [1.5.4. 检测编解码器](#154-检测编解码器)
+  - [1.5.5. 音频类型](#155-音频类型)
+- [1.6. 原生拖放](#16-原生拖放)
+  - [1.6.1. 拖放事件](#161-拖放事件)
+  - [1.6.2. 自定义放置目标](#162-自定义放置目标)
+  - [1.6.3. dataTransfer 对象](#163-datatransfer-对象)
+  - [1.6.4. dropEffect 与 effectAllowed](#164-dropeffect-与-effectallowed)
+  - [1.6.5. 可拖动能力](#165-可拖动能力)
+  - [1.6.6. 其他成员](#166-其他成员)
+- [1.7. Notification API](#17-notification-api)
+  - [1.7.1. 通知权限](#171-通知权限)
+  - [1.7.2. 显示和隐藏通知](#172-显示和隐藏通知)
+  - [1.7.3. 通知生命周期](#173-通知生命周期)
+- [1.8. Page Visibility API](#18-page-visibility-api)
+- [1.9. Steams API](#19-steams-api)
+  - [1.9.1. 理解流](#191-理解流)
+  - [1.9.2. 可读流](#192-可读流)
+  - [1.9.3. 可写流](#193-可写流)
+  - [1.9.4. 转换流](#194-转换流)
+  - [1.9.5. 通过管道连接流](#195-通过管道连接流)
+- [1.10. 计时 API](#110-计时-api)
+  - [1.10.1. High Resolution Time API](#1101-high-resolution-time-api)
+  - [1.10.2. Performance Timeline API](#1102-performance-timeline-api)
+- [1.11. Web 组件](#111-web-组件)
+  - [1.11.1. HTML 模板](#1111-html-模板)
+  - [1.11.2. 影子 DOM](#1112-影子-dom)
+  - [1.11.3. 自定义元素](#1113-自定义元素)
+- [1.12. Web Cryptography API](#112-web-cryptography-api)
+  - [1.12.1. 生成随机数](#1121-生成随机数)
+  - [1.12.2. 使用 SubtleCrypto 对象](#1122-使用-subtlecrypto-对象)
 
 本章内容
 
@@ -72,13 +67,13 @@
 
 注意 Web API 的数量之多令人难以置信（参见 MDN 文档的 Web APIs 词条）。本章要介绍的 API 仅限于与大多数开发者有关、已经得到多个浏览器支持，且本书其他章节没有涵盖的部分。
 
-## 21.1. Atomics 与 SharedArrayBuffer
+## 1.1. Atomics 与 SharedArrayBuffer
 
 多个上下文访问 SharedArrayBuffer 时，如果同时对缓冲区执行操作，就可能出现资源争用问题。Atomics API 通过强制同一时刻只能对缓冲区执行一个操作，可以让多个上下文安全地读写一个 SharedArrayBuffer。Atomics API 是 ES2017 中定义的。
 
 仔细研究会发现 Atomics API 非常像一个简化版的指令集架构（ISA），这并非意外。原子操作的本质会排斥操作系统或计算机硬件通常会自动执行的优化（比如指令重新排序）。原子操作也让并发访问内存变得不可能，如果应用不当就可能导致程序执行变慢。为此，Atomics API 的设计初衷是在最少但很稳定的原子行为基础之上，构建复杂的多线程 JavaScript 程序。
 
-### 21.1.1. SharedArrayBuffer
+### 1.1.1. SharedArrayBuffer
 
 SharedArrayBuffer 与 ArrayBuffer 具有同样的 API。二者的主要区别是 ArrayBuffer 必须在不同执行上下文间切换，SharedArrayBuffer 则可以被任意多个执行上下文同时使用。
 
@@ -127,7 +122,7 @@ for (const worker of workers) {
 
 注意 SharedArrayBuffer API 等同于 ArrayBuffer API，后者在第 6 章介绍过。关于如何在多个上下文中使用 SharedArrayBuffer，可以参考第 27 章。
 
-### 21.1.2. 原子操作基础
+### 1.1.2. 原子操作基础
 
 任何全局上下文中都有 Atomics 对象，这个对象上暴露了用于执行线程安全操作的一套静态方法，其中多数方法以一个 TypedArray 实例（一个 SharedArrayBuffer 的引用）作为第一个参数，以相关操作数作为后续参数。
 
@@ -348,7 +343,7 @@ Atomics.isLockFree()是一个优化原语。基本上，如果一个原子原语
 
 Atomics.isLockFree(4)始终返回 true，因为在所有已知的相关硬件上都是支持的。能够如此假设通常可以简化程序。
 
-## 21.2. 跨上下文通信
+## 1.2. 跨上下文通信
 
 跨文档通信，有时候也简称为 **XDM(cross-document messaging)**，是一种在不同执行上下文（如不同工作线程或不同源的页面）间传递信息的能力。例如，www.wrox.com 上的页面想要与包含在内嵌窗格中的 p2p.wrox.com 上面的页面通信。在 XDM 之前，要以安全方式实现这种通信需要很多工作。XDM 以安全易用的方式规范化了这个功能。
 
@@ -392,13 +387,13 @@ XDM 有一些怪异之处。首先，postMessage()的第一个参数的最初实
 
 在通过内嵌窗格加载不同域时，使用 XDM 是非常方便的。这种方法在混搭（mashup）和社交应用中非常常用。通过使用 XDM 与内嵌窗格中的网页通信，可以保证包含页面的安全。XDM 也可以用于同源页面之间通信。
 
-## 21.3. Encoding API
+## 1.3. Encoding API
 
 Encoding API 主要用于实现字符串与定型数组之间的转换。规范新增了 4 个用于执行转换的全局类：TextEncoder、TextEncoderStream、TextDecoder 和 TextDecoderStream。
 
 注意 相比于 **批量(bulk)** 的编解码，对 **流(stream)** 编解码的支持很有限。
 
-### 21.3.1. 文本编码
+### 1.3.1. 文本编码
 
 Encoding API 提供了两种将字符串转换为定型数组二进制格式的方法：批量编码和流编码。把字符串转换为定型数组时，编码器始终使用 UTF-8。
 
@@ -420,7 +415,7 @@ const encodedText = textEncoder.encode(decodedText);
 // f 的UTF-8 编码是0x66（即十进制102）
 // o 的UTF-8 编码是0x6F（即十进制111）
 console.log(encodedText);
-// >> Uint8Array(3) [102, 111, 111]
+// -> Uint8Array(3) [102, 111, 111]
 ```
 
 编码器是用于处理字符的，有些字符（如表情符号）在最终返回的数组中可能会占多个索引：
@@ -432,7 +427,7 @@ const encodedText = textEncoder.encode(decodedText);
 
 // ☺的UTF-8 编码是0xF0 0x9F 0x98 0x8A（即十进制240、159、152、138）
 console.log(encodedText);
-// >> Uint8Array(4) [240, 159, 152, 138]
+// -> Uint8Array(4) [240, 159, 152, 138]
 ```
 
 编码器实例还有一个 encodeInto()方法，该方法接收一个字符串和目标 Unit8Array，返回一个字典，该字典包含 read 和 written 属性，分别表示成功从源字符串读取了多少字符和向目标数组写入了多少字符。如果定型数组的空间不够，编码就会提前终止，返回的字典会体现这个结果：
@@ -444,16 +439,16 @@ const barArr = new Uint8Array(2);
 const fooResult = textEncoder.encodeInto('foo', fooArr);
 const barResult = textEncoder.encodeInto('bar', barArr);
 console.log(fooArr);
-// >> Uint8Array(3) [102, 111, 111]
+// -> Uint8Array(3) [102, 111, 111]
 
 console.log(fooResult);
-// >> { read: 3, written: 3 }
+// -> { read: 3, written: 3 }
 
 console.log(barArr);
-// >> Uint8Array(2) [98, 97]
+// -> Uint8Array(2) [98, 97]
 
 console.log(barResult);
-// >> { read: 2, written: 2 }
+// -> { read: 2, written: 2 }
 ```
 
 encode()要求分配一个新的 Unit8Array，encodeInto()则不需要。对于追求性能的应用，这个差别可能会带来显著不同。
@@ -498,12 +493,12 @@ const readableStreamDefaultReader = encodedTextStream.getReader();
     }
   }
 })();
-// >> Uint8Array[102]
-// >> Uint8Array[111]
-// >> Uint8Array[111]
+// -> Uint8Array[102]
+// -> Uint8Array[111]
+// -> Uint8Array[111]
 ```
 
-### 21.3.2. 文本解码
+### 1.3.2. 文本解码
 
 Encoding API 提供了两种将定型数组转换为字符串的方式：批量解码和流解码。与编码器类不同，在将定型数组转换为字符串时，解码器支持非常多的字符串编码，可以参考 Encoding Standard 规范的“Names and labels”一节。
 
@@ -527,7 +522,7 @@ const textDecoder = new TextDecoder();
 const encodedText = Uint8Array.of(102, 111, 111);
 const decodedText = textDecoder.decode(encodedText);
 console.log(decodedText);
-// >> 'foo'
+// -> 'foo'
 ```
 
 解码器不关心传入的是哪种定型数组，它只会专心解码整个二进制表示。在下面这个例子中，只包含 8 位字符的 32 位值被解码为 UTF-8 格式，解码得到的字符串中填充了空格：
@@ -540,7 +535,7 @@ const textDecoder = new TextDecoder();
 const encodedText = Uint32Array.of(102, 111, 111);
 const decodedText = textDecoder.decode(encodedText);
 console.log(decodedText);
-// >> 'f o o '
+// -> 'f o o '
 ```
 
 解码器是用于处理定型数组中分散在多个索引上的字符的，包括表情符号：
@@ -552,7 +547,7 @@ const textDecoder = new TextDecoder();
 const encodedText = Uint8Array.of(240, 159, 152, 138);
 const decodedText = textDecoder.decode(encodedText);
 console.log(decodedText);
-// >> '☺'
+// -> '☺'
 ```
 
 与 TextEncoder 不同，TextDecoder 可以兼容很多字符编码。比如下面的例子就使用了 UTF-16 而非默认的 UTF-8：
@@ -565,7 +560,7 @@ const textDecoder = new TextDecoder('utf-16');
 const encodedText = Uint16Array.of(102, 111, 111);
 const decodedText = textDecoder.decode(encodedText);
 console.log(decodedText);
-// >> 'foo'
+// -> 'foo'
 ```
 
 2. **流解码**
@@ -606,9 +601,9 @@ const readableStreamDefaultReader = decodedTextStream.getReader();
     }
   }
 })();
-// >> 'f'
-// >> 'o'
-// >> 'o'
+// -> 'f'
+// -> 'o'
+// -> 'o'
 ```
 
 文本解码器流能够识别可能分散在不同块上的代理对。解码器流会保持块片段直到取得完整的字符。比如在下面的例子中，流解码器在解码流并输出字符之前会等待传入 4 个块：
@@ -647,7 +642,7 @@ const readableStreamDefaultReader = decodedTextStream.getReader();
     }
   }
 })();
-// >> '☺'
+// -> '☺'
 ```
 
 文本解码器流经常与 fetch()一起使用，因为响应体可以作为 ReadableStream 来处理。比如：
@@ -662,11 +657,11 @@ for await (let decodedChunk of decodedStream) {
 }
 ```
 
-## 21.4. File API 与 Blob API
+## 1.4. File API 与 Blob API
 
 Web 应用程序的一个主要的痛点是无法操作用户计算机上的文件。2000 年之前，处理文件的唯一方式是把`<input type="file">`放到一个表单里，仅此而已。File API 与 Blob API 是为了让 Web 开发者能以安全的方式访问客户端机器上的文件，从而更好地与这些文件交互而设计的。
 
-### 21.4.1. File 类型
+### 1.4.1. File 类型
 
 File API 仍然以表单中的文件输入字段为基础，但是增加了直接访问文件信息的能力。HTML5 在 DOM 上为文件输入元素添加了 files 集合。当用户在文件字段中选择一个或多个文件时，这个 files 集合中会包含一组 File 对象，表示被选中的文件。每个 File 对象都有一些只读属性。
 
@@ -695,7 +690,7 @@ filesList.addEventListener('change', (event) => {
 
 这个例子简单地在控制台输出了每个文件的信息。仅就这个能力而言，已经可以说是 Web 应用向前迈进的一大步了。不过，File API 还提供了 FileReader 类型，让我们可以实际从文件中读取数据。
 
-### 21.4.2. FileReader 类型
+### 1.4.2. FileReader 类型
 
 FileReader 类型表示一种异步文件读取机制。可以把 FileReader 想象成类似于 XMLHttpRequest，只不过是用于从文件系统读取文件，而不是从服务器读取数据。FileReader 类型提供了几个读取文件数据的方法。
 
@@ -758,7 +753,7 @@ filesList.addEventListener('change', (event) => {
 
 如果想提前结束文件读取，则可以在过程中调用 abort()方法，从而触发 abort 事件。在 load、error 和 abort 事件触发后，还会触发 loadend 事件。loadend 事件表示在上述 3 种情况下，所有读取操作都已经结束。readAsText()和 readAsDataURL()方法已经得到了所有主流浏览器支持。
 
-### 21.4.3. FileReaderSync 类型
+### 1.4.3. FileReaderSync 类型
 
 顾名思义，FileReaderSync 类型就是 FileReader 的同步版本。这个类型拥有与 FileReader 相同的方法，只有在整个文件都加载到内存之后才会继续执行。FileReaderSync 只在工作线程中可用，因为如果读取整个文件耗时太长则会影响全局。
 
@@ -769,7 +764,7 @@ filesList.addEventListener('change', (event) => {
 self.omessage = (messageEvent) => {
   const syncReader = new FileReaderSync();
   console.log(syncReader);
-  // >> FileReaderSync {}
+  // -> FileReaderSync {}
 
   // 读取文件时阻塞工作线程
   const result = syncReader.readAsDataUrl(messageEvent.data);
@@ -782,7 +777,7 @@ self.omessage = (messageEvent) => {
 };
 ```
 
-### 21.4.4. Blob 与部分读取
+### 1.4.4. Blob 与部分读取
 
 某些情况下，可能需要读取部分文件而不是整个文件。为此，File 对象提供了一个名为 slice()的方法。slice()方法接收两个参数：起始字节和要读取的字节数。这个方法返回一个 Blob 的实例，而 Blob 实际上是 File 的超类。
 
@@ -790,13 +785,13 @@ blob 表示 **二进制大对象(binary larget object)**，是 JavaScript 对不
 
 ```javascript
 console.log(new Blob(['foo']));
-// >> Blob {size: 3, type: ""}
+// -> Blob {size: 3, type: ""}
 
 console.log(new Blob(['{"a": "b"}'], {type: 'application/json'}));
-// >> {size: 10, type: "application/json"}
+// -> {size: 10, type: "application/json"}
 
 console.log(new Blob(['<p>Foo</p>', '<p>Bar</p>'], {type: 'text/html'}));
-// >> {size: 20, type: "text/html"}
+// -> {size: 20, type: "text/html"}
 ```
 
 Blob 对象有一个 size 属性和一个 type 属性，还有一个 slice()方法用于进一步切分数据。另外也可以使用 FileReader 从 Blob 中读取数据。下面的例子只会读取文件的前 32 字节：
@@ -830,7 +825,7 @@ filesList.addEventListener('change', (event) => {
 
 只读取部分文件可以节省时间，特别是在只需要数据特定部分比如文件头的时候。
 
-### 21.4.5. 对象 URL 与 Blob
+### 1.4.5. 对象 URL 与 Blob
 
 对象 URL 有时候也称作 Blob URL，是指引用存储在 File 或 Blob 中数据的 URL。对象 URL 的优点是不用把文件内容读取到 JavaScript 也可以使用文件。只要在适当位置提供对象 URL 即可。要创建对象 URL，可以使用 window.URL.createObjectURL()方法并传入 File 或 Blob 对象。这个函数返回的值是一个指向内存中地址的字符串。因为这个字符串是 URL，所以可以在 DOM 中直接使用。例如，以下代码使用对象 URL 在页面中显示了一张图片：
 
@@ -860,7 +855,7 @@ filesList.addEventListener('change', (event) => {
 
 使用完数据之后，最好能释放与之关联的内存。只要对象 URL 在使用中，就不能释放内存。如果想表明不再使用某个对象 URL，则可以把它传给 window.URL.revokeObjectURL()。页面卸载时，所有对象 URL 占用的内存都会被释放。不过，最好在不使用时就立即释放内存，以便尽可能保持页面占用最少资源。
 
-### 21.4.6. 读取拖放文件
+### 1.4.6. 读取拖放文件
 
 组合使用 HTML5 拖放 API 与 File API 可以创建读取文件信息的有趣功能。在页面上创建放置目标后，可以从桌面上把文件拖动并放到放置目标。这样会像拖放图片或链接一样触发 drop 事件。被放置的文件可以通过事件的 event.dataTransfer.files 属性读到，这个属性保存着一组 File 对象，就像文本输入字段一样。
 
@@ -896,7 +891,7 @@ dragTarget.addEventListener('drop', handleEvent);
 
 与后面要介绍的拖放的例子一样，必须取消 dragenter、dragover 和 drop 的默认行为。在 drop 事件处理程序中，可以通过 event.dataTransfer.files 读到文件，此时可以获取文件的相关信息。
 
-## 21.5. 媒体元素
+## 1.5. 媒体元素
 
 随着嵌入音频和视频元素在 Web 应用上的流行，大多数内容提供商会强迫使用 Flash 以便达到最佳的跨浏览器兼容性。HTML5 新增了两个与媒体相关的元素，即`<audio>`和`<video>`，从而为浏览器提供了嵌入音频和视频的统一解决方案。
 
@@ -933,7 +928,7 @@ dragTarget.addEventListener('drop', handleEvent);
 
 讨论不同音频和视频的编解码器超出了本书范畴，但浏览器支持的编解码器确实可能有所不同，因此指定多个源文件通常是必需的。
 
-### 21.5.1. 属性
+### 1.5.1. 属性
 
 `<video>`和`<audio>`元素提供了稳健的 JavaScript 接口。这两个元素有很多共有属性，可以用于确定媒体的当前状态，如下表所示。
 
@@ -969,7 +964,7 @@ dragTarget.addEventListener('drop', handleEvent);
 
 上述很多属性也可以在`<audio>`或`<video>`标签上设置。
 
-### 21.5.2. 事件
+### 1.5.2. 事件
 
 除了有很多属性，媒体元素还有很多事件。这些事件会监控由于媒体回放或用户交互导致的不同属性的变化。下表列出了这些事件。
 
@@ -1003,7 +998,7 @@ dragTarget.addEventListener('drop', handleEvent);
 
 这些事件被设计得尽可能具体，以便 Web 开发者能够使用较少的 HTML 和 JavaScript 创建自定义的音频/视频播放器（而不是创建新 Flash 影片）。
 
-### 21.5.3. 自定义媒体播放器
+### 1.5.3. 自定义媒体播放器
 
 使用`<audio>`和`<video>`的 play()和 pause()方法，可以手动控制媒体文件的播放。综合使用属性、事件和这些方法，可以方便地创建自定义的媒体播放器，如下面的例子所示：
 
@@ -1057,7 +1052,7 @@ setInterval(() => {
 
 这里的 JavaScript 代码简单地为按钮添加了事件处理程序，可以根据当前状态播放和暂停视频。此外，还给`<video>`元素的 load 事件添加了事件处理程序，以便显示视频的时长。最后，重复的计时器用于更新当前时间。通过监听更多事件以及使用更多属性，可以进一步扩展这个自定义的视频播放器。同样的代码也可以用于`<audio>`元素以创建自定义的音频播放器。
 
-### 21.5.4. 检测编解码器
+### 1.5.4. 检测编解码器
 
 如前所述，并不是所有浏览器都支持`<video>`和`<audio>`的所有编解码器，这通常意味着必须提供多个媒体源。为此，也有 JavaScript API 可以用来检测浏览器是否支持给定格式和编解码器。这两个媒体元素都有一个名为 canPlayType()的方法，该方法接收一个格式/编解码器字符串，返回一个字符串值："probably"、"maybe"或""（空字符串），其中空字符串就是假值，意味着可以在 if 语句中像这样使用 canPlayType()：
 
@@ -1087,7 +1082,7 @@ if (audio.canPlayType('audio/ogg; codecs="vorbis"')) {
 
 注意，编解码器必须放到引号中。同样，也可以在视频元素上使用 canPlayType()检测视频格式。
 
-### 21.5.5. 音频类型
+### 1.5.5. 音频类型
 
 `<audio>` 元素还有一个名为 Audio 的原生 JavaScript 构造函数，支持在任何时候播放音频。Audio 类型与 Image 类似，都是 DOM 元素的对等体，只是不需插入文档即可工作。要通过 Audio 播放音频，只需创建一个新实例并传入音频源文件：
 
@@ -1103,13 +1098,13 @@ EventUtil.addHandler(audio, 'canplaythrough', function (event) {
 
 在 iOS 中调用 play()方法会弹出一个对话框，请求用户授权播放声音。为了连续播放，必须在 onfinish 事件处理程序中立即调用 play()。
 
-## 21.6. 原生拖放
+## 1.6. 原生拖放
 
 IE4 最早在网页中为 JavaScript 引入了对拖放功能的支持。当时，网页中只有两样东西可以触发拖放：图片和文本。拖动图片就是简单地在图片上按住鼠标不放然后移动鼠标。而对于文本，必须先选中，然后再以同样的方式拖动。在 IE4 中，唯一有效的放置目标是文本框。IE5 扩展了拖放能力，添加了新的事件，让网页中几乎一切都可以成为放置目标。IE5.5 又进一步，允许几乎一切都可以拖动（IE6 也支持这个功能）。HTML5 在 IE 的拖放实现基础上标准化了拖放功能。所有主流浏览器都根据 HTML5 规范实现了原生的拖放。
 
 关于拖放最有意思的可能就是可以跨窗格、跨浏览器容器，有时候甚至可以跨应用程序拖动元素。浏览器对拖放的支持可以让我们实现这些功能。
 
-### 21.6.1. 拖放事件
+### 1.6.1. 拖放事件
 
 拖放事件几乎可以让开发者控制拖放操作的方方面面。关键的部分是确定每个事件是在哪里触发的。有的事件在被拖放元素上触发，有的事件则在放置目标上触发。在某个元素被拖动时，会（按顺序）触发以下事件：
 
@@ -1131,7 +1126,7 @@ dragstart 事件触发后，只要目标还被拖动就会持续触发 drag 事�
 
 只要一把元素拖动到放置目标上，dragenter 事件（类似于 mouseover 事件）就会触发。dragenter 事件触发之后，会立即触发 dragover 事件，并且元素在放置目标范围内被拖动期间此事件会持续触发。当元素被拖动到放置目标之外，dragover 事件停止触发，dragleave 事件触发（类似于 mouseout 事件）。如果被拖动元素被放到了目标上，则会触发 drop 事件而不是 dragleave 事件。这些事件的目标是放置目标元素。
 
-### 21.6.2. 自定义放置目标
+### 1.6.2. 自定义放置目标
 
 在把某个元素拖动到无效放置目标上时，会看到一个特殊光标（圆环中间一条斜杠）表示不能放下。即使所有元素都支持放置目标事件，这些元素默认也是不允许放置的。如果把元素拖动到不允许放置的目标上，无论用户动作是什么都不会触发 drop 事件。不过，通过覆盖 dragenter 和 dragover 事件的默认行为，可以把任何元素转换为有效的放置目标。例如，如果有一个 ID 为"dragTarget"的`<div>`元素，那么可以使用以下代码把它转换成一个放置目标：
 
@@ -1157,7 +1152,7 @@ droptarget.addEventListener('drop', (event) => {
 });
 ```
 
-### 21.6.3. dataTransfer 对象
+### 1.6.3. dataTransfer 对象
 
 除非数据受影响，否则简单的拖放并没有实际意义。为实现拖动操作中的数据传输，IE5 在 event 对象上暴露了 dataTransfer 对象，用于从被拖动元素向放置目标传递字符串数据。因为这个对象是 event 的属性，所以在拖放事件的事件处理程序外部无法访问 dataTransfer。在事件处理程序内部，可以使用这个对象的属性和方法实现拖放功能。dataTransfer 对象现在已经纳入了 HTML5 工作草案。
 
@@ -1198,7 +1193,7 @@ const text = dataTransfer.getData('Text');
 
 这里要注意，首先应该尝试短数据名。这是因为直到版本 10，IE 都不支持扩展的类型名，而且会在遇到无法识别的类型名时抛出错误。
 
-### 21.6.4. dropEffect 与 effectAllowed
+### 1.6.4. dropEffect 与 effectAllowed
 
 dataTransfer 对象不仅可以用于实现简单的数据传输，还可以用于确定能够对被拖动元素和放置目标执行什么操作。为此，可以使用两个属性：dropEffect 与 effectAllowed。
 
@@ -1227,7 +1222,7 @@ dropEffect 属性可以告诉浏览器允许哪种放置行为。这个属性有
 
 假设我们想允许用户把文本从一个文本框拖动到一个`<div>`元素。那么必须同时把 dropEffect 和 effectAllowed 属性设置为"move"。因为`<div>`元素上放置事件的默认行为是什么也不做，所以文本不会自动地移动自己。如果覆盖这个默认行为，文本就会自动从文本框中被移除。然后是否把文本插入`<div>`元素就取决于你了。如果是把 dropEffect 和 effectAllowed 属性设置为"copy"，那么文本框中的文本不会自动被移除。
 
-### 21.6.5. 可拖动能力
+### 1.6.5. 可拖动能力
 
 默认情况下，图片、链接和文本是可拖动的，这意味着无须额外代码用户便可以拖动它们。文本只有在被选中后才可以拖动，而图片和链接在任意时候都是可以拖动的。
 
@@ -1240,7 +1235,7 @@ dropEffect 属性可以告诉浏览器允许哪种放置行为。这个属性有
 <div draggable="true">...</div>
 ```
 
-### 21.6.6. 其他成员
+### 1.6.6. 其他成员
 
 HTML5 规范还为 dataTransfer 对象定义了下列方法。
 
@@ -1249,13 +1244,13 @@ HTML5 规范还为 dataTransfer 对象定义了下列方法。
 - setDragImage(element, x, y)：允许指定拖动发生时显示在光标下面的图片。这个方法接收 3 个参数：要显示的 HTML 元素及标识光标位置的图片上的 x 和 y 坐标。这里的 HTML 元素可以是一张图片，此时显示图片；也可以是其他任何元素，此时显示渲染后的元素。
 - types：当前存储的数据类型列表。这个集合类似数组，以字符串形式保存数据类型，比如"text"。
 
-## 21.7. Notification API
+## 1.7. Notification API
 
 Notifications API 用于向用户显示通知。无论从哪个角度看，这里的通知都很类似 alert()对话框：都使用 JavaScript API 触发页面外部的浏览器行为，而且都允许页面处理用户与对话框或通知弹层的交互。不过，通知提供更灵活的自定义能力。
 
 Notifications API 在 Service Worker 中非常有用。**渐进 Web 应用(PWA，Progressive Web Application)** 通过触发通知可以在页面不活跃时向用户显示消息，看起来就像原生应用。
 
-### 21.7.1. 通知权限
+### 1.7.1. 通知权限
 
 Notifications API 有被滥用的可能，因此默认会开启两项安全措施：
 
@@ -1274,7 +1269,7 @@ Notification.requestPermission().then((permission) => {
 
 "granted"值意味着用户明确授权了显示通知的权限。除此之外的其他值意味着显示通知会静默失败。如果用户拒绝授权，这个值就是"denied"。一旦拒绝，就无法通过编程方式挽回，因为不可能再触发授权提示。
 
-### 21.7.2. 显示和隐藏通知
+### 1.7.2. 显示和隐藏通知
 
 Notification 构造函数用于创建和显示通知。最简单的通知形式是只显示一个标题，这个标题内容可以作为第一个参数传给 Notification 构造函数。以下面这种方式调用 Notification，应该会立即显示通知：
 
@@ -1299,7 +1294,7 @@ const notification = new Notification('I will close in 1000ms');
 setTimeout(() => notification.close(), 1000);
 ```
 
-### 21.7.3. 通知生命周期
+### 1.7.3. 通知生命周期
 
 通知并非只用于显示文本字符串，也可用于实现交互。Notifications API 提供了 4 个用于添加回调的生命周期方法：
 
@@ -1318,7 +1313,7 @@ n.onclose = () => console.log('Notification was closed!');
 n.onerror = () => console.log('Notification experienced an error!');
 ```
 
-## 21.8. Page Visibility API
+## 1.8. Page Visibility API
 
 Web 开发中一个常见的问题是开发者不知道用户什么时候真正在使用页面。如果页面被最小化或隐藏在其他标签页后面，那么轮询服务器或更新动画等功能可能就没有必要了。Page Visibility API 旨在为开发者提供页面对用户是否可见的信息。
 
@@ -1338,7 +1333,7 @@ Web 开发中一个常见的问题是开发者不知道用户什么时候真正�
 - "visible"
 - "prerender"
 
-## 21.9. Steams API
+## 1.9. Steams API
 
 Streams API 是为了解决一个简单但又基础的问题而生的：Web 应用如何消费有序的小信息块而不是大块信息？这种能力主要有两种应用场景。
 
@@ -1349,7 +1344,7 @@ Streams API 是为了解决一个简单但又基础的问题而生的：Web 应�
 
 注意 虽然 Fetch API 已经得到所有主流浏览器支持，但 Streams API 则没有那么快得到支持。
 
-### 21.9.1. 理解流
+### 1.9.1. 理解流
 
 提到流，可以把数据想像成某种通过管道输送的液体。JavaScript 中的流借用了管道相关的概念，因为原理是相通的。根据规范，“这些 API 实际是为映射低级 I/O 原语而设计，包括适当时候对字节流的规范化”。Stream API 直接解决的问题是处理网络请求和读写磁盘。
 
@@ -1374,7 +1369,7 @@ Stream API 定义了三种流。
 
 如果块入列速度快于出列速度，则内部队列会不断增大。流不能允许其内部队列无限增大，因此它会使用 **反压(backpressure)** 通知流入口停止发送数据，直到队列大小降到某个既定的阈值之下。这个阈值由排列策略决定，这个策略定义了内部队列可以占用的最大内存，即 **高水位线(high water mark)**。
 
-### 21.9.2. 可读流
+### 1.9.2. 可读流
 
 可读流是对底层数据源的封装。底层数据源可以将数据填充到流中，允许消费者通过流的公共接口读取数据。
 
@@ -1395,7 +1390,7 @@ async function* ints() {
 const readableStream = new ReadableStream({
 start(controller) {
 console.log(controller);\
-// >> ReadableStreamDefaultController {}
+// -> ReadableStreamDefaultController {}
 }
 });
 ```
@@ -1477,7 +1472,7 @@ console.log(value);
 // 4
 ```
 
-### 21.9.3. 可写流
+### 1.9.3. 可写流
 
 可写流是底层数据槽的封装。底层数据槽处理通过流的公共接口写入的数据。
 
@@ -1523,11 +1518,11 @@ const writableStream = new WritableStream({
 });
 
 console.log(writableStream.locked);
-// >> false
+// -> false
 
 const writableStreamDefaultWriter = writableStream.getWriter();
 console.log(writableStream.locked);
-// >> true
+// -> true
 ```
 
 在向流中写入数据前，生产者必须确保写入器可以接收值。writableStreamDefaultWriter.ready 返回一个期约，此期约会在能够向流中写入数据时解决。然后，就可以把值传给 writableStreamDefaultWriter.write()方法。写入数据之后，调用 writableStreamDefaultWriter.close()将流关闭：
@@ -1547,11 +1542,11 @@ const writableStream = new WritableStream({
 });
 
 console.log(writableStream.locked);
-// >> false
+// -> false
 
 const writableStreamDefaultWriter = writableStream.getWriter();
 console.log(writableStream.locked);
-// >> true
+// -> true
 
 // 生产者
 (async function () {
@@ -1563,7 +1558,7 @@ console.log(writableStream.locked);
 })();
 ```
 
-### 21.9.4. 转换流
+### 1.9.4. 转换流
 
 转换流用于组合可读流和可写流。数据块在两个流之间的转换是通过 transform()方法完成的。
 
@@ -1636,7 +1631,7 @@ const writableStreamDefaultWriter = writable.getWriter();
 })();
 ```
 
-### 21.9.5. 通过管道连接流
+### 1.9.5. 通过管道连接流
 
 流可以通过管道连接成一串。最常见的用例是使用 pipeThrough()方法把 ReadableStream 接入 TransformStream。从内部看，ReadableStream 先把自己的值传给 TransformStream 内部的 WritableStream，然后执行转换，接着转换后的值又在新的 ReadableStream 上出现。下面的例子将一个整数的 ReadableStream 传入 TransformStream，TransformStream 对每个值做加倍处理：
 
@@ -1717,7 +1712,7 @@ const pipedStream = integerStream.pipeTo(writableStream);
 
 注意，这里的管道连接操作隐式从 ReadableStream 获得了一个读取器，并把产生的值填充到 WritableStream。
 
-## 21.10. 计时 API
+## 1.10. 计时 API
 
 页面性能始终是 Web 开发者关心的话题。Performance 接口通过 JavaScript API 暴露了浏览器内部的度量指标，允许开发者直接访问这些信息并基于这些信息实现自己想要的功能。这个接口暴露在 window.performance 对象上。所有与页面相关的指标，包括已经定义和将来会定义的，都会存在于这个对象上。
 
@@ -1734,7 +1729,7 @@ Performance 接口由多个 API 构成：
 
 注意 浏览器通常支持被废弃的 Level 1 和作为替代的 Level 2。本节尽量介绍 Level 2 级规范。
 
-### 21.10.1. High Resolution Time API
+### 1.10.1. High Resolution Time API
 
 Date.now()方法只适用于日期时间相关操作，而且是不要求计时精度的操作。在下面的例子中，函数 foo()调用前后分别记录了一个时间戳：
 
@@ -1760,7 +1755,8 @@ console.log(t0);
 console.log.(t1);
 
 const duration = t1 – t0;
-console.log(duration); // 0.004999979864805937
+console.log(duration);
+// -> 0.004999979864805937
 ```
 
 performance.now()计时器采用相对度量。这个计时器在执行上下文创建时从 0 开始计时。例如，打开页面或创建工作线程时，performance.now()就会从 0 开始计时。由于这个计时器在不同上下文中初始化时可能存在时间差，因此不同上下文之间如果没有共享参照点则不可能直接比较 performance.now()。performance.timeOrigin 属性返回计时器初始化时全局系统时钟的值。
@@ -1769,14 +1765,14 @@ performance.now()计时器采用相对度量。这个计时器在执行上下文
 const relativeTimestamp = performance.now();
 const absoluteTimestamp = performance.timeOrigin + relativeTimestamp;
 console.log(relativeTimestamp);
-// >> 244.43500000052154
+// -> 244.43500000052154
 console.log(absoluteTimestamp);
-// >> 1561926208892.4001
+// -> 1561926208892.4001
 ```
 
 注意 通过使用 performance.now()测量 L1 缓存与主内存的延迟差，幽灵漏洞（Spectre）可以执行缓存推断攻击。为弥补这个安全漏洞，所有的主流浏览器有的选择降低 performance.now()的精度，有的选择在时间戳里混入一些随机性。WebKit 博客上有一篇相关主题的不错的文章“What Spectre and Meltdown Mean For WebKit”，作者是 Filip Pizlo。
 
-### 21.10.2. Performance Timeline API
+### 1.10.2. Performance Timeline API
 
 Performance Timeline API 使用一套用于度量客户端延迟的工具扩展了 Performance 接口。性能度量将会采用计算结束与开始时间差的形式。这些开始和结束时间会被记录为 DOMHighResTimeStamp 值，而封装这个时间戳的对象是 PerformanceEntry 的实例。
 
@@ -1784,7 +1780,7 @@ Performance Timeline API 使用一套用于度量客户端延迟的工具扩展�
 
 ```javascript
 console.log(performance.getEntries());
-// >> [PerformanceNavigationTiming, PerformanceResourceTiming, ... ]
+// -> [PerformanceNavigationTiming, PerformanceResourceTiming, ... ]
 ```
 
 这个返回的集合代表浏览器的 **性能时间线(performance timeline)**。每个 PerformanceEntry 对象都有 name、entryType、startTime 和 duration 属性：
@@ -1792,16 +1788,16 @@ console.log(performance.getEntries());
 ```javascript
 const entry = performance.getEntries()[0];
 console.log(entry.name);
-// >> "https://foo.com"
+// -> "https://foo.com"
 
 console.log(entry.entryType);
-// >> navigation
+// -> navigation
 
 console.log(entry.startTime);
-// >> 0
+// -> 0
 
 console.log(entry.duration);
-// >> 182.36500001512468
+// -> 182.36500001512468
 ```
 
 不过，PerformanceEntry 实际上是一个抽象基类。所有记录条目虽然都继承 PerformanceEntry，但最终还是如下某个具体类的实例：
@@ -1845,7 +1841,7 @@ performance.mark('end');
 
 const [startMark, endMark] = performance.getEntriesByType('mark');
 console.log(endMark.startTime - startMark.startTime);
-// >> 1225.0995998382568
+// -> 1225.0995998382568
 ```
 
 除了自定义性能条目，还可以生成 PerformanceMeasure（性能度量）条目，对应由名字作为标识的两个标记之间的持续时间。PerformanceMeasure 的实例由 performance.measure()方法生成：
@@ -1864,7 +1860,7 @@ performance.mark('end');
 performance.measure('measure', 'start', 'end');
 
 console.log(performance.getEntriesByType('measure')[0].duration);
-// >> 1279.3241000175476
+// -> 1279.3241000175476
 ```
 
 2. **Navigation Timing API**
@@ -1956,7 +1952,7 @@ performanceResourceTimingEntry.requestStart);
 
 通过计算并分析不同时间的差，可以更全面地审视浏览器加载页面的过程，发现可能存在的性能瓶颈。
 
-## 21.11. Web 组件
+## 1.11. Web 组件
 
 这里所说的 Web 组件指的是一套用于增强 DOM 行为的工具，包括影子 DOM、自定义元素和 HTML 模板。这一套浏览器 API 特别混乱。
 
@@ -1968,7 +1964,7 @@ performanceResourceTimingEntry.requestStart);
 
 注意 本章只介绍 Web 组件的最新版本。
 
-### 21.11.1. HTML 模板
+### 1.11.1. HTML 模板
 
 在 Web 组件之前，一直缺少基于 HTML 解析构建 DOM 子树，然后在需要时再把这个子树渲染出来的机制。一种间接方案是使用 innerHTML 把标记字符串转换为 DOM 元素，但这种方式存在严重的安全隐患。另一种间接方案是使用 document.createElement()构建每个元素，然后逐个把它们添加到孤儿根节点（不是添加到 DOM），但这样做特别麻烦，完全与标记无关。
 
@@ -1997,7 +1993,7 @@ performanceResourceTimingEntry.requestStart);
 
 ```javascript
 console.log(document.querySelector('#foo').content);
-// >> #document-fragment
+// -> #document-fragment
 ```
 
 此时的 DocumentFragment 就像一个对应子树的最小化 document 对象。换句话说，DocumentFragment 上的 DOM 匹配方法可以查询其子树中的节点：
@@ -2005,10 +2001,10 @@ console.log(document.querySelector('#foo').content);
 ```javascript
 const fragment = document.querySelector('#foo').content;
 console.log(document.querySelector('p'));
-// >> null
+// -> null
 
 console.log(fragment.querySelector('p'));
-// >> <p>...<p>
+// -> <p>...<p>
 ```
 
 DocumentFragment 也是批量向 HTML 中添加元素的高效工具。比如，我们想以最快的方式给某个 HTML 元素添加多个子元素。如果连续调用 document.appendChild()，则不仅费事，还会导致多次布局重排。而使用 DocumentFragment 可以一次性添加所有子节点，最多只会有一次布局重排：// 开始状态：
@@ -2031,10 +2027,10 @@ fragment.appendChild(document.createElement('p'));
 fragment.appendChild(document.createElement('p'));
 fragment.appendChild(document.createElement('p'));
 console.log(fragment.children.length);
-// >> 3
+// -> 3
 foo.appendChild(fragment);
 console.log(fragment.children.length);
-// >> 0
+// -> 0
 
 console.log(document.body.innerHTML);
 /*
@@ -2124,7 +2120,7 @@ console.log('Added template');
 
 如果新添加的元素需要进行某些初始化，这种延迟执行是有用的。
 
-### 21.11.2. 影子 DOM
+### 1.11.2. 影子 DOM
 
 概念上讲，影子 DOM(shadow DOM) Web 组件相当直观，通过它可以将一个完整的 DOM 树作为节点添加到父 DOM 树。这样可以实现 DOM 封装，意味着 CSS 样式和 CSS 选择符可以限制在影子 DOM 子树而不是整个顶级 DOM 树中。
 
@@ -2215,16 +2211,16 @@ const bar = document.querySelector('#bar');
 const openShadowDOM = foo.attachShadow({mode: 'open'});
 const closedShadowDOM = bar.attachShadow({mode: 'closed'});
 console.log(openShadowDOM);
-// >> #shadow-root (open)
+// -> #shadow-root (open)
 
 console.log(closedShadowDOM);
-// >> #shadow-root (closed)
+// -> #shadow-root (closed)
 
 console.log(foo.shadowRoot);
-// >> #shadow-root (open)
+// -> #shadow-root (open)
 
 console.log(bar.shadowRoot);
-// >> null
+// -> null
 ```
 
 一般来说，需要创建保密（closed）影子 DOM 的场景很少。虽然这可以限制通过影子宿主访问影子 DOM，但恶意代码有很多方法绕过这个限制，恢复对影子 DOM 的访问。简言之，不能为了安全而创建保密影子 DOM。
@@ -2334,7 +2330,7 @@ shadowDOM.appendChild(pElement);
 // 检查元素是否移动到了影子DOM 中
 
 console.log(shadowDOM.innerHTML);
-// >> <p id="foo">Move me</p>
+// -> <p id="foo">Move me</p>
 ```
 
 4. **合成与影子 DOM 槽位**
@@ -2457,7 +2453,7 @@ document.querySelector('div').attachShadow({mode: 'open'}).innerHTML = `
 
 注意，事件重定向只会发生在影子 DOM 中实际存在的元素上。使用`<slot>`标签从外部投射进来的元素不会发生事件重定向，因为从技术上讲，这些元素仍然存在于影子 DOM 外部。
 
-### 21.11.3. 自定义元素
+### 1.11.3. 自定义元素
 
 如果你使用 JavaScript 框架，那么很可能熟悉自定义元素的概念。这是因为所有主流框架都以某种形式提供了这个特性。自定义元素为 HTML 元素引入了面向对象编程的风格。基于这种风格，可以创建自定义的、复杂的和可重用的元素，而且只要使用简单的 HTML 标签或属性就可以创建相应的实例。
 
@@ -2470,14 +2466,14 @@ document.body.innerHTML = `
 <x-foo >I'm inside a nonsense element.</x-foo >
 `;
 console.log(document.querySelector('x-foo') instanceof HTMLElement);
-// >> true
+// -> true
 ```
 
 自定义元素在此基础上更进一步。利用自定义元素，可以在`<x-foo>`标签出现时为它定义复杂的行为，同样也可以在 DOM 中将其纳入元素生命周期管理。自定义元素要使用全局属性 customElements，这个属性会返回 CustomElementRegistry 对象。
 
 ```javascript
 console.log(customElements);
-// >> CustomElementRegistry {}
+// -> CustomElementRegistry {}
 ```
 
 调用 customElements.define()方法可以创建自定义元素。下面的代码创建了一个简单的自定义元素，这个元素继承 HTMLElement：
@@ -2489,7 +2485,7 @@ document.body.innerHTML = `
 <x-foo >I'm inside a nonsense element.</x-foo >
 `;
 console.log(document.querySelector('x-foo') instanceof FooElement);
-// >> true
+// -> true
 ```
 
 注意 自定义元素名必须至少包含一个不在名称开头和末尾的连字符，而且元素标签不能自关闭。
@@ -2647,7 +2643,7 @@ class FooElement extends HTMLElement {
 }
 customElements.define('x-foo', FooElement);
 console.log(document.body.innerHTML);
-// >> <x-foo bar="true"></x-foo>
+// -> <x-foo bar="true"></x-foo>
 ```
 
 另一个方向的反射（从 DOM 到 JavaScript 对象）需要给相应的属性添加监听器。为此，可以使用 observedAttributes()获取函数让自定义元素的属性值每次改变时都调用 attributeChangedCallback()：
@@ -2710,13 +2706,13 @@ console.log(fooElement instanceof FooElement); // true
 
 注意 还有一个 HTML Imports Web 组件，但这个规范目前还是草案，没有主要浏览器支持。浏览器最终是否会支持这个规范目前还是未知数。
 
-## 21.12. Web Cryptography API
+## 1.12. Web Cryptography API
 
 Web Cryptography API 描述了一套密码学工具，规范了 JavaScript 如何以安全和符合惯例的方式实现加密。这些工具包括生成、使用和应用加密密钥对，加密和解密消息，以及可靠地生成随机数。
 
 注意 加密接口的组织方式有点奇怪，其外部是一个 Crypto 对象，内部是一个 SubtleCrypto 对象。在 Web Cryptography API 标准化之前，window.crypto 属性在不同浏览器中的实现差异非常大。为实现跨浏览器兼容，标准 API 都暴露在 SubtleCrypto 对象上。
 
-### 21.12.1. 生成随机数
+### 1.12.1. 生成随机数
 
 在需要生成随机值时，很多人会使用 Math.random()。这个方法在浏览器中是以 **伪随机数生成器(PRNG，PseudoRandom Number Generator)** 方式实现的。所谓“伪”指的是生成值的过程不是真的随机。PRNG 生成的值只是模拟了随机的特性。浏览器的 PRNG 并未使用真正的随机源，只是对一个内部状态应用了固定的算法。每次调用 Math.random()，这个内部状态都会被一个算法修改，而结果会被转换为一个新的随机值。例如，V8 引擎使用了一个名为 xorshift128+的算法来执行这种修改。
 
@@ -2763,13 +2759,13 @@ function randomFloat() {
 console.log(randomFloat()); // 0.5033651619458955
 ```
 
-### 21.12.2. 使用 SubtleCrypto 对象
+### 1.12.2. 使用 SubtleCrypto 对象
 
 Web Cryptography API 重头特性都暴露在了 SubtleCrypto 对象上，可以通过 window.crypto.subtle 访问：
 
 ```javascript
 console.log(crypto.subtle);
-// >> SubtleCrypto {}
+// -> SubtleCrypto {}
 ```
 
 这个对象包含一组方法，用于执行常见的密码学功能，如加密、散列、签名和生成密钥。因为所有密码学操作都在原始二进制数据上执行，所以 SubtleCrypto 的每个方法都要用到 ArrayBuffer 和 ArrayBufferView 类型。由于字符串是密码学操作的重要应用场景，因此 TextEncoder 和

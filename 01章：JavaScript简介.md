@@ -1,23 +1,18 @@
-**目录：**
-
-- [1. JavaScript 简介](#1-javascript-简介)
-  - [1.1. JavaScript 历史](#11-javascript-历史)
-    - [1.1.1. 诞生](#111-诞生)
-    - [1.1.2. JavaScript 与 Java](#112-javascript-与-java)
-    - [1.1.3. JavaScript 与 ECMAScript](#113-javascript-与-ecmascript)
-    - [1.1.4. 周边大事记](#114-周边大事记)
-  - [1.2. JavaScript 实现](#12-javascript-实现)
-    - [1.2.1. ECMAScript](#121-ecmascript)
-      - [1.2.1.1. ECMAScript 版本](#1211-ecmascript-版本)
-      - [1.2.1.2. 符合性](#1212-符合性)
-      - [1.2.1.3. 浏览器对 ECMAScipt 的支持](#1213-浏览器对-ecmascipt-的支持)
-    - [1.2.2. DOM](#122-dom)
-      - [1.2.2.1. DOM 级别](#1221-dom-级别)
-      - [1.2.2.2. 其他 DOM](#1222-其他-dom)
-      - [1.2.2.3. Web 浏览器对 DOM 的支持](#1223-web-浏览器对-dom-的支持)
-    - [1.2.3. BOM](#123-bom)
-
-# 1. JavaScript 简介
+- [1. JavaScript 历史](#1-javascript-历史)
+  - [1.1. 诞生](#11-诞生)
+  - [1.2. JavaScript 与 Java](#12-javascript-与-java)
+  - [1.3. JavaScript 与 ECMAScript](#13-javascript-与-ecmascript)
+  - [1.4. 周边大事记](#14-周边大事记)
+- [2. JavaScript 实现](#2-javascript-实现)
+  - [2.1. ECMAScript](#21-ecmascript)
+    - [2.1.1. ECMAScript 版本](#211-ecmascript-版本)
+    - [2.1.2. 符合性](#212-符合性)
+    - [2.1.3. 浏览器对 ECMAScipt 的支持](#213-浏览器对-ecmascipt-的支持)
+  - [2.2. DOM](#22-dom)
+    - [2.2.1. DOM 级别](#221-dom-级别)
+    - [2.2.2. 其他 DOM](#222-其他-dom)
+    - [2.2.3. Web 浏览器对 DOM 的支持](#223-web-浏览器对-dom-的支持)
+  - [2.3. BOM](#23-bom)
 
 本章内容
 
@@ -30,9 +25,9 @@
 
 从简单的输入验证脚本到强大的编程语言，JavaScript 的崛起没有任何人预测到。它很简单，学会用只要几分钟；它又很复杂，掌握它要很多年。要真正学好用好 JavaScript，理解其本质、历史及局限性是非常重要的。
 
-## 1.1. JavaScript 历史
+## 1. JavaScript 历史
 
-### 1.1.1. 诞生
+### 1.1. 诞生
 
 JavaScript 因为互联网而生，紧跟着浏览器的出现而问世。回顾它的历史，就要从浏览器的历史讲起。
 
@@ -69,7 +64,7 @@ Netscape 公司的这种浏览器脚本语言，最初名字叫做 Mocha，1995 
 
 1996 年 3 月，Navigator 2.0 浏览器正式内置了 JavaScript 脚本语言。
 
-### 1.1.2. JavaScript 与 Java
+### 1.2. JavaScript 与 Java
 
 这里专门说一下 JavaScript 和 Java 的关系。它们是两种不一样的语言，但是彼此存在联系。
 
@@ -81,7 +76,7 @@ JavaScript 语言的函数是一种独立的数据类型，以及采用基于原
 
 总之，JavaScript 的原始设计目标是一种小型的、简单的动态语言，与 Java 有足够的相似性，使得使用者（尤其是 Java 程序员）可以快速上手。
 
-### 1.1.3. JavaScript 与 ECMAScript
+### 1.3. JavaScript 与 ECMAScript
 
 1996 年 8 月，微软模仿 JavaScript 开发了一种相近的语言，取名为 JScript（JavaScript 是 Netscape 的注册商标，微软不能用），首先内置于 IE 3.0。Netscape 公司面临丧失浏览器脚本语言的主导权的局面。
 
@@ -93,7 +88,7 @@ ECMAScript 只用来标准化 JavaScript 这种语言的基本语法结构，与
 
 ECMA-262 标准后来也被另一个国际标准化组织 ISO（International Organization for Standardization）批准，标准号是 ISO-16262。
 
-### 1.1.4. 周边大事记
+### 1.4. 周边大事记
 
 JavaScript 伴随着互联网的发展一起发展。互联网周边技术的快速发展，刺激和推动了 JavaScript 语言的发展。下面，回顾一下 JavaScript 的周边应用发展。
 
@@ -189,7 +184,7 @@ JavaScript 伴随着互联网的发展一起发展。互联网周边技术的快
 
 2017 年 11 月，所有主流浏览器全部支持 WebAssembly，这意味着任何语言都可以编译成 JavaScript，在浏览器运行。
 
-## 1.2. JavaScript 实现
+## 2. JavaScript 实现
 
 虽然 JavaScript 和 ECMAScript 基本上是同义词，但 JavaScript 远远不限于 ECMA-262 所定义的那样。完整的 JavaScript 实现包含以下几个部分（见下图）：
 
@@ -197,9 +192,9 @@ JavaScript 伴随着互联网的发展一起发展。互联网周边技术的快
 - **文档对象模型(DOM)**
 - **浏览器对象模型(BOM)**
 
-![1-1-JavaScript组成](illustrations/1-1-JavaScript组成.png)
+![1-1-JavaScript组成](/illustrations/1-1-JavaScript组成.png)
 
-### 1.2.1. ECMAScript
+### 2.1. ECMAScript
 
 ECMAScript，即 ECMA-262 定义的语言，并不局限于 Web 浏览器。事实上，这门语言没有输入和输出之类的方法。ECMA-262 将这门语言作为一个基准来定义，以便在它之上再构建更稳健的脚本语言。Web 浏览器只是 ECMAScript 实现可能存在的一种 **宿主环境(host environment)**。宿主环境提供 ECMAScript 的基准实现和与环境自身交互必需的扩展。扩展（比如 DOM）使用 ECMAScript 核心类型和语法，提供特定于环境的额外功能。其他宿主环境还有服务器端 JavaScript 平台 Node.js 和已经被淘汰的 Adobe Flash(2020 年后)。
 
@@ -215,7 +210,7 @@ ECMAScript，即 ECMA-262 定义的语言，并不局限于 Web 浏览器。事�
 
 ECMAScript 只是对实现这个规范描述的所有方面的一门语言的称呼。JavaScript 实现了 ECMAScript，而 Adobe ActionScript 同样也实现了 ECMAScript。
 
-#### 1.2.1.1. ECMAScript 版本
+#### 2.1.1. ECMAScript 版本
 
 ECMAScript 不同的版本以“edition”表示（也就是描述特定实现的 ECMA-262 的版本）。ECMA-262 最近的版本是第 12 版，发布于 2021 年 6 月。ECMA-262 的第 1 版本质上跟网景的 JavaScript 1.1 相同， 只不过删除了所有浏览器特定的代码，外加少量细微的修改。ECMA-262 要求支持 Unicode 标准（以支持多语言），而且对象要与平台无关（Netscape JavaScript 1.1 的对象不是这样，比如它的 Date 对象就依赖平台）。这也是 JavaScript 1.1 和 JavaScript 1.2 不符合 ECMA-262 第 1 版要求的原因。
 
@@ -243,7 +238,7 @@ ECMA-262 第 11 版，即 ECMAScript 2020，于 2020 年 6 月发布。除了新
 
 最新(2021 年)的第 12 版于 2021 年 6 月发布。第 12 版新增了字符串方法 replaceALL()，逻辑赋值操作符(??==, &&==, ||==)，Promise.any 方法，一种新的错误类型 AggregateError 表示同时发生多个错误。
 
-#### 1.2.1.2. 符合性
+#### 2.1.2. 符合性
 
 ECMA-262 阐述了什么是 ECMAScript 符合性。要成为 ECMAScript 实现，必须满足下列条件：
 
@@ -257,7 +252,7 @@ ECMA-262 阐述了什么是 ECMAScript 符合性。要成为 ECMAScript 实现�
 
 以上条件为实现开发者基于 ECMAScript 开发语言提供了极大的权限和灵活度，也是其广受欢迎的原因之一。
 
-#### 1.2.1.3. 浏览器对 ECMAScipt 的支持
+#### 2.1.3. 浏览器对 ECMAScipt 的支持
 
 1996 年，Netscape Navigator 3 发布时包含了 JavaScript 1.1。JavaScript 1.1 规范随后被提交给 Ecma， 作为对新的 ECMA-262 标准的建议。随着 JavaScript 迅速走红，网景非常愿意开发 1.2 版。可是有个问题：Ecma 尚未接受网景的建议。
 
@@ -307,7 +302,7 @@ JScript 的再次更新出现在 IE4 中的 JScript 3.0（2.0 版是在 Microsof
 | Firefox 21~44                 | 第 5 版           |
 | Firefox 45+                   | 第 6 版           |
 
-### 1.2.2. DOM
+### 2.2. DOM
 
 文档对象模型（DOM，Document Object Model）是一个应用编程接口（API），用于在 HTML 中使用扩展的 XML。DOM 将整个页面抽象为一组分层节点。HTML 或 XML 页面的每个组成部分都是一种节点，包含不同的数据。比如下面的 HTML 页面：
 
@@ -324,13 +319,11 @@ JScript 的再次更新出现在 IE4 中的 JScript 3.0（2.0 版是在 Microsof
 
 这些代码通过 DOM 可以表示为一组分层节点，如下图所示：
 
-![1-2-DOM](illustrations/1-2-DOM.png)
+![1-2-DOM](/illustrations/1-2-DOM.png)
 
 DOM 通过创建表示文档的树，让开发者可以随心所欲地控制网页的内容和结构。使用 DOM API， 可以轻松地删除、添加、替换、修改节点。
 
-
-
-#### 1.2.2.1. DOM 级别
+#### 2.2.1. DOM 级别
 
 1998 年 10 月，DOM Level 1 成为 W3C 的推荐标准。这个规范由两个模块组成：DOM Core 和 DOM HTML。前者提供了一种映射 XML 文档，从而方便访问和操作文档任意部分的方式；后者扩展了前者，并增加了特定于 HTML 的对象和方法。
 
@@ -347,7 +340,7 @@ DOM Level 3 进一步扩展了 DOM，增加了以统一的方式加载和保存�
 
 目前，W3C 不再按照 Level 来维护 DOM 了，而是作为 DOM Living Standard 来维护，其快照称为 DOM4。DOM4 新增的内容包括替代 Mutation Events 的 Mutation Observers。
 
-#### 1.2.2.2. 其他 DOM
+#### 2.2.2. 其他 DOM
 
 除了 DOM Core 和 DOM HTML 接口，有些其他语言也发布了自己的 DOM 标准。下面列出的语言是基于 XML 的，每一种都增加了该语言独有的 DOM 方法和接口：
 
@@ -357,7 +350,7 @@ DOM Level 3 进一步扩展了 DOM，增加了以统一的方式加载和保存�
 
 此外，还有一些语言开发了自己的 DOM 实现，比如 Mozilla 的 XML 用户界面语言（XUL，XML User Interface Language）。不过，只有前面列表中的语言是 W3C 推荐标准。
 
-#### 1.2.2.3. Web 浏览器对 DOM 的支持
+#### 2.2.3. Web 浏览器对 DOM 的支持
 
 DOM 标准在 Web 浏览器实现它之前就已经作为标准发布了。IE 在第 5 版中尝试支持 DOM，但直到 5.5 版才开始真正支持，该版本实现了 DOM Level 1 的大部分。IE 在第 6 版和第 7 版中都没有实现新特性，第 8 版中修复了一些问题。
 
@@ -382,7 +375,7 @@ DOM 标准在 Web 浏览器实现它之前就已经作为标准发布了。IE �
 | Chrome 1+                     | Level 1、Level 2（部分）、Level 3（部分）     |
 | Firefox 1+                    | Level 1、Level 2（部分）、Level 3（部分）     |
 
-### 1.2.3. BOM
+### 2.3. BOM
 
 IE3 和 Netscape Navigator 3 提供了浏览器对象模型（BOM） API，用于支持访问和操作浏览器的窗口。使用 BOM，开发者可以操控浏览器显示页面之外的部分。而 BOM 真正独一无二的地方，当然也是问题最多的地方，就是它是唯一一个没有相关标准的 JavaScript 实现。HTML5 改变了这个局面，这个版本的 HTML 以正式规范的形式涵盖了尽可能多的 BOM 特性。由于 HTML5 的出现，之前很多与 BOM 有关的问题都迎刃而解了。
 

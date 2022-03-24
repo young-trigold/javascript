@@ -1,8 +1,8 @@
-# JavaScript
+## JavaScript
 
 深入 JavaScript
 
-# References (参考)
+## References (参考)
 
 - [《JavaScript 高级程序设计》第4版](https://www.ituring.com.cn/book/2472)
 - [《JavaScript 权威指南》第7版](http://www.cmpbook.com/products/detail?id=46807)

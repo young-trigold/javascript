@@ -1,35 +1,30 @@
-**目录：**
-
-- [14. DOM 基础](#14-dom-基础)
-  - [14.1. 理解节点](#141-理解节点)
-    - [14.1.1. Node 类型](#1411-node-类型)
-    - [14.1.2. Document 类型](#1412-document-类型)
-    - [14.1.3. Element 类型](#1413-element-类型)
-    - [14.1.4. Text 类型](#1414-text-类型)
-    - [14.1.5. Comment 类型](#1415-comment-类型)
-    - [14.1.6. CDATASection 类型](#1416-cdatasection-类型)
-    - [14.1.7. DocumentType 类型](#1417-documenttype-类型)
-    - [14.1.8. DocumentFragment 类型](#1418-documentfragment-类型)
-    - [14.1.9. Attr 类型](#1419-attr-类型)
-  - [14.2. Slector API](#142-slector-api)
-    - [14.2.1. querySelector()](#1421-queryselector)
-    - [14.2.2. querySelectorAll()](#1422-queryselectorall)
-    - [14.2.3. matches()](#1423-matches)
-  - [14.3. 元素遍历](#143-元素遍历)
-  - [14.4. HTML 5](#144-html-5)
-    - [14.4.1. CSS 类扩展](#1441-css-类扩展)
-    - [14.4.2. 焦点管理](#1442-焦点管理)
-    - [14.4.3. HTMLDocument 扩展](#1443-htmldocument-扩展)
-    - [14.4.4. 字符集属性](#1444-字符集属性)
-    - [14.4.5. 自定义数据属性](#1445-自定义数据属性)
-    - [14.4.6. 插入标记](#1446-插入标记)
-  - [14.5. 专有扩展](#145-专有扩展)
-    - [14.5.1. children 属性](#1451-children-属性)
-    - [14.5.2. contains()方法](#1452-contains方法)
-    - [14.5.3. 插入标记](#1453-插入标记)
-    - [14.5.4. 滚动](#1454-滚动)
-
-# 14. DOM 基础
+- [1.1. 理解节点](#11-理解节点)
+  - [1.1.1. Node 类型](#111-node-类型)
+  - [1.1.2. Document 类型](#112-document-类型)
+  - [1.1.3. Element 类型](#113-element-类型)
+  - [1.1.4. Text 类型](#114-text-类型)
+  - [1.1.5. Comment 类型](#115-comment-类型)
+  - [1.1.6. CDATASection 类型](#116-cdatasection-类型)
+  - [1.1.7. DocumentType 类型](#117-documenttype-类型)
+  - [1.1.8. DocumentFragment 类型](#118-documentfragment-类型)
+  - [1.1.9. Attr 类型](#119-attr-类型)
+- [1.2. Slector API](#12-slector-api)
+  - [1.2.1. querySelector()](#121-queryselector)
+  - [1.2.2. querySelectorAll()](#122-queryselectorall)
+  - [1.2.3. matches()](#123-matches)
+- [1.3. 元素遍历](#13-元素遍历)
+- [1.4. HTML 5](#14-html-5)
+  - [1.4.1. CSS 类扩展](#141-css-类扩展)
+  - [1.4.2. 焦点管理](#142-焦点管理)
+  - [1.4.3. HTMLDocument 扩展](#143-htmldocument-扩展)
+  - [1.4.4. 字符集属性](#144-字符集属性)
+  - [1.4.5. 自定义数据属性](#145-自定义数据属性)
+  - [1.4.6. 插入标记](#146-插入标记)
+- [1.5. 专有扩展](#15-专有扩展)
+  - [1.5.1. children 属性](#151-children-属性)
+  - [1.5.2. contains()方法](#152-contains方法)
+  - [1.5.3. 插入标记](#153-插入标记)
+  - [1.5.4. 滚动](#154-滚动)
 
 本章内容
 
@@ -43,7 +38,7 @@ DOM Level 1 在 1998 年成为 W3C 推荐标准，提供了基本文档结构和
 
 注意 IE8 及更低版本中的 DOM 是通过 COM 对象实现的。这意味着这些版本的 IE 中，DOM 对象跟原生 JavaScript 对象具有不同的行为和功能。
 
-## 14.1. 理解节点
+## 1.1. 理解节点
 
 任何 HTML 或 XML 文档都可以用 DOM 表示为一个由节点构成的层级结构。节点分很多类型，每种类型对应着文档中不同的信息和（或）标记，也都有自己不同的特性、数据和方法，而且与其他类型有某种关系。这些关系构成了层级，让标记可以表示为一个以特定节点为根的树形结构。以下面的 HTML 为例：
 
@@ -60,13 +55,13 @@ DOM Level 1 在 1998 年成为 W3C 推荐标准，提供了基本文档结构和
 
 如果表示为层级结构，则如下图所示。
 
-![12-1-DOM层次](illustrations/12-1-DOM层次.png)
+![12-1-DOM层次](/illustrations/12-1-DOM层次.png)
 
 其中，document 节点表示每个文档的根节点。在这里，根节点的唯一子节点是`<html>`元素，我们称之为 **文档元素（documentElement）**。文档元素是文档最外层的元素，所有其他元素都存在于这个元素之内。每个文档只能有一个文档元素。在 HTML 页面中，文档元素始终是`<html>`元素。在 XML 文档中，则没有这样预定义的元素，任何元素都可能成为文档元素。
 
 HTML 中的每段标记都可以表示为这个树形结构中的一个节点。元素节点表示 HTML 元素，属性节点表示属性，文档类型节点表示文档类型，注释节点表示注释。DOM 中总共有 12 种节点类型，这些类型都继承一种基本类型。
 
-### 14.1.1. Node 类型
+### 1.1.1. Node 类型
 
 DOM Level 1 描述了名为 Node 的接口，这个接口是所有 DOM 节点类型都必须实现的。Node 接口在 JavaScript 中被实现为 Node 类型，在除 IE 之外的所有浏览器中都可以直接访问这个类型。在 JavaScript 中，所有节点类型都继承 Node 类型，因此所有类型都共享相同的基本属性和方法。
 
@@ -143,7 +138,7 @@ if (someNode.nextSibling === null) {
 
 父节点和它的第一个及最后一个子节点也有专门属性：firstChild 和 lastChild 分别指向 childNodes 中的第一个和最后一个子节点。someNode.firstChild 的值始终等于 someNode.childNodes[0]，而 someNode.lastChild 的值始终等于 someNode.childNodes[someNode.childNodes.length-1]。如果只有一个子节点，则 firstChild 和 lastChild 指向同一个节点。如果没有子节点，则 firstChild 和 lastChild 都是 null。上述这些节点之间的关系为在文档树的节点之间导航提供了方便。下图形象地展示了这些关系。
 
-![12-2-节点关系](illustrations/12-2-节点关系.png)
+![12-2-节点关系](/illustrations/12-2-节点关系.png)
 
 有了这些关系，childNodes 属性的作用远远不止是必备属性那么简单了。这是因为利用这些关系指针，几乎可以访问到文档树中的任何节点，而这种便利性是 childNodes 的最大亮点。还有一个便利的方法是 hasChildNodes()，这个方法如果返回 true 则说明节点有一个或多个子节点。相比查询 childNodes 的 length 属性，这个方法无疑更方便。
 
@@ -239,7 +234,7 @@ alert(shallowList.childNodes.length); // 0
 
 本节要介绍的最后一个方法是 normalize()。这个方法唯一的任务就是处理文档子树中的文本节点。由于解析器实现的差异或 DOM 操作等原因，可能会出现并不包含文本的文本节点，或者文本节点之间互为同胞关系。在节点上调用 normalize()方法会检测这个节点的所有后代，从中搜索上述两种情形。如果发现空文本节点，则将其删除；如果两个同胞节点是相邻的，则将其合并为一个文本节点。这个方法将在本章后面进一步讨论。
 
-### 14.1.2. Document 类型
+### 1.1.2. Document 类型
 
 Document 类型是 JavaScript 中表示文档节点的类型。在浏览器中，文档对象 document 是 HTMLDocument 的实例（HTMLDocument 继承 Document），表示整个 HTML 页面。document 是 window 对象的属性，因此是一个全局对象。Document 类型的节点有以下特征：
 
@@ -568,7 +563,7 @@ open()和 close()方法分别用于打开和关闭网页输出流。在调用 wr
 
 注意 严格的 XHTML 文档不支持文档写入。对于内容类型为 application/xml+xhtml 的页面，这些方法不起作用。
 
-### 14.1.3. Element 类型
+### 1.1.3. Element 类型
 
 除了 Document 类型，Element 类型就是 Web 开发中最常用的类型了。Element 表示 XML 或 HTML 元素，对外暴露出访问元素标签名、子节点和属性的能力。Element 类型的节点具有以下特征：
 
@@ -902,7 +897,7 @@ let items = ul.getElementsByTagName('li');
 
 这里例子中的`<ul>`元素只有一级子节点，如果它包含更多层级，则所有层级中的`<li>`元素都会返回。
 
-### 14.1.4. Text 类型
+### 1.1.4. Text 类型
 
 Text 节点由 Text 类型表示，包含按字面解释的纯文本，也可能包含转义后的 HTML 字符，但不含 HTML 代码。Text 类型的节点具有以下特征：
 
@@ -1034,7 +1029,7 @@ console.log(element.childNodes.length); // 2
 
 拆分文本节点最常用于从文本节点中提取数据的 DOM 解析技术。
 
-### 14.1.5. Comment 类型
+### 1.1.5. Comment 类型
 
 DOM 中的注释通过 Comment 类型表示。Comment 类型的节点具有以下特征：
 
@@ -1068,7 +1063,7 @@ let comment = document.createComment('A comment');
 
 显然，注释节点很少通过 JavaScrpit 创建和访问，因为注释几乎不涉及算法逻辑。此外，浏览器不承认结束的`</html>`标签之后的注释。如果要访问注释节点，则必须确定它们是`<html>`元素的后代。
 
-### 14.1.6. CDATASection 类型
+### 1.1.6. CDATASection 类型
 
 CDATASection 类型表示 XML 中特有的 CDATA 区块。CDATASection 类型继承 Text 类型，因此拥有包括 splitText()在内的所有字符串操作方法。CDATASection 类型的节点具有以下特征：
 
@@ -1088,7 +1083,7 @@ CDATA 区块只在 XML 文档中有效，因此某些浏览器比较陈旧的版
 
 在真正的 XML 文档中，可以使用 document.createCDataSection()并传入节点内容来创建 CDATA 区块。
 
-### 14.1.7. DocumentType 类型
+### 1.1.7. DocumentType 类型
 
 DocumentType 类型的节点包含文档的文档类型（doctype）信息，具有以下特征：
 
@@ -1110,7 +1105,7 @@ DocumentType 对象在 DOM Level 1 中不支持动态创建，只能在解析文
 console.log(document.doctype.name); // 'html'
 ```
 
-### 14.1.8. DocumentFragment 类型
+### 1.1.8. DocumentFragment 类型
 
 在所有节点类型中，DocumentFragment 类型是唯一一个在标记中没有对应表示的类型。DOM 将文档片段定义为“轻量级”文档，能够包含和操作节点，却没有完整文档那样额外的消耗。DocumentFragment 节点具有以下特征：
 
@@ -1148,7 +1143,7 @@ ul.appendChild(fragment);
 
 这个例子先创建了一个文档片段，然后取得了`<ul>`元素的引用。接着通过 for 循环创建了 3 个列表项，每一项都包含表明自己身份的文本。为此先创建`<li>`元素，再创建文本节点并添加到该元素。然后通过 appendChild()把`<li>`元素添加到文档片段。循环结束后，通过把文档片段传给 appendChild()将所有列表项添加到了`<ul>`元素。此时，文档片段的子节点全部被转移到了`<ul>`元素。
 
-### 14.1.9. Attr 类型
+### 1.1.9. Attr 类型
 
 元素数据在 DOM 中通过 Attr 类型表示。Attr 类型构造函数和原型在所有浏览器中都可以直接访问。技术上讲，属性是存在于元素 attributes 属性中的节点。Attr 节点具有以下特征：
 
@@ -1178,7 +1173,7 @@ console.log(element.getAttribute('align')); // 'left'
 
 注意 将属性作为节点来访问多数情况下并无必要。推荐使用 getAttribute()、removeAttribute()和 setAttribute()方法操作属性，而不是直接操作属性节点。
 
-## 14.2. Slector API
+## 1.2. Slector API
 
 JavaScript 库中最流行的一种能力就是根据 CSS 选择符的模式匹配 DOM 元素。比如，jQuery 就完全以 CSS 选择符查询 DOM 获取元素引用，而不是使用 getElementById()和 getElementsByTagName()。
 
@@ -1188,7 +1183,7 @@ Selectors API Level 1 的核心是两个方法：querySelector()和 querySelecto
 
 Selectors API Level 2 规范在 Element 类型上新增了更多方法，比如 matches()、find()和 findAll()。不过，目前还没有浏览器实现或宣称实现 find()和 findAll()。
 
-### 14.2.1. querySelector()
+### 1.2.1. querySelector()
 
 querySelector()方法接收 CSS 选择符参数，返回匹配该模式的第一个后代元素，如果没有匹配项则返回 null。下面是一些例子：
 
@@ -1210,7 +1205,7 @@ const img = document.body.querySelector('img.button');
 
 用于查询模式的 CSS 选择符可繁可简，依需求而定。如果选择符有语法错误或碰到不支持的选择符，则 querySelector()方法会抛出错误。
 
-### 14.2.2. querySelectorAll()
+### 1.2.2. querySelectorAll()
 
 querySelectorAll()方法跟 querySelector()一样，也接收一个用于查询的参数，但它会返回所有匹配的节点，而不止一个。这个方法返回的是一个 NodeList 的静态实例。
 
@@ -1252,7 +1247,7 @@ for (let i = 0; i < strongElements.length; ++i) {
 
 与 querySelector()方法一样，如果选择符有语法错误或碰到不支持的选择符，则 querySelectorAll()方法会抛出错误。
 
-### 14.2.3. matches()
+### 1.2.3. matches()
 
 matches()方法（在规范草案中称为 matchesSelector()）接收一个 CSS 选择符参数，如果元素匹配则该选择符返回 true，否则返回 false。例如：
 
@@ -1266,7 +1261,7 @@ if (document.body.matches('body.page1')) {
 
 所有主流浏览器都支持 matches()。Edge、Chrome、Firefox、Safari 和 Opera 完全支持，IE9~11 及一些移动浏览器支持带前缀的方法。
 
-## 14.3. 元素遍历
+## 1.3. 元素遍历
 
 IE9 之前的版本不会把元素间的空格当成空白节点，而其他浏览器则会。这样就导致了 childNodes 和 firstChild 等属性上的差异。为了弥补这个差异，同时不影响 DOM 规范，W3C 通过新的 ElementTraversal 规范定义了一组新属性。
 
@@ -1316,7 +1311,7 @@ while (currentChildElement) {
 
 IE9 及以上版本，以及所有现代浏览器都支持 Element Traversal 属性。
 
-## 14.4. HTML 5
+## 1.4. HTML 5
 
 HTML5 代表着与以前的 HTML 截然不同的方向。在所有以前的 HTML 规范中，从未出现过描述 JavaScript 接口的情形，HTML 就是一个纯标记语言。JavaScript 绑定的事，一概交给 DOM 规范去定义。
 
@@ -1324,7 +1319,7 @@ HTML5 代表着与以前的 HTML 截然不同的方向。在所有以前的 HTML
 
 注意 因为 HTML5 覆盖的范围极其广泛，所以本节主要讨论其影响所有 DOM 节点的部分。HTML5 的其他部分将在本书后面的相关章节中再讨论。
 
-### 14.4.1. CSS 类扩展
+### 1.4.1. CSS 类扩展
 
 自 HTML4 被广泛采用以来，Web 开发中一个主要的变化是 class 属性用得越来越多，其用处是为元素添加样式以及语义信息。自然地，JavaScript 与 CSS 类的交互就增多了，包括动态修改类名，以及根据给定的一个或一组类名查询元素，等等。为了适应开发者和他们对 class 属性的认可，HTML5 增加了一些特性以方便使用 CSS 类。
 
@@ -1411,7 +1406,7 @@ doStuff(class);
 
 添加了 classList 属性之后，除非是完全删除或完全重写元素的 class 属性，否则 className 属性就用不到了。IE10 及以上版本（部分）和其他主流浏览器（完全）实现了 classList 属性。
 
-### 14.4.2. 焦点管理
+### 1.4.2. 焦点管理
 
 HTML5 增加了辅助 DOM 焦点管理的功能。首先是 document.activeElement，始终包含当前拥有焦点的 DOM 元素。页面加载时，可以通过用户输入（按 Tab 键或代码中使用 focus()方法）让某个元素自动获得焦点。例如：
 
@@ -1435,7 +1430,7 @@ console.log(document.hasFocus()); // true
 
 第一个方法可以用来查询文档，确定哪个元素拥有焦点，第二个方法可以查询文档是否获得了焦点，而这对于保证 Web 应用程序的无障碍使用是非常重要的。无障碍 Web 应用程序的一个重要方面就是焦点管理，而能够确定哪个元素当前拥有焦点（相比于之前的猜测）是一个很大的进步。
 
-### 14.4.3. HTMLDocument 扩展
+### 1.4.3. HTMLDocument 扩展
 
 HTML5 扩展了 HTMLDocument 类型，增加了更多功能。与其他 HTML5 定义的 DOM 扩展一样，这些变化同样基于所有浏览器事实上都已经支持的专有扩展。为此，即使这些扩展的标准化相对较晚，很多浏览器也早就实现了相应的功能。
 
@@ -1477,7 +1472,7 @@ HTML5 最终也把 compatMode 属性的实现标准化了。
 const head = document.head;
 ```
 
-### 14.4.4. 字符集属性
+### 1.4.4. 字符集属性
 
 HTML5 增加了几个与文档字符集有关的新属性。其中，characterSet 属性表示文档实际使用的字符集，也可以用来指定新字符集。这个属性的默认值是'UTF-16'，但可以通过`<meta>`元素或响应头，以及新增的 characterSeet 属性来修改。下面是一个例子：
 
@@ -1486,7 +1481,7 @@ console.log(document.characterSet); // 'UTF-16'
 document.characterSet = 'UTF-8';
 ```
 
-### 14.4.5. 自定义数据属性
+### 1.4.5. 自定义数据属性
 
 HTML5 允许给元素指定非标准的属性，但要使用前缀 data-以便告诉浏览器，这些属性既不包含与渲染有关的信息，也不包含元素的语义信息。除了前缀，自定义属性对命名是没有限制的，data-后面跟什么都可以。下面是一个例子：
 
@@ -1513,7 +1508,7 @@ if (div.dataset.myname) {
 
 自定义数据属性非常适合需要给元素附加某些数据的场景，比如链接追踪和在聚合应用程序中标识页面的不同部分。另外，单页应用程序框架也非常多地使用了自定义数据属性。
 
-### 14.4.6. 插入标记
+### 1.4.6. 插入标记
 
 DOM 虽然已经为操纵节点提供了很多 API，但向文档中一次性插入大量 HTML 时还是比较麻烦。相比先创建一堆节点，再把它们以正确的顺序连接起来，直接插入一个 HTML 字符串要简单（快速）得多。HTML5 已经通过以下 DOM 扩展将这种能力标准化了。
 
@@ -1741,13 +1736,13 @@ document.forms[0].scrollIntoView({behavior: 'smooth', block: 'start'});
 
 这个方法可以用来在页面上发生某个事件时引起用户关注。把焦点设置到一个元素上也会导致浏览器将元素滚动到可见位置。
 
-## 14.5. 专有扩展
+## 1.5. 专有扩展
 
 尽管所有浏览器厂商都理解遵循标准的重要性，但它们也都有为弥补功能缺失而为 DOM 添加专有扩展的历史。虽然这表面上看是一件坏事，但专有扩展也为开发者提供了很多重要功能，而这些功能后来则有可能被标准化，比如进入 HTML5。
 
 除了已经标准化的，各家浏览器还有很多未被标准化的专有扩展。这并不意味着它们将来不会被纳入标准，只不过在本书编写时，它们还只是由部分浏览器专有和采用。
 
-### 14.5.1. children 属性
+### 1.5.1. children 属性
 
 IE9 之前的版本与其他浏览器在处理空白文本节点上的差异导致了 children 属性的出现。children 属性是一个 HTMLCollection，只包含元素的 Element 类型的子节点。如果元素的子节点类型全部是元素类型，那 children 和 childNodes 中包含的节点应该是一样的。可以像下面这样使用 children 属性：
 
@@ -1756,7 +1751,7 @@ let childCount = element.children.length;
 let firstChild = element.children[0];
 ```
 
-### 14.5.2. contains()方法
+### 1.5.2. contains()方法
 
 DOM 编程中经常需要确定一个元素是不是另一个元素的后代。IE 首先引入了 contains()方法，让开发者可以在不遍历 DOM 的情况下获取这个信息。contains()方法应该在要搜索的祖先元素上调用，参数是待确定的目标节点。
 
@@ -1789,7 +1784,7 @@ console.log(!!(result & 0x10));
 
 IE9 及之后的版本，以及所有现代浏览器都支持 contains()和 compareDocumentPosition()方法。
 
-### 14.5.3. 插入标记
+### 1.5.3. 插入标记
 
 HTML5 将 IE 发明的 innerHTML 和 outerHTML 纳入了标准，但还有两个属性没有入选。这两个剩下的属性是 innerText 和 outerText。
 
@@ -1878,7 +1873,7 @@ div.parentNode.replaceChild(text, div);
 
 outerText 是一个非标准的属性，而且也没有被标准化的前景。因此，不推荐依赖这个属性实现重要的操作。除 Firefox 之外所有主流浏览器都支持 outerText。
 
-### 14.5.4. 滚动
+### 1.5.4. 滚动
 
 如前所述，滚动是 HTML5 之前 DOM 标准没有涉及的领域。虽然 HTML5 把 scrollIntoView()标准化了， 但不同浏览器中仍然有其他专有方法。比如， scrollIntoViewIfNeeded() 作为 HTMLElement 类型的扩展可以在所有元素上调用。scrollIntoViewIfNeeded(alingCenter)会在元素不可见的情况下，将其滚动到窗口或包含窗口中，使其可见；如果已经在视口中可见，则这个方法什么也不做。如果将可选的参数 alingCenter 设置为 true，则浏览器会尝试将其放在视口中央。Safari、Chrome 和 Opera 实现了这个方法。
 

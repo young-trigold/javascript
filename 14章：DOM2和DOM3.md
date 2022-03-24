@@ -1,32 +1,27 @@
-**目录：**
-
-- [15. DOM2 和 DOM3](#15-dom2-和-dom3)
-  - [15.1. DOM 的演进](#151-dom-的演进)
-    - [15.1.1. XML 命名空间](#1511-xml-命名空间)
-    - [15.1.2. 其他变化](#1512-其他变化)
-  - [15.2. 样式](#152-样式)
-    - [15.2.1. 存取元素样式](#1521-存取元素样式)
-    - [15.2.2. 操作样式表](#1522-操作样式表)
-    - [15.2.3. 元素尺寸](#1523-元素尺寸)
-  - [15.3. 遍历](#153-遍历)
-    - [15.3.1. NodeIterator](#1531-nodeiterator)
-    - [15.3.2. TreeWalker](#1532-treewalker)
-  - [15.4. 范围](#154-范围)
-    - [15.4.1. DOM 范围](#1541-dom-范围)
-    - [15.4.2. 简单选择](#1542-简单选择)
-    - [15.4.3. 复杂选择](#1543-复杂选择)
-    - [15.4.4. 操作范围](#1544-操作范围)
-    - [15.4.5. 范围插入](#1545-范围插入)
-    - [15.4.6. 范围折叠](#1546-范围折叠)
-    - [15.4.7. 范围比较](#1547-范围比较)
-    - [15.4.8. 范围其他 API](#1548-范围其他-api)
-  - [15.5. MutationObserver 接口](#155-mutationobserver-接口)
-    - [15.5.1. 基本用法](#1551-基本用法)
-    - [15.5.2. MutationObserverInit 与观察范围](#1552-mutationobserverinit-与观察范围)
-    - [15.5.3. 异步回调与记录队列](#1553-异步回调与记录队列)
-    - [15.5.4. 性能，内存与垃圾回收](#1554-性能内存与垃圾回收)
-
-# 15. DOM2 和 DOM3
+- [1.1. DOM 的演进](#11-dom-的演进)
+  - [1.1.1. XML 命名空间](#111-xml-命名空间)
+  - [1.1.2. 其他变化](#112-其他变化)
+- [1.2. 样式](#12-样式)
+  - [1.2.1. 存取元素样式](#121-存取元素样式)
+  - [1.2.2. 操作样式表](#122-操作样式表)
+  - [1.2.3. 元素尺寸](#123-元素尺寸)
+- [1.3. 遍历](#13-遍历)
+  - [1.3.1. NodeIterator](#131-nodeiterator)
+  - [1.3.2. TreeWalker](#132-treewalker)
+- [1.4. 范围](#14-范围)
+  - [1.4.1. DOM 范围](#141-dom-范围)
+  - [1.4.2. 简单选择](#142-简单选择)
+  - [1.4.3. 复杂选择](#143-复杂选择)
+  - [1.4.4. 操作范围](#144-操作范围)
+  - [1.4.5. 范围插入](#145-范围插入)
+  - [1.4.6. 范围折叠](#146-范围折叠)
+  - [1.4.7. 范围比较](#147-范围比较)
+  - [1.4.8. 范围其他 API](#148-范围其他-api)
+- [1.5. MutationObserver 接口](#15-mutationobserver-接口)
+  - [1.5.1. 基本用法](#151-基本用法)
+  - [1.5.2. MutationObserverInit 与观察范围](#152-mutationobserverinit-与观察范围)
+  - [1.5.3. 异步回调与记录队列](#153-异步回调与记录队列)
+  - [1.5.4. 性能，内存与垃圾回收](#154-性能内存与垃圾回收)
 
 本章内容
 
@@ -49,7 +44,7 @@ DOM1（DOM Level 1）主要定义了 HTML 和 XML 文档的底层结构。DOM2�
 
 注意 比较老旧的浏览器（如 IE8）对本章内容支持有限。如果你的项目要兼容这些低版本浏览器，在使用本章介绍的 API 之前先确认浏览器的支持情况。推荐参考 Can I Use 网站。
 
-## 15.1. DOM 的演进
+## 1.1. DOM 的演进
 
 DOM2 和 DOM3 Core 模块的目标是扩展 DOM API，满足 XML 的所有需求并提供更好的错误处理和特性检测。很大程度上，这意味着支持 XML 命名空间的概念。DOM2 Core 没有新增任何类型，仅仅在 DOM1 Core 基础上增加了一些方法和属性。DOM3 Core 则除了增强原有类型，也新增了一些新类型。
 
@@ -57,7 +52,7 @@ DOM2 和 DOM3 Core 模块的目标是扩展 DOM API，满足 XML 的所有需求
 
 注意 本章只讨论浏览器实现的 DOM API，不会提及未被浏览器实现的。
 
-### 15.1.1. XML 命名空间
+### 1.1.1. XML 命名空间
 
 XML 命名空间可以实现在一个格式规范的文档中混用不同的 XML 语言，而不必担心元素命名冲突。严格来讲，XML 命名空间在 XHTML 中才支持，HTML 并不支持。因此，本节的示例使用 XHTML。
 
@@ -221,7 +216,7 @@ NamedNodeMap 也增加了以下处理命名空间的方法。因为 NamedNodeMap
 
 这些方法很少使用，因为通常都是使用元素来访问属性。
 
-### 15.1.2. 其他变化
+### 1.1.2. 其他变化
 
 除命名空间相关的变化，DOM2 Core 还对 DOM 的其他部分做了一些更新。这些变化与 XML 命名空间无关，主要关注 DOM API 的完整性与可靠性。
 
@@ -386,11 +381,11 @@ contentDocument 属性是 Document 的实例，拥有所有文档属性和方法
 
 注意 跨源访问子内嵌窗格的 document 对象会受到安全限制。如果内嵌窗格中加载了不同域名（或子域名）的页面，或者该页面使用了不同协议，则访问其 document 对象会抛出错误。
 
-## 15.2. 样式
+## 1.2. 样式
 
 HTML 中的样式有 3 种定义方式：外部样式表（通过`<link>`元素）、文档样式表（使用`<style>`元素）和元素特定样式（使用 style 属性）。DOM2 Style 为这 3 种应用样式的机制都提供了 API。
 
-### 15.2.1. 存取元素样式
+### 1.2.1. 存取元素样式
 
 任何支持 style 属性的 HTML 元素在 JavaScript 中都会有一个对应的 style 属性。这个 style 属性是 CSSStyleDeclaration 类型的实例，其中包含通过 HTML style 属性为元素设置的所有样式信息，但不包含通过层叠机制从文档样式和外部样式中继承来的样式。HTML style 属性中的 CSS 属性在 JavaScript style 对象中都有对应的属性。因为 CSS 属性名使用连字符表示法（用连字符分隔两个单词，如 background-image），所以在 JavaScript 中这些属性必须转换为驼峰大小写形式（如 backgroundImage）。下表给出了几个常用的 CSS 属性与 style 对象中等价属性的对比。
 
@@ -553,7 +548,7 @@ console.log(computedStyle.border);
 
 关于计算样式要记住一点，在所有浏览器中计算样式都是只读的，不能修改 getComputedStyle()方法返回的对象。而且，计算样式还包含浏览器内部样式表中的信息。因此有默认值的 CSS 属性会出现在计算样式里。例如，visibility 属性在所有浏览器中都有默认值，但这个值因实现而不同。有些浏览器会把 visibility 的默认值设置为'visible'，而另一些将其设置为'inherit'。不能假设 CSS 属性的默认值在所有浏览器中都一样。如果需要元素具有特定的默认值，那么一定要在样式表中手动指定。
 
-### 15.2.2. 操作样式表
+### 1.2.2. 操作样式表
 
 CSSStyleSheet 类型表示 CSS 样式表，包括使用`<link>`元素和通过`<style>`元素定义的样式表。注意，这两个元素本身分别是 HTMLLinkElement 和 HTMLStyleElement。CSSStyleSheet 类型是一个通用样式表类型，可以表示以任何方式在 HTML 中定义的样式表。另外，元素特定的类型允许修改 HTML 属性，而 CSSStyleSheet 类型的实例则是一个只读对象（只有一个属性例外）。
 
@@ -655,7 +650,7 @@ sheet.deleteRule(0); // 使用DOM 方法
 
 与添加规则一样，删除规则并不是 Web 开发中常见的做法。考虑到可能影响 CSS 层叠的效果，删除规则时要慎重。
 
-### 15.2.3. 元素尺寸
+### 1.2.3. 元素尺寸
 
 本节介绍的属性和方法并不是 DOM2 Style 规范中定义的，但与 HTML 元素的样式有关。DOM 一直缺乏页面中元素实际尺寸的规定。IE 率先增加了一些属性，向开发者暴露元素的尺寸信息。这些属性现在已经得到所有主流浏览器支持。
 
@@ -670,7 +665,7 @@ sheet.deleteRule(0); // 使用DOM 方法
 
 其中，offsetLeft 和 offsetTop 是相对于包含元素的，包含元素保存在 offsetParent 属性中。offsetParent 不一定是 parentNode。比如，`<td>`元素的 offsetParent 是作为其祖先的`<table>`元素，因为`<table>`是节点层级中第一个提供尺寸的元素。下图展示了这些属性代表的不同尺寸。
 
-![13-1-偏移尺寸](illustrations/13-1-偏移尺寸.png)
+![13-1-偏移尺寸](/illustrations/13-1-偏移尺寸.png)
 
 要确定一个元素在页面中的偏移量，可以把它的 offsetLeft 和 offsetTop 属性分别与 offsetParent 的相同属性相加，一直加到根元素。下面是一个例子：
 
@@ -708,7 +703,7 @@ const getElementTop = function (element) {
 
 元素的 **客户端尺寸(client dimensions)** 包含元素内容及其内边距所占用的空间。客户端尺寸只有两个相关属性：clientWidth 和 clientHeight。其中，clientWidth 是内容区宽度加左、右内边距宽度，clientHeight 是内容区高度加上、下内边距高度。下图形象地展示了这两个属性。
 
-![13-2-客户端尺寸](illustrations/13-2-客户端尺寸.png)
+![13-2-客户端尺寸](/illustrations/13-2-客户端尺寸.png)
 
 客户端尺寸实际上就是元素内部的空间，因此不包含滚动条占用的空间。这两个属性最常用于确定浏览器视口尺寸，即检测 document.documentElement 的 clientWidth 和 clientHeight。这两个属性表示视口（`<html>`或`<body>`元素）的尺寸。
 
@@ -725,7 +720,7 @@ const getElementTop = function (element) {
 
 下图展示了这些属性的含义。
 
-![13-3-滚动尺寸](illustrations/13-3-滚动尺寸.png)
+![13-3-滚动尺寸](/illustrations/13-3-滚动尺寸.png)
 
 scrollWidth 和 scrollHeight 可以用来确定给定元素内容的实际尺寸。例如，`<html>`元素是浏览器中滚动视口的元素。因此，document.documentElement.scrollHeight 就是整个页面垂直方向的总高度。
 
@@ -749,9 +744,9 @@ const scrollToTop = (element) {
 
 浏览器在每个元素上都暴露了 getBoundingClientRect()方法，返回一个 DOMRect 对象，包含 6 个属性：left、top、right、bottom、height 和 width。这些属性给出了元素在页面中相对于视口的位置。下图展示了这些属性的含义。
 
-![13-4-确定元素尺寸](illustrations/13-4-确定元素尺寸.png)
+![13-4-确定元素尺寸](/illustrations/13-4-确定元素尺寸.png)
 
-## 15.3. 遍历
+## 1.3. 遍历
 
 DOM2 Traversal and Range 模块定义了两个类型用于辅助顺序遍历 DOM 结构。这两个类型——NodeIterator 和 TreeWalker——从某个起点开始执行对 DOM 结构的深度优先遍历。
 
@@ -774,15 +769,15 @@ DOM2 Traversal and Range 模块定义了两个类型用于辅助顺序遍历 DOM
 
 这段代码构成的 DOM 树如下图所示。
 
-![13-5-DOM树](illustrations/13-5-DOM树.png)
+![13-5-DOM树](/illustrations/13-5-DOM树.png)
 
 其中的任何节点都可以成为遍历的根节点。比如，假设以`<body>`元素作为遍历的根节点，那么接下来是`<p>`元素、`<b>`元素和两个文本节点（都是`<body>`元素的后代）。但这个遍历不会到达`<html>`元素、`<head>`元素，或者其他不属于`<body>`元素子树的元素。而以 document 为根节点的遍历，则可以访问到文档中的所有节点。下图展示了以 document 为根节点的深度优先遍历。
 
-![13-6-DOM树深度优先遍历](illustrations/13-6-DOM树深度优先遍历.png)
+![13-6-DOM树深度优先遍历](/illustrations/13-6-DOM树深度优先遍历.png)
 
 从 document 开始，然后循序移动，第一个节点是 document，最后一个节点是包含" world!"的文本节点。到达文档末尾最后那个文本节点后，遍历会在 DOM 树中反向回溯。此时，第一个访问的节点就是包含" world!"的文本节点，而最后一个是 document 节点本身。NodeIterator 和 TreeWalker 都以这种方式进行遍历。
 
-### 15.3.1. NodeIterator
+### 1.3.1. NodeIterator
 
 NodeIterator 类型是两个类型中比较简单的，可以通过 document.createNodeIterator()方法创建其实例。这个方法接收以下 4 个参数。
 
@@ -937,7 +932,7 @@ while (node !== null) {
 
 nextNode()和 previousNode()方法共同维护 NodeIterator 对 DOM 结构的内部指针，因此修改 DOM 结构也会体现在遍历中。
 
-### 15.3.2. TreeWalker
+### 1.3.2. TreeWalker
 
 TreeWalker 是 NodeIterator 的高级版。除了包含同样的 nextNode()、previousNode()方法，TreeWalker 还添加了如下在 DOM 结构中向不同方向遍历的方法。
 
@@ -1014,11 +1009,11 @@ walker.currentNode = document.body;
 
 相比于 NodeIterator，TreeWalker 类型为遍历 DOM 提供了更大的灵活性。
 
-## 15.4. 范围
+## 1.4. 范围
 
 为了支持对页面更细致的控制，DOM2 Traversal and Range 模块定义了范围接口。范围可用于在文档中选择内容，而不用考虑节点之间的界限。（选择在后台发生，用户是看不到的。）范围在常规 DOM 操作的粒度不够时可以发挥作用。
 
-### 15.4.1. DOM 范围
+### 1.4.1. DOM 范围
 
 DOM2 在 Document 类型上定义了一个 createRange()方法，暴露在 document 对象上。使用这个方法可以创建一个 DOM 范围对象，如下所示：
 
@@ -1036,7 +1031,7 @@ const range = document.createRange();
 - endOffset，范围起点在 startContainer 中的偏移量（与 startOffset 中偏移量的含义相同）。
 - commonAncestorContainer，文档中以 startContainer 和 endContainer 为后代的最深的节点。这些属性会在范围被放到文档中特定位置时获得相应的值。
 
-### 15.4.2. 简单选择
+### 1.4.2. 简单选择
 
 通过范围选择文档中某个部分最简单的方式，就是使用 selectNode()或 selectNodeContents()方法。这两个方法都接收一个节点作为参数，并将该节点的信息添加到调用它的范围。selectNode()方法选择整个节点，包括其后代节点，而 selectNodeContents()只选择节点的后代。假设有如下 HTML：
 
@@ -1064,7 +1059,7 @@ range2.selectNodeContents(p1);
 
 例子中的这 2 个范围包含文档的不同部分。range1 包含 `<p>` 元素及其后代，而 range2 包含 `<b>` 元素，文本节点 `'hello'` 和文本节点 `' world!'`，如下图所示。
 
-![13-7-范围示例1](illustrations/13-7-范围示例1.png)
+![13-7-范围示例1](/illustrations/13-7-范围示例1.png)
 
 调用 selectNode()时，startContainer、endContainer 和 commonAncestorContainer 都等于传入节点的父节点。在这个例子中，这几个属性都等于 document.body。startOffset 属性等于传入节点在其父节点 childNodes 集合中的索引（在这个例子中，startOffset 等于 1，因为 DOM 的合规实现把空格当成文本节点），而 endOffset 等于 startOffset 加 1（因为只选择了一个节点）。
 
@@ -1079,7 +1074,7 @@ range2.selectNodeContents(p1);
 
 调用这些方法时，所有属性都会自动重新赋值。不过，为了实现复杂的选区，也可以直接修改这些属性的值。
 
-### 15.4.3. 复杂选择
+### 1.4.3. 复杂选择
 
 要创建复杂的范围，需要使用 setStart()和 setEnd()方法。这两个方法都接收两个参数：参照节点和偏移量。对 setStart()来说，参照节点会成为 startContainer，而偏移量会赋值给 startOffset。对 setEnd()而言，参照节点会成为 endContainer，而偏移量会赋值给 endOffset。
 
@@ -1126,13 +1121,13 @@ range.setEnd(worldNode, 3);
 
 因为选区起点在"Hello"中的字母"e"之后，所以要给 setStart()传入 helloNode 和偏移量 2（"e"后面的位置，"H"的位置是 0）。要设置选区终点，则要给 setEnd()传入 worldNode 和偏移量 3，即不属于选区的第一个字符的位置，也就是"r"的位置 3（位置 0 是一个空格）。下图展示了范围对应的选区。
 
-![13-8-范围示例2](illustrations/13-8-范围示例2.png)
+![13-8-范围示例2](/illustrations/13-8-范围示例2.png)
 
 因为 helloNode 和 worldNode 是文本节点，所以它们会成为范围的 startContainer 和 endContainer，这样 startOffset 和 endOffset 实际上表示每个节点中文本字符的位置，而不是子节点的位置（传入元素节点时的情形）。而 commonAncestorContainer 是`<p>`元素，即包含这两个节点的第一个祖先节点。
 
 当然，只选择文档中的某个部分并不是特别有用，除非可以对选中部分执行操作。
 
-### 15.4.4. 操作范围
+### 1.4.4. 操作范围
 
 创建范围之后，浏览器会在内部创建一个文档片段节点，用于包含范围选区中的节点。为操作范围的内容，选区中的内容必须格式完好。在前面的例子中，因为范围的起点和终点都在文本节点内部，并不是完好的 DOM 结构，所以无法在 DOM 中表示。不过，范围能够确定缺失的开始和结束标签，从而可以重构出有效的 DOM 结构，以便后续操作。
 
@@ -1150,7 +1145,7 @@ range.setEnd(worldNode, 3);
 
 而且，" world!"文本节点会被拆分成两个文本节点，一个包含" wo"，另一个包含"rld!"。最终的 DOM 树，以及范围对应的文档片段如下图所示。
 
-![13-9-文档片段对应DOM](illustrations/13-9-文档片段对应DOM.png)
+![13-9-文档片段对应DOM](/illustrations/13-9-文档片段对应DOM.png)
 
 这样创建了范围之后，就可以使用很多方法来操作范围的内容。（注意，范围对应文档片段中的所有节点，都是文档中相应节点的指针。）
 
@@ -1223,7 +1218,7 @@ wo
 
 此时关键是要知道，为保持结构完好而拆分节点的操作，只有在调用前述方法时才会发生。在 DOM 被修改之前，原始 HTML 会一直保持不变。
 
-### 15.4.5. 范围插入
+### 1.4.5. 范围插入
 
 上一节介绍了移除和复制范围的内容，本节来看一看怎么向范围中插入内容。使用 insertNode()方法可以在范围选区的开始位置插入一个节点。例如，假设我们想在前面例子中的 HTML 中插入如下 HTML：
 
@@ -1291,11 +1286,11 @@ range.surroundContents(span);
 
 为了插入`<span>`元素，范围中必须包含完整的 DOM 结构。如果范围中包含部分选择的非文节点，这个操作会失败并报错。另外，如果给定的节点是 Document、DocumentType 或 DocumentFragment 类型，也会导致抛出错误。
 
-### 15.4.6. 范围折叠
+### 1.4.6. 范围折叠
 
 如果范围并没有选择文档的任何部分，则称为 **折叠(collapsed)**。折叠范围有点类似文本框：如果文本框中有文本，那么可以用鼠标选中以高亮显示全部文本。这时候，如果再单击鼠标，则选区会被移除，光标会落在某两个字符中间。而在折叠范围时，位置会被设置为范围与文档交界的地方，可能是范围选区的开始处，也可能是结尾处。下图展示了范围折叠时会发生什么。
 
-![13-10-范围折叠](illustrations/13-10-范围折叠.png)
+![13-10-范围折叠](/illustrations/13-10-范围折叠.png)
 
 折叠范围可以使用 collapse()方法，这个方法接收一个参数：布尔值，表示折叠到范围哪一端。true 表示折叠到起点，false 表示折叠到终点。要确定范围是否已经被折叠，可以检测范围的 collapsed 属性：
 
@@ -1329,7 +1324,7 @@ console.log(range.collapsed);
 
 在这种情况下，创建的范围是折叠的，因为 p1 后面和 p2 前面没有任何内容。
 
-### 15.4.7. 范围比较
+### 1.4.7. 范围比较
 
 如果有多个范围，则可以使用 compareBoundaryPoints()方法确定范围之间是否存在公共的边界（起点或终点）。这个方法接收两个参数：要比较的范围和一个常量值，表示比较的方式。这个常量参数包括：
 
@@ -1357,9 +1352,9 @@ console.log(range1.compareBoundaryPoints(Range.END_TO_END, range2));
 
 在这段代码中，两个范围的起点是相等的，因为它们都是 selectNodeContents()默认返回的值。因此，比较二者起点的方法返回 0。不过，因为 range2 的终点被使用 setEndBefore()修改了，所以导致 range1 的终点位于 range2 的终点之后，结果这个方法返回了 1。
 
-![13-11-范围示例3](illustrations/13-11-范围示例3.png)
+![13-11-范围示例3](/illustrations/13-11-范围示例3.png)
 
-### 15.4.8. 范围其他 API
+### 1.4.8. 范围其他 API
 
 调用范围的 cloneRange()方法可以复制范围。这个方法会创建调用它的范围的副本：
 
@@ -1381,13 +1376,13 @@ range = null;
 
 这两步是最合理的结束使用范围的方式。剥离之后的范围就不能再使用了。
 
-## 15.5. MutationObserver 接口
+## 1.5. MutationObserver 接口
 
 不久前添加到 DOM 规范中的 MutationObserver 接口，可以在 DOM 被修改时异步执行回调。使用 MutationObserver 可以观察整个文档、DOM 树的一部分，或某个元素。此外还可以观察元素属性、子节点、文本，或者前三者任意组合的变化。
 
 注意 新引进 MutationObserver 接口是为了取代废弃的 MutationEvent。
 
-### 15.5.1. 基本用法
+### 1.5.1. 基本用法
 
 MutationObserver 的实例要通过调用 MutationObserver 构造函数并传入一个回调函数来创建：
 
@@ -1611,7 +1606,7 @@ document.body.setAttribute('baz', 'qux');
 // <body> attributes changed
 ```
 
-### 15.5.2. MutationObserverInit 与观察范围
+### 1.5.2. MutationObserverInit 与观察范围
 
 MutationObserverInit 对象用于控制对目标节点的观察范围。粗略地讲，观察者可以观察的事件包括属性变化、文本变化和子节点变化。
 
@@ -1885,7 +1880,7 @@ subtreeLeaf.setAttribute('foo', 'bar');
 // [MutationRecord]
 ```
 
-### 15.5.3. 异步回调与记录队列
+### 1.5.3. 异步回调与记录队列
 
 MutationObserver 接口是出于性能考虑而设计的，其核心是异步回调与记录队列模型。为了在大量变化事件发生时不影响性能，每次变化的信息（由观察者实例决定）会保存在 MutationRecord 实例中，然后添加到 **记录队列**。这个队列对每个 MutationObserver 实例都是唯一的，是所有 DOM 变化事件的有序列表。
 
@@ -1915,7 +1910,7 @@ console.log(observer.takeRecords());
 
 这在希望断开与观察目标的联系，但又希望处理由于调用 disconnect()而被抛弃的记录队列中的 MutationRecord 实例时比较有用。
 
-### 15.5.4. 性能，内存与垃圾回收
+### 1.5.4. 性能，内存与垃圾回收
 
 DOM Level 2 规范中描述的 MutationEvent 定义了一组会在各种 DOM 变化时触发的事件。由于浏览器事件的实现机制，这个接口出现了严重的性能问题。因此，DOM Level 3 规定废弃了这些事件。MutationObserver 接口就是为替代这些事件而设计的更实用、性能更好的方案。
 
